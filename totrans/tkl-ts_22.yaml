@@ -1,269 +1,413 @@
 - en: 18 Types for classes as values
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 18 类作为值的类型
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_classes-as-values.html](https://exploringjs.com/tackling-ts/ch_classes-as-values.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/tackling-ts/ch_classes-as-values.html](https://exploringjs.com/tackling-ts/ch_classes-as-values.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 18.1 [Types for specific classes](ch_classes-as-values.html#types-for-specific-classes)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.1 [特定类的类型](ch_classes-as-values.html#types-for-specific-classes)
 - en: 18.2 [The type operator `typeof`](ch_classes-as-values.html#type-operator-typeof)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.2 [类型操作符`typeof`](ch_classes-as-values.html#type-operator-typeof)
 - en: 18.2.1 [Constructor type literals](ch_classes-as-values.html#constructor-type-literals)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.2.1 构造函数类型文本
 - en: 18.2.2 [Object type literals with construct signatures](ch_classes-as-values.html#construct-signature)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.2.2 带有构造签名的对象类型文本
 - en: '18.3 [A generic type for classes: `Class<T>`](ch_classes-as-values.html#a-generic-type-for-classes-classt)'
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3 类的通用类型：`Class<T>`
 - en: '18.3.1 [Example: creating instances](ch_classes-as-values.html#example-creating-instances)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.1 [示例：创建实例](ch_classes-as-values.html#example-creating-instances)
 - en: '18.3.2 [Example: casting with runtime checks](ch_classes-as-values.html#example-casting-with-runtime-checks)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.2 [示例：带有运行时检查的类型转换](ch_classes-as-values.html#example-casting-with-runtime-checks)
 - en: '18.3.3 [Example: Maps that are type-safe at runtime](ch_classes-as-values.html#example-maps-that-are-type-safe-at-runtime)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.3 [示例：在运行时类型安全的映射](ch_classes-as-values.html#example-maps-that-are-type-safe-at-runtime)
 - en: '18.3.4 [Pitfall: `Class<T>` does not match abstract classes](ch_classes-as-values.html#pitfall-classt-does-not-match-abstract-classes)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.4 [陷阱：`Class<T>`不匹配抽象类](ch_classes-as-values.html#pitfall-classt-does-not-match-abstract-classes)
 - en: '* * *'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'In this chapter, we explore classes as values:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨了类作为值：
 - en: What types should we use for such values?
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们应该为这些值使用什么类型？
 - en: What are the use cases for these types?
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这些类型的用例是什么？
 - en: 18.1 Types for specific classes
+  id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.1 特定类的类型
 - en: 'Consider the following class:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下类：
 - en: '[PRE0]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'This function accepts a class and creates an instance of it:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个函数接受一个类并创建它的一个实例：
 - en: '[PRE1]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: What type should we use for the parameter `PointClass` if we want it to be `Point`
     or a subclass?
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们希望参数`PointClass`的类型为`Point`或其子类，应该使用什么类型？
 - en: 18.2 The type operator `typeof`
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.2 类型操作符`typeof`
 - en: 'In [§7.7 “The two language levels: dynamic vs. static”](ch_typescript-essentials.html#language-levels),
     we explored the two language levels of TypeScript:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 在[§7.7“两种语言级别：动态 vs. 静态”](ch_typescript-essentials.html#language-levels)中，我们探讨了TypeScript的两种语言级别：
 - en: 'Dynamic level: JavaScript (code and values)'
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 动态级别：JavaScript（代码和值）
 - en: 'Static level: TypeScript (static types)'
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 静态级别：TypeScript（静态类型）
 - en: 'The class `Point` creates two things:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 类`Point`创建了两个东西：
 - en: The constructor function `Point`
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 构造函数`Point`
 - en: The interface `Point` for instances of `Point`
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 接口`Point`用于`Point`的实例
 - en: 'Depending on where we mention `Point`, it means different things. That’s why
     we can’t use the type `Point` for `PointClass`: It matches *instances* of class
     `Point`, not class `Point` itself.'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 根据我们提到`Point`的地方不同，它表示不同的东西。这就是为什么我们不能将类型`Point`用于`PointClass`：它匹配类`Point`的*实例*，而不是类`Point`本身。
 - en: Instead, we need to use the type operator `typeof` (another bit of TypeScript
     syntax that also exists in JavaScript). `typeof v` stands for the type of the
     dynamic(!) value `v`.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，我们需要使用类型操作符`typeof`（TypeScript语法的一部分，也存在于JavaScript中）。`typeof v`代表动态(!)值`v`的类型。
 - en: '[PRE2]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 18.2.1 Constructor type literals
+  id: totrans-32
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.2.1 构造函数类型文本
 - en: A *constructor type literal* is a function type literal with a prefixed `new`
     (line A). The prefix indicates that `PointClass` is a function that must be invoked
     via `new`.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: '*构造函数类型文本*是一个带有前缀`new`的函数类型文本（A行）。前缀表示`PointClass`是一个必须通过`new`调用的函数。'
 - en: '[PRE3]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 18.2.2 Object type literals with construct signatures
+  id: totrans-35
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.2.2 带有构造签名的对象类型文本
 - en: Recall that [members of interfaces and object literal types (OLTs)](ch_typing-objects.html#members-of-interfaces)
     include method signatures and call signatures. Call signatures enable interfaces
     and OLTs to describe functions.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 回想一下[接口和对象文本类型（OLT）的成员](ch_typing-objects.html#members-of-interfaces)包括方法签名和调用签名。调用签名使接口和OLT能够描述函数。
 - en: 'Similarly, *construct signatures* enable interfaces and OLTs to describe constructor
     functions. They look like call signatures with the added prefix `new`. In the
     next example, `PointClass` has an object literal type with a construct signature:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 同样，*构造签名*使接口和OLT能够描述构造函数。它们看起来像带有前缀`new`的调用签名。在下一个示例中，`PointClass`具有带有构造签名的对象文本类型：
 - en: '[PRE4]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '18.3 A generic type for classes: `Class<T>`'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.3 类的通用类型：`Class<T>`
 - en: 'With the knowledge we have acquired, we can now create a generic type for classes
     as values – by introducing a type parameter `T`:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 根据我们所学的知识，我们现在可以创建一个类的通用类型作为值 - 通过引入类型参数`T`：
 - en: '[PRE5]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Instead of a type alias, we can also use an interface:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了类型别名，我们还可以使用接口：
 - en: '[PRE6]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '`Class<T>` is a type for classes whose instances match type `T`.'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Class<T>`是一个类的类型，其实例匹配类型`T`。'
 - en: '18.3.1 Example: creating instances'
+  id: totrans-45
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.1 示例：创建实例
 - en: '`Class<T>` enables us to write a generic version of `createPoint()`:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Class<T>`使我们能够编写`createPoint()`的通用版本：'
 - en: '[PRE7]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '`createInstance()` is used as follows:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: '`createInstance()`的使用方法如下：'
 - en: '[PRE8]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '`createInstance()` is the `new` operator, implemented via a function.'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: '`createInstance()`是`new`操作符，通过一个函数实现。'
 - en: '18.3.2 Example: casting with runtime checks'
+  id: totrans-51
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.2 示例：带有运行时检查的类型转换
 - en: 'We can use `Class<T>` to implement casting:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用`Class<T>`来实现类型转换：
 - en: '[PRE9]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'With `cast()`, we can change the type of a value to something more specific.
     This is also safe at runtime, because we both statically change the type and perform
     a dynamic check. The following code provides an example:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过`cast()`，我们可以将值的类型更改为更具体的类型。这在运行时也是安全的，因为我们既静态地更改了类型，又执行了动态检查。以下代码提供了一个示例：
 - en: '[PRE10]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '18.3.3 Example: Maps that are type-safe at runtime'
+  id: totrans-56
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.3 示例：在运行时类型安全的映射
 - en: 'One use case for `Class<T>` and `cast()` is type-safe Maps:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Class<T>`和`cast()`的一个用例是类型安全的映射：'
 - en: '[PRE11]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: The key of each entry in a `TypeSafeMap` is a class. That class determines the
     static type of the entry’s value and is also used for checks at runtime.
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: '`TypeSafeMap`中每个条目的键都是一个类。该类确定条目值的静态类型，并且在运行时用于检查。'
 - en: 'This is `TypeSafeMap` in action:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`TypeSafeMap`的实际应用：
 - en: '[PRE12]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '18.3.4 Pitfall: `Class<T>` does not match abstract classes'
+  id: totrans-62
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.4 陷阱：`Class<T>`与抽象类不匹配
 - en: 'We cannot use abstract classes when `Class<T>` is expected:'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 当期望`Class<T>`时，我们不能使用抽象类：
 - en: '[PRE13]'
+  id: totrans-64
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: Why is that? The rationale is that constructor type literals and construct signatures
     should only be used for values that can actually be `new`-invoked ([GitHub issue
     with more information](https://github.com/microsoft/TypeScript/issues/5843)).
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么呢？原因是构造函数类型文字和构造签名应该只用于实际可以被`new`调用的值（[GitHub上有更多信息的问题](https://github.com/microsoft/TypeScript/issues/5843)）。
 - en: 'This is a workaround:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个变通方法：
 - en: '[PRE14]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Downsides of this approach:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法的缺点：
 - en: Slightly confusing.
+  id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 稍微令人困惑。
 - en: Values that have this type can’t be used for `instanceof` checks (as right-hand-side
     operands).
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 具有此类型的值不能用于`instanceof`检查（作为右操作数）。
 - en: '[Comments](https://github.com/rauschma/tackling-ts/issues/18)'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/tackling-ts/issues/18)'
