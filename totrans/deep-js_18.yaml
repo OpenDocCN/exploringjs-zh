@@ -1,101 +1,127 @@
 - en: 13 Techniques for instantiating classes
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/deep-js/ch_creating-class-instances.html](https://exploringjs.com/deep-js/ch_creating-class-instances.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: '13.1 [The problem: initializing a property asynchronously](ch_creating-class-instances.html#the-problem-initializing-a-property-asynchronously)'
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.2 [Solution: Promise-based constructor](ch_creating-class-instances.html#solution-promise-based-constructor)'
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.2.1 [Using an immediately-invoked asynchronous arrow function](ch_creating-class-instances.html#using-an-immediately-invoked-asynchronous-arrow-function)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3 [Solution: static factory method](ch_creating-class-instances.html#solution-static-factory-method)'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.1 [Improvement: private constructor via secret token](ch_creating-class-instances.html#improvement-private-constructor-via-secret-token)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.2 [Improvement: constructor throws, factory method borrows the class prototype](ch_creating-class-instances.html#improvement-constructor-throws-factory-method-borrows-the-class-prototype)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.3 [Improvement: instances are inactive by default, activated by factory
     method](ch_creating-class-instances.html#improvement-instances-are-inactive-by-default-activated-by-factory-method)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.4 [Variant: separate factory function](ch_creating-class-instances.html#variant-separate-factory-function)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.4 [Subclassing a Promise-based constructor (optional)](ch_creating-class-instances.html#subclassing-a-promise-based-constructor-optional)
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.5 [Conclusion](ch_creating-class-instances.html#conclusion-1)
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.6 [Further reading](ch_creating-class-instances.html#further-reading-3)
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
 - en: 'In this chapter, we examine several approaches for creating instances of classes:
     Constructors, factory functions, etc. We do so by solving one concrete problem
     several times. The focus of this chapter is on classes, which is why alternatives
     to classes are ignored.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
 - en: '13.1 The problem: initializing a property asynchronously'
+  id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'The following container class is supposed to receive the contents of its property
     `.data` asynchronously. This is our first attempt:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Key issue of this code: Property `.data` is initially `undefined`.'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: In line A, we declare the [private field](https://2ality.com/2019/07/private-class-fields.html)
     `.#data` that we use in line B and line C.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
 - en: The Promise inside the constructor of `DataContainer` is settled asynchronously,
     which is why we can only see the final value of `.data` if we finish the current
     task and start a new one, via `setTimeout()`. In other words, the instance of
     `DataContainer` is not completely initialized, yet, when we first see it.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
 - en: '13.2 Solution: Promise-based constructor'
+  id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
@@ -103,155 +129,198 @@
     initialized? We can achieve that by returning a Promise from the constructor.
     By default, a constructor returns a new instance of the class that it is part
     of. We can override that if we explicitly return an object:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Now we have to wait until we can access our instance (line B). It is passed
     on to us after the data is “downloaded” (line A). There are two possible sources
     of errors in this code:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
 - en: The download may fail and produce a rejection.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: An exception may be thrown in the body of the first `.then()` callback.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: In either case, the errors become rejections of the Promise that is returned
     from the constructor.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
 - en: 'Pros and cons:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
 - en: A benefit of this approach is that we can only access the instance once it is
     fully initialized. And there is no other way of creating instances of `DataContainer`.
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A disadvantage is that it may be surprising to have a constructor return a Promise
     instead of an instance.
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.2.1 Using an immediately-invoked asynchronous arrow function
+  id: totrans-33
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Instead of using the Promise API directly to create the Promise that is returned
     from the constructor, we can also use an asynchronous arrow function that [we
     invoke immediately](https://exploringjs.com/impatient-js/ch_async-functions.html#immediately-invoked-async-arrow-functions):'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '13.3 Solution: static factory method'
+  id: totrans-36
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'A *static factory method* of a class `C` creates instances of `C` and is an
     alternative to using `new C()`. Common names for static factory methods in JavaScript:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
 - en: '`.create()`: Creates a new instance. Example: `Object.create()`'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`.from()`: Creates a new instance based on a different object, by copying and/or
     converting it. Example: `Array.from()`'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`.of()`: Creates a new instance by assembling values specified via arguments.
     Example: `Array.of()`'
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'In the following example, `DataContainer.create()` is a static factory method.
     It returns Promises for instances of `DataContainer`:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: This time, all asynchronous functionality is contained in `.create()`, which
     enables the rest of the class to be completely synchronous and therefore simpler.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
 - en: 'Pros and cons:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
 - en: A benefit of this approach is that the constructor becomes simple.
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A disadvantage of this approach is that it’s now possible to create instances
     that are incorrectly set up, via `new DataContainer()`.
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.1 Improvement: private constructor via secret token'
+  id: totrans-47
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'If we want to ensure that instances are always correctly set up, we must ensure
     that only `DataContainer.create()` can invoke the constructor of `DataContainer`.
     We can achieve that via a secret token:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: If `secretToken` and `DataContainer` reside in the same module and only the
     latter is exported, then outside parties don’t have access to `secretToken` and
     therefore can’t create instances of `DataContainer`.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
 - en: 'Pros and cons:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
 - en: 'Benefit: safe and straightforward.'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Disadvantage: slightly verbose.'
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.2 Improvement: constructor throws, factory method borrows the class prototype'
+  id: totrans-54
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'The following variant of our solution disables the constructor of `DataContainer`
     and uses a trick to create instances of it another way (line A):'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE6]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Internally, an instance of `DataContainer` is any object whose prototype is
     `DataContainer.prototype`. That’s why we can create instances via `Object.create()`
     (line A) and that’s why `instanceof` works in line B.
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
 - en: 'Pros and cons:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
 - en: 'Benefit: elegant; `instanceof` works.'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Disadvantages:'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Creating instances is not completely prevented. To be fair, though, the work-around
     via `Object.create()` can also be used for our previous solutions.
+  id: totrans-61
   prefs:
   - PREF_IND
   - PREF_UL
@@ -260,62 +329,79 @@
     and [private methods](https://2ality.com/2019/07/private-methods-accessors-in-classes.html)
     in `DataContainer`, because those are only set up correctly for instances that
     were created via the constructor.
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.3 Improvement: instances are inactive by default, activated by factory
     method'
+  id: totrans-63
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Another, more verbose variant is that, by default, instances are switched off
     via the flag `.#active`. The initialization method `.#init()` that switches them
     on cannot be accessed externally, but `Data.container()` can invoke it:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE7]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: The flag `.#active` is enforced via the private method `.#check()` which must
     be invoked at the beginning of every method.
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
 - en: The major downside of this solution is its verbosity. There is also a risk of
     forgetting to invoke `.#check()` in each method.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
 - en: '13.3.4 Variant: separate factory function'
+  id: totrans-68
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'For completeness sake, I’ll show another variant: Instead of using a static
     method as a factory you can also use a separate stand-alone function.'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE8]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Stand-alone functions as factories are occasionally useful, but in this case,
     I prefer a static method:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
 - en: The stand-alone function can’t access private members of `DataContainer`.
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: I prefer the way `DataContainer.create()` looks.
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.4 Subclassing a Promise-based constructor (optional)
+  id: totrans-74
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: In general, subclassing is something to use sparingly.
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
 - en: With a separate factory function, it is relatively easy to extend `DataContainer`.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
 - en: Alas, extending the class with the Promise-based constructor leads to severe
@@ -323,83 +409,121 @@
     `SubDataContainer` has its own private field `.#moreData` that it initializes
     asynchronously by hooking into the Promise returned by the constructor of its
     superclass.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE9]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Alas, we can’t instantiate this class:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 哎呀，我们无法实例化这个类：
 - en: '[PRE10]'
+  id: totrans-80
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: Why the failure? A constructor always adds its private fields to its `this`.
     However, here, `this` in the subconstructor is the Promise returned by the superconstructor
     (and not the instance of `SubDataContainer` delivered via the Promise).
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么会失败？构造函数总是将其私有字段添加到其 `this` 中。然而，在这里，子构造函数中的 `this` 是由超级构造函数返回的 Promise（而不是通过
+    Promise 交付的 `SubDataContainer` 实例）。
 - en: However, this approach still works if `SubDataContainer` does not have any private
     fields.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，如果 `SubDataContainer` 没有任何私有字段，这种方法仍然有效。
 - en: 13.5 Conclusion
+  id: totrans-83
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.5 结论
 - en: For the scenario examined in this chapter, I prefer either a Promise-based constructor
     or a static factory method plus a private constructor via a secret token.
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章研究的场景中，我更喜欢使用基于 Promise 的构造函数或静态工厂方法加上通过秘密令牌的私有构造函数。
 - en: However, the other techniques presented here can still be useful in other scenarios.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，这里介绍的其他技术在其他场景中仍然可能有用。
 - en: 13.6 Further reading
+  id: totrans-86
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.6 进一步阅读
 - en: 'Asynchronous programming:'
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 异步编程：
 - en: '[Chapter “Promises for asynchronous programming”](https://exploringjs.com/impatient-js/ch_promises.html)
     in “JavaScript for impatient programmers”'
+  id: totrans-88
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 《JavaScript 程序员的急切指南》中的“用于异步编程的 Promise”章节
 - en: '[Chapter “Async functions”](https://exploringjs.com/impatient-js/ch_async-functions.html)
     in “JavaScript for impatient programmers”'
+  id: totrans-89
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 《JavaScript 程序员的急切指南》中的“异步函数”章节
 - en: '[Section “Immediately invoked async arrow functions”](https://exploringjs.com/impatient-js/ch_async-functions.html#immediately-invoked-async-arrow-functions)
     in “JavaScript for impatient programmers”'
+  id: totrans-90
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 《JavaScript 程序员的急切指南》中的“立即调用的异步箭头函数”部分
 - en: 'OOP:'
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 面向对象编程：
 - en: '[Chapter “Prototype chains and classes”](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html)
     in “JavaScript for impatient programmers”'
+  id: totrans-92
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 《JavaScript 程序员的急切指南》中的“原型链和类”章节
 - en: '[Blog post “ES proposal: private class fields”](https://2ality.com/2019/07/private-class-fields.html)'
+  id: totrans-93
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “JavaScript 类中的私有字段的 ES 提案”博文
 - en: '[Blog post “ES proposal: private methods and accessors in JavaScript classes”](https://2ality.com/2019/07/private-methods-accessors-in-classes.html)'
+  id: totrans-94
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “JavaScript 类中的私有方法和访问器的 ES 提案”博文
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/13)'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 评论

@@ -3,107 +3,127 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 12 属性的可枚举性
 - en: 原文：[https://exploringjs.com/deep-js/ch_enumerability.html](https://exploringjs.com/deep-js/ch_enumerability.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_enumerability.html](https://exploringjs.com/deep-js/ch_enumerability.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 12.1 [How enumerability affects property-iterating constructs](ch_enumerability.html#how-enumerability-affects-property-iterating-constructs)
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.1 [可枚举性如何影响属性迭代构造](ch_enumerability.html#how-enumerability-affects-property-iterating-constructs)
 - en: 12.1.1 [Operations that only consider enumerable properties](ch_enumerability.html#operations-that-only-consider-enumerable-properties)
   id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.1.1 [只考虑可枚举属性的操作](ch_enumerability.html#operations-that-only-consider-enumerable-properties)
 - en: 12.1.2 [Operations that consider both enumerable and non-enumerable properties](ch_enumerability.html#operations-that-consider-both-enumerable-and-non-enumerable-properties)
   id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.1.2 [同时考虑可枚举和不可枚举属性的操作](ch_enumerability.html#operations-that-consider-both-enumerable-and-non-enumerable-properties)
 - en: 12.1.3 [Naming rules for introspective operations](ch_enumerability.html#naming-rules-for-introspective-operations)
   id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.1.3 [内省操作的命名规则](ch_enumerability.html#naming-rules-for-introspective-operations)
 - en: 12.2 [The enumerability of pre-defined and created properties](ch_enumerability.html#the-enumerability-of-pre-defined-and-created-properties)
   id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2 [预定义和创建属性的可枚举性](ch_enumerability.html#the-enumerability-of-pre-defined-and-created-properties)
 - en: 12.3 [Use cases for enumerability](ch_enumerability.html#use-cases-for-enumerability)
   id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3 [可枚举性的用例](ch_enumerability.html#use-cases-for-enumerability)
 - en: '12.3.1 [Use case: Hiding properties from the `for-in` loop](ch_enumerability.html#for-in-loop)'
   id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3.1 [用例：隐藏属性不被`for-in`循环处理](ch_enumerability.html#for-in-loop)
 - en: '12.3.2 [Use case: Marking properties as not to be copied](ch_enumerability.html#use-case-marking-properties-as-not-to-be-copied)'
   id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3.2 [用例：标记不需要被复制的属性](ch_enumerability.html#use-case-marking-properties-as-not-to-be-copied)
 - en: 12.3.3 [Marking properties as private](ch_enumerability.html#marking-properties-as-private)
   id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3.3 [将属性标记为私有](ch_enumerability.html#marking-properties-as-private)
 - en: 12.3.4 [Hiding own properties from `JSON.stringify()`](ch_enumerability.html#hiding-own-properties-from-json.stringify)
   id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3.4 [隐藏自有属性不被`JSON.stringify()`处理](ch_enumerability.html#hiding-own-properties-from-json.stringify)
 - en: 12.4 [Conclusion](ch_enumerability.html#conclusion)
   id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.4 [结论](ch_enumerability.html#conclusion)
 - en: '* * *'
   id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: Enumerability is an *attribute* of object properties. In this chapter, we take
     a closer look at how it is used and how it influences operations such as `Object.keys()`
     and `Object.assign()`.
   id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 可枚举性是对象属性的*属性*。在本章中，我们将更仔细地看看它是如何使用的，以及它如何影响`Object.keys()`和`Object.assign()`等操作。
 - en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Required knowledge:
     property attributes**'
   id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png) **必需知识：属性特性**'
 - en: 'For this chapter, you should be familiar with property attributes. If you aren’t,
     check out [§9 “Property attributes: an introduction”](ch_property-attributes-intro.html).'
   id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，您应该熟悉属性特性。如果不熟悉，请查看[§9“属性特性：介绍”](ch_property-attributes-intro.html)。
 - en: 12.1 How enumerability affects property-iterating constructs
   id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.1 可枚举性如何影响属性迭代构造
 - en: To demonstrate how various operations are affected by enumerability, we use
     the following object `obj` whose prototype is `proto`.
   id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了演示各种操作受可枚举性的影响，我们使用以下对象`obj`，其原型是`proto`。
 - en: '[PRE0]'
   id: totrans-20
   prefs: []
@@ -114,56 +134,69 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.1.1 只考虑可枚举属性的操作
 - en: 'Table 2: Operations that ignore non-enumerable properties.'
   id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 表2：忽略不可枚举属性的操作。
 - en: '| Operation |  | String keys | Symbol keys | Inherited |'
   id: totrans-23
   prefs: []
   type: TYPE_TB
+  zh: '| 操作 |  | 字符串键 | 符号键 | 继承 |'
 - en: '| --- | --- | --- | --- | --- |'
   id: totrans-24
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- | --- |'
 - en: '| `Object.keys()` | ES5 | `✔` | `✘` | `✘` |'
   id: totrans-25
   prefs: []
   type: TYPE_TB
+  zh: '`Object.keys()` | ES5 | `✔` | `✘` | `✘` |'
 - en: '| `Object.values()` | ES2017 | `✔` | `✘` | `✘` |'
   id: totrans-26
   prefs: []
   type: TYPE_TB
+  zh: '`Object.values()` | ES2017 | `✔` | `✘` | `✘` |'
 - en: '| `Object.entries()` | ES2017 | `✔` | `✘` | `✘` |'
   id: totrans-27
   prefs: []
   type: TYPE_TB
+  zh: '`Object.entries()` | ES2017 | `✔` | `✘` | `✘` |'
 - en: '| Spreading `{...x}` | ES2018 | `✔` | `✔` | `✘` |'
   id: totrans-28
   prefs: []
   type: TYPE_TB
+  zh: 扩展`{...x}` ^([ES2018]) | `✔` | `✔` | `✘` |
 - en: '| `Object.assign()` | ES6 | `✔` | `✔` | `✘` |'
   id: totrans-29
   prefs: []
   type: TYPE_TB
+  zh: '`Object.assign()` | ES6 | `✔` | `✔` | `✘` |'
 - en: '| `JSON.stringify()` | ES5 | `✔` | `✘` | `✘` |'
   id: totrans-30
   prefs: []
   type: TYPE_TB
+  zh: '`JSON.stringify()` | ES5 | `✔` | `✘` | `✘` |'
 - en: '| `for-in` | ES1 | `✔` | `✘` | `✔` |'
   id: totrans-31
   prefs: []
   type: TYPE_TB
+  zh: '`for-in` | ES1 | `✔` | `✘` | `✔` |'
 - en: 'The following operations (summarized in tbl. [2](#tbl:operations-ignoring-non-enumerable-properties))
     only consider enumerable properties:'
   id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下操作（在tbl. [2](#tbl:operations-ignoring-non-enumerable-properties)中总结）只考虑可枚举属性：
 - en: '`Object.keys()` ^([ES5]) returns the keys of enumerable own string-keyed properties.'
   id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.keys()` ^([ES5]) 返回可枚举自有字符串键属性的键。'
 - en: '[PRE1]'
   id: totrans-34
   prefs:
@@ -176,6 +209,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.values()` ^([ES2017]) 返回可枚举自有字符串键属性的值。'
 - en: '[PRE2]'
   id: totrans-36
   prefs:
@@ -189,6 +223,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.entries()` ^([ES2017]) 返回可枚举自有字符串键属性的键值对。（请注意，`Object.fromEntries()`接受符号作为键，但只创建可枚举属性。）'
 - en: '[PRE3]'
   id: totrans-38
   prefs:
@@ -201,6 +236,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 扩展到对象字面量 ^([ES2018]) 只考虑自有可枚举属性（带有字符串键或符号键）。
 - en: '[PRE4]'
   id: totrans-40
   prefs:
@@ -213,6 +249,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.assign()` ^([ES6]) 只会复制可枚举的自有属性（带有字符串键或符号键）。'
 - en: '[PRE5]'
   id: totrans-42
   prefs:
@@ -225,6 +262,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`JSON.stringify()` ^([ES5]) 只会将可枚举的自有属性与字符串键字符串化。'
 - en: '[PRE6]'
   id: totrans-44
   prefs:
@@ -237,6 +275,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`for-in` 循环 ^([ES1]) 遍历自有和继承的可枚举字符串键属性。'
 - en: '[PRE7]'
   id: totrans-46
   prefs:
@@ -248,50 +287,61 @@
   id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '`for-in` 是唯一一个内置操作，其中可枚举性对继承属性很重要。所有其他操作只适用于自有属性。'
 - en: 12.1.2 Operations that consider both enumerable and non-enumerable properties
   id: totrans-48
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.1.2 同时考虑可枚举和不可枚举属性的操作
 - en: 'Table 3: Operations that consider both enumerable and non-enumerable properties.'
   id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 表3：同时考虑可枚举和不可枚举属性的操作。
 - en: '| Operation |  | Str. keys | Sym. keys | Inherited |'
   id: totrans-50
   prefs: []
   type: TYPE_TB
+  zh: '| 操作 |  | 字符串键 | 符号键 | 继承 |'
 - en: '| --- | --- | --- | --- | --- |'
   id: totrans-51
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- | --- |'
 - en: '| `Object.getOwnPropertyNames()` | ES5 | `✔` | `✘` | `✘` |'
   id: totrans-52
   prefs: []
   type: TYPE_TB
+  zh: '`Object.getOwnPropertyNames()` | ES5 | `✔` | `✘` | `✘` |'
 - en: '| `Object.getOwnPropertySymbols()` | ES6 | `✘` | `✔` | `✘` |'
   id: totrans-53
   prefs: []
   type: TYPE_TB
+  zh: '| `Object.getOwnPropertySymbols()` | ES6 | `✘` | `✔` | `✘` |'
 - en: '| `Reflect.ownKeys()` | ES6 | `✔` | `✔` | `✘` |'
   id: totrans-54
   prefs: []
   type: TYPE_TB
+  zh: '| `Reflect.ownKeys()` | ES6 | `✔` | `✔` | `✘` |'
 - en: '| `Object.getOwnPropertyDescriptors()` | ES2017 | `✔` | `✔` | `✘` |'
   id: totrans-55
   prefs: []
   type: TYPE_TB
+  zh: '`Object.getOwnPropertyDescriptors()` | ES2017 | `✔` | `✔` | `✘` |'
 - en: 'The following operations (summarized in tbl. [3](#tbl:operations-considering-enumerable-and-nonenumerable-properties))
     consider both enumerable and non-enumerable properties:'
   id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下操作（在tbl. [3](#tbl:operations-considering-enumerable-and-nonenumerable-properties)中总结）考虑了可枚举和不可枚举的属性：
 - en: '`Object.getOwnPropertyNames()` ^([ES5]) lists the keys of all own string-keyed
     properties.'
   id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertyNames()` ^([ES5]) 列出所有自有字符串键属性的键。'
 - en: '[PRE8]'
   id: totrans-58
   prefs:
@@ -304,6 +354,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertySymbols()` ^([ES6]) 列出所有自有符号键属性的键。'
 - en: '[PRE9]'
   id: totrans-60
   prefs:
@@ -315,6 +366,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.ownKeys()` ^([ES6]) 列出所有自有属性的键。'
 - en: '[PRE10]'
   id: totrans-62
   prefs:
@@ -327,6 +379,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertyDescriptors()` ^([ES2017]) 列出所有自有属性的属性描述符。'
 - en: '[PRE11]'
   id: totrans-64
   prefs:
@@ -338,12 +391,14 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.1.3 内省操作的命名规则
 - en: '*Introspection* enables a program to examine the structure of values at runtime.
     It is *metaprogramming*: Normal programming is about writing programs; metaprogramming
     is about examining and/or changing programs.'
   id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: '*内省*使程序能够在运行时检查值的结构。这是*元编程*：普通编程是关于编写程序；元编程是关于检查和/或更改程序。'
 - en: 'In JavaScript, common introspective operations have short names, while rarely
     used operations have long names. Ignoring non-enumerable properties is the norm,
     which is why operations that do that have short names and operations that don’t,
@@ -351,55 +406,66 @@
   id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript中，常见的内省操作具有简短的名称，而很少使用的操作具有较长的名称。忽略不可枚举的属性是规范，这就是为什么执行这种操作的名称很短，而不执行这种操作的名称很长的原因：
 - en: '`Object.keys()` ignores non-enumerable properties.'
   id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.keys()` 忽略不可枚举的属性。'
 - en: '`Object.getOwnPropertyNames()` lists the string keys of all own properties.'
   id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertyNames()` 列出所有自有属性的字符串键。'
 - en: However, `Reflect` methods (such as `Reflect.ownKeys()`) deviate from this rule
     because `Reflect` provides operations that are more “meta” and related to Proxies.
   id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，`Reflect` 方法（如 `Reflect.ownKeys()`）违反了这一规则，因为 `Reflect` 提供了更多与代理相关的“元”操作。
 - en: 'Additionally, the following distinction is made (since ES6, which introduced
     symbols):'
   id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 此外，自ES6以来，还有以下区别：
 - en: '*Property keys* are either strings or symbols.'
   id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*属性键*要么是字符串，要么是符号。'
 - en: '*Property names* are property keys that are strings.'
   id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*属性名称*是字符串键的属性键。'
 - en: '*Property symbols* are property keys that are symbols.'
   id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*属性符号*是符号键的属性键。'
 - en: Therefore, a better name for `Object.keys()` would now be `Object.names()`.
   id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，`Object.keys()` 的更好名称现在将是 `Object.names()`。
 - en: 12.2 The enumerability of pre-defined and created properties
   id: totrans-76
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.2 预定义和创建属性的可枚举性
 - en: 'In this section, we’ll abbreviate `Object.getOwnPropertyDescriptor()` like
     this:'
   id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们将像这样缩写 `Object.getOwnPropertyDescriptor()`：
 - en: '[PRE12]'
   id: totrans-78
   prefs: []
@@ -409,6 +475,7 @@
   id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数数据属性都是使用以下属性创建的：
 - en: '[PRE13]'
   id: totrans-80
   prefs: []
@@ -418,35 +485,42 @@
   id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 这包括：
 - en: Assignment
   id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 赋值
 - en: Object literals
   id: totrans-83
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对象字面量
 - en: Public class fields
   id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 公共类字段
 - en: '`Object.fromEntries()`'
   id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.fromEntries()`'
 - en: 'The most important non-enumerable properties are:'
   id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 最重要的不可枚举属性是：
 - en: Prototype properties of built-in classes
   id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 内置类的原型属性
 - en: '[PRE14]'
   id: totrans-88
   prefs:
@@ -458,6 +532,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过用户定义的类创建的原型属性
 - en: '[PRE15]'
   id: totrans-90
   prefs:
@@ -469,6 +544,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组的属性`.length`：
 - en: '[PRE16]'
   id: totrans-92
   prefs:
@@ -481,6 +557,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串的属性`.length`（注意原始值的所有属性都是只读的）：
 - en: '[PRE17]'
   id: totrans-94
   prefs:
@@ -492,22 +569,26 @@
   id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来我们将看一下可枚举性的使用案例，这将告诉我们为什么有些属性是可枚举的，而其他的不是。
 - en: 12.3 Use cases for enumerability
   id: totrans-96
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.3 可枚举性的使用案例
 - en: Enumerability is an inconsistent feature. It does have use cases, but there
     is always some kind of caveat. In this section, we look at the use cases and the
     caveats.
   id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 可枚举性是一个不一致的特性。它确实有用例，但总是有某种注意事项。在本节中，我们将看看使用案例和注意事项。
 - en: '12.3.1 Use case: Hiding properties from the `for-in` loop'
   id: totrans-98
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.3.1 使用案例：隐藏`for-in`循环中的属性
 - en: The `for-in` loop traverses *all* enumerable string-keyed properties of an object,
     own and inherited ones. Therefore, the attribute `enumerable` is used to hide
     properties that should not be traversed. That was the reason for introducing enumerability
@@ -515,11 +596,14 @@
   id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: '`for-in`循环遍历对象的*所有*可枚举的字符串键属性，包括自有的和继承的。因此，属性`enumerable`用于隐藏不应遍历的属性。这是在ECMAScript
+    1中引入可枚举性的原因。'
 - en: In general, it is best to avoid `for-in`. The next two subsections explain why.
     The following function will help us demonstrate how `for-in` works.
   id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 一般来说，最好避免使用`for-in`。接下来的两个小节将解释为什么。以下函数将帮助我们演示`for-in`的工作原理。
 - en: '[PRE18]'
   id: totrans-101
   prefs: []
@@ -530,10 +614,12 @@
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.1.1 使用`for-in`遍历对象的注意事项
 - en: '`for-in` iterates over all properties, including inherited ones:'
   id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: '`for-in`遍历所有属性，包括继承的属性：'
 - en: '[PRE19]'
   id: totrans-104
   prefs: []
@@ -544,6 +630,7 @@
   id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于普通的普通对象，`for-in`不会看到继承的方法，比如`Object.prototype.toString()`，因为它们都是不可枚举的：
 - en: '[PRE20]'
   id: totrans-106
   prefs: []
@@ -554,6 +641,7 @@
   id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 在用户定义的类中，所有继承的属性也是不可枚举的，因此被忽略：
 - en: '[PRE21]'
   id: totrans-108
   prefs: []
@@ -565,16 +653,19 @@
   id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: '**结论：** 在对象中，`for-in`考虑了继承属性，我们通常希望忽略这些属性。因此最好将`for-of`循环与`Object.keys()`、`Object.entries()`等结合使用。'
 - en: 12.3.1.2 The caveats of using `for-in` for Arrays
   id: totrans-110
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.1.2 使用`for-in`遍历数组的注意事项
 - en: 'The own property `.length` is non-enumerable in Arrays and strings and therefore
     ignored by `for-in`:'
   id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组和字符串中的自有属性`.length`是不可枚举的，因此被`for-in`忽略：
 - en: '[PRE22]'
   id: totrans-112
   prefs: []
@@ -587,6 +678,7 @@
   id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，通常不安全使用`for-in`来遍历数组的索引，因为它考虑了既继承的又是非索引的自有属性。以下示例演示了如果数组具有自有的非索引属性会发生什么：
 - en: '[PRE23]'
   id: totrans-114
   prefs: []
@@ -597,11 +689,13 @@
   id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: '**结论：**不应该使用`for-in`来遍历数组的索引，因为它考虑索引属性和非索引属性：'
 - en: 'If you are interested in the keys of an Array, use the Array method `.keys()`:'
   id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果您对数组的键感兴趣，请使用数组方法`.keys()`：
 - en: '[PRE24]'
   id: totrans-117
   prefs:
@@ -614,28 +708,34 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果要遍历数组的元素，请使用`for-of`循环，这样还可以与其他可迭代的数据结构一起使用。
 - en: '12.3.2 Use case: Marking properties as not to be copied'
   id: totrans-119
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.3.2 用例：标记不要复制的属性
 - en: By making properties non-enumerable, we can hide them from some copying operations.
     Let us first examine two historical copying operations before moving on to more
     modern copying operations.
   id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过使属性不可枚举，我们可以将它们从某些复制操作中隐藏起来。让我们首先检查两个历史复制操作，然后再转向更现代的复制操作。
 - en: '12.3.2.1 Historical copying operation: Prototype’s `Object.extend()`'
   id: totrans-121
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.2.1 历史复制操作：Prototype的`Object.extend()`
 - en: '[Prototype](https://en.wikipedia.org/wiki/Prototype_JavaScript_Framework) is
     a JavaScript framework that was created by Sam Stephenson in February 2005 as
     part of the foundation for Ajax support in Ruby on Rails.'
   id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Prototype](https://en.wikipedia.org/wiki/Prototype_JavaScript_Framework)是一个JavaScript框架，由Sam
+    Stephenson于2005年2月创建，作为Ruby on Rails中Ajax支持的基础的一部分。'
 - en: '[Prototype’s `Object.extend(destination, source)`](http://api.prototypejs.org/language/Object/extend/)
     copies all enumerable own and inherited properties of `source` into own properties
     of `destination`. [It is implemented](https://github.com/prototypejs/prototype/blob/5fddd3e/src/prototype/lang/object.js#L88)
@@ -643,6 +743,7 @@
   id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Prototype的`Object.extend(destination, source)`](http://api.prototypejs.org/language/Object/extend/)将`source`的所有可枚举的自有和继承属性复制到`destination`的自有属性中。[它的实现方式](https://github.com/prototypejs/prototype/blob/5fddd3e/src/prototype/lang/object.js#L88)如下：'
 - en: '[PRE25]'
   id: totrans-124
   prefs: []
@@ -654,6 +755,7 @@
   id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用`Object.extend()`与一个对象，我们可以看到它将继承属性复制到自有属性中，并忽略不可枚举的属性（它还忽略符号键属性）。所有这些都是由`for-in`的工作方式决定的。
 - en: '[PRE26]'
   id: totrans-126
   prefs: []
@@ -664,36 +766,43 @@
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.2.2 历史复制操作：jQuery的`$.extend()`
 - en: '[jQuery’s `$.extend(target, source1, source2, ···)`](https://api.jquery.com/jquery.extend/)
     works similar to `Object.extend()`:'
   id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: '[jQuery的`$.extend(target, source1, source2, ···)`](https://api.jquery.com/jquery.extend/)类似于`Object.extend()`：'
 - en: It copies all enumerable own and inherited properties of `source1` into own
     properties of `target`.
   id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它将`source1`的所有可枚举的自有和继承属性复制到`target`的自有属性中。
 - en: Then it does the same with `source2`.
   id: totrans-130
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后它对`source2`执行相同的操作。
 - en: Etc.
   id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: 12.3.2.3 The downsides of enumerability-driven copying
   id: totrans-132
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.2.3 可枚举性驱动复制的缺点
 - en: 'Basing copying on enumerability has several downsides:'
   id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于可枚举性进行复制有几个缺点：
 - en: While enumerability is useful for hiding inherited properties, it is mainly
     used in this manner because we usually only want to copy own properties into own
     properties. The same effect can be better achieved by ignoring inherited properties.
@@ -701,6 +810,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 虽然可枚举性对于隐藏继承属性很有用，但主要是以这种方式使用，因为我们通常只想将自有属性复制到自有属性中。忽略继承属性可以更好地实现相同的效果。
 - en: Which properties to copy often depends on the task at hand; it rarely makes
     sense to have a single flag for all use cases. A better choice is to provide a
     copying operation with a *predicate* (a callback that returns a boolean) that
@@ -709,6 +819,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 要复制哪些属性通常取决于手头的任务；为所有用例提供单个标志很少有意义。更好的选择是提供一个带有*谓词*（返回布尔值的回调）的复制操作，告诉它何时忽略属性。
 - en: 'Enumerability conveniently hides the own property `.length` of Arrays when
     copying. But that is an incredibly rare exceptional case: a magic property that
     both influences sibling properties and is influenced by them. If we implement
@@ -718,11 +829,13 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可枚举性在复制时方便地隐藏了数组的自有属性`.length`。但这是一个极为罕见的特例：一个既影响兄弟属性又受其影响的魔术属性。如果我们自己实现这种魔术，我们将使用（继承的）getter和/或setter，而不是（自有的）数据属性。
 - en: 12.3.2.4 `Object.assign()` ^([ES5])
   id: totrans-137
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.2.4 `Object.assign()` ^([ES5])
 - en: In ES6, [`Object.assign(target, source_1, source_2, ···)`](https://exploringjs.com/impatient-js/ch_single-objects.html#object.assign)
     can be used to merge the sources into the target. All own enumerable properties
     of the sources are considered (with either string keys or symbol keys). `Object.assign()`
@@ -731,11 +844,13 @@
   id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 在ES6中，[`Object.assign(target, source_1, source_2, ···)`](https://exploringjs.com/impatient-js/ch_single-objects.html#object.assign)可以用于将源合并到目标中。源的所有自有可枚举属性都会被考虑（无论是字符串键还是符号键）。`Object.assign()`使用“get”操作从源中读取值，并使用“set”操作将值写入目标。
 - en: 'With regard to enumerability, `Object.assign()` continues the tradition of
     `Object.extend()` and `$.extend()`. [Quoting Yehuda Katz](https://mail.mozilla.org/pipermail/es-discuss/2012-October/025934.html):'
   id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于可枚举性，`Object.assign()`延续了`Object.extend()`和`$.extend()`的传统。[引用Yehuda Katz](https://mail.mozilla.org/pipermail/es-discuss/2012-October/025934.html)：
 - en: '`Object.assign` would pave the cowpath of all of the `extend()` APIs already
     in circulation. We thought the precedent of not copying enumerable methods in
     those cases was enough reason for `Object.assign` to have this behavior.'
@@ -743,6 +858,7 @@
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`Object.assign`将为所有已经在流通中的`extend()`API铺平道路。我们认为在这些情况下不复制可枚举方法的先例足以证明`Object.assign`具有这种行为的足够理由。'
 - en: 'In other words: `Object.assign()` was created with an upgrade path from `$.extend()`
     (and similar) in mind. Its approach is cleaner than `$.extend`’s because it ignores
     inherited properties.'
