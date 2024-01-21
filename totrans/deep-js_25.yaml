@@ -1960,36 +1960,43 @@
   id: totrans-313
   prefs: []
   type: TYPE_NORMAL
+  zh: 不进行更多操作的拦截的另一个原因是，拦截意味着在通常不可能的情况下执行自定义代码。代码的交错发生越多，理解和调试程序就越困难。它还会对性能产生负面影响。
 - en: '18.5.4.3 Traps: `get` versus `invoke`'
   id: totrans-314
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.4.3 陷阱：`get`与`invoke`
 - en: 'If we want to create virtual methods via Proxies, we have to return functions
     from a `get` trap. That raises the question: why not introduce an extra trap for
     method invocations (e.g. `invoke`)? That would enable us to distinguish between:'
   id: totrans-315
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想通过代理创建虚拟方法，我们必须从`get`陷阱中返回函数。这引发了一个问题：为什么不引入一个额外的陷阱来处理方法调用（例如`invoke`）？这样我们就可以区分：
 - en: Getting properties via `obj.prop` (trap `get`)
   id: totrans-316
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过`obj.prop`获取属性（陷阱`get`）
 - en: Invoking methods via `obj.prop()` (trap `invoke`)
   id: totrans-317
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过`obj.prop()`调用方法（陷阱`invoke`）
 - en: There are two reasons for not doing so.
   id: totrans-318
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两个原因不这样做。
 - en: First, not all implementations distinguish between `get` and `invoke`. For example,
     [Apple’s JavaScriptCore doesn’t](https://mail.mozilla.org/pipermail/es-discuss/2010-May/011062.html).
   id: totrans-319
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，并非所有实现都区分`get`和`invoke`。例如，[苹果的JavaScriptCore没有](https://mail.mozilla.org/pipermail/es-discuss/2010-May/011062.html)。
 - en: Second, extracting a method and invoking it later via `.call()` or `.apply()`
     should have the same effect as invoking the method via dispatch. In other words,
     the following two variants should work equivalently. If there were an extra trap
@@ -1997,6 +2004,7 @@
   id: totrans-320
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，提取方法并稍后通过`.call()`或`.apply()`调用它应该与通过分派调用方法具有相同的效果。换句话说，以下两种变体应该等效工作。如果有额外的陷阱`invoke`，那么这种等价性将更难维持。
 - en: '[PRE58]'
   id: totrans-321
   prefs: []
@@ -2007,6 +2015,7 @@
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
+  zh: 18.5.4.3.1 `invoke`的用例
 - en: 'Some things can only be done if we are able to distinguish between `get` and
     `invoke`. Those things are therefore impossible with the current Proxy API. Two
     examples are: auto-binding and intercepting missing methods. Let’s examine how
@@ -2014,27 +2023,32 @@
   id: totrans-323
   prefs: []
   type: TYPE_NORMAL
+  zh: 有些事情只有在我们能够区分`get`和`invoke`时才能完成。因此，这些事情在当前的代理API中是不可能的。两个例子是：自动绑定和拦截丢失的方法。让我们看看如果代理支持`invoke`，我们将如何实现它们。
 - en: '**Auto-binding.** By making a Proxy the prototype of an object `obj`, we can
     automatically bind methods:'
   id: totrans-324
   prefs: []
   type: TYPE_NORMAL
+  zh: '**自动绑定。**通过将代理设置为对象`obj`的原型，我们可以自动绑定方法：'
 - en: Retrieving the value of a method `m` via `obj.m` returns a function whose `this`
     is bound to `obj`.
   id: totrans-325
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过`obj.m`获取方法`m`的值将返回一个`this`绑定到`obj`的函数。
 - en: '`obj.m()` performs a method call.'
   id: totrans-326
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`obj.m()`执行方法调用。'
 - en: 'Auto-binding helps with using methods as callbacks. For example, variant 2
     from the previous example becomes simpler:'
   id: totrans-327
   prefs: []
   type: TYPE_NORMAL
+  zh: 自动绑定有助于使用方法作为回调。例如，前面示例中的第2个变体变得更简单：
 - en: '[PRE59]'
   id: totrans-328
   prefs: []
@@ -2047,48 +2061,57 @@
   id: totrans-329
   prefs: []
   type: TYPE_NORMAL
+  zh: '**拦截丢失的方法。** `invoke`允许代理模拟先前提到的`__noSuchMethod__`机制。代理将再次成为对象`obj`的原型。它会根据未知属性`prop`的访问方式而有不同的反应：'
 - en: If we read that property via `obj.prop`, no interception happens and `undefined`
     is returned.
   id: totrans-330
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果通过`obj.prop`读取该属性，则不会发生拦截，返回`undefined`。
 - en: If we make the method call `obj.prop()` then the Proxy intercepts and, e.g.,
     notifies a callback.
   id: totrans-331
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们进行方法调用`obj.prop()`，那么代理会拦截，并且，例如，通知一个回调。
 - en: 18.5.5 Enforcing invariants for Proxies
   id: totrans-332
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.5.5 强制执行代理的不变量
 - en: Before we look at what invariants are and how they are enforced for Proxies,
     let’s review how objects can be protected via non-extensibility and non-configurability.
   id: totrans-333
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们讨论不变量是什么以及如何通过代理来强制执行它们之前，让我们回顾一下通过非可扩展性和非可配置性来保护对象的方法。
 - en: 18.5.5.1 Protecting objects
   id: totrans-334
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.5.1 保护对象
 - en: 'There are two ways of protecting objects:'
   id: totrans-335
   prefs: []
   type: TYPE_NORMAL
+  zh: 保护对象的两种方法：
 - en: 'Non-extensibility protects objects: If an object is non-extensible, we can’t
     add properties and we can’t change its prototype.'
   id: totrans-336
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 非可扩展性保护对象：如果一个对象是非可扩展的，我们就不能添加属性，也不能改变它的原型。
 - en: 'Non-configurability protects properties (or rather, their attributes):'
   id: totrans-337
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 非可配置性保护属性（或者说，它们的属性）：
 - en: The boolean attribute `writable` controls whether a property’s value can be
     changed.
   id: totrans-338
@@ -2096,6 +2119,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 布尔属性`writable`控制属性的值是否可以更改。
 - en: The boolean attribute `configurable` controls whether a property’s attributes
     can be changed.
   id: totrans-339
@@ -2103,30 +2127,36 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 布尔属性`configurable`控制属性的属性是否可以更改。
 - en: For more information on this topic, see [§10 “Protecting objects from being
     changed”](ch_protecting-objects.html).
   id: totrans-340
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关此主题的更多信息，请参见[§10“保护对象免受更改”](ch_protecting-objects.html)。
 - en: 18.5.5.2 Enforcing invariants
   id: totrans-341
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.5.2 强制执行不变量
 - en: 'Traditionally, non-extensibility and non-configurability are:'
   id: totrans-342
   prefs: []
   type: TYPE_NORMAL
+  zh: 传统上，非可扩展性和非可配置性是：
 - en: 'Universal: They work for all objects.'
   id: totrans-343
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通用：它们适用于所有对象。
 - en: 'Monotonic: Once switched on, they can’t be switched off again.'
   id: totrans-344
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 单调：一旦打开，就不能再关闭。
 - en: These and other characteristics that remain unchanged in the face of language
     operations are called *invariants*. It is easy to violate invariants via Proxies
     because they are not intrinsically bound by non-extensibility etc. The Proxy API
@@ -2135,28 +2165,33 @@
   id: totrans-345
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些以及其他在语言操作面前保持不变的特征被称为*不变量*。通过代理很容易违反不变量，因为它们不是通过非可扩展性等固有地受限制的。代理API通过检查目标对象和处理程序方法的结果来防止这种情况发生。
 - en: The next two subsections describe four invariants. An exhaustive list of invariants
     is given at the end of this chapter.
   id: totrans-346
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来的两个小节描述了四个不变量。不变量的详尽列表在本章末尾给出。
 - en: 18.5.5.3 Two invariants that are enforced via the target object
   id: totrans-347
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.5.3 通过目标对象强制执行的两个不变量
 - en: 'The following two invariants involve non-extensibility and non-configurability.
     These are enforced by using the target object for bookkeeping: results returned
     by handler methods have to be mostly in sync with the target object.'
   id: totrans-348
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下两个不变性涉及不可扩展性和不可配置性。这些是通过使用目标对象进行记录来强制执行的：处理程序方法返回的结果必须与目标对象大部分同步。
 - en: 'Invariant: If `Object.preventExtensions(obj)` returns `true` then all future
     calls must return `false` and `obj` must now be non-extensible.'
   id: totrans-349
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不变性：如果`Object.preventExtensions(obj)`返回`true`，则所有未来的调用必须返回`false`，并且`obj`现在必须是不可扩展的。
 - en: Enforced for Proxies by throwing a `TypeError` if the handler returns `true`,
     but the target object is not extensible.
   id: totrans-350
@@ -2164,12 +2199,14 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过抛出`TypeError`来强制执行代理，如果处理程序返回`true`，但目标对象不可扩展。
 - en: 'Invariant: Once an object has been made non-extensible, `Object.isExtensible(obj)`
     must always return `false`.'
   id: totrans-351
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不变性：一旦对象被设置为不可扩展，`Object.isExtensible(obj)`必须始终返回`false`。
 - en: Enforced for Proxies by throwing a `TypeError` if the result returned by the
     handler is not the same (after coercion) as `Object.isExtensible(target)`.
   id: totrans-352
@@ -2177,32 +2214,38 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过抛出`TypeError`来强制执行代理，如果处理程序返回的结果（在强制转换后）与`Object.isExtensible(target)`不同。
 - en: 18.5.5.4 Two invariants that are enforced by checking return values
   id: totrans-353
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.5.4 通过检查返回值强制执行的两个不变性
 - en: 'The following two invariants are enforced by checking return values:'
   id: totrans-354
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过检查返回值强制执行的两个不变性是：
 - en: 'Invariant: `Object.isExtensible(obj)` must return a boolean.'
   id: totrans-355
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不变性：`Object.isExtensible(obj)`必须返回一个布尔值。
 - en: Enforced for Proxies by coercing the value returned by the handler to a boolean.
   id: totrans-356
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过强制处理程序返回的值转换为布尔值来强制执行代理。
 - en: 'Invariant: `Object.getOwnPropertyDescriptor(obj, ···)` must return an object
     or `undefined`.'
   id: totrans-357
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不变性：`Object.getOwnPropertyDescriptor(obj, ···)`必须返回一个对象或`undefined`。
 - en: Enforced for Proxies by throwing a `TypeError` if the handler doesn’t return
     an appropriate value.
   id: totrans-358
@@ -2210,15 +2253,18 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过抛出`TypeError`来强制执行代理，如果处理程序没有返回适当的值。
 - en: 18.5.5.5 Benefits of invariants
   id: totrans-359
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.5.5 不变性的好处
 - en: 'Enforcing invariants has the following benefits:'
   id: totrans-360
   prefs: []
   type: TYPE_NORMAL
+  zh: 强制执行不变性具有以下好处：
 - en: Proxies work like all other objects with regard to extensibility and configurability.
     Therefore, universality is maintained. This is achieved without preventing Proxies
     from virtualizing (impersonating) protected objects.
@@ -2226,32 +2272,38 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 代理与其他对象一样，关于可扩展性和可配置性。因此，保持了普遍性。这是在不阻止代理虚拟（冒充）受保护对象的情况下实现的。
 - en: A protected object can’t be misrepresented by wrapping a Proxy around it. Misrepresentation
     can be caused by bugs or by malicious code.
   id: totrans-362
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 受保护的对象不能通过包装代理来误导。误导可能是由错误或恶意代码引起的。
 - en: The next two sections give examples of invariants being enforced.
   id: totrans-363
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来的两节给出了强制执行不变性的示例。
 - en: '18.5.5.6 Example: the prototype of a non-extensible target must be represented
     faithfully'
   id: totrans-364
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.5.6 示例：不可扩展目标的原型必须被忠实地表示
 - en: In response to the `getPrototypeOf` trap, the Proxy must return the target’s
     prototype if the target is non-extensible.
   id: totrans-365
   prefs: []
   type: TYPE_NORMAL
+  zh: 在响应`getPrototypeOf`陷阱时，如果目标是不可扩展的，代理必须返回目标的原型。
 - en: 'To demonstrate this invariant, let’s create a handler that returns a prototype
     that is different from the target’s prototype:'
   id: totrans-366
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了演示这个不变性，让我们创建一个处理程序，返回一个与目标原型不同的原型：
 - en: '[PRE60]'
   id: totrans-367
   prefs: []
@@ -2261,6 +2313,7 @@
   id: totrans-368
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果目标是可扩展的，则伪造原型可以起作用：
 - en: '[PRE61]'
   id: totrans-369
   prefs: []
@@ -2270,6 +2323,7 @@
   id: totrans-370
   prefs: []
   type: TYPE_NORMAL
+  zh: 但是，如果我们为不可扩展的对象伪造原型，就会出现错误。
 - en: '[PRE62]'
   id: totrans-371
   prefs: []
@@ -2281,6 +2335,7 @@
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.5.7 示例：不可写不可配置的目标属性必须被忠实地表示
 - en: If the target has a non-writable non-configurable property, then the handler
     must return that property’s value in response to a `get` trap. To demonstrate
     this invariant, let’s create a handler that always returns the same value for
@@ -2288,6 +2343,7 @@
   id: totrans-373
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果目标具有不可写不可配置的属性，则处理程序必须在`get`陷阱的响应中返回该属性的值。为了演示这个不变性，让我们创建一个总是返回相同值的处理程序。
 - en: '[PRE63]'
   id: totrans-374
   prefs: []
@@ -2298,6 +2354,7 @@
   id: totrans-375
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性`target.manufacturer`既不可写也不可配置，这意味着处理程序可以假装它有不同的值：
 - en: '[PRE64]'
   id: totrans-376
   prefs: []
@@ -2308,6 +2365,7 @@
   id: totrans-377
   prefs: []
   type: TYPE_NORMAL
+  zh: 但是，属性`target.model`既不可写也不可配置。因此，我们无法伪造它的值：
 - en: '[PRE65]'
   id: totrans-378
   prefs: []
@@ -2318,40 +2376,48 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.6 常见问题：代理
 - en: 18.6.1 Where is the `enumerate` trap?
   id: totrans-380
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.6.1 “enumerate”陷阱在哪里？
 - en: 'ECMAScript 6 originally had a trap `enumerate` that was triggered by `for-in`
     loops. But it was recently removed, to simplify Proxies. `Reflect.enumerate()`
     was removed, as well. ([Source: TC39 notes](https://github.com/tc39/tc39-notes/blob/master/es7/2016-01/2016-01-28.md))'
   id: totrans-381
   prefs: []
   type: TYPE_NORMAL
+  zh: ECMAScript 6最初有一个名为`enumerate`的陷阱，它由`for-in`循环触发。但最近已经删除，以简化代理。`Reflect.enumerate()`也被删除了。([来源：TC39笔记](https://github.com/tc39/tc39-notes/blob/master/es7/2016-01/2016-01-28.md))
 - en: '18.7 Reference: the Proxy API'
   id: totrans-382
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.7 参考：代理API
 - en: 'This section is a quick reference for the Proxy API:'
   id: totrans-383
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节是代理API的快速参考：
 - en: The global object `Proxy`
   id: totrans-384
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 全局对象`Proxy`
 - en: The global object `Reflect`
   id: totrans-385
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 全局对象`Reflect`
 - en: 'The reference uses the following custom type:'
   id: totrans-386
   prefs: []
   type: TYPE_NORMAL
+  zh: 引用使用以下自定义类型：
 - en: '[PRE66]'
   id: totrans-387
   prefs: []
@@ -2362,25 +2428,30 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.7.1 创建代理
 - en: 'There are two ways to create Proxies:'
   id: totrans-389
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两种创建代理的方法：
 - en: '`const proxy = new Proxy(target, handler)`'
   id: totrans-390
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`const proxy = new Proxy(target, handler)`'
 - en: Creates a new Proxy object with the given target and the given handler.
   id: totrans-391
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 使用给定的目标和给定的处理程序创建一个新的代理对象。
 - en: '`const {proxy, revoke} = Proxy.revocable(target, handler)`'
   id: totrans-392
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`const {proxy, revoke} = Proxy.revocable(target, handler)`'
 - en: Creates a Proxy that can be revoked via the function `revoke`. `revoke` can
     be called multiple times, but only the first call has an effect and switches `proxy`
     off. Afterwards, any operation performed on `proxy` leads to a `TypeError` being
@@ -2389,11 +2460,13 @@
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个可以通过函数`revoke`撤销的代理。`revoke`可以被多次调用，但只有第一次调用会产生效果并关闭`proxy`。之后，对`proxy`执行的任何操作都会导致抛出`TypeError`。
 - en: 18.7.2 Handler methods
   id: totrans-394
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.7.2 处理程序方法
 - en: This subsection explains what traps can be implemented by handlers and what
     operations trigger them. Several traps return boolean values. For the traps `has`
     and `isExtensible`, the boolean is the result of the operation. For all other
@@ -2401,116 +2474,137 @@
   id: totrans-395
   prefs: []
   type: TYPE_NORMAL
+  zh: 本小节解释了处理程序可以实现的陷阱以及触发它们的操作。几个陷阱返回布尔值。对于`has`和`isExtensible`陷阱，布尔值是操作的结果。对于所有其他陷阱，布尔值指示操作是否成功。
 - en: 'Traps for all objects:'
   id: totrans-396
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有对象的陷阱：
 - en: '`defineProperty(target, propKey, propDesc): boolean`'
   id: totrans-397
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`defineProperty(target, propKey, propDesc): boolean`'
 - en: '`Object.defineProperty(proxy, propKey, propDesc)`'
   id: totrans-398
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.defineProperty(proxy, propKey, propDesc)`'
 - en: '`deleteProperty(target, propKey): boolean`'
   id: totrans-399
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`deleteProperty(target, propKey): boolean`'
 - en: '`delete proxy[propKey]`'
   id: totrans-400
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`delete proxy[propKey]`'
 - en: '`delete proxy.someProp`'
   id: totrans-401
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`delete proxy.someProp`'
 - en: '`get(target, propKey, receiver): any`'
   id: totrans-402
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get(target, propKey, receiver): any`'
 - en: '`receiver[propKey]`'
   id: totrans-403
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`receiver[propKey]`'
 - en: '`receiver.someProp`'
   id: totrans-404
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`receiver.someProp`'
 - en: '`getOwnPropertyDescriptor(target, propKey): undefined|PropDesc`'
   id: totrans-405
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`getOwnPropertyDescriptor(target, propKey): undefined|PropDesc`'
 - en: '`Object.getOwnPropertyDescriptor(proxy, propKey)`'
   id: totrans-406
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertyDescriptor(proxy, propKey)`'
 - en: '`getPrototypeOf(target): null|object`'
   id: totrans-407
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`getPrototypeOf(target): null|object`'
 - en: '`Object.getPrototypeOf(proxy)`'
   id: totrans-408
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getPrototypeOf(proxy)`'
 - en: '`has(target, propKey): boolean`'
   id: totrans-409
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`has(target, propKey): boolean`'
 - en: '`propKey in proxy`'
   id: totrans-410
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`propKey in proxy`'
 - en: '`isExtensible(target): boolean`'
   id: totrans-411
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`isExtensible(target): boolean`'
 - en: '`Object.isExtensible(proxy)`'
   id: totrans-412
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.isExtensible(proxy)`'
 - en: '`ownKeys(target): Array<PropertyKey>`'
   id: totrans-413
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ownKeys(target): Array<PropertyKey>`'
 - en: '`Object.getOwnPropertyPropertyNames(proxy)` (only uses string keys)'
   id: totrans-414
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertyPropertyNames(proxy)`（仅使用字符串键）'
 - en: '`Object.getOwnPropertyPropertySymbols(proxy)` (only uses symbol keys)'
   id: totrans-415
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertyPropertySymbols(proxy)`（仅使用符号键）'
 - en: '`Object.keys(proxy)` (only uses enumerable string keys; enumerability is checked
     via `Object.getOwnPropertyDescriptor`)'
   id: totrans-416
@@ -2518,94 +2612,111 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.keys(proxy)`（仅使用可枚举的字符串键；通过`Object.getOwnPropertyDescriptor`检查可枚举性）'
 - en: '`preventExtensions(target): boolean`'
   id: totrans-417
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`preventExtensions(target): boolean`'
 - en: '`Object.preventExtensions(proxy)`'
   id: totrans-418
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.preventExtensions(proxy)`'
 - en: '`set(target, propKey, value, receiver): boolean`'
   id: totrans-419
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`set(target, propKey, value, receiver): boolean`'
 - en: '`receiver[propKey] = value`'
   id: totrans-420
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`receiver[propKey] = value`'
 - en: '`receiver.someProp = value`'
   id: totrans-421
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`receiver.someProp = value`'
 - en: '`setPrototypeOf(target, proto): boolean`'
   id: totrans-422
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`setPrototypeOf(target, proto): boolean`'
 - en: '`Object.setPrototypeOf(proxy, proto)`'
   id: totrans-423
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.setPrototypeOf(proxy, proto)`'
 - en: 'Traps for functions (available if target is a function):'
   id: totrans-424
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数的陷阱（仅当目标是函数时可用）：
 - en: '`apply(target, thisArgument, argumentsList): any`'
   id: totrans-425
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`apply(target, thisArgument, argumentsList): any`'
 - en: '`proxy.apply(thisArgument, argumentsList)`'
   id: totrans-426
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`proxy.apply(thisArgument, argumentsList)`'
 - en: '`proxy.call(thisArgument, ...argumentsList)`'
   id: totrans-427
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`proxy.call(thisArgument, ...argumentsList)`'
 - en: '`proxy(...argumentsList)`'
   id: totrans-428
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`proxy(...argumentsList)`'
 - en: '`construct(target, argumentsList, newTarget): object`'
   id: totrans-429
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`construct(target, argumentsList, newTarget): object`'
 - en: '`new proxy(..argumentsList)`'
   id: totrans-430
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new proxy(..argumentsList)`'
 - en: 18.7.2.1 Fundamental operations versus derived operations
   id: totrans-431
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.7.2.1 基本操作与派生操作
 - en: 'The following operations are *fundamental*, they don’t use other operations
     to do their work: `apply`, `defineProperty`, `deleteProperty`, `getOwnPropertyDescriptor`,
     `getPrototypeOf`, `isExtensible`, `ownKeys`, `preventExtensions`, `setPrototypeOf`'
   id: totrans-432
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下操作是*基本*的，它们不使用其他操作来完成工作：`apply`、`defineProperty`、`deleteProperty`、`getOwnPropertyDescriptor`、`getPrototypeOf`、`isExtensible`、`ownKeys`、`preventExtensions`、`setPrototypeOf`
 - en: All other operations are *derived*, they can be implemented via fundamental
     operations. For example, `get` can be implemented by iterating over the prototype
     chain via `getPrototypeOf` and calling `getOwnPropertyDescriptor` for each chain
@@ -2613,11 +2724,13 @@
   id: totrans-433
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有其他操作都是*派生*的，它们可以通过基本操作来实现。例如，`get`可以通过使用`getPrototypeOf`迭代原型链并为每个链成员调用`getOwnPropertyDescriptor`来实现，直到找到自有属性或链结束为止。
 - en: 18.7.3 Invariants of handler methods
   id: totrans-434
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.7.3 处理程序方法的不变量
 - en: 'Invariants are safety constraints for handlers. This subsection documents what
     invariants are enforced by the Proxy API and how. Whenever we read “the handler
     must do X” below, it means that a `TypeError` is thrown if it doesn’t. Some invariants
@@ -2626,43 +2739,51 @@
   id: totrans-435
   prefs: []
   type: TYPE_NORMAL
+  zh: 不变量是处理程序的安全约束。本小节记录了代理API强制执行的不变量以及其工作原理。在下面每当我们读到“处理程序必须执行X”时，这意味着如果处理程序没有执行X，则会抛出`TypeError`。一些不变量限制返回值，另一些限制参数。陷阱返回值的正确性有两种保证方式：
 - en: If a boolean is expected, coercion is used to convert non-booleans to legal
     values.
   id: totrans-436
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果期望布尔值，则使用强制转换将非布尔值转换为合法值。
 - en: In all other cases, an illegal value cause a `TypeError`.
   id: totrans-437
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在所有其他情况下，非法值会导致`TypeError`。
 - en: 'This is the complete list of invariants that are enforced:'
   id: totrans-438
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是强制执行的不变量的完整列表：
 - en: '`apply(target, thisArgument, argumentsList): any`'
   id: totrans-439
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`apply(target, thisArgument, argumentsList): any`'
 - en: No invariants are enforced.
   id: totrans-440
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不强制执行任何不变量。
 - en: Only active if the target is callable.
   id: totrans-441
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 仅当目标可调用时才激活。
 - en: '`construct(target, argumentsList, newTarget): object`'
   id: totrans-442
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`construct(target, argumentsList, newTarget): object`'
 - en: The result returned by the handler must be an object (not `null` or any other
     primitive value).
   id: totrans-443
@@ -2670,23 +2791,27 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 处理程序返回的结果必须是对象（而不是`null`或任何其他原始值）。
 - en: Only active if the target is constructible.
   id: totrans-444
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 仅当目标可构造时才激活。
 - en: '`defineProperty(target, propKey, propDesc): boolean`'
   id: totrans-445
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`defineProperty(target, propKey, propDesc): boolean`'
 - en: If the target is not extensible, then we can’t add new properties.
   id: totrans-446
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标不可扩展，则无法添加新属性。
 - en: If `propDesc` sets the attribute `configurable` to `false`, then the target
     must have a non-configurable own property whose key is `propKey`.
   id: totrans-447
@@ -2694,6 +2819,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`propDesc`将`configurable`属性设置为`false`，则目标必须具有一个不可配置的自有属性，其键为`propKey`。
 - en: If `propDesc` sets both attributes `configurable` and `writable` to `false`,
     then the target must have an own property with the key is `propKey` that is non-configurable
     and non-writable.
@@ -2702,6 +2828,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`propDesc`将`configurable`和`writable`属性都设置为`false`，则目标必须具有一个键为`propKey`的自有属性，该属性不可配置且不可写。
 - en: 'If the target has an own property with the key `propKey`, then `propDesc` must
     be compatible with that property: If we redefine the target property with the
     descriptor, no exception must be thrown.'
@@ -2710,17 +2837,20 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标具有键为`propKey`的自有属性，则`propDesc`必须与该属性兼容：如果我们使用描述符重新定义目标属性，则不得抛出异常。
 - en: '`deleteProperty(target, propKey): boolean`'
   id: totrans-450
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`deleteProperty(target, propKey): boolean`'
 - en: 'A property can’t be reported as deleted if:'
   id: totrans-451
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果：
 - en: The target has a non-configurable own property with key `propKey`.
   id: totrans-452
   prefs:
@@ -2728,6 +2858,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 目标对象具有一个键为`propKey`的不可配置的自有属性。
 - en: The target is non-extensible and has a own property with key `propKey`.
   id: totrans-453
   prefs:
@@ -2735,11 +2866,13 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 目标对象是不可扩展的，并且具有一个键为`propKey`的自有属性。
 - en: '`get(target, propKey, receiver): any`'
   id: totrans-454
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get(target, propKey, receiver): any`'
 - en: If the target has an own, non-writable, non-configurable data property whose
     key is `propKey`, then the handler must return that property’s value.
   id: totrans-455
@@ -2747,6 +2880,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标对象具有一个自有的、不可写的、不可配置的数据属性，其键为`propKey`，则处理程序必须返回该属性的值。
 - en: If the target has an own, non-configurable, getter-less accessor property, then
     the handler must return `undefined`.
   id: totrans-456
@@ -2754,17 +2888,20 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标对象有一个自有的、不可配置的、没有getter的访问器属性，那么处理程序必须返回`undefined`。
 - en: '`getOwnPropertyDescriptor(target, propKey): undefined|PropDesc`'
   id: totrans-457
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`getOwnPropertyDescriptor(target, propKey): undefined|PropDesc`'
 - en: The handler must return either `undefined` or an object.
   id: totrans-458
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 处理程序必须返回`undefined`或一个对象。
 - en: Non-configurable own properties of the target can’t be reported as non-existent
     by the handler.
   id: totrans-459
@@ -2772,6 +2909,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 目标对象的不可配置的自有属性不能被处理程序报告为不存在。
 - en: If the target is non-extensible, then exactly the target’s own properties must
     be reported by the handler as existing.
   id: totrans-460
@@ -2779,6 +2917,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标对象是不可扩展的，则处理程序必须报告目标对象的自有属性存在。
 - en: If the handler reports a property as non-configurable, then that property must
     be a non-configurable own property of the target.
   id: totrans-461
@@ -2786,6 +2925,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果处理程序报告一个属性为不可配置，则该属性必须是目标对象的不可配置的自有属性。
 - en: If the handler reports a property as non-configurable and non-writable, then
     that property must be a non-configurable non-writable own property of the target.
   id: totrans-462
@@ -2793,17 +2933,20 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果处理程序报告一个属性为不可配置且不可写，那么该属性必须是目标对象的不可配置不可写的自有属性。
 - en: '`getPrototypeOf(target): null|object`'
   id: totrans-463
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`getPrototypeOf(target): null|object`'
 - en: The result must be either `null` or an object.
   id: totrans-464
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果必须是`null`或者一个对象。
 - en: If the target object is not extensible, then the handler must return the prototype
     of the target object.
   id: totrans-465
@@ -2811,17 +2954,20 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标对象不可扩展，则处理程序必须返回目标对象的原型。
 - en: '`has(target, propKey): boolean`'
   id: totrans-466
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`has(target, propKey): boolean`'
 - en: Non-configurable own properties of the target can’t be reported as non-existent.
   id: totrans-467
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 目标对象的不可配置的自有属性不能被处理程序报告为不存在。
 - en: If the target is non-extensible, then no own property of the target can be reported
     as non-existent.
   id: totrans-468
@@ -2829,11 +2975,13 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标对象是不可扩展的，那么目标对象的自有属性不能被报告为不存在。
 - en: '`isExtensible(target): boolean`'
   id: totrans-469
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`isExtensible(target): boolean`'
 - en: After coercion to boolean, the value returned by the handler must be the same
     as `target.isExtensible()`.
   id: totrans-470
@@ -2841,11 +2989,13 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在转换为布尔值后，处理程序返回的值必须与`target.isExtensible()`相同。
 - en: '`ownKeys(target): Array<PropertyKey>`'
   id: totrans-471
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ownKeys(target): Array<PropertyKey>`'
 - en: The handler must return an object, which treated as Array-like and converted
     into an Array.
   id: totrans-472
@@ -2853,18 +3003,21 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 处理程序必须返回一个对象，该对象被视为类似数组，并转换为数组。
 - en: The resulting Array must not contain duplicate entries.
   id: totrans-473
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 生成的数组不能包含重复条目。
 - en: Each element of the result must be either a string or a symbol.
   id: totrans-474
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果的每个元素必须是字符串或符号。
 - en: The result must contain the keys of all non-configurable own properties of the
     target.
   id: totrans-475
@@ -2872,6 +3025,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果必须包含目标对象的所有不可配置的自有属性的键。
 - en: If the target is not extensible, then the result must contain exactly the keys
     of the own properties of the target (and no other values).
   id: totrans-476
@@ -2879,11 +3033,13 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标对象不可扩展，则结果必须恰好包含目标对象的自有属性的键（没有其他值）。
 - en: '`preventExtensions(target): boolean`'
   id: totrans-477
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`preventExtensions(target): boolean`'
 - en: The handler must only return a truthy value (indicating a successful change)
     if `target.isExtensible()` is `false`.
   id: totrans-478
@@ -2891,11 +3047,13 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`target.isExtensible()`为`false`，则处理程序只能返回一个真值（表示成功更改）。
 - en: '`set(target, propKey, value, receiver): boolean`'
   id: totrans-479
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`set(target, propKey, value, receiver): boolean`'
 - en: The property can’t be changed if the target has a non-writable, non-configurable
     data property whose key is `propKey`. In that case, `value` must be the value
     of that property or a `TypeError` is thrown.
@@ -2904,6 +3062,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标对象具有一个不可写的、不可配置的数据属性，其键为`propKey`，则处理程序必须返回该属性的值。
 - en: The property can’t be set in any way if the corresponding own target property
     is a non-configurable accessor without a setter.
   id: totrans-481
@@ -2911,11 +3070,13 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果相应的目标对象属性是一个不可配置的访问器且没有setter，则无法以任何方式设置该属性。
 - en: '`setPrototypeOf(target, proto): boolean`'
   id: totrans-482
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`setPrototypeOf(target, proto): boolean`'
 - en: 'If the target is not extensible, the prototype can’t be changed. This is enforced
     as follows: If the target is not extensible and the handler returns a truthy value
     (indicating a successful change), then `proto` must be the same as the prototype
@@ -2925,21 +3086,25 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果目标对象不可扩展，则原型不能被更改。这是如何实施的：如果目标对象不可扩展且处理程序返回一个真值（表示成功更改），则`proto`必须与目标对象的原型相同。否则，将抛出`TypeError`。
 - en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **Invariants in the ECMAScript
     specification**'
   id: totrans-484
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png) **ECMAScript规范中的不变量**'
 - en: In the spec, the invariants are listed in section [“Proxy Object Internal Methods
     and Internal Slots”](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots).
   id: totrans-485
   prefs: []
   type: TYPE_NORMAL
+  zh: 在规范中，不变量在[“代理对象内部方法和内部插槽”](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots)部分中列出。
 - en: 18.7.4 Operations that affect the prototype chain
   id: totrans-486
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.7.4 影响原型链的操作
 - en: The following operations of normal objects perform operations on objects in
     the prototype chain. Therefore, if one of the objects in that chain is a Proxy,
     its traps are triggered. The specification implements the operations as internal
@@ -2949,59 +3114,70 @@
   id: totrans-487
   prefs: []
   type: TYPE_NORMAL
+  zh: 普通对象的以下操作在原型链上执行操作。因此，如果该链中的一个对象是代理，则会触发其陷阱。规范将这些操作实现为内部自有方法（对JavaScript代码不可见）。但在本节中，我们假装它们是具有与陷阱相同名称的普通方法。参数`target`成为方法调用的接收者。
 - en: '`target.get(propertyKey, receiver)`'
   id: totrans-488
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`target.get(propertyKey, receiver)`'
 - en: If `target` has no own property with the given key, `get` is invoked on the
     prototype of `target`.
   id: totrans-489
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果`target`没有具有给定键的自有属性，则在`target`的原型上调用`get`。
 - en: '`target.has(propertyKey)`'
   id: totrans-490
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`target.has(propertyKey)`'
 - en: Similarly to `get`, `has` is invoked on the prototype of `target` if `target`
     has no own property with the given key.
   id: totrans-491
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 类似于`get`，如果`target`没有具有给定键的自有属性，则在`target`的原型上调用`has`。
 - en: '`target.set(propertyKey, value, receiver)`'
   id: totrans-492
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`target.set(propertyKey, value, receiver)`'
 - en: Similarly to `get`, `set` is invoked on the prototype of `target` if `target`
     has no own property with the given key.
   id: totrans-493
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 类似于`get`，如果`target`没有具有给定键的自有属性，则在`target`的原型上调用`set`。
 - en: All other operations only affect own properties, they have no effect on the
     prototype chain.
   id: totrans-494
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有其他操作只影响自有属性，对原型链没有影响。
 - en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **Internal operations
     in the ECMAScript specification**'
   id: totrans-495
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png) **ECMAScript规范中的内部操作**'
 - en: In the spec, these (and other) operations are described in section “[Ordinary
     Object Internal Methods and Internal Slots](https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots)”.
   id: totrans-496
   prefs: []
   type: TYPE_NORMAL
+  zh: 在规范中，这些（和其他）操作在“[普通对象内部方法和内部插槽](https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots)”一节中有描述。
 - en: 18.7.5 Reflect
   id: totrans-497
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.7.5 Reflect
 - en: The global object `Reflect` implements all interceptable operations of the JavaScript
     meta object protocol as methods. The names of those methods are the same as those
     of the handler methods, which, [as we have seen](ch_proxies.html#forwarding-intercepted-operations),
@@ -3009,21 +3185,25 @@
   id: totrans-498
   prefs: []
   type: TYPE_NORMAL
+  zh: 全局对象`Reflect`实现了JavaScript元对象协议的所有可拦截操作作为方法。这些方法的名称与处理程序方法的名称相同，这有助于从处理程序转发操作到目标，[正如我们所见](ch_proxies.html#forwarding-intercepted-operations)。
 - en: '`Reflect.apply(target, thisArgument, argumentsList): any`'
   id: totrans-499
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.apply(target, thisArgument, argumentsList): any`'
 - en: Similar to `Function.prototype.apply()`.
   id: totrans-500
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 类似于`Function.prototype.apply()`。
 - en: '`Reflect.construct(target, argumentsList, newTarget=target): object`'
   id: totrans-501
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.construct(target, argumentsList, newTarget=target): object`'
 - en: The `new` operator as a function. `target` is the constructor to invoke, the
     optional parameter `newTarget` points to the constructor that started the current
     chain of constructor calls.
@@ -3031,21 +3211,25 @@
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`new`操作符作为一个函数。`target`是要调用的构造函数，可选参数`newTarget`指向启动当前构造函数调用链的构造函数。'
 - en: '`Reflect.defineProperty(target, propertyKey, propDesc): boolean`'
   id: totrans-503
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.defineProperty(target, propertyKey, propDesc): boolean`'
 - en: Similar to `Object.defineProperty()`.
   id: totrans-504
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 类似于`Object.defineProperty()`。
 - en: '`Reflect.deleteProperty(target, propertyKey): boolean`'
   id: totrans-505
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.deleteProperty(target, propertyKey): boolean`'
 - en: 'The `delete` operator as a function. It works slightly differently, though:
     It returns `true` if it successfully deleted the property or if the property never
     existed. It returns `false` if the property could not be deleted and still exists.
@@ -3056,11 +3240,13 @@
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`delete`操作符作为一个函数。但它的工作方式略有不同：如果成功删除属性或属性从未存在，则返回`true`。如果属性无法删除且仍然存在，则返回`false`。保护属性免受删除的唯一方法是使它们不可配置。在松散模式下，`delete`操作符返回相同的结果。但在严格模式下，它会抛出`TypeError`而不是返回`false`。'
 - en: '`Reflect.get(target, propertyKey, receiver=target): any`'
   id: totrans-507
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.get(target, propertyKey, receiver=target): any`'
 - en: A function that gets properties. The optional parameter `receiver` points to
     the object where the getting started. It is needed when `get` reaches a getter
     later in the prototype chain. Then it provides the value for `this`.
@@ -3068,103 +3254,123 @@
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 一个获取属性的函数。可选参数`receiver`指向获取开始的对象。当`get`在原型链中后面达到getter时，需要它。然后它为`this`提供值。
 - en: '`Reflect.getOwnPropertyDescriptor(target, propertyKey): undefined|PropDesc`'
   id: totrans-509
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.getOwnPropertyDescriptor(target, propertyKey): undefined|PropDesc`'
 - en: Same as `Object.getOwnPropertyDescriptor()`.
   id: totrans-510
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 与`Object.getOwnPropertyDescriptor()`相同。
 - en: '`Reflect.getPrototypeOf(target): null|object`'
   id: totrans-511
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.getPrototypeOf(target): null|object`'
 - en: Same as `Object.getPrototypeOf()`.
   id: totrans-512
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 与`Object.getPrototypeOf()`相同。
 - en: '`Reflect.has(target, propertyKey): boolean`'
   id: totrans-513
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.has(target, propertyKey): boolean`'
 - en: The `in` operator as a function.
   id: totrans-514
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`in`操作符作为一个函数。'
 - en: '`Reflect.isExtensible(target): boolean`'
   id: totrans-515
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.isExtensible(target): boolean`'
 - en: Same as `Object.isExtensible()`.
   id: totrans-516
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 与`Object.isExtensible()`相同。
 - en: '`Reflect.ownKeys(target): Array<PropertyKey>`'
   id: totrans-517
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.ownKeys(target): Array<PropertyKey>`'
 - en: 'Returns all own property keys in an Array: the string keys and symbol keys
     of all own enumerable and non-enumerable properties.'
   id: totrans-518
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 以数组形式返回所有自有属性键：所有自有可枚举和不可枚举属性的字符串键和符号键。
 - en: '`Reflect.preventExtensions(target): boolean`'
   id: totrans-519
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.preventExtensions(target): boolean`'
 - en: Similar to `Object.preventExtensions()`.
   id: totrans-520
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 类似于`Object.preventExtensions()`。
 - en: '`Reflect.set(target, propertyKey, value, receiver=target): boolean`'
   id: totrans-521
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.set(target, propertyKey, value, receiver=target): boolean`'
 - en: A function that sets properties.
   id: totrans-522
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 一个设置属性的函数。
 - en: '`Reflect.setPrototypeOf(target, proto): boolean`'
   id: totrans-523
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.setPrototypeOf(target, proto): boolean`'
 - en: The new standard way of setting the prototype of an object. The current non-standard
     way, that works in most engines, is to set the special property `__proto__`.
   id: totrans-524
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 设置对象原型的新标准方式。目前大多数引擎中有效的非标准方式是设置特殊属性`__proto__`。
 - en: Several methods have boolean results. For `.has()` and `.isExtensible()`, they
     are the results of the operation. For the remaining methods, they indicate whether
     the operation succeeded.
   id: totrans-525
   prefs: []
   type: TYPE_NORMAL
+  zh: 几种方法具有布尔结果。对于`.has()`和`.isExtensible()`，它们是操作的结果。对于其余的方法，它们指示操作是否成功。
 - en: 18.7.5.1 Use cases for `Reflect` besides forwarding
   id: totrans-526
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.7.5.1 `Reflect`的用例除了转发
 - en: Apart from forwarding operations, [why is `Reflect` useful [4]](ch_proxies.html#further-reading-proxies)?
   id: totrans-527
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了转发操作，[为什么`Reflect`有用[4]](ch_proxies.html#further-reading-proxies)？
 - en: 'Different return values: `Reflect` duplicates the following methods of `Object`,
     but its methods return booleans indicating whether the operation succeeded (where
     the `Object` methods return the object that was modified).'
@@ -3172,60 +3378,70 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不同的返回值：`Reflect`复制了`Object`的以下方法，但其方法返回布尔值，指示操作是否成功（而`Object`方法返回被修改的对象）。
 - en: '`Object.defineProperty(obj, propKey, propDesc): object`'
   id: totrans-529
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.defineProperty(obj, propKey, propDesc): object`'
 - en: '`Object.preventExtensions(obj): object`'
   id: totrans-530
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.preventExtensions(obj): object`'
 - en: '`Object.setPrototypeOf(obj, proto): object`'
   id: totrans-531
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.setPrototypeOf(obj, proto): object`'
 - en: 'Operators as functions: The following `Reflect` methods implement functionality
     that is otherwise only available via operators:'
   id: totrans-532
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作为函数的运算符：以下`Reflect`方法实现了通过运算符才能实现的功能：
 - en: '`Reflect.construct(target, argumentsList, newTarget=target): object`'
   id: totrans-533
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.construct(target, argumentsList, newTarget=target): object`'
 - en: '`Reflect.deleteProperty(target, propertyKey): boolean`'
   id: totrans-534
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.deleteProperty(target, propertyKey): boolean`'
 - en: '`Reflect.get(target, propertyKey, receiver=target): any`'
   id: totrans-535
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.get(target, propertyKey, receiver=target): any`'
 - en: '`Reflect.has(target, propertyKey): boolean`'
   id: totrans-536
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.has(target, propertyKey): boolean`'
 - en: '`Reflect.set(target, propertyKey, value, receiver=target): boolean`'
   id: totrans-537
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect.set(target, propertyKey, value, receiver=target): boolean`'
 - en: 'Shorter version of `apply()`: If we want to be completely safe about invoking
     the method `apply()` on a function, we can’t do so via dynamic dispatch, because
     the function may have an own property with the key `''apply''`:'
@@ -3233,6 +3449,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`apply()`的简短版本：如果我们想完全安全地调用函数的`apply()`方法，我们不能通过动态分发来做到这一点，因为函数可能具有一个具有键`''apply''`的自有属性：'
 - en: '[PRE67]'
   id: totrans-539
   prefs:
@@ -3244,6 +3461,7 @@
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 使用`Reflect.apply()`比安全版本更短：
 - en: '[PRE68]'
   id: totrans-541
   prefs:
@@ -3257,45 +3475,54 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 删除属性时不会抛出异常：在严格模式下，如果我们尝试删除一个不可配置的自有属性，`delete`运算符会抛出异常。在这种情况下，`Reflect.deleteProperty()`会返回`false`。
 - en: 18.7.5.2 `Object.*` versus `Reflect.*`
   id: totrans-543
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.7.5.2 `Object.*`与`Reflect.*`
 - en: Going forward, `Object` will host operations that are of interest to normal
     applications, while `Reflect` will host operations that are more low-level.
   id: totrans-544
   prefs: []
   type: TYPE_NORMAL
+  zh: 未来，`Object`将承载对普通应用程序有兴趣的操作，而`Reflect`将承载更低级的操作。
 - en: 18.8 Conclusion
   id: totrans-545
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.8 结论
 - en: This concludes our in-depth look at the Proxy API. One thing to be aware of
     is that Proxies slow down code. That may matter if performance is critical.
   id: totrans-546
   prefs: []
   type: TYPE_NORMAL
+  zh: 这结束了我们对代理API的深入研究。需要注意的一点是，代理会减慢代码。如果性能很重要，这可能很重要。
 - en: On the other hand, performance is often not crucial and it is nice to have the
     metaprogramming power that Proxies give us.
   id: totrans-547
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，性能通常并不是关键，拥有代理赋予我们的元编程能力是很好的。
 - en: '* * *'
   id: totrans-548
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '**Acknowledgements:**'
   id: totrans-549
   prefs: []
   type: TYPE_NORMAL
+  zh: '**致谢：**'
 - en: 'Allen Wirfs-Brock pointed out the pitfall explained in [§18.3.7 “Pitfall: not
     all objects can be wrapped transparently by Proxies”](ch_proxies.html#mechanisms-ignored-by-proxies).'
   id: totrans-550
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Allen Wirfs-Brock指出了[§18.3.7“陷阱：并非所有对象都可以被代理透明地包装”](ch_proxies.html#mechanisms-ignored-by-proxies)中解释的陷阱。
 - en: The idea for [§18.4.3 “Negative Array indices (`get`)”](ch_proxies.html#negative-array-indices-via-proxies)
     comes from a [blog post](http://h3manth.com/new/blog/2013/negative-array-index-in-javascript/)
     by [Hemanth.HM](https://twitter.com/gnumanth).
@@ -3303,16 +3530,19 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§18.4.3“通过代理使用负数组索引（`get`）”](ch_proxies.html#negative-array-indices-via-proxies)的想法来自[Hemanth.HM](https://twitter.com/gnumanth)的[博客文章](http://h3manth.com/new/blog/2013/negative-array-index-in-javascript/)。'
 - en: André Jaenisch contributed to the list of libraries that use Proxies.
   id: totrans-552
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: André Jaenisch为使用代理的库列表做出了贡献。
 - en: 18.9 Further reading
   id: totrans-553
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.9 进一步阅读
 - en: '[1] “[On the design of the ECMAScript Reflection API](http://soft.vub.ac.be/Publications/2012/vub-soft-tr-12-03.pdf)”
     by Tom Van Cutsem and Mark Miller. Technical report, 2012\. [Important source
     of this chapter.]'
@@ -3320,25 +3550,34 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[1] “[关于ECMAScript反射API设计](http://soft.vub.ac.be/Publications/2012/vub-soft-tr-12-03.pdf)”
+    by Tom Van Cutsem and Mark Miller. Technical report, 2012\. [本章的重要来源。]'
 - en: '[2] “[The Art of the Metaobject Protocol](http://mitpress.mit.edu/books/art-metaobject-protocol)”
     by Gregor Kiczales, Jim des Rivieres and Daniel G. Bobrow. Book, 1991.'
   id: totrans-555
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[2] “[元对象协议的艺术](http://mitpress.mit.edu/books/art-metaobject-protocol)” by
+    Gregor Kiczales, Jim des Rivieres and Daniel G. Bobrow. Book, 1991.'
 - en: '[3] “[Putting Metaclasses to Work: A New Dimension in Object-Oriented Programming](http://www.pearsonhighered.com/educator/product/Putting-Metaclasses-to-Work-A-New-Dimension-in-ObjectOriented-Programming/9780201433050.page)”
     by Ira R. Forman and Scott H. Danforth. Book, 1999.'
   id: totrans-556
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[3] “[将元类应用于工作：面向对象编程的新维度](http://www.pearsonhighered.com/educator/product/Putting-Metaclasses-to-Work-A-New-Dimension-in-ObjectOriented-Programming/9780201433050.page)”
+    by Ira R. Forman and Scott H. Danforth. Book, 1999.'
 - en: '[4] “[Harmony-reflect: Why should I use this library?](https://github.com/tvcutsem/harmony-reflect/wiki)”
     by Tom Van Cutsem. [Explains why `Reflect` is useful.]'
   id: totrans-557
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[4] “[Harmony-reflect: 为什么我应该使用这个库？](https://github.com/tvcutsem/harmony-reflect/wiki)”
+    by Tom Van Cutsem. [解释了为什么`Reflect`很有用。]'
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/23)'
   id: totrans-558
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/deep-js/issues/23)'
