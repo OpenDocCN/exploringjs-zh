@@ -1,572 +1,826 @@
 - en: 16 Parsing command line arguments with util.parseArgs()
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_node-util-parseargs.html](https://exploringjs.com/nodejs-shell-scripting/ch_node-util-parseargs.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: 16.1 [Imports that are implied in this chapter](ch_node-util-parseargs.html#imports-that-are-implied-in-this-chapter)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.2 [The steps involved in processing command line arguments](ch_node-util-parseargs.html#the-steps-involved-in-processing-command-line-arguments)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.3 [Parsing command line arguments](ch_node-util-parseargs.html#parsing-command-line-arguments)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.3.1 [The basics](ch_node-util-parseargs.html#the-basics)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.3.2 [Using options multiple times](ch_node-util-parseargs.html#using-options-multiple-times)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.3.3 [More ways of using long and short options](ch_node-util-parseargs.html#more-ways-of-using-long-and-short-options)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.3.4 [Quoting values](ch_node-util-parseargs.html#quoting-values)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.3.5 [Option terminators](ch_node-util-parseargs.html#option-terminators)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.3.6 [Strict `parseArgs()`](ch_node-util-parseargs.html#strict-parseargs)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.4 [`parseArgs` tokens](ch_node-util-parseargs.html#parseargs-tokens)
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.4.1 [Examples of tokens](ch_node-util-parseargs.html#examples-of-tokens)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.4.2 [Using tokens to implement subcommands](ch_node-util-parseargs.html#using-tokens-to-implement-subcommands)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
 - en: In this chapter, we explore how to use the Node.js function `parseArgs()` from
     module `node:util` to parse command line arguments.
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
 - en: 16.1 Imports that are implied in this chapter
+  id: totrans-17
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'The following two imports are implied in every example in this chapter:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The first import is for test assertions we use to check values. The second import
     is for function `parseArgs()` that is the topic of this chapter.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
 - en: 16.2 The steps involved in processing command line arguments
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'The following steps are involved in processing command line arguments:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
 - en: The user inputs a text string.
+  id: totrans-23
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: The shell parses the string into a sequence of words and operators.
+  id: totrans-24
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: If a command is called, it gets zero or more words as arguments.
+  id: totrans-25
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: Our Node.js code receives the words via an Array stored in `process.argv`. [`process`](https://nodejs.org/api/globals.html#process)
     is a global variable on Node.js.
+  id: totrans-26
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: We use `parseArgs()` to turn that Array into something that is more convenient
     to work with.
+  id: totrans-27
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: 'Let’s use the following shell script `args.mjs` with Node.js code to see what
     `process.argv` looks like:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'We start with a simple command:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'If we install the command via npm on Windows, the same command produces the
     following result on the Windows Command shell:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'No matter how we invoke a shell script, `process.argv` always starts with the
     path of the Node.js binary that is used to run our code. Next is the path of our
     script. The Array ends with the actual arguments the were passed to the script.
     In other words: The arguments of a script always start at index 2.'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
 - en: 'Therefore, we change our script so that it looks like this:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Let’s try more complicated arguments:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'These arguments consist of:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
 - en: Option `--str` whose value is the text `abc`. Such an option is called a *string
     option*.
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Option `--bool` which has no associated value – it’s a flag that’s either there
     or not. Such an option is called a *boolean option*.
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Two so-called *positional arguments* which have no names: `home.html` and `main.js`.'
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Two styles of using arguments are common:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
 - en: The main arguments are positional, options provide additional – often optional
     – information.
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Only options are used.
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Written as a JavaScript function call, the previous example would look like
     this (in JavaScript, options usually come last):'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE6]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 16.3 Parsing command line arguments
+  id: totrans-48
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 16.3.1 The basics
+  id: totrans-49
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'If we want `parseArgs()` to parse an Array with arguments, we first need to
     tell it how our options work. Let’s assume our script has:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
 - en: A boolean option `--verbose`
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: An option `--times` that receives non-negative integers. `parseArgs()` has no
     special support for numbers, so we have to make it a string option.
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A string option `--color`
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'We describe these options to `parseArgs()` as follows:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将这些选项描述为 `parseArgs()` 如下：
 - en: '[PRE7]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: As long as a property key of `options` is a valid JavaScript identifier, it
     is up to you if you want to quote it or not. Both have pros and cons. In this
     chapter, they are always quoted. That way, options with non-identifier names such
     as `my-new-option` look the same as those with identifier names.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 只要 `options` 的属性键是有效的 JavaScript 标识符，你可以选择是否引用它。两者都有利弊。在本章中，它们总是被引用。这样，具有非标识符名称的选项（如
+    `my-new-option`）看起来与具有标识符名称的选项相同。
 - en: 'Each entry in `options` can have the following properties (as defined via a
     TypeScript type):'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: '`options` 中的每个条目都可以具有以下属性（通过 TypeScript 类型定义）：'
 - en: '[PRE8]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '`.type` specifies if an option is boolean or string.'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.type` 指定选项是布尔值还是字符串。'
 - en: '`.short` defines the short version of an option. It must be a single character.
     We’ll see soon how to use short versions.'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.short` 定义选项的短版本。必须是单个字符。我们很快将看到如何使用短版本。'
 - en: '`.multiple` indicates if an option can be used at most once or zero or more
     times. We’ll see later what that means.'
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.multiple` 指示选项是否最多可以使用一次或零次或多次。稍后我们将看到这意味着什么。'
 - en: 'The following code uses `parseArgs()` and `options` to parse an Array with
     arguments:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码使用 `parseArgs()` 和 `options` 解析带有参数的数组：
 - en: '[PRE9]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: The prototype of the object stored in `.values` is `null`. That means that we
     can use the `in` operator to check if a property exists, without having to worry
     about inherited properties such as `.toString`.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 存储在 `.values` 中的对象的原型是 `null`。这意味着我们可以使用 `in` 运算符来检查属性是否存在，而不必担心继承的属性，如 `.toString`。
 - en: As mentioned before, the number 5 that is the value of `--times`, is processed
     as a string.
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 如前所述，`--times` 的值为 5，被处理为字符串。
 - en: 'The object we pass to `parseArgs()` has the following TypeScript type:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们传递给 `parseArgs()` 的对象具有以下 TypeScript 类型：
 - en: '[PRE10]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '`.args`: The arguments to parse. If we omit this property, `parseArgs()` uses
     `process.argv`, starting with the element at index 2.'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.args`：要解析的参数。如果省略此属性，`parseArgs()` 将使用 `process.argv`，从索引 2 开始。'
 - en: '`.strict`: If `true`, an exception is thrown if `args` isn’t correct. More
     on that later.'
+  id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.strict`：如果为 `true`，则如果 `args` 不正确，将抛出异常。稍后详细介绍。'
 - en: '`.allowPositionals`: Can `args` contain positional arguments?'
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.allowPositionals`：`args` 是否包含位置参数？'
 - en: 'This is the type of the result of `parseArgs()`:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `parseArgs()` 的结果类型：
 - en: '[PRE11]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '`.values` contains the optional arguments. We have already seen strings and
     booleans as property values. We’ll see Array-valued properties when we explore
     option definitions where `.multiple` is `true`.'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.values` 包含可选参数。我们已经看到字符串和布尔值作为属性值。当我们探索具有 `.multiple` 为 `true` 的选项定义时，我们将看到数组值属性。'
 - en: '`.positionals` contains the positional arguments.'
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.positionals` 包含位置参数。'
 - en: 'Two hyphens are used to refer to the long version of an option. One hyphen
     is used to refer to the short version:'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个连字符用于引用选项的长版本。一个连字符用于引用短版本：
 - en: '[PRE12]'
+  id: totrans-76
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: Note that `.values` contains the long names of the options.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，`.values` 包含选项的长名称。
 - en: 'We conclude this subsection by parsing positional arguments that are mixed
     with optional arguments:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们通过解析混合了可选参数的位置参数来结束本小节：
 - en: '[PRE13]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 16.3.2 Using options multiple times
+  id: totrans-80
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.3.2 多次使用选项
 - en: 'If we use an option multiple times, the default is that only the last time
     counts. It overrides all previous occurrences:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们多次使用一个选项，默认情况下只有最后一次计数。它会覆盖所有先前的出现：
 - en: '[PRE14]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'If, however, we set `.multiple` to `true` in the definition of an option, `parseArgs()`
     gives us all option values in an Array:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，如果我们在选项的定义中将 `.multiple` 设置为 `true`，`parseArgs()` 将以数组形式给出所有选项值：
 - en: '[PRE15]'
+  id: totrans-84
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 16.3.3 More ways of using long and short options
+  id: totrans-85
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.3.3 更多使用长和短选项的方式
 - en: 'Consider the following options:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下选项：
 - en: '[PRE16]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'The following is a compact way of using multiple boolean options:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下是使用多个布尔选项的简洁方式：
 - en: '[PRE17]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: We can directly attach the value of a long string option via an equals sign.
     That is called an *inline value*.
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过等号直接附加长字符串选项的值。这称为*内联值*。
 - en: '[PRE18]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: Short options can’t have inline values.
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 短选项不能有内联值。
 - en: 16.3.4 Quoting values
+  id: totrans-93
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.3.4 引用值
 - en: So far, all option values and positional values were single words. If we want
     to use values that contain spaces, we need to quote them – with double quotes
     or single quotes. The latter is not supported by all shells, however.
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，所有选项值和位置值都是单词。如果我们想使用包含空格的值，我们需要用双引号或单引号引起来。然而，并非所有 shell 都支持后者。
 - en: 16.3.4.1 How shells parse quoted values
+  id: totrans-95
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 16.3.4.1 Shell 如何解析带引号的值
 - en: 'To examine how shells parse quoted values, we again use the script `args.mjs`:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了检查 shell 如何解析带引号的值，我们再次使用脚本 `args.mjs`：
 - en: '[PRE19]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'On Unix, these are the differences between double quotes and single quotes:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Unix 上，双引号和单引号之间的区别如下：
 - en: 'Double quotes: we can escape quotes with backslashes (which are otherwise passed
     on verbatim) and variables are interpolated:'
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 双引号：我们可以用反斜杠转义引号（否则原样传递），并且可以插入变量：
 - en: '[PRE20]'
+  id: totrans-100
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'Single quotes: all content is passed on verbatim and we can’t escape quotes:'
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 单引号：所有内容都原样传递，我们无法转义引号：
 - en: '[PRE21]'
+  id: totrans-102
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'The following interaction demonstrates option values that are doube-quoted
     and single-quoted:'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下交互演示了双引号和单引号的选项值：
 - en: '[PRE22]'
+  id: totrans-104
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'In the Windows Command shell single quotes are not special in any way:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Windows 命令 shell 中，单引号没有任何特殊含义：
 - en: '[PRE23]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'Quoted option values in the Windows Command shell:'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Windows 命令 shell 中引用的选项值：
 - en: '[PRE24]'
+  id: totrans-108
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'In Windows PowerShell, we can quote with single quotes, variable names are
     not interpolated inside quotes and single quotes can’t be escaped:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Windows PowerShell 中，我们可以用单引号引用，变量名不会在引号内插值，而且单引号无法转义：
 - en: '[PRE25]'
+  id: totrans-110
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 16.3.4.2 How `parseArgs()` handles quoted values
+  id: totrans-111
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 16.3.4.2 `parseArgs()` 如何处理带引号的值
 - en: 'This is how `parseArgs()` handles quoted values:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `parseArgs()` 如何处理带引号的值：
 - en: '[PRE26]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 16.3.5 Option terminators
+  id: totrans-114
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.3.5 选项终结符
 - en: '`parseArgs()` supports so-called *option terminators*: If one of the elements
     of `args` is a double hyphen (`--`), then the remaining arguments are all treated
     as positional.'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: '`parseArgs()` 支持所谓的*选项终结符*：如果 `args` 的一个元素是双连字符（`--`），那么剩余的参数都被视为位置参数。'
 - en: Where are option terminators needed? Some executables invoke other executables,
     e.g. [the `node` executable](https://nodejs.org/api/cli.html#--). Then an option
     terminator can be used to separate the caller’s arguments from the callee’s arguments.
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 选项终止符在哪里需要？一些可执行文件调用其他可执行文件，例如[node可执行文件](https://nodejs.org/api/cli.html#--)。然后，可以使用选项终止符将调用者的参数与被调用者的参数分开。
 - en: 'This is how `parseArgs()` handles option terminators:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`parseArgs()`处理选项终止符的方式：
 - en: '[PRE27]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 16.3.6 Strict `parseArgs()`
+  id: totrans-119
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.3.6 严格的`parseArgs()`
 - en: 'If the option `.strict` is `true` (which is the default), then `parseArgs()`
     throws an exception if one of the following things happens:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果选项`.strict`为`true`（这是默认值），那么`parseArgs()`如果发生以下情况之一，将抛出异常：
 - en: The name of an option used in `args` is not in `options`.
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`args`中使用的选项名称不在`options`中。'
 - en: An option in `args` has the wrong type. Currently that only haappens if a string
     option is missing an argument.
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`args`中的选项类型错误。目前，仅当字符串选项缺少参数时才会发生这种情况。'
 - en: There are positional arguments in `args` even though `.allowPositions` is `false`
     (which is the default).
+  id: totrans-123
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`args`中有位置参数，即使`.allowPositions`为`false`（这是默认值）。'
 - en: 'The following code demonstrates each of these cases:'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了每种情况：
 - en: '[PRE28]'
+  id: totrans-125
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 16.4 `parseArgs` tokens
+  id: totrans-126
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.4 `parseArgs`标记
 - en: '`parseArgs()` processes the `args` Array in two phases:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: '`parseArgs()`在两个阶段处理`args`数组：'
 - en: 'Phase 1: It parses `args` into an Array of tokens: These tokens are mostly
     the elements of `args` annotated with type information: Is it an option? Is it
     a positional? Etc. However, if an option has a value then the token stores both
     option name and option value and therefore contains the data of two `args` elements.'
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 阶段1：它将`args`解析为标记数组：这些标记大多是带有类型信息的`args`元素：它是一个选项吗？它是一个位置参数吗？等等。但是，如果选项有一个值，那么标记将存储选项名称和选项值，因此包含两个`args`元素的数据。
 - en: 'Phase 2: It assembles the tokens into the object that is returned via the result
     property `.values`.'
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 阶段2：它将标记组装成通过结果属性`.values`返回的对象。
 - en: We can get access to the tokens if we set `config.tokens` to `true`. Then the
     object returned by `parseArgs()` contains a property `.tokens` with the tokens.
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果将`config.tokens`设置为`true`，则可以访问标记。然后，`parseArgs()`返回的对象包含一个名为`.tokens`的属性，其中包含标记。
 - en: 'These are the properties of tokens:'
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是标记的属性：
 - en: '[PRE29]'
+  id: totrans-132
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 16.4.1 Examples of tokens
+  id: totrans-133
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.4.1 标记示例
 - en: 'As an example, consider the following options:'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，考虑以下选项：
 - en: '[PRE30]'
+  id: totrans-135
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'The tokens for boolean options look like this:'
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 布尔选项的标记如下：
 - en: '[PRE31]'
+  id: totrans-137
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: Note that there are three tokens for option `bool` because it is mentioned three
     times in `args`. However, due to phase 2 of parsing, there is only one property
     for `bool` in `.values`.
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，对于选项`bool`，有三个标记，因为它在`args`中被提及三次。但是，由于解析的第二阶段，`.values`中只有一个`bool`属性。
 - en: 'In the next example, we parse string options into tokens. `.inlineValue` has
     boolean values now (it is always `undefined` for boolean options):'
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，我们将字符串选项解析为标记。`.inlineValue`现在具有布尔值（对于布尔选项，它始终为`undefined`）：
 - en: '[PRE32]'
+  id: totrans-140
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'Lastly, this is an example of parsing positional arguments and an option terminator:'
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，这是解析位置参数和选项终止符的示例：
 - en: '[PRE33]'
+  id: totrans-142
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 16.4.2 Using tokens to implement subcommands
+  id: totrans-143
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.4.2 使用标记实现子命令
 - en: By default, `parseArgs()` does not support subcommands such as `git clone` or
     `npm install`. However, it is relatively easy to implement this functionality
     via tokens.
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，`parseArgs()`不支持`git clone`或`npm install`等子命令。但是，通过标记，相对容易实现此功能。
 - en: 'This is the implementation:'
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是实现方式：
 - en: '[PRE34]'
+  id: totrans-146
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'This is `parseSubcommand()` in action:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`parseSubcommand()`的示例：
 - en: '[PRE35]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/16)'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/nodejs-shell-scripting/issues/16)'
