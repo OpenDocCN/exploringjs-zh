@@ -768,11 +768,13 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.3.3 建议：更喜欢基于字符串的枚举
 - en: 'My recommendation is to prefer string-based enums (for brevity’s sake, this
     chapter doesn’t always follow this recommendation):'
   id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 我的建议是更喜欢基于字符串的枚举（为了简洁起见，本章并不总是遵循此建议）：
 - en: '[PRE13]'
   id: totrans-128
   prefs: []
@@ -782,6 +784,7 @@
   id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 一方面，日志输出对人类更有用：
 - en: '[PRE14]'
   id: totrans-130
   prefs: []
@@ -791,6 +794,7 @@
   id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，我们获得了更严格的类型检查：
 - en: '[PRE15]'
   id: totrans-132
   prefs: []
@@ -800,93 +804,111 @@
   id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 甚至不允许等于成员值的字符串（行A）。
 - en: 12.4 Use cases for enums
   id: totrans-134
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.4 枚举的用例
 - en: '12.4.1 Use case: bit patterns'
   id: totrans-135
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.4.1 用例：位模式
 - en: 'In [the Node.js file system module](https://nodejs.org/api/fs.html), several
     functions have the parameter `mode`. It specifies file permissions, via a numeric
     encoding that is a holdover from Unix:'
   id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 在[Node.js文件系统模块](https://nodejs.org/api/fs.html)中，有几个函数具有参数`mode`。它通过数字编码指定文件权限，这是Unix的遗留物：
 - en: 'Permissions are specified for three categories of users:'
   id: totrans-137
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 权限指定了三类用户的权限：
 - en: 'User: the owner of the file'
   id: totrans-138
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 用户：文件的所有者
 - en: 'Group: the members of the group associated with the file'
   id: totrans-139
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 组：与文件关联的组的成员
 - en: 'All: everyone'
   id: totrans-140
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有人：所有人
 - en: 'Per category, the following permissions can be granted:'
   id: totrans-141
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 按类别，可以授予以下权限：
 - en: 'r (read): the users in the category are allowed to read the file'
   id: totrans-142
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: r（读取）：允许类别中的用户读取文件
 - en: 'w (write): the users in the category are allowed to change the file'
   id: totrans-143
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: w（写入）：允许类别中的用户更改文件
 - en: 'x (execute): the users in the category are allowed to run the file'
   id: totrans-144
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: x（执行）：允许类别中的用户运行文件
 - en: 'That means that permissions can be represented by 9 bits (3 categories with
     3 permissions each):'
   id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 这意味着权限可以由9位表示（每个类别有3个权限）：
 - en: '|  | User | Group | All |'
   id: totrans-146
   prefs: []
   type: TYPE_TB
+  zh: '|  | 用户 | 组 | 所有人 |'
 - en: '| --- | --- | --- | --- |'
   id: totrans-147
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- |'
 - en: '| Permissions | r, w, x | r, w, x | r, w, x |'
   id: totrans-148
   prefs: []
   type: TYPE_TB
+  zh: '| 权限 | r，w，x | r，w，x | r，w，x |'
 - en: '| Bit | 8, 7, 6 | 5, 4, 3 | 2, 1, 0 |'
   id: totrans-149
   prefs: []
   type: TYPE_TB
+  zh: '| 位 | 8, 7, 6 | 5, 4, 3 | 2, 1, 0 |'
 - en: 'Node.js doesn’t do this, but we could use an enum to work with these flags:'
   id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js不这样做，但我们可以使用枚举来处理这些标志：
 - en: '[PRE16]'
   id: totrans-151
   prefs: []
@@ -896,6 +918,7 @@
   id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 位模式通过[按位或](https://exploringjs.com/impatient-js/ch_numbers.html#binary-bitwise-operators)进行组合：
 - en: '[PRE17]'
   id: totrans-153
   prefs: []
@@ -906,16 +929,19 @@
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.4.1.1 位模式的替代方案
 - en: The main idea behind bit patterns is that there is a set of flags and that any
     subset of those flags can be chosen.
   id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 位模式的主要思想是有一组标志，可以选择这些标志的任何子集。
 - en: 'Therefore, using real sets to choose subsets is a more straightforward way
     of performing the same task:'
   id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，使用真实集合来选择子集是执行相同任务的更直接的方式：
 - en: '[PRE18]'
   id: totrans-157
   prefs: []
@@ -926,10 +952,12 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.4.2 用例：多个常量
 - en: 'Sometimes, we have sets of constants that belong together:'
   id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，我们有一组属于一起的常量：
 - en: '[PRE19]'
   id: totrans-160
   prefs: []
@@ -939,6 +967,7 @@
   id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是枚举的一个很好的用例：
 - en: '[PRE20]'
   id: totrans-162
   prefs: []
@@ -949,11 +978,13 @@
   id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 枚举的一个好处是常量名称被分组并嵌套在命名空间`LogLevel`中。
 - en: 'Another one is that we automatically get the type `LogLevel` for them. If we
     want such a type for the constants, we need more work:'
   id: totrans-164
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个是我们自动获得了类型`LogLevel`。如果我们想要这样的类型用于常量，我们需要更多的工作：
 - en: '[PRE21]'
   id: totrans-165
   prefs: []
@@ -964,24 +995,29 @@
   id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关此方法的更多信息，请参见[§13.1.3“符号单例类型的联合”](ch_enum-alternatives.html#unions-of-symbol-singleton-types)。
 - en: '12.4.3 Use case: more self-descriptive than booleans'
   id: totrans-167
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.4.3 用例：比布尔值更具自描述性
 - en: When booleans are used to represent alternatives, enums are usually more self-descriptive.
   id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 当布尔值用于表示替代方案时，枚举通常更具自描述性。
 - en: '12.4.3.1 Boolean-ish example: ordered vs. unordered lists'
   id: totrans-169
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.4.3.1 布尔示例：有序vs. 无序列表
 - en: 'For example, to represent whether a list is ordered or not, we can use a boolean:'
   id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，要表示列表是否有序，我们可以使用布尔值：
 - en: '[PRE22]'
   id: totrans-171
   prefs: []
@@ -992,6 +1028,7 @@
   id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，枚举更具自描述性，并且具有额外的好处，即如果需要，我们可以随后添加更多的替代方案。
 - en: '[PRE23]'
   id: totrans-173
   prefs: []
@@ -1002,10 +1039,12 @@
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.4.3.2 布尔示例：错误处理模式
 - en: 'Similarly, we can specify how to handle errors via a boolean value:'
   id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 同样，我们可以通过布尔值指定如何处理错误：
 - en: '[PRE24]'
   id: totrans-176
   prefs: []
@@ -1015,6 +1054,7 @@
   id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者我们可以通过枚举值来实现：
 - en: '[PRE25]'
   id: totrans-178
   prefs: []
@@ -1025,10 +1065,12 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.4.4 用例：更好的字符串常量
 - en: Consider the following function that creates regular expressions.
   id: totrans-180
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下创建正则表达式的函数。
 - en: '[PRE26]'
   id: totrans-181
   prefs: []
@@ -1038,6 +1080,7 @@
   id: totrans-182
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用枚举而不是字符串常量：
 - en: '[PRE27]'
   id: totrans-183
   prefs: []
@@ -1047,27 +1090,32 @@
   id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法的好处是什么？
 - en: It is more concise.
   id: totrans-185
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它更简洁。
 - en: 'It is slightly safer: The type `Globalness` only accepts member names, not
     strings.'
   id: totrans-186
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它稍微更安全：类型`Globalness`只接受成员名称，而不是字符串。
 - en: 12.5 Enums at runtime
   id: totrans-187
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.5 运行时的枚举
 - en: 'TypeScript compiles enums to JavaScript objects. As an example, take the following
     enum:'
   id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript将枚举编译为JavaScript对象。例如，考虑以下枚举：
 - en: '[PRE28]'
   id: totrans-189
   prefs: []
@@ -1077,6 +1125,7 @@
   id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript将此枚举编译为：
 - en: '[PRE29]'
   id: totrans-191
   prefs: []
@@ -1086,6 +1135,7 @@
   id: totrans-192
   prefs: []
   type: TYPE_NORMAL
+  zh: 在此代码中，进行了以下赋值：
 - en: '[PRE30]'
   id: totrans-193
   prefs: []
@@ -1095,26 +1145,31 @@
   id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两组赋值：
 - en: The first two assignments map enum member names to values.
   id: totrans-195
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 前两个赋值将枚举成员名称映射到值。
 - en: The second two assignments map values to names. That enables *reverse mappings*,
     which we will look at next.
   id: totrans-196
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 接下来的两个赋值将值映射到名称。这使得*反向映射*成为可能，接下来我们将看一下。
 - en: 12.5.1 Reverse mappings
   id: totrans-197
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.5.1 反向映射
 - en: 'Given a numeric enum:'
   id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定一个数字枚举：
 - en: '[PRE31]'
   id: totrans-199
   prefs: []
@@ -1124,6 +1179,7 @@
   id: totrans-200
   prefs: []
   type: TYPE_NORMAL
+  zh: 正常映射是从成员名称到成员值：
 - en: '[PRE32]'
   id: totrans-201
   prefs: []
@@ -1134,6 +1190,7 @@
   id: totrans-202
   prefs: []
   type: TYPE_NORMAL
+  zh: 数字枚举还支持从成员值到成员名称的*反向映射*：
 - en: '[PRE33]'
   id: totrans-203
   prefs: []
@@ -1143,6 +1200,7 @@
   id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: 反向映射的一个用例是打印枚举成员的名称：
 - en: '[PRE34]'
   id: totrans-205
   prefs: []
@@ -1153,14 +1211,17 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.5.2 运行时的基于字符串的枚举
 - en: String-based enums have a simpler representation at runtime.
   id: totrans-207
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于字符串的枚举在运行时具有更简单的表示。
 - en: Consider the following enum.
   id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下枚举。
 - en: '[PRE35]'
   id: totrans-209
   prefs: []
@@ -1170,6 +1231,7 @@
   id: totrans-210
   prefs: []
   type: TYPE_NORMAL
+  zh: 它编译为以下JavaScript代码：
 - en: '[PRE36]'
   id: totrans-211
   prefs: []
@@ -1179,6 +1241,7 @@
   id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript不支持基于字符串的枚举的反向映射。
 - en: 12.6 `const` enums
   id: totrans-213
   prefs:

@@ -1,877 +1,1236 @@
 - en: 13 Alternatives to enums in TypeScript
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_enum-alternatives.html](https://exploringjs.com/tackling-ts/ch_enum-alternatives.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: 13.1 [Unions of singleton values](ch_enum-alternatives.html#unions-of-singleton-values)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.1.1 [Primitive literal types](ch_enum-alternatives.html#primitive-literal-types)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.1.2 [Unions of string literal types](ch_enum-alternatives.html#unions-of-string-literal-types)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.1.3 [Unions of symbol singleton types](ch_enum-alternatives.html#unions-of-symbol-singleton-types)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.1.4 [Conclusion of this section: union types vs. enums](ch_enum-alternatives.html#conclusion-of-this-section-union-types-vs.-enums)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.2 [Discriminated unions](ch_enum-alternatives.html#discriminated-union)
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.2.1 [Step 1: the syntax tree as a class hierarchy](ch_enum-alternatives.html#step-1-the-syntax-tree-as-a-class-hierarchy)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.2.2 [Step 2: the syntax tree as a union type of classes](ch_enum-alternatives.html#step-2-the-syntax-tree-as-a-union-type-of-classes)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.2.3 [Step 3: the syntax tree as a discriminated union](ch_enum-alternatives.html#step-3-the-syntax-tree-as-a-discriminated-union)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.2.4 [Discriminated unions vs. normal union types](ch_enum-alternatives.html#discriminated-unions-vs.-normal-union-types)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.3 [Object literals as enums](ch_enum-alternatives.html#object-literals-as-enums)
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.3.1 [Object literals with string-valued properties](ch_enum-alternatives.html#object-literals-with-string-valued-properties)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.3.2 [Upsides and downsides of using object literals as enums](ch_enum-alternatives.html#upsides-and-downsides-of-using-object-literals-as-enums)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.4 [Enum pattern](ch_enum-alternatives.html#enum-pattern)
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.5 [Summary of enums and enum alternatives](ch_enum-alternatives.html#summary-of-enums-and-enum-alternatives)
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.6 [Acknowledgement](ch_enum-alternatives.html#acknowledgement)
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: '[The previous chapter](ch_enums.html) explored how TypeScript enums work. In
     this chapter, we take a look at alternatives to enums.'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
 - en: 13.1 Unions of singleton values
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: An enum maps member names to member values. If we don’t need or want the indirection,
     we can use a union of so-called *primitive literal types* – one per value. Before
     we can go into details, we need to learn about primitive literal types.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
 - en: 13.1.1 Primitive literal types
+  id: totrans-23
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '[Quick recap](ch_typescript-essentials.html#types-in-typescript): We can consider
     types to be sets of values.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
 - en: 'A *singleton type* is a type with one element. Primitive literal types are
     singleton types:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`UndefinedLiteralType` is the type with the single element `undefined`, etc.'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
 - en: 'It is important to be aware of the two language levels at play here (we have
     already encountered those levels [earlier in this book](ch_typescript-essentials.html#language-levels)).
     Consider the following variable declaration:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The first `'abc'` represents a type (a string literal type).
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The second `'abc'` represents a value.
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Two use cases for primitive literal types are:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
 - en: '[Overloading on string parameters](ch_typing-functions.html#overloading-on-string-parameters)
     which enables the first argument of the following method call to determine the
     type of the second argument:'
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-34
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'We can use a union of primitive literal types to define a type by enumerating
     its members:'
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-36
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Read on for more information about the second use case.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
 - en: 13.1.2 Unions of string literal types
+  id: totrans-38
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: We’ll start with an enum and convert it to a union of string literal types.
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '`NoYesStrings` is the union type version of `NoYesEnum`:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: The type `NoYesStrings` is the union of the string literal types `'No'` and
     `'Yes'`. The union type operator `|` is related to the set-theoretic union operator
     `∪`.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
 - en: 13.1.2.1 Unions of string literal types can be checked for exhaustiveness
+  id: totrans-44
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'The following code demonstrates that exhaustiveness checks work for unions
     of string literal types:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE6]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: We forgot the case for `'No'` and TypeScript warns us that the function may
     return values that are not strings.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
 - en: 'We could have also checked exhaustiveness more explicitly:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE7]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: Now TypeScript warns us that we reach the `default` case if `value` is `'No'`.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在 TypeScript 警告我们，如果 `value` 是 `'No'`，则会到达 `default` 情况。
 - en: '![](../Images/65d35c0a2478236e12cc4321e1b02db6.png)  **More information on
     exhaustiveness checking**'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/65d35c0a2478236e12cc4321e1b02db6.png)  **有关穷尽性检查的更多信息**'
 - en: For more information on this topic, see [§12.7.2.2 “Protecting against forgetting
     cases via exhaustiveness checks”](ch_enums.html#exhaustiveness-checks).
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关此主题的更多信息，请参见[§12.7.2.2 “通过穷尽性检查防止遗漏情况”](ch_enums.html#exhaustiveness-checks)。
 - en: '13.1.2.2 Downside: unions of string literals are less type-safe'
+  id: totrans-53
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.1.2.2 缺点：字符串文字的联合类型在类型安全性上不如其他类型
 - en: 'One downside of string literal unions is that non-member values can mistaken
     for members:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 字符串文字联合的一个缺点是非成员值可能被误认为是成员：
 - en: '[PRE8]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: This is logical because the Spanish `'no'` and the English `'no'` are the same
     value. The actual problem is that there is no way to give them different identities.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是合理的，因为西班牙语的 `'no'` 和英语的 `'no'` 是相同的值。实际问题在于没有办法给它们不同的标识。
 - en: 13.1.3 Unions of symbol singleton types
+  id: totrans-57
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.1.3 符号单例类型的联合
 - en: '13.1.3.1 Example: `LogLevel`'
+  id: totrans-58
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.1.3.1 示例：`LogLevel`
 - en: 'Instead of unions of string literal types, we can also use unions of symbol
     singleton types. Let’s start with a different enum this time:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以使用符号单例类型的联合，而不是字符串文字类型的联合。这次让我们从一个不同的枚举开始：
 - en: '[PRE9]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Translated to a union of symbol singleton types, it looks as follows:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 转换为符号单例类型的联合，如下所示：
 - en: '[PRE10]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: Why do we need `typeof` here? `off` etc. are values and can’t appear in type
     equations. The type operator `typeof` fixes this issue by converting values to
     types.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么我们在这里需要 `typeof`？`off` 等是值，不能出现在类型方程中。类型运算符 `typeof` 通过将值转换为类型来解决此问题。
 - en: Let’s consider two variations of the previous example.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们考虑前面示例的两种变体。
 - en: '13.1.3.2 Variation #1: inlined symbols'
+  id: totrans-65
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '13.1.3.2 变体 #1：内联符号'
 - en: 'Can we inline the symbols (instead of referring to separate `const` declarations)?
     Alas, the operand of the type operator `typeof` must be an identifier or a “path”
     of identifiers separated by dots. Therefore, this syntax is illegal:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以内联符号（而不是引用单独的 `const` 声明）吗？遗憾的是，类型运算符 `typeof` 的操作数必须是标识符或由点分隔的标识符“路径”。因此，这种语法是非法的：
 - en: '[PRE11]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '13.1.3.3 Variation #2: `let` instead of `const`'
+  id: totrans-68
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '13.1.3.3 变体 #2：`let` 而不是 `const`'
 - en: Can we use `let` instead of `const` to declare the variables? (That’s not necessarily
     an improvement but still an interesting question.)
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用 `let` 而不是 `const` 来声明变量吗？（这不一定是一种改进，但仍然是一个有趣的问题。）
 - en: 'We can’t because we need the narrower types that TypeScript infers for `const`-declared
     variables:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不能这样做，因为我们需要 TypeScript 为 `const` 声明的变量推断出更窄的类型：
 - en: '[PRE12]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: With `let`, `LogLevel` would simply have been an alias for `symbol`.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用 `let`，`LogLevel` 只是 `symbol` 的别名。
 - en: '`const` assertions normally solve this kind of problem. But they don’t work
     in this case:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: '`const` 断言通常解决这种问题。但在这种情况下不起作用：'
 - en: '[PRE13]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 13.1.3.4 Using `LogLevel` in a function
+  id: totrans-75
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.1.3.4 在函数中使用 `LogLevel`
 - en: 'The following function translates members of `LogLevel` to strings:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数将 `LogLevel` 的成员转换为字符串：
 - en: '[PRE14]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 13.1.3.5 Unions of symbol singleton types vs. unions of string literal types
+  id: totrans-78
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.1.3.5 符号单例类型的联合 vs. 字符串文字类型的联合
 - en: How do the two approaches compare?
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 这两种方法如何比较？
 - en: Exhaustiveness checks work for both.
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 穷尽性检查对两者都适用。
 - en: Using symbols is more verbose.
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用符号更加冗长。
 - en: Each symbol “literal” creates a unique symbol that can’t be confused with any
     other symbol. That’s not true for string literals. Read on for details.
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个符号“文字”都创建一个独特的符号，不会与任何其他符号混淆。对于字符串文字来说并非如此。详情请继续阅读。
 - en: 'Recall this example where the Spanish `''no''` was confused with the English
     `''no''`:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 回想一下西班牙语的 `'no'` 被误认为是英语的 `'no'` 的例子：
 - en: '[PRE15]'
+  id: totrans-84
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'If we use symbols, we don’t have this problem:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用符号，我们就不会有这个问题：
 - en: '[PRE16]'
+  id: totrans-86
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '13.1.4 Conclusion of this section: union types vs. enums'
+  id: totrans-87
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.1.4 本节的结论：联合类型 vs. 枚举
 - en: 'Union types and enums have some things in common:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 联合类型和枚举有一些共同点：
 - en: 'We can auto-complete member values. However, we do it differently:'
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以自动完成成员值。但我们做法不同：
 - en: With enums, we get auto-completion after the enum name and a dot.
+  id: totrans-90
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用枚举后，我们在枚举名称和点之后获得自动完成。
 - en: With union types, we have to explicitly trigger auto-completion.
+  id: totrans-91
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用联合类型，我们必须显式触发自动完成。
 - en: Exhaustiveness checks also work for both.
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 穷尽性检查对两者也适用。
 - en: 'But they also differ. Downsides of unions of symbol singleton types are:'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 但它们也有不同之处。联合符号单例类型的缺点是：
 - en: They are slightly verbose.
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们稍微冗长。
 - en: There is no namespace for their members.
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们没有成员的命名空间。
 - en: 'It’s slightly harder to migrate from them to different constructs (should it
     be necessary): It’s easier to find where enum member values are mentioned.'
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从它们迁移到不同的结构（如果有必要的话）稍微困难一些：更容易找到枚举成员值被提及的地方。
 - en: 'Upsides of unions of symbol singleton types are:'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 联合符号单例类型的优势是：
 - en: They are not a custom TypeScript language construct and therefore closer to
     plain JavaScript.
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们不是自定义的 TypeScript 语言构造，因此更接近纯 JavaScript。
 - en: String enums are only type-safe at compile time. Unions of symbol singleton
     types are additionally type-safe at runtime.
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串枚举只在编译时是类型安全的。符号单例类型的联合在运行时也是类型安全的。
 - en: This matters especially if our compiled TypeScript code interacts with plain
     JavaScript code.
+  id: totrans-100
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这一点尤其重要，如果我们编译后的 TypeScript 代码与纯 JavaScript 代码交互。
 - en: 13.2 Discriminated unions
+  id: totrans-101
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.2 辨别联合
 - en: '[Discriminated unions](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions)
     are related to [algebraic data types](https://wiki.haskell.org/Algebraic_data_type)
     in functional programming languages.'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: '[辨别联合](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions)与函数式编程语言中的[代数数据类型](https://wiki.haskell.org/Algebraic_data_type)相关。'
 - en: 'To understand how they work, consider the data structure *syntax tree* that
     represents expressions such as:'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 要理解它们的工作原理，请考虑表示表达式的数据结构 *语法树*：
 - en: '[PRE17]'
+  id: totrans-104
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'A syntax tree is either:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 语法树要么是：
 - en: A number
+  id: totrans-106
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个数字
 - en: The addition of two syntax trees
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 两个语法树的相加
 - en: 'Next steps:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一步：
 - en: We’ll start by creating an object-oriented class hierarchy for syntax trees.
+  id: totrans-109
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们将首先为语法树创建一个面向对象的类层次结构。
 - en: Then we’ll transform it into something slightly more functional.
+  id: totrans-110
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 然后我们将把它转换为稍微更加功能化的东西。
 - en: And finally, we’ll end up with a discriminated union.
+  id: totrans-111
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 最后，我们将得到一个歧视联合。
 - en: '13.2.1 Step 1: the syntax tree as a class hierarchy'
+  id: totrans-112
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.2.1 第1步：将语法树作为类层次结构
 - en: 'This is a typical object-oriented implementation of a syntax tree:'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个典型的面向对象的语法树实现：
 - en: '[PRE18]'
+  id: totrans-114
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '`SyntaxTree1` is the superclass of `NumberValue1` and `Addition1`. The keyword
     `public` is syntactic sugar for:'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: '`SyntaxTree1`是`NumberValue1`和`Addition1`的超类。关键字`public`在语法上是为了方便：'
 - en: Declaring the instance property `.numberValue`
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 声明实例属性`.numberValue`
 - en: Initializing this property via the parameter `numberValue`
+  id: totrans-117
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过参数`numberValue`初始化该属性
 - en: 'This is an example of using `SyntaxTree1`:'
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是使用`SyntaxTree1`的示例：
 - en: '[PRE19]'
+  id: totrans-119
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'Note: [Trailing commas in argument lists](https://exploringjs.com/es2016-es2017/ch_trailing-comma-parameters.html)
     are allowed in JavaScript since ECMAScript 2016.'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：[JavaScript中允许在参数列表中使用尾随逗号](https://exploringjs.com/es2016-es2017/ch_trailing-comma-parameters.html)
+    自ECMAScript 2016以来。
 - en: '13.2.2 Step 2: the syntax tree as a union type of classes'
+  id: totrans-121
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.2.2 第2步：将语法树作为类的联合类型
 - en: 'If we define the syntax tree via a union type (line A), we don’t need object-oriented
     inheritance:'
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们通过联合类型定义语法树（行A），我们就不需要面向对象的继承：
 - en: '[PRE20]'
+  id: totrans-123
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: Since `NumberValue2` and `Addition2` don’t have a superclass, they don’t need
     to invoke `super()` in their constructors.
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于`NumberValue2`和`Addition2`没有超类，它们不需要在它们的构造函数中调用`super()`。
 - en: 'Interestingly, we create trees in the same manner as before:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，我们以与以前相同的方式创建树：
 - en: '[PRE21]'
+  id: totrans-126
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '13.2.3 Step 3: the syntax tree as a discriminated union'
+  id: totrans-127
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.2.3 第3步：将语法树作为歧视联合
 - en: 'Finally, we get to discriminated unions. These are the type definitions for
     `SyntaxTree3`:'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，我们转向了歧视联合。这些是`SyntaxTree3`的类型定义：
 - en: '[PRE22]'
+  id: totrans-129
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: We have switched from classes to interfaces and therefore from instances of
     classes to plain objects.
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经从类切换到了接口，因此从类的实例切换到了普通对象。
 - en: The interfaces of a discriminated union must have at least one property in common
     and that property must have a different value for each one of them. That property
     is called the *discriminant* or *tag*. The discriminant of `SyntaxTree3` is `.kind`.
     Its types are [string literal types](ch_enum-alternatives.html#primitive-literal-types).
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 歧视联合的接口必须至少有一个共同的属性，并且该属性必须对每个属性具有不同的值。该属性称为*歧视器*或*标签*。`SyntaxTree3`的歧视器是`.kind`。它的类型是[字符串字面类型](ch_enum-alternatives.html#primitive-literal-types)。
 - en: 'Compare:'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较：
 - en: The direct class of an instance is determined by its prototype.
+  id: totrans-133
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 实例的直接类由其原型确定。
 - en: The type of a member of a discriminated union is determined by its discriminant.
+  id: totrans-134
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 歧视联合的成员类型由其歧视器确定。
 - en: 'This is an object that matches `SyntaxTree3`:'
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个与`SyntaxTree3`匹配的对象：
 - en: '[PRE23]'
+  id: totrans-136
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: We don’t need the type annotation in line A, but it helps ensure that the data
     has the correct structure. If we don’t do it here, we’ll find out about problems
     later.
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在A行不需要类型注释，但它有助于确保数据具有正确的结构。如果我们不在这里这样做，我们以后会发现问题。
 - en: 'In the next example, the type of `tree` is a discriminated union. Every time
     we check its discriminant (line C), TypeScript updates its static type accordingly:'
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，`tree`的类型是歧视联合。每次检查其歧视器（行C）时，TypeScript都会相应地更新其静态类型：
 - en: '[PRE24]'
+  id: totrans-139
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: In line A, we haven’t checked the discriminant `.kind`, yet. Therefore, the
     current type of `tree` is still `SyntaxTree3` and we can’t access property `.numberValue`
     in line B (because only one of the types of the union has this property).
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 在A行，我们还没有检查过歧视器`.kind`。因此，`tree`的当前类型仍然是`SyntaxTree3`，我们无法在B行访问属性`.numberValue`（因为联合类型的类型只有一个具有此属性）。
 - en: In line D, TypeScript knows that `.kind` is `'number-value'` and can therefore
     infer the type `NumberValue3` for `tree`. That’s why accessing `.numberValue`
     in the next line is OK, this time.
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 在D行，TypeScript知道`.kind`是`'number-value'`，因此可以推断出`tree`的类型为`NumberValue3`。这就是为什么在下一行访问`.numberValue`是可以的，这次。
 - en: 13.2.3.1 Implementing functions for discriminated unions
+  id: totrans-142
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.2.3.1 实现歧视联合的函数
 - en: We conclude this step with an example of how to implement functions for discriminated
     unions.
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们用一个实现歧视联合的函数示例来结束这一步。
 - en: 'If there is an operation that can be applied to members of all subtypes, the
     approaches for classes and discriminated unions differ:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果有一个操作可以应用于所有子类型的成员，则类和歧视联合的方法不同：
 - en: 'Object-oriented approach: With classes, it is common to use a polymorphic method
     where each class has a different implementation.'
+  id: totrans-145
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 面向对象的方法：使用类时，通常使用多态方法，其中每个类都有不同的实现。
 - en: 'Functional approach: With discriminated unions, it is common to use a single
     function that handles all possibles cases and decides what to do by examining
     the discriminant of its parameter.'
+  id: totrans-146
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 功能方法：使用歧视联合时，通常使用一个处理所有可能情况并通过检查其参数的歧视器来决定要执行什么操作的单个函数。
 - en: The following example demonstrates the functional approach. The discriminant
     is examined in line A and determines which of the two `switch` cases is executed.
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例演示了功能方法。歧视器在A行进行检查，并确定执行哪个`switch`情况。
 - en: '[PRE25]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Note that TypeScript performs exhaustiveness checking for discriminated unions:
     If we forget a case, TypeScript will warn us.'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，TypeScript对歧视联合执行穷尽性检查：如果我们忘记了某种情况，TypeScript会警告我们。
 - en: 'This is the object-oriented version of the previous code:'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是先前代码的面向对象版本：
 - en: '[PRE26]'
+  id: totrans-151
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '13.2.3.2 Extensibility: object-oriented approach vs. functional approach'
+  id: totrans-152
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.2.3.2 可扩展性：面向对象的方法 vs. 功能方法
 - en: 'Each approach does one kind of extensibility well:'
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 每种方法都很好地实现了一种可扩展性：
 - en: With the object-oriented approach, we have to modify each class if we want to
     add a new operation. However, adding a new type does not require any changes to
     existing code.
+  id: totrans-154
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用面向对象的方法，如果我们想要添加新操作，就必须修改每个类。但是，添加新类型不需要对现有代码进行任何更改。
 - en: With the functional approach, we have to modify each function if we want to
     add a new type. In contrast, adding new operations is simple.
+  id: totrans-155
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用功能方法时，如果我们想要添加新类型，就必须修改每个函数。相反，添加新操作很简单。
 - en: 13.2.4 Discriminated unions vs. normal union types
+  id: totrans-156
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.2.4 歧视联合 vs. 普通联合类型
 - en: 'Discriminated unions and normal union types have two things in common:'
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
 - en: There is no namespace for member values.
+  id: totrans-158
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: TypeScript performs exhaustiveness checking.
+  id: totrans-159
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'The next two subsections explore two advantages of discriminated unions over
     normal unions:'
+  id: totrans-160
   prefs: []
   type: TYPE_NORMAL
 - en: '13.2.4.1 Benefit: descriptive property names'
+  id: totrans-161
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'With discriminated unions, values get descriptive property names. Let’s compare:'
+  id: totrans-162
   prefs: []
   type: TYPE_NORMAL
 - en: 'Normal union:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE27]'
+  id: totrans-164
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'Discriminated union:'
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE28]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'Now people who read the source code immediately know what the string is: a
     native pathname.'
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
 - en: '13.2.4.2 Benefit: We can also use it when the parts are indistinguishable'
+  id: totrans-168
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: The following discriminated union cannot be implemented as a normal union because
     we can’t distinguish the types of the union in TypeScript.
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE29]'
+  id: totrans-170
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 13.3 Object literals as enums
+  id: totrans-171
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'The following pattern for implementing enums is common in JavaScript:'
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE30]'
+  id: totrans-173
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'We can attempt to use it in TypeScript as follows:'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE31]'
+  id: totrans-175
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'Alas, the type of each property of `Color` is `symbol` (line A) and `TColor`
     (line B) is an alias for `symbol`. As a consequence, we can pass any symbol to
     `toGerman()` and TypeScript won’t complain at compile time:'
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE32]'
+  id: totrans-177
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'A `const` assertion often helps in this kind of situation but not this time:'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE33]'
+  id: totrans-179
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'The only way to fix this is via constants:'
+  id: totrans-180
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE34]'
+  id: totrans-181
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 13.3.1 Object literals with string-valued properties
+  id: totrans-182
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '[PRE35]'
+  id: totrans-183
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: We need [`as const`](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions)
     in line A so that the properties of `Color` don’t have the more general type `string`.
     Then `TColor` also has a type that is more specific than `string`.
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
 - en: 'Compared to using an object with symbol-valued properties as an enum, string-valued
     properties are:'
+  id: totrans-185
   prefs: []
   type: TYPE_NORMAL
 - en: Better at development time because we get exhaustiveness checks and can derive
     a narrow type for the values (without using external constants).
+  id: totrans-186
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Worse at runtime because strings can be mistaken for enum values.
+  id: totrans-187
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.3.2 Upsides and downsides of using object literals as enums
+  id: totrans-188
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Upsides:'
+  id: totrans-189
   prefs: []
   type: TYPE_NORMAL
 - en: We have a namespace for the values.
+  id: totrans-190
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: We don’t use a custom construct and are closer to plain JavaScript.
+  id: totrans-191
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: We can derive a narrow type for enum values (if we use string-valued properties).
+  id: totrans-192
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Exhaustiveness checks are performed for such a type.
+  id: totrans-193
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Downsides:'
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
 - en: No dynamic membership check is possible (without extra work).
+  id: totrans-195
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Non-enum values can be mistaken for enum values statically or at runtime (if
     we use string-valued properties).
+  id: totrans-196
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.4 Enum pattern
+  id: totrans-197
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'The following example demonstrates [a Java-inspired enum pattern](https://2ality.com/2020/01/enum-pattern.html)
     that works in plain JavaScript and TypeScript:'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE36]'
+  id: totrans-199
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: Alas, TypeScript doesn’t perform exhaustiveness checks, which is why we get
     an error in line A.
+  id: totrans-200
   prefs: []
   type: TYPE_NORMAL
 - en: 13.5 Summary of enums and enum alternatives
+  id: totrans-201
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'The following table summarizes the characteristics of enums and their alternatives
     in TypeScript:'
+  id: totrans-202
   prefs: []
   type: TYPE_NORMAL
 - en: '|  | Unique | Namesp. | Iter. | Mem. CT | Mem. RT | Exhaust. |'
+  id: totrans-203
   prefs: []
   type: TYPE_TB
 - en: '| --- | --- | --- | --- | --- | --- | --- |'
+  id: totrans-204
   prefs: []
   type: TYPE_TB
 - en: '| Number enums | `-` | `✔` | `✔` | `✔` | `-` | `✔` |'
+  id: totrans-205
   prefs: []
   type: TYPE_TB
 - en: '| String enums | `✔` | `✔` | `✔` | `✔` | `-` | `✔` |'
+  id: totrans-206
   prefs: []
   type: TYPE_TB
 - en: '| String unions | `-` | `-` | `-` | `✔` | `-` | `✔` |'
+  id: totrans-207
   prefs: []
   type: TYPE_TB
 - en: '| Symbol unions | `✔` | `-` | `-` | `✔` | `-` | `✔` |'
+  id: totrans-208
   prefs: []
   type: TYPE_TB
 - en: '| Discrim. unions | `-` (1) | `-` | `-` | `✔` | `-` (2) | `✔` |'
+  id: totrans-209
   prefs: []
   type: TYPE_TB
 - en: '| Symbol properties | `✔` | `✔` | `✔` | `-` | `-` | `-` |'
+  id: totrans-210
   prefs: []
   type: TYPE_TB
 - en: '| String properties | `-` | `✔` | `✔` | `✔` | `-` | `✔` |'
+  id: totrans-211
   prefs: []
   type: TYPE_TB
 - en: '| Enum pattern | `✔` | `✔` | `✔` | `✔` | `✔` | `-` |'
+  id: totrans-212
   prefs: []
   type: TYPE_TB
 - en: 'Titles of table columns:'
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
 - en: 'Unique values: No non-enum value can be mistaken for an enum value.'
+  id: totrans-214
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Namespace for enum keys
+  id: totrans-215
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Is it possible to iterate over enum values?
+  id: totrans-216
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Membership check for values at compile time: Is there a narrow type for the
     enum values?'
+  id: totrans-217
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Membership check for values at runtime:'
+  id: totrans-218
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: For the enum pattern, the runtime membership test is `instanceof`.
+  id: totrans-219
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: Note that a membership test can be implemented relatively easily if it is possible
     to iterate over enum values.
+  id: totrans-220
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: Exhaustiveness check (statically by TypeScript)
+  id: totrans-221
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Footnotes in table cells:'
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
 - en: Discriminated unions are not really unique, but mistaking values for union members
     is relatively unlikely (especially if we use a unique name for the discriminant
     property).
+  id: totrans-223
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 辨别联合并不是真正独特的，但是将值误认为联合成员的可能性相对较小（特别是如果我们为辨别属性使用唯一的名称）。
 - en: If the discriminant property has a unique enough name, it can be used to check
     membership.
+  id: totrans-224
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 如果辨别属性有一个足够独特的名称，它可以用来检查成员资格。
 - en: 13.6 Acknowledgement
+  id: totrans-225
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.6 致谢
 - en: Thanks to [Kirill Sukhomlin](https://twitter.com/kirilloid_ru) for his suggestion
     on how to define `TColor` for an object literal.
+  id: totrans-226
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 感谢[Kirill Sukhomlin](https://twitter.com/kirilloid_ru)提出了如何为对象文字定义`TColor`的建议。
 - en: '[Comments](https://github.com/rauschma/tackling-ts/issues/13)'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/tackling-ts/issues/13)'
