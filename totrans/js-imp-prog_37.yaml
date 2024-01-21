@@ -1,385 +1,577 @@
 - en: 30 Synchronous iteration
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 30 同步迭代
 - en: 原文：[https://exploringjs.com/impatient-js/ch_sync-iteration.html](https://exploringjs.com/impatient-js/ch_sync-iteration.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/impatient-js/ch_sync-iteration.html](https://exploringjs.com/impatient-js/ch_sync-iteration.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 30.1 [What is synchronous iteration about?](ch_sync-iteration.html#what-is-synchronous-iteration-about)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.1 同步迭代是什么？
 - en: '30.2 [Core iteration constructs: iterables and iterators](ch_sync-iteration.html#iterable-iterator-iteratorresult)'
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.2 核心迭代构造：可迭代对象和迭代器
 - en: 30.3 [Iterating manually](ch_sync-iteration.html#iterating-manually)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.3 手动迭代
 - en: 30.3.1 [Iterating over an iterable via `while`](ch_sync-iteration.html#iterating-over-an-iterable-via-while)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.3.1 通过`while`迭代可迭代对象
 - en: 30.4 [Iteration in practice](ch_sync-iteration.html#iteration-in-practice)
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.4 实践中的迭代
 - en: 30.4.1 [Iterating over Arrays](ch_sync-iteration.html#iterating-over-arrays)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.4.1 遍历数组
 - en: 30.4.2 [Iterating over Sets](ch_sync-iteration.html#iterating-over-sets)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.4.2 遍历集合
 - en: '30.5 [Quick reference: synchronous iteration](ch_sync-iteration.html#quick-reference-synchronous-iteration)'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.5 同步迭代的快速参考
 - en: 30.5.1 [Iterable data sources](ch_sync-iteration.html#iterable-data-sources)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.5.1 可迭代数据源
 - en: 30.5.2 [Synchronously iterating language constructs](ch_sync-iteration.html#sync-iterating-constructs)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 30.5.2 同步迭代语言构造
 - en: '* * *'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 30.1 What is synchronous iteration about?
+  id: totrans-14
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 30.1 同步迭代是什么？
 - en: 'Synchronous iteration is a *protocol* (interfaces plus rules for using them)
     that connects two groups of entities in JavaScript:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 同步迭代是一种*协议*（接口加上使用规则），它连接JavaScript中的两组实体：
 - en: '**Data sources:** On one hand, data comes in all shapes and sizes. In JavaScript’s
     standard library, you have the linear data structure Array, the ordered collection
     Set (elements are ordered by time of addition), the ordered dictionary Map (entries
     are ordered by time of addition), and more. In libraries, you may find tree-shaped
     data structures and more.'
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**数据源：** 一方面，数据以各种形状和大小出现。在JavaScript的标准库中，您有线性数据结构数组，有序集合Set（元素按添加时间排序），有序字典Map（条目按添加时间排序）等。在库中，您可能会找到树形数据结构等。'
 - en: '**Data consumers:** On the other hand, you have a whole class of constructs
     and algorithms that only need to access their input *sequentially*: one value
     at a time, until all values were visited. Examples include the `for-of` loop and
     spreading into function calls (via `...`).'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**数据消费者：** 另一方面，您有一整类构造和算法，它们只需要*顺序*访问它们的输入：一次一个值，直到所有值都被访问。例如，`for-of`循环和展开到函数调用（通过`...`）。'
 - en: 'The iteration protocol connects these two groups via the interface `Iterable`:
     data sources deliver their contents sequentially “through it”; data consumers
     get their input via it.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 迭代协议通过接口`Iterable`连接这两组：数据源通过它顺序地“传递其内容”；数据消费者通过它获取其输入。
 - en: '![Figure 18: Data consumers such as the for-of loop use the interface Iterable.
     Data sources such as Arrays implement that interface.](../Images/04fc345e457a6c010f8b61f6ba201e81.png)'
+  id: totrans-19
   prefs: []
   type: TYPE_IMG
+  zh: '![图18：数据消费者如for-of循环使用接口Iterable。数据源如数组实现该接口。](../Images/04fc345e457a6c010f8b61f6ba201e81.png)'
 - en: 'Figure 18: Data consumers such as the `for-of` loop use the interface `Iterable`.
     Data sources such as `Arrays` implement that interface.'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 图18：数据消费者如`for-of`循环使用接口`Iterable`。数据源如`Arrays`实现该接口。
 - en: 'Fig. [18](#fig:iterable-implementers-clients) illustrates how iteration works:
     data consumers use the interface `Iterable`; data sources implement it.'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 图18展示了迭代的工作原理：数据消费者使用接口`Iterable`；数据源实现它。
 - en: '![](../Images/b666ba365e94edaf0ef510fd7e12c7de.png)  **The JavaScript way of
     implementing interfaces**'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/b666ba365e94edaf0ef510fd7e12c7de.png) **实现接口的JavaScript方式**'
 - en: In JavaScript, an object *implements* an interface if it has all the methods
     that it describes. The interfaces mentioned in this chapter only exist in the
     ECMAScript specification.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript中，如果一个对象具有描述的所有方法，它就会*实现*一个接口。本章提到的接口只存在于ECMAScript规范中。
 - en: 'Both sources and consumers of data profit from this arrangement:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据的来源和消费者都从这种安排中受益：
 - en: If you develop a new data structure, you only need to implement `Iterable` and
     a raft of tools can immediately be applied to it.
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果您开发了一个新的数据结构，您只需要实现`Iterable`，就可以立即应用一系列工具。
 - en: If you write code that uses iteration, it automatically works with many sources
     of data.
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果您编写使用迭代的代码，它将自动适用于许多数据源。
 - en: '30.2 Core iteration constructs: iterables and iterators'
+  id: totrans-27
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 30.2 核心迭代构造：可迭代对象和迭代器
 - en: 'Two roles (described by interfaces) form the core of iteration (fig. [19](#fig:iteration-protocol)):'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个角色（由接口描述）构成了迭代的核心（图19）：
 - en: An *iterable* is an object whose contents can be traversed sequentially.
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*可迭代对象*是其内容可以按顺序遍历的对象。'
 - en: An *iterator* is the pointer used for the traversal.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*迭代器*是用于遍历的指针。'
 - en: '![Figure 19: Iteration has two main interfaces: Iterable and Iterator. The
     former has a method that returns the latter.](../Images/d4254788bb2bb7f5a88144606f3d4d28.png)'
+  id: totrans-31
   prefs: []
   type: TYPE_IMG
+  zh: '![图19：迭代有两个主要接口：Iterable和Iterator。前者有一个返回后者的方法。](../Images/d4254788bb2bb7f5a88144606f3d4d28.png)'
 - en: 'Figure 19: Iteration has two main interfaces: `Iterable` and `Iterator`. The
     former has a method that returns the latter.'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 图19：迭代有两个主要接口：`Iterable`和`Iterator`。前者有一个返回后者的方法。
 - en: 'These are type definitions (in TypeScript’s notation) for the interfaces of
     the iteration protocol:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是迭代协议接口的类型定义（在TypeScript的表示法中）：
 - en: '[PRE0]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The interfaces are used as follows:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些接口的使用如下：
 - en: You ask an `Iterable` for an iterator via the method whose key is `Symbol.iterator`.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 您可以通过其键为`Symbol.iterator`的方法向`Iterable`请求迭代器。
 - en: The `Iterator` returns the iterated values via its method `.next()`.
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator`通过其方法`.next()`返回迭代的值。'
 - en: 'The values are not returned directly, but wrapped in objects with two properties:'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值不是直接返回的，而是包装在具有两个属性的对象中：
 - en: '`.value` is the iterated value.'
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.value`是迭代的值。'
 - en: '`.done` indicates if the end of the iteration has been reached yet. It is `true`
     after the last iterated value and `false` beforehand.'
+  id: totrans-40
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.done`指示是否已经到达迭代的末尾。在最后一个迭代值之后为`true`，之前为`false`。'
 - en: 30.3 Iterating manually
+  id: totrans-41
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 30.3 手动迭代
 - en: 'This is an example of using the iteration protocol:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是使用迭代协议的示例：
 - en: '[PRE1]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 30.3.1 Iterating over an iterable via `while`
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 30.3.1 通过`while`迭代可迭代对象
 - en: 'The following code demonstrates how to use a `while` loop to iterate over an
     iterable:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了如何使用`while`循环来迭代可迭代对象：
 - en: '[PRE2]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: Using sync
     iteration manually**'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **练习：手动使用同步迭代**'
 - en: '`exercises/sync-iteration-use/sync_iteration_manually_exrc.mjs`'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/sync-iteration-use/sync_iteration_manually_exrc.mjs`'
 - en: 30.4 Iteration in practice
+  id: totrans-49
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 30.4 实践中的迭代
 - en: We have seen how to use the iteration protocol manually, and it is relatively
     cumbersome. But the protocol is not meant to be used directly – it is meant to
     be used via higher-level language constructs built on top of it. This section
     shows what that looks like.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到了如何手动使用迭代协议，这相对来说比较麻烦。但是协议并不是直接使用的 - 它是通过在其之上构建的高级语言构造来使用的。本节展示了这是什么样子。
 - en: 30.4.1 Iterating over Arrays
+  id: totrans-51
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 30.4.1 遍历数组
 - en: 'JavaScript’s Arrays are iterable. That enables us to use the `for-of` loop:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript的数组是可迭代的。这使我们能够使用`for-of`循环：
 - en: '[PRE3]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Destructuring via Array patterns (explained later) also uses iteration under
     the hood:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过数组模式解构（稍后解释）也在内部使用迭代：
 - en: '[PRE4]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 30.4.2 Iterating over Sets
+  id: totrans-56
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 30.4.2 遍历集合
 - en: 'JavaScript’s Set data structure is iterable. That means `for-of` works:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript的Set数据结构是可迭代的。这意味着`for-of`可以工作：
 - en: '[PRE5]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'As does Array-destructuring:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组解构也是如此：
 - en: '[PRE6]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '30.5 Quick reference: synchronous iteration'
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 30.5 快速参考：同步迭代
 - en: 30.5.1 Iterable data sources
+  id: totrans-62
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 30.5.1 可迭代数据源
 - en: 'The following built-in data sources are iterable:'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下内置数据源是可迭代的：
 - en: Arrays
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组
 - en: Strings
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串
 - en: Maps
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 地图
 - en: Sets
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 集合
 - en: '(Browsers: DOM data structures)'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （浏览器：DOM数据结构）
 - en: To iterate over the properties of objects, you need helpers such as `Object.keys()`
     and `Object.entries()`. That is necessary because properties exist at a different
     level that is independent of the level of data structures.
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 迭代对象的属性时，您需要诸如`Object.keys()`和`Object.entries()`之类的辅助工具。这是必要的，因为属性存在于与数据结构级别无关的不同级别。
 - en: 30.5.2 Synchronously iterating language constructs
+  id: totrans-70
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 30.5.2 同步迭代语言构造
 - en: This section lists constructs that use synchronous iteration.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节列出了使用同步迭代的构造。
 - en: 30.5.2.1 Language constructs that iterate
+  id: totrans-72
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 30.5.2.1 迭代的语言构造
 - en: 'Destructuring via an Array pattern:'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过数组模式解构：
 - en: '[PRE7]'
+  id: totrans-74
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Spreading (via `...`) into function calls and Array literals:'
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过`...`扩展到函数调用和数组文字中：
 - en: '[PRE8]'
+  id: totrans-76
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'The `for-of` loop:'
+  id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`for-of`循环：'
 - en: '[PRE9]'
+  id: totrans-78
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '`yield*`:'
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`yield*`：'
 - en: '[PRE10]'
+  id: totrans-80
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 30.5.2.2 Turning iterables into data structures
+  id: totrans-81
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 30.5.2.2 将可迭代对象转换为数据结构
 - en: '[`Object.fromEntries()`](ch_objects.html#Object.fromEntries):'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`Object.fromEntries()`](ch_objects.html#Object.fromEntries):'
 - en: '[PRE11]'
+  id: totrans-83
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[`Array.from()`](ch_arrays.html#Array.from):'
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`Array.from()`](ch_arrays.html#Array.from):'
 - en: '[PRE12]'
+  id: totrans-85
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '[`new Map()`](ch_maps.html) and [`new WeakMap()`](ch_weakmaps.html):'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`new Map()`](ch_maps.html)和[`new WeakMap()`](ch_weakmaps.html)：'
 - en: '[PRE13]'
+  id: totrans-87
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '[`new Set()`](ch_sets.html) and [`new WeakSet()`](ch_weaksets.html):'
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`new Set()`](ch_sets.html)和[`new WeakSet()`](ch_weaksets.html)：'
 - en: '[PRE14]'
+  id: totrans-89
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 30.5.2.3 Miscellaneous
+  id: totrans-90
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 30.5.2.3 杂项
 - en: '[Promise combinator functions](ch_promises.html#promise-combinators): `Promise.all()`
     etc.'
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Promise组合函数](ch_promises.html#promise-combinators)：`Promise.all()`等。'
 - en: '[PRE15]'
+  id: totrans-92
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '![](../Images/4ca05ad97a693bee61e4fd6459232e60.png)  **Quiz**'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/4ca05ad97a693bee61e4fd6459232e60.png)  **测验**'
 - en: See [quiz app](ch_quizzes-exercises.html#quizzes).
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 查看[测验应用程序](ch_quizzes-exercises.html#quizzes)。
 - en: '[Comments](https://github.com/rauschma/impatient-js/issues/21)'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/impatient-js/issues/21)'
