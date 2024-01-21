@@ -1,1211 +1,1785 @@
 - en: 8 Working with the file system on Node.js
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 8 在Node.js上处理文件系统
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-file-system.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-file-system.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-file-system.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-file-system.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 8.1 [Concepts, patterns and conventions of Node’s file system APIs](ch_nodejs-file-system.html#concepts-patterns-and-conventions-of-nodes-file-system-apis)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.1 [Node文件系统API的概念、模式和约定](ch_nodejs-file-system.html#concepts-patterns-and-conventions-of-nodes-file-system-apis)
 - en: 8.1.1 [Ways of accessing files](ch_nodejs-file-system.html#ways-of-accessing-files)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.1.1 [访问文件的方式](ch_nodejs-file-system.html#ways-of-accessing-files)
 - en: 8.1.2 [Function name prefixes](ch_nodejs-file-system.html#function-name-prefixes)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.1.2 [函数名称前缀](ch_nodejs-file-system.html#function-name-prefixes)
 - en: 8.1.3 [Important classes](ch_nodejs-file-system.html#important-classes)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.1.3 [重要类](ch_nodejs-file-system.html#important-classes)
 - en: 8.2 [Reading and writing files](ch_nodejs-file-system.html#reading-and-writing-files)
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.2 [读写文件](ch_nodejs-file-system.html#reading-and-writing-files)
 - en: '8.2.1 [Reading a file synchronously into a single string (optional: splitting
     into lines)](ch_nodejs-file-system.html#reading-a-file-synchronously-into-a-single-string-optional-splitting-into-lines)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.2.1 [同步将文件读入单个字符串（可选：拆分为行）](ch_nodejs-file-system.html#reading-a-file-synchronously-into-a-single-string-optional-splitting-into-lines)
 - en: 8.2.2 [Reading a file via a stream, line by line](ch_nodejs-file-system.html#reading-a-file-via-a-stream-line-by-line)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.2.2 [通过流逐行读取文件](ch_nodejs-file-system.html#reading-a-file-via-a-stream-line-by-line)
 - en: 8.2.3 [Writing a single string to a file synchronously](ch_nodejs-file-system.html#writing-a-single-string-to-a-file-synchronously)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.2.3 [同步将单个字符串写入文件](ch_nodejs-file-system.html#writing-a-single-string-to-a-file-synchronously)
 - en: 8.2.4 [Appending a single string to a file (synchronously)](ch_nodejs-file-system.html#appending-a-single-string-to-a-file-synchronously)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.2.4 [将单个字符串追加到文件（同步）](ch_nodejs-file-system.html#appending-a-single-string-to-a-file-synchronously)
 - en: 8.2.5 [Writing multiple strings to a file via stream](ch_nodejs-file-system.html#writing-multiple-strings-to-a-file-via-stream)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.2.5 [通过流将多个字符串写入文件](ch_nodejs-file-system.html#writing-multiple-strings-to-a-file-via-stream)
 - en: 8.2.6 [Appending multiple strings to a file via a stream (asynchronously)](ch_nodejs-file-system.html#appending-multiple-strings-to-a-file-via-a-stream-asynchronously)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.2.6 [通过流异步追加多个字符串到文件](ch_nodejs-file-system.html#appending-multiple-strings-to-a-file-via-a-stream-asynchronously)
 - en: 8.3 [Handling line terminators across platforms](ch_nodejs-file-system.html#handling-line-terminators-across-platforms)
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.3 [跨平台处理行终止符](ch_nodejs-file-system.html#handling-line-terminators-across-platforms)
 - en: 8.3.1 [Reading line terminators](ch_nodejs-file-system.html#reading-line-terminators)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.3.1 [读取行终止符](ch_nodejs-file-system.html#reading-line-terminators)
 - en: 8.3.2 [Writing line terminators](ch_nodejs-file-system.html#writing-line-terminators)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.3.2 [写入行终止符](ch_nodejs-file-system.html#writing-line-terminators)
 - en: 8.4 [Traversing and creating directories](ch_nodejs-file-system.html#traversing-and-creating-directories)
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.4 [遍历和创建目录](ch_nodejs-file-system.html#traversing-and-creating-directories)
 - en: 8.4.1 [Traversing a directory](ch_nodejs-file-system.html#traversing-a-directory)
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.4.1 [遍历目录](ch_nodejs-file-system.html#traversing-a-directory)
 - en: 8.4.2 [Creating a directory (`mkdir`, `mkdir -p`)](ch_nodejs-file-system.html#creating-a-directory-mkdir-mkdir--p)
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.4.2 [创建目录（`mkdir`，`mkdir -p`）](ch_nodejs-file-system.html#creating-a-directory-mkdir-mkdir--p)
 - en: 8.4.3 [Ensuring that a parent directory exists](ch_nodejs-file-system.html#ensuring-that-a-parent-directory-exists)
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.4.3 [确保父目录存在](ch_nodejs-file-system.html#ensuring-that-a-parent-directory-exists)
 - en: 8.4.4 [Creating a temporary directory](ch_nodejs-file-system.html#creating-a-temporary-directory)
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.4.4 [创建临时目录](ch_nodejs-file-system.html#creating-a-temporary-directory)
 - en: 8.5 [Copying, renaming, moving files or directories](ch_nodejs-file-system.html#copying-renaming-moving-files-or-directories)
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.5 [复制、重命名、移动文件或目录](ch_nodejs-file-system.html#copying-renaming-moving-files-or-directories)
 - en: 8.5.1 [Copying files or directories](ch_nodejs-file-system.html#copying-files-or-directories)
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.5.1 [复制文件或目录](ch_nodejs-file-system.html#copying-files-or-directories)
 - en: 8.5.2 [Renaming or moving files or directories](ch_nodejs-file-system.html#renaming-or-moving-files-or-directories)
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.5.2 [重命名或移动文件或目录](ch_nodejs-file-system.html#renaming-or-moving-files-or-directories)
 - en: 8.6 [Removing files or directories](ch_nodejs-file-system.html#removing-files-or-directories)
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.6 [删除文件或目录](ch_nodejs-file-system.html#removing-files-or-directories)
 - en: '8.6.1 [Removing files and arbitrary directories (shell: `rm`, `rm -r`)](ch_nodejs-file-system.html#fs.rmSync)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.6.1 [删除文件和任意目录（shell：`rm`，`rm -r`）](ch_nodejs-file-system.html#fs.rmSync)
 - en: '8.6.2 [Removing an empty directory (shell: `rmdir`)](ch_nodejs-file-system.html#removing-an-empty-directory-shell-rmdir)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.6.2 [删除空目录（shell：`rmdir`）](ch_nodejs-file-system.html#removing-an-empty-directory-shell-rmdir)
 - en: 8.6.3 [Clearing directories](ch_nodejs-file-system.html#clearing-directories)
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.6.3 [清空目录](ch_nodejs-file-system.html#clearing-directories)
 - en: 8.6.4 [Trashing files or directories](ch_nodejs-file-system.html#trashing-files-or-directories)
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.6.4 [删除文件或目录](ch_nodejs-file-system.html#trashing-files-or-directories)
 - en: 8.7 [Reading and changing file system entries](ch_nodejs-file-system.html#reading-and-changing-file-system-entries)
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.7 [读取和更改文件系统条目](ch_nodejs-file-system.html#reading-and-changing-file-system-entries)
 - en: 8.7.1 [Checking if a file or directory exists](ch_nodejs-file-system.html#checking-if-a-file-or-directory-exists)
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.7.1 [检查文件或目录是否存在](ch_nodejs-file-system.html#checking-if-a-file-or-directory-exists)
 - en: '8.7.2 [Checking the stats of a file: Is it a directory? When was it created?
     Etc.](ch_nodejs-file-system.html#checking-the-stats-of-a-file-is-it-a-directory-when-was-it-created-etc.)'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.7.2 [检查文件的统计信息：它是目录吗？它是何时创建的？等等。](ch_nodejs-file-system.html#checking-the-stats-of-a-file-is-it-a-directory-when-was-it-created-etc.)
 - en: '8.7.3 [Changing file attributes: permissions, owner, group, timestamps](ch_nodejs-file-system.html#changing-file-attributes-permissions-owner-group-timestamps)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.7.3 [更改文件属性：权限、所有者、组、时间戳](ch_nodejs-file-system.html#changing-file-attributes-permissions-owner-group-timestamps)
 - en: 8.8 [Working with links](ch_nodejs-file-system.html#working-with-links)
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.8 [处理链接](ch_nodejs-file-system.html#working-with-links)
 - en: 8.9 [Further reading](ch_nodejs-file-system.html#further-reading)
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 8.9 [进一步阅读](ch_nodejs-file-system.html#further-reading)
 - en: '* * *'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'This chapter contains:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章包括：
 - en: An overview of the different parts of Node’s file system APIs.
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Node 的文件系统 API 的不同部分概述。
 - en: '*Recipes* (code snippets) for performing various tasks via those APIs.'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*Recipes*（代码片段）用于通过这些 API 执行各种任务。'
 - en: Given that the focus of this book is on shell scripting, we only work with textual
     data.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 鉴于本书的重点是 shell 脚本，我们只处理文本数据。
 - en: 8.1 Concepts, patterns and conventions of Node’s file system APIs
+  id: totrans-41
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.1 Node 的文件系统 API 的概念、模式和约定
 - en: 8.1.1 Ways of accessing files
+  id: totrans-42
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.1.1 访问文件的方式
 - en: We can read or write the whole content of a file via a string.
+  id: totrans-43
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们可以通过字符串读取或写入文件的整个内容。
 - en: We can open a stream for reading or a stream for writing and process a file
     in smaller pieces, one at a time. Streams only allow sequential access.
+  id: totrans-44
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们可以打开一个用于读取或写入的流，并逐个处理文件的较小部分。流只允许顺序访问。
 - en: We can use file descriptors or FileHandles and get both sequential and random
     access, via an API that is loosely similar to streams.
+  id: totrans-45
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们可以使用文件描述符或 FileHandles，并获得顺序和随机访问，通过一个与流松散相似的 API。
 - en: '[*File descriptors*](https://nodejs.org/api/fs.html#file-descriptors_1) are
     integer numbers that represent files. They are managed via these functions (only
     the synchronous names are shown, there are also callback-based versions – `fs.open()`
     etc.):'
+  id: totrans-46
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[*文件描述符*](https://nodejs.org/api/fs.html#file-descriptors_1)是表示文件的整数。它们通过这些函数管理（只显示同步名称，还有基于回调的版本-
+    `fs.open()` 等）：'
 - en: '`fs.openSync(path, flags?, mode?)` opens a new file descriptor for a file at
     a given path and returns it.'
+  id: totrans-47
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.openSync(path, flags?, mode?)` 打开给定路径上的文件的新文件描述符并返回它。'
 - en: '`fs.closeSync(fd)` closes a file descriptor.'
+  id: totrans-48
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.closeSync(fd)` 关闭文件描述符。'
 - en: '`fs.fchmodSync(fd, mode)`'
+  id: totrans-49
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.fchmodSync(fd, mode)`'
 - en: '`fs.fchownSync(fd, uid, gid)`'
+  id: totrans-50
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.fchownSync(fd, uid, gid)`'
 - en: '`fs.fdatasyncSync(fd)`'
+  id: totrans-51
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.fdatasyncSync(fd)`'
 - en: '`fs.fstatSync(fd, options?)`'
+  id: totrans-52
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.fstatSync(fd, options?)`'
 - en: '`fs.fsyncSync(fd)`'
+  id: totrans-53
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.fsyncSync(fd)`'
 - en: '`fs.ftruncateSync(fd, len?)`'
+  id: totrans-54
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.ftruncateSync(fd, len?)`'
 - en: '`fs.futimesSync(fd, atime, mtime)`'
+  id: totrans-55
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.futimesSync(fd, atime, mtime)`'
 - en: 'Only the synchronous API and the callback-based API use file descriptors. The
     Promise-based API has a better abstraction, [class `FileHandle`](https://nodejs.org/api/fs.html#class-filehandle),
     which is based on file descriptors. Instances are created via `fsPromises.open()`.
     Various operations are provided via methods (not via functions):'
+  id: totrans-56
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只有同步 API 和基于回调的 API 使用文件描述符。基于 Promise 的 API 有更好的抽象，[class `FileHandle`](https://nodejs.org/api/fs.html#class-filehandle)，它基于文件描述符。实例是通过
+    `fsPromises.open()` 创建的。各种操作通过方法提供（而不是通过函数）：
 - en: '`fileHandle.close()`'
+  id: totrans-57
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fileHandle.close()`'
 - en: '`fileHandle.chmod(mode)`'
+  id: totrans-58
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fileHandle.chmod(mode)`'
 - en: '`fileHandle.chown(uid, gid)`'
+  id: totrans-59
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fileHandle.chown(uid, gid)`'
 - en: Etc.
+  id: totrans-60
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: Note that we don’t use (3) in this chapter – (1) and (2) are enough for our
     purposes.
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，在本章中我们不使用（3）-（1）和（2）对我们的目的足够了。
 - en: 8.1.2 Function name prefixes
+  id: totrans-62
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.1.2 函数名前缀
 - en: '8.1.2.1 Prefix “l”: symbolic links'
+  id: totrans-63
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 8.1.2.1 前缀“l”：符号链接
 - en: 'Functions whose names start with an “l” usually operate on symbolic links:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 以“l”开头的函数通常操作符号链接：
 - en: '`fs.lchmodSync()`, `fs.lchmod()`, `fsPromises.lchmod()`'
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.lchmodSync()`, `fs.lchmod()`, `fsPromises.lchmod()`'
 - en: '`fs.lchownSync()`, `fs.lchown()`, `fsPromises.lchown()`'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.lchownSync()`, `fs.lchown()`, `fsPromises.lchown()`'
 - en: '`fs.lutimesSync()`, `fs.lutimes()`, `fsPromises.lutimes()`'
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.lutimesSync()`, `fs.lutimes()`, `fsPromises.lutimes()`'
 - en: Etc.
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: '8.1.2.2 Prefix “f”: file descriptors'
+  id: totrans-69
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 8.1.2.2 前缀“f”：文件描述符
 - en: 'Functions whose names start with an “f” usually manage file descriptors:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 以“f”开头的函数通常管理文件描述符：
 - en: '`fs.fchmodSync()`, `fs.fchmod()`'
+  id: totrans-71
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.fchmodSync()`, `fs.fchmod()`'
 - en: '`fs.fchownSync()`, `fs.fchown()`'
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.fchownSync()`, `fs.fchown()`'
 - en: '`fs.fstatSync()`, `fs.fstat()`'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.fstatSync()`, `fs.fstat()`'
 - en: Etc.
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: 8.1.3 Important classes
+  id: totrans-75
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.1.3 重要类
 - en: Several classes play important roles in Node’s file system APIs.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 几个类在 Node 的文件系统 API 中扮演重要角色。
 - en: '8.1.3.1 URLs: an alternative to file system paths in strings'
+  id: totrans-77
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 8.1.3.1 URL：字符串中文件系统路径的替代方案
 - en: 'Whenever a Node.js function accepts a file system path in a string (line A),
     it usually also accepts an instance of `URL` (line B):'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 每当 Node.js 函数接受一个字符串中的文件系统路径（行 A）时，它通常也接受一个 `URL` 的实例（行 B）：
 - en: '[PRE0]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Manually converting between paths and `file:` URLs seems easy but has surprisingly
     many pitfalls: percent encoding or decoding, Windows drive letters, etc. Instead,
     it’s better to use the following two functions:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 手动在路径和 `file:` URL 之间转换似乎很容易，但意外地有很多陷阱：百分号编码或解码，Windows 驱动器号等。因此，最好使用以下两个函数：
 - en: '[`url.pathToFileURL()`](https://nodejs.org/api/url.html#urlpathtofileurlpath)'
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`url.pathToFileURL()`](https://nodejs.org/api/url.html#urlpathtofileurlpath)'
 - en: '[`url.fileURLToPath()`](https://nodejs.org/api/url.html#urlfileurltopathurl)'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`url.fileURLToPath()`](https://nodejs.org/api/url.html#urlfileurltopathurl)'
 - en: We don’t use file URLs in this chapter. Use cases for them are described in
     [§7.11.1 “Class `URL`”](ch_nodejs-path.html#class-url).
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中我们不使用文件 URL。它们的用例在[§7.11.1 “Class `URL`”](ch_nodejs-path.html#class-url)中有描述。
 - en: 8.1.3.2 Buffers
+  id: totrans-84
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 8.1.3.2 缓冲区
 - en: Class [`Buffer`](https://nodejs.org/api/buffer.html) represents fixed-length
     byte sequences on Node.js. It is a subclass of `Uint8Array` (a [TypedArray](https://exploringjs.com/impatient-js/ch_typed-arrays.html)).
     Buffers are mostly used when working with binary files and therefore of less interest
     in this book.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 类[`Buffer`](https://nodejs.org/api/buffer.html)表示 Node.js 上的固定长度字节序列。它是 `Uint8Array`
+    的子类（[TypedArray](https://exploringjs.com/impatient-js/ch_typed-arrays.html)）。缓冲区在处理二进制文件时大多被使用，因此在本书中不太感兴趣。
 - en: Whenever Node.js accepts a Buffer, it also accepts a Uint8Array. Thus, given
     that Uint8Arrays are cross-platform and Buffers aren’t, the former is preferable.
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 每当 Node.js 接受一个缓冲区时，它也接受一个 Uint8Array。因此，鉴于 Uint8Arrays 是跨平台的，而 Buffers 不是，前者更可取。
 - en: 'Buffers can do one thing that Uint8Arrays can’t: encoding and decoding text
     in various encodings. If we need to encode or decode UTF-8 in Uint8Arrays, we
     can use class [`TextEncoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder)
     or class [`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder).
     These classes are available on most JavaScript platforms:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 缓冲区可以做 Uint8Arrays 无法做的一件事：在各种编码中编码和解码文本。如果我们需要在 Uint8Arrays 中编码或解码 UTF-8，我们可以使用类[`TextEncoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder)或类[`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder)。这些类在大多数
+    JavaScript 平台上都可用：
 - en: '[PRE1]'
+  id: totrans-88
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 8.1.3.3 Node.js streams
+  id: totrans-89
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 8.1.3.3 Node.js 流
 - en: 'Some functions accept or return native Node.js streams:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些函数接受或返回原生的 Node.js 流：
 - en: '`stream.Readable` is Node’s class for readable streams. Module `node:fs` uses
     `fs.ReadStream` which is a subclass.'
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`stream.Readable` 是 Node 的可读流类。模块 `node:fs` 使用 `fs.ReadStream`，它是一个子类。'
 - en: '`stream.Writable` is Node’s class for writable streams. Module `node:fs` uses
     `fs.WriteStream` which is a subclass.'
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`stream.Writable` 是 Node 的可写流类。模块 `node:fs` 使用 `fs.WriteStream`，它是一个子类。'
 - en: Instead of native streams, we can now use cross-platform *web streams* on Node.js.
     How is explained in [§10 “Using web streams on Node.js”](ch_web-streams.html).
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们可以在 Node.js 上使用跨平台的 *web 流*，具体方法在[§10 “在 Node.js 上使用 web 流”](ch_web-streams.html)中有解释。
 - en: 8.2 Reading and writing files
+  id: totrans-94
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.2 读取和写入文件
 - en: '8.2.1 Reading a file synchronously into a single string (optional: splitting
     into lines)'
+  id: totrans-95
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.2.1 同步读取文件为单个字符串（可选：拆分成行）
 - en: '[`fs.readFileSync(filePath, options?)`](https://nodejs.org/api/fs.html#fsreadfilesyncpath-options)
     reads the file at `filePath` into a single string:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.readFileSync(filePath, options?)`](https://nodejs.org/api/fs.html#fsreadfilesyncpath-options)
+    将文件在 `filePath` 处同步读取为单个字符串：'
 - en: '[PRE2]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Pros and cons of this approach (vs. using a stream):'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法的优缺点（与使用流相比）：
 - en: 'Pro: Easy to use and synchronous. Good enough for many use cases.'
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：易于使用和同步。对于许多用例来说已经足够好了。
 - en: 'Con: Not a good choice for large files.'
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：不适合大文件。
 - en: Before we can process the data, we have to read it in its entirety.
+  id: totrans-101
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在我们可以处理数据之前，我们必须将其完全读取。
 - en: Next, we’ll look into spliting the string we have read into lines.
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来，我们将研究如何将已读取的字符串拆分成行。
 - en: 8.2.1.1 Splitting lines without including line terminators
+  id: totrans-103
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 8.2.1.1 不包括行终止符拆分行
 - en: 'The following code splits a string into lines while removing line terminators.
     It works with Unix and Windows line terminators:'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码将一个字符串拆分成行，同时删除行终止符。它适用于 Unix 和 Windows 行终止符：
 - en: '[PRE3]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: “EOL” stands for “end of line”. We accept both Unix line terminators (`'\n'`)
     and Windows line terminators (`'\r\n'`, like the first one in the previous example).
     For more information, see [§8.3 “Handling line terminators across platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: “EOL”代表“行结束”。我们接受 Unix 行终止符（`'\n'`）和 Windows 行终止符（`'\r\n'`，就像前面示例中的第一个）。更多信息，请参见[§8.3
+    “跨平台处理行终止符”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms)。
 - en: 8.2.1.2 Splitting lines while including line terminators
+  id: totrans-107
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 8.2.1.2 包括行终止符拆分行
 - en: 'The following code splits a string into lines while including line terminators.
     It works with Unix and Windows line terminators (“EOL” stands for “end of line”):'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码将一个字符串拆分成行，同时包括行终止符。它适用于 Unix 和 Windows 行终止符（“EOL”代表“行结束”）：
 - en: '[PRE4]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Line A contains a regular expression with [a lookbehind assertion](https://exploringjs.com/impatient-js/ch_regexps.html#regexp-lookbehind-assertions).
     It matches at locations that are preceded by a match for the pattern `\r?\n` but
     it doesn’t capture anything. Therefore, it doesn’t remove anything between the
     string fragments that the input string is split into.
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 行 A 包含一个带有[后行断言](https://exploringjs.com/impatient-js/ch_regexps.html#regexp-lookbehind-assertions)的正则表达式。它匹配前面有
+    `\r?\n` 模式的位置，但它不捕获任何内容。因此，它不会删除输入字符串被拆分成的字符串片段之间的任何内容。
 - en: 'On engines that don’t support lookbehind assertions ([see this table](https://caniuse.com/js-regexp-lookbehind)),
     we can use the following solution:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 在不支持后行断言的引擎上（[参见此表](https://caniuse.com/js-regexp-lookbehind)），我们可以使用以下解决方案：
 - en: '[PRE5]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: This solution is simple, but more verbose.
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个解决方案很简单，但更冗长。
 - en: In both versions of `splitLinesWithEols()`, we again accept both Unix line terminators
     (`'\n'`) and Windows line terminators (`'\r\n'`). For more information, see [§8.3
     “Handling line terminators across platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `splitLinesWithEols()` 的两个版本中，我们再次接受 Unix 行终止符（`'\n'`）和 Windows 行终止符（`'\r\n'`）。更多信息，请参见[§8.3
+    “跨平台处理行终止符”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms)。
 - en: 8.2.2 Reading a file via a stream, line by line
+  id: totrans-115
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.2.2 通过流逐行读取文件
 - en: 'We can also read text files via streams:'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以通过流读取文本文件：
 - en: '[PRE6]'
+  id: totrans-117
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'We used the following external functionality:'
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用了以下外部功能：
 - en: '[`fs.createReadStream(filePath, options?)`](https://nodejs.org/api/fs.html#fscreatereadstreampath-options)
     creates a Node.js stream (an instance of `stream.Readable`).'
+  id: totrans-119
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`fs.createReadStream(filePath, options?)`](https://nodejs.org/api/fs.html#fscreatereadstreampath-options)
+    创建了一个 Node.js 流（一个 `stream.Readable` 实例）。'
 - en: '[`stream.Readable.toWeb(streamReadable)`](https://nodejs.org/api/stream.html#streamreadabletowebstreamreadable)
     converts a readable Node.js stream to a web stream (an instance of `ReadableStream`).'
+  id: totrans-120
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`stream.Readable.toWeb(streamReadable)`](https://nodejs.org/api/stream.html#streamreadabletowebstreamreadable)
+    将一个可读的 Node.js 流转换为 web 流（一个 `ReadableStream` 实例）。'
 - en: 'The TransformStream class `ChunksToLinesStream` is explained in [§10.7.1 “Example:
     transforming a stream of arbitrary chunks to a stream of lines”](ch_web-streams.html#ChunksToLinesStream).
     *Chunks* are the pieces of data produced by streams. If we have a stream whose
     chunks are strings with arbitrary lengths and pipe it through a ChunksToLinesStream,
     then we get a stream whose chunks are lines.'
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TransformStream 类 `ChunksToLinesStream` 在[§10.7.1 “示例：将任意块的流转换为行流”](ch_web-streams.html#ChunksToLinesStream)中有解释。*块*是流产生的数据片段。如果我们有一个流，其块是具有任意长度的字符串，并将其通过
+    ChunksToLinesStream，那么我们得到的流的块就是行。
 - en: Web streams are [asynchronously iterable](https://exploringjs.com/impatient-js/ch_async-iteration.html),
     which is why we can use a `for-await-of` loop to iterate over lines.
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: Web 流是[异步可迭代的](https://exploringjs.com/impatient-js/ch_async-iteration.html)，这就是为什么我们可以使用
+    `for-await-of` 循环来迭代行。
 - en: If we are not interested in text lines, then we don’t need `ChunksToLinesStream`,
     can iterate over `webReadableStream` and get chunks with arbitrary lengths.
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们对文本行不感兴趣，那么我们不需要 `ChunksToLinesStream`，可以迭代 `webReadableStream` 并获取任意长度的块。
 - en: 'More information:'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：
 - en: Web streams are covered in [§10 “Using web streams on Node.js”](ch_web-streams.html).
+  id: totrans-125
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Web 流在[§10 “在 Node.js 上使用 web 流”](ch_web-streams.html)中有介绍。
 - en: Line terminators are covered in [§8.3 “Handling line terminators across platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  id: totrans-126
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行终止符在[§8.3“跨平台处理行终止符”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms)中有介绍。
 - en: 'Pros and cons of this approach (vs. reading a single string):'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法的优缺点（与读取单个字符串相比）：
 - en: 'Pro: Works well with large files.'
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：对于大文件效果很好。
 - en: We can process the data incrementally, in smaller pieces and don’t have to wait
     for everything to be read.
+  id: totrans-129
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以逐步处理数据，分成较小的片段，而不必等待所有内容被读取。
 - en: 'Con: More complicated to use and not synchronous.'
+  id: totrans-130
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：使用起来更复杂，且不同步。
 - en: 8.2.3 Writing a single string to a file synchronously
+  id: totrans-131
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.2.3 同步地向文件写入单个字符串
 - en: '[`fs.writeFileSync(filePath, str, options?)`](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options)
     writes `str` to a file at `filePath`. If a file already exists at that path, it
     is overwritten.'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.writeFileSync(filePath, str, options?)`](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options)将`str`写入到`filePath`的文件中。如果该路径下已经存在文件，则会被覆盖。'
 - en: 'The following code shows how to use this function:'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码显示了如何使用此函数：
 - en: '[PRE7]'
+  id: totrans-134
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: For information on line terminators, see [§8.3 “Handling line terminators across
     platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关行终止符的信息，请参见[§8.3“跨平台处理行终止符”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms)。
 - en: 'Pros and cons (vs. using a stream):'
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 优缺点（与使用流相比）：
 - en: 'Pro: Easy to use and synchronous. Works for many use cases.'
+  id: totrans-137
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：易于使用，且同步。适用于许多用例。
 - en: 'Con: Not suited for large files.'
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：不适用于大文件。
 - en: 8.2.4 Appending a single string to a file (synchronously)
+  id: totrans-139
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.2.4 同步地向文件追加单个字符串
 - en: 'The following code appends a line of text to an existing file:'
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码将一行文本追加到现有文件中：
 - en: '[PRE8]'
+  id: totrans-141
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'We can also use `fs.writeFileSync()` to perform this task:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以使用`fs.writeFileSync()`来执行此任务：
 - en: '[PRE9]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'This code is almost the same as the one we used to overwrite existing content
     (see the previous section for more information). The only difference is that we
     added the option `.flag`: The value `''a''` means that we append data. Other possible
     values (e.g. to throw an error if a file doesn’t exist yet) are explained in [the
     Node.js documentation](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options).'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 这段代码几乎与我们用来覆盖现有内容的代码相同（有关更多信息，请参见前一节）。唯一的区别是我们添加了选项`.flag`：值`'a'`表示我们追加数据。其他可能的值（例如，如果文件尚不存在则抛出错误）在[Node.js文档](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options)中有解释。
 - en: 'Watch out: In some functions, this option is named `.flag`, in others `.flags`.'
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：在某些函数中，此选项称为`.flag`，在其他函数中称为`.flags`。
 - en: 8.2.5 Writing multiple strings to a file via stream
+  id: totrans-146
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.2.5 通过流向文件写入多个字符串
 - en: 'The following code uses a stream to write multiple strings to a file:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码使用流向文件写入多个字符串：
 - en: '[PRE10]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'We used the following functions:'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用了以下函数：
 - en: '[`fs.createWriteStream(path, options?)`](https://nodejs.org/api/fs.html#fscreatewritestreampath-options)
     creates a Node.js stream (an instance of `stream.Writable`).'
+  id: totrans-150
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`fs.createWriteStream(path, options?)`](https://nodejs.org/api/fs.html#fscreatewritestreampath-options)创建一个Node.js流（`stream.Writable`的实例）。'
 - en: '[`stream.Writable.toWeb(streamWritable)`](https://nodejs.org/api/stream.html#streamwritabletowebstreamwritable)
     converts a writable Node.js stream to a web stream (an instance of `WritableStream`).'
+  id: totrans-151
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`stream.Writable.toWeb(streamWritable)`](https://nodejs.org/api/stream.html#streamwritabletowebstreamwritable)将可写的Node.js流转换为Web流（`WritableStream`的实例）。'
 - en: 'More information:'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：
 - en: WritableStreams and Writers are covered in [§10 “Using web streams on Node.js”](ch_web-streams.html).
+  id: totrans-153
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可写流和写入器在[§10“在Node.js上使用Web流”](ch_web-streams.html)中有介绍。
 - en: Line terminators are covered in [§8.3 “Handling line terminators across platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  id: totrans-154
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行终止符在[§8.3“跨平台处理行终止符”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms)中有介绍。
 - en: 'Pros and cons (vs. writing a single string):'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 优缺点（与写入单个字符串相比）：
 - en: 'Pro: Works well with large files because we can write the data incrementally,
     in smaller pieces.'
+  id: totrans-156
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：对于大文件效果很好，因为我们可以逐步写入数据，分成较小的片段。
 - en: 'Con: More complicated to use and not synchronous.'
+  id: totrans-157
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：使用起来更复杂，且不同步。
 - en: 8.2.6 Appending multiple strings to a file via a stream (asynchronously)
+  id: totrans-158
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.2.6 通过流（异步地）向文件追加多个字符串
 - en: 'The following code uses a stream to append text to an existing file:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码使用流向现有文件追加文本：
 - en: '[PRE11]'
+  id: totrans-160
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'This code is almost the same as the one we used to overwrite existing content
     (see the previous section for more information). The only difference is that we
     added the option `.flags`: The value `''a''` means that we append data. Other
     possible values (e.g. to throw an error if a file doesn’t exist yet) are explained
     in [the Node.js documentation](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options).'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 这段代码几乎与我们用来覆盖现有内容的代码相同（有关更多信息，请参见前一节）。唯一的区别是我们添加了选项`.flags`：值`'a'`表示我们追加数据。其他可能的值（例如，如果文件尚不存在则抛出错误）在[Node.js文档](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options)中有解释。
 - en: 'Watch out: In some functions, this option is named `.flag`, in others `.flags`.'
+  id: totrans-162
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：在某些函数中，此选项称为`.flag`，在其他函数中称为`.flags`。
 - en: 8.3 Handling line terminators across platforms
+  id: totrans-163
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.3 处理跨平台的行终止符
 - en: 'Alas, not all platform have the same *line terminator* characters that mark
     the *end of line* (EOL):'
+  id: totrans-164
   prefs: []
   type: TYPE_NORMAL
+  zh: 遗憾的是，并非所有平台都具有标记*行终止符*（EOL）的相同*行终止符*字符：
 - en: On Windows, EOL is `'\r\n'`.
+  id: totrans-165
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Windows上，EOL是`'\r\n'`。
 - en: On Unix (incl. macOS), EOL is `'\n'`.
+  id: totrans-166
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Unix（包括macOS）上，EOL是`'\n'`。
 - en: To handle EOL in a manner that works on all platforms, we can use several strategies.
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了以适用于所有平台的方式处理EOL，我们可以使用几种策略。
 - en: 8.3.1 Reading line terminators
+  id: totrans-168
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.3.1 读取行终止符
 - en: When reading text, it’s best to recognize both EOLs.
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
+  zh: 在读取文本时，最好能够识别两种EOL。
 - en: What might that look like when splitting a text into lines? We can include the
     EOLs (in either format) at the ends. That enables us to change as little as possible
     if we modify those lines and write them to a file.
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: 当将文本拆分成行时，可能会是什么样子？我们可以在行尾包含EOL（以任何格式）。这样，如果我们修改这些行并将其写入文件，我们可以尽可能少地进行更改。
 - en: 'When processing lines with EOLs, it’s sometimes useful to remove them – e.g. via
     the following function:'
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 在处理带有EOL的行时，有时将它们移除是有用的，例如通过以下函数：
 - en: '[PRE12]'
+  id: totrans-172
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 8.3.2 Writing line terminators
+  id: totrans-173
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.3.2 写入行终止符
 - en: 'When it comes to writing line terminators, we have two options:'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 在写入行终止符时，我们有两个选项：
 - en: '[Constant `EOL` in module `''node:os''`](https://nodejs.org/api/os.html#oseol)
     contains the EOL of the current platform.'
+  id: totrans-175
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块`'node:os'`中的常量`EOL`（https://nodejs.org/api/os.html#oseol）包含当前平台的EOL。
 - en: We can detect the EOL format of an input file and use that when we change that
     file.
+  id: totrans-176
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以检测输入文件的EOL格式，并在更改该文件时使用它。
 - en: 8.4 Traversing and creating directories
+  id: totrans-177
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.4 遍历和创建目录
 - en: 8.4.1 Traversing a directory
+  id: totrans-178
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.4.1 遍历目录
 - en: 'The following function traverses a directory and lists all of its descendants
     (its children, the children of its children, etc.):'
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数遍历目录并列出其所有后代（其子目录、其子目录的子目录等）：
 - en: '[PRE13]'
+  id: totrans-180
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'We used this functionality:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用了这个功能：
 - en: '[`fs.readdirSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsreaddirsyncpath-options)
     returns the children of the directory at `thePath`.'
+  id: totrans-182
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`fs.readdirSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsreaddirsyncpath-options)返回`thePath`处目录的子目录。'
 - en: 'If option `.withFileTypes` is `true`, the function returns *directory entries*,
     instances of [`fs.Dirent`](https://nodejs.org/api/fs.html#class-fsdirent). These
     have properties such as:'
+  id: totrans-183
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果选项`.withFileTypes`是`true`，函数返回*directory entries*，即[`fs.Dirent`](https://nodejs.org/api/fs.html#class-fsdirent)的实例。这些具有属性，如：
 - en: '`dirent.name`'
+  id: totrans-184
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dirent.name`'
 - en: '`dirent.isDirectory()`'
+  id: totrans-185
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dirent.isDirectory()`'
 - en: '`dirent.isFile()`'
+  id: totrans-186
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dirent.isFile()`'
 - en: '`dirent.isSymbolicLink()`'
+  id: totrans-187
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dirent.isSymbolicLink()`'
 - en: If option `.withFileTypes` is `false` or missing, the function returns strings
     with file names.
+  id: totrans-188
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果选项`.withFileTypes`是`false`或缺失，函数返回文件名的字符串。
 - en: 'The following code shows `traverseDirectory()` in action:'
+  id: totrans-189
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码展示了`traverseDirectory()`的操作：
 - en: '[PRE14]'
+  id: totrans-190
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 8.4.2 Creating a directory (`mkdir`, `mkdir -p`)
+  id: totrans-191
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.4.2 创建目录（`mkdir`, `mkdir -p`）
 - en: 'We can use [the following function](https://nodejs.org/api/fs.html#fsmkdirsyncpath-options)
     to create directories:'
+  id: totrans-192
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用[以下函数](https://nodejs.org/api/fs.html#fsmkdirsyncpath-options)来创建目录：
 - en: '[PRE15]'
+  id: totrans-193
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '`options.recursive` determines how the function creates the directory at `thePath`:'
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: '`options.recursive`决定函数如何创建`thePath`处的目录：'
 - en: 'If `.recursive` is missing or `false`, `mkdirSync()` returns `undefined` and
     an exception is thrown if:'
+  id: totrans-195
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`.recursive`缺失或为`false`，`mkdirSync()`返回`undefined`，并且如果：
 - en: A directory (or file) already exists at `thePath`.
+  id: totrans-196
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`thePath`处已经存在一个目录（或文件）。'
 - en: The parent directory of `thePath` does not exist.
+  id: totrans-197
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`thePath`的父目录不存在。'
 - en: 'If `.recursive` is `true`:'
+  id: totrans-198
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`.recursive`是`true`：
 - en: It’s OK if there is already a directory at `thePath`.
+  id: totrans-199
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`thePath`处已经有一个目录，那没关系。
 - en: The ancestor directories of `thePath` are created as needed.
+  id: totrans-200
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`thePath`的祖先目录将根据需要创建。'
 - en: '`mkdirSync()` returns the path of the first newly created directory.'
+  id: totrans-201
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`mkdirSync()`返回第一个新创建目录的路径。'
 - en: 'This is `mkdirSync()` in action:'
+  id: totrans-202
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`mkdirSync()`的操作：
 - en: '[PRE16]'
+  id: totrans-203
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
     lists all descendants of the directory at `dirPath`.'
+  id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: '[函数`traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)列出`dirPath`处目录的所有后代。'
 - en: 8.4.3 Ensuring that a parent directory exists
+  id: totrans-205
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.4.3 确保父目录存在
 - en: 'If we want to set up a nested file structure on demand, we can’t always be
     sure that the ancestor directories exist when we create a new file. Then the following
     function helps:'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要根据需要设置嵌套文件结构，我们不能总是确定在创建新文件时祖先目录是否存在。这时以下函数会有所帮助：
 - en: '[PRE17]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'Here we can see `ensureParentDirectory()` in action (line A):'
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里我们可以看到`ensureParentDirectory()`的操作（A行）：
 - en: '[PRE18]'
+  id: totrans-209
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 8.4.4 Creating a temporary directory
+  id: totrans-210
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.4.4 创建临时目录
 - en: '[`fs.mkdtempSync(pathPrefix, options?)`](https://nodejs.org/api/fs.html#fsmkdtempsyncprefix-options)
     creates a temporary directory: It appends 6 random characters to `pathPrefix`,
     creates a directory at the new path and returns that path.'
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.mkdtempSync(pathPrefix, options?)`](https://nodejs.org/api/fs.html#fsmkdtempsyncprefix-options)创建一个临时目录：它在`pathPrefix`后附加6个随机字符，创建一个新路径的目录并返回该路径。'
 - en: '`pathPrefix` shouldn’t end with a capital “X” because some platforms replace
     trailing Xs with random characters.'
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: '`pathPrefix`不应以大写的“X”结尾，因为一些平台会用随机字符替换尾随的X。'
 - en: 'If we want to create our temporary directory inside an operating-system-specific
     global temporary directory, we can use [function `os.tmpdir()`](https://nodejs.org/api/os.html#ostmpdir):'
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要在操作系统特定的全局临时目录中创建临时目录，我们可以使用[函数`os.tmpdir()`](https://nodejs.org/api/os.html#ostmpdir)：
 - en: '[PRE19]'
+  id: totrans-214
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: It’s important to note that temporary directories are not automatically removed
     when a Node.js script terminates. We either have to delete it ourselves or rely
     on the operating system to periodically clean up its global temporary directory
     (which it may or may not do).
+  id: totrans-215
   prefs: []
   type: TYPE_NORMAL
+  zh: 重要的是要注意，当Node.js脚本终止时，临时目录不会自动删除。我们要么自己删除它，要么依赖操作系统定期清理其全局临时目录（可能会或可能不会这样做）。
 - en: 8.5 Copying, renaming, moving files or directories
+  id: totrans-216
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.5 复制、重命名、移动文件或目录
 - en: 8.5.1 Copying files or directories
+  id: totrans-217
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.5.1 复制文件或目录
 - en: '[`fs.cpSync(srcPath, destPath, options?)`](https://nodejs.org/api/fs.html#fscpsyncsrc-dest-options):
     copies a file or directory from `srcPath` to `destPath`. Interesting options:'
+  id: totrans-218
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.cpSync(srcPath, destPath, options?)`](https://nodejs.org/api/fs.html#fscpsyncsrc-dest-options)：从`srcPath`复制文件或目录到`destPath`。有趣的选项：'
 - en: '`.recursive` (default: `false`): Directories (including empty ones) are only
     copied if this option is `true`.'
+  id: totrans-219
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.recursive`（默认：`false`）：只有在此选项为`true`时，目录（包括空目录）才会被复制。'
 - en: '`.force` (default: `true`): If `true`, existing files are overwritten. If `false`,
     existing files are preserved.'
+  id: totrans-220
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.force`（默认：`true`）：如果为`true`，则覆盖现有文件。如果为`false`，则保留现有文件。'
 - en: In the latter case, setting `.errorOnExist` to `true` leads to errors being
     thrown if file paths clash.
+  id: totrans-221
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在后一种情况下，将`.errorOnExist`设置为`true`会导致如果文件路径冲突则抛出错误。
 - en: '`.filter` is a function that lets us control which files are copied.'
+  id: totrans-222
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.filter`是一个函数，让我们控制哪些文件被复制。'
 - en: '`.preserveTimestamps` (default: `false`): If `true`, the copies in `destPath`
     get the same timestamps as the originals in `srcPath`.'
+  id: totrans-223
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.preserveTimestamps`（默认：`false`）：如果为`true`，`destPath`中的复制品将获得与`srcPath`中原始文件相同的时间戳。'
 - en: 'This is the function in action:'
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是函数的操作：
 - en: '[PRE20]'
+  id: totrans-225
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
     lists all descendants of the directory at `dirPath`.'
+  id: totrans-226
   prefs: []
   type: TYPE_NORMAL
+  zh: '[函数`traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)列出`dirPath`目录中所有后代。'
 - en: 8.5.2 Renaming or moving files or directories
+  id: totrans-227
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.5.2 重命名或移动文件或目录
 - en: '[`fs.renameSync(oldPath, newPath)`](https://nodejs.org/api/fs.html#fsrenamesyncoldpath-newpath)
     renames or moves a file or a directory from `oldPath` to `newPath`.'
+  id: totrans-228
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.renameSync(oldPath, newPath)`](https://nodejs.org/api/fs.html#fsrenamesyncoldpath-newpath)将文件或目录从`oldPath`重命名或移动到`newPath`。'
 - en: 'Let’s use this function to rename a directory:'
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用这个函数来重命名一个目录：
 - en: '[PRE21]'
+  id: totrans-230
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'Here we use the function to move a file:'
+  id: totrans-231
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，我们使用该函数来移动一个文件：
 - en: '[PRE22]'
+  id: totrans-232
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
     lists all descendants of the directory at `dirPath`.'
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: '[函数`traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)列出`dirPath`目录中所有后代。'
 - en: 8.6 Removing files or directories
+  id: totrans-234
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.6 删除文件或目录
 - en: '8.6.1 Removing files and arbitrary directories (shell: `rm`, `rm -r`)'
+  id: totrans-235
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.6.1 删除文件和任意目录（shell：`rm`，`rm -r`）
 - en: '[`fs.rmSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsrmsyncpath-options)
     removes a file or directory at `thePath`. Interesting options:'
+  id: totrans-236
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.rmSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsrmsyncpath-options)删除`thePath`上的文件或目录。有趣的选项：'
 - en: '`.recursive` (default: `false`): Directories (including empty ones) are only
     removed if this option is `true`.'
+  id: totrans-237
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.recursive`（默认：`false`）：只有在此选项为`true`时，才会删除目录（包括空目录）。'
 - en: '`.force` (default: `false`): If `false`, an exception will be thrown if there
     is no file or directory at `thePath`.'
+  id: totrans-238
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.force`（默认：`false`）：如果为`false`，则如果`thePath`上没有文件或目录，将抛出异常。'
 - en: 'Let’s use `fs.rmSync()` to remove a file:'
+  id: totrans-239
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用`fs.rmSync()`来删除一个文件：
 - en: '[PRE23]'
+  id: totrans-240
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: Here we use `fs.rmSync()` to recursively remove a non-empty directory.
+  id: totrans-241
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，我们使用`fs.rmSync()`递归地删除非空目录。
 - en: '[PRE24]'
+  id: totrans-242
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
     lists all descendants of the directory at `dirPath`.'
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: '[函数`traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)列出`dirPath`目录中所有后代。'
 - en: '8.6.2 Removing an empty directory (shell: `rmdir`)'
+  id: totrans-244
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.6.2 删除空目录（shell：`rmdir`）
 - en: '[`fs.rmdirSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsrmdirsyncpath-options)
     removes an empty directory (an exception is thrown if a directory isn’t empty).'
+  id: totrans-245
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.rmdirSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsrmdirsyncpath-options)删除空目录（如果目录不为空，则会抛出异常）。'
 - en: 'The following code shows how this function works:'
+  id: totrans-246
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码显示了这个函数的工作原理：
 - en: '[PRE25]'
+  id: totrans-247
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
     lists all descendants of the directory at `dirPath`.'
+  id: totrans-248
   prefs: []
   type: TYPE_NORMAL
+  zh: '[函数`traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)列出`dirPath`目录中所有后代。'
 - en: 8.6.3 Clearing directories
+  id: totrans-249
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.6.3 清除目录
 - en: 'A script that saves its output to a directory `dir`, often needs to *clear*
     `dir` before it starts: Remove every file in `dir` so that it is empty. The following
     function does that.'
+  id: totrans-250
   prefs: []
   type: TYPE_NORMAL
+  zh: 将其输出保存到目录`dir`的脚本通常需要在开始之前*清除*`dir`：删除`dir`中的每个文件，使其为空。以下函数可以实现这一点。
 - en: '[PRE26]'
+  id: totrans-251
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'We used two file system functions:'
+  id: totrans-252
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用了两个文件系统函数：
 - en: '`fs.readdirSync(dirPath)` returns the names of all children of the directory
     at `dirPath`. It is explained in [§8.4.1 “Traversing a directory”](ch_nodejs-file-system.html#traversing-a-directory).'
+  id: totrans-253
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.readdirSync(dirPath)`返回`dirPath`目录中所有子项的名称。在[§8.4.1“遍历目录”](ch_nodejs-file-system.html#traversing-a-directory)中有解释。'
 - en: '`fs.rmSync(pathName, options?)` removes files and directories (including non-empty
     ones). It is explained in [§8.6.1 “Removing files and arbitrary directories (shell:
     `rm`, `rm -r`)”](ch_nodejs-file-system.html#fs.rmSync).'
+  id: totrans-254
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fs.rmSync(pathName, options?)`删除文件和目录（包括非空目录）。在[§8.6.1“删除文件和任意目录（shell：`rm`，`rm
+    -r`）”](ch_nodejs-file-system.html#fs.rmSync)中有解释。'
 - en: 'This is an example of using `clearDirectory()`:'
+  id: totrans-255
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是使用`clearDirectory()`的一个例子：
 - en: '[PRE27]'
+  id: totrans-256
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 8.6.4 Trashing files or directories
+  id: totrans-257
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.6.4 将文件或目录移到垃圾箱
 - en: '[The library `trash`](https://github.com/sindresorhus/trash) moves files and
     folders to the trash. It works on macOS, Windows, and Linux (where support is
     limited and help is wanted). This is an example from its readme file:'
+  id: totrans-258
   prefs: []
   type: TYPE_NORMAL
+  zh: '[库`trash`](https://github.com/sindresorhus/trash)将文件和文件夹移动到垃圾箱。它适用于macOS，Windows和Linux（在Linux上支持有限，需要帮助）。这是它自述文件中的一个例子：'
 - en: '[PRE28]'
+  id: totrans-259
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: '`trash()` accepts either an Array of strings or a string as its first parameter.
     Any string can be a glob pattern (with asterisks and other meta-characters).'
+  id: totrans-260
   prefs: []
   type: TYPE_NORMAL
+  zh: '`trash()`接受字符串数组或字符串作为其第一个参数。任何字符串都可以是glob模式（带有星号和其他元字符）。'
 - en: 8.7 Reading and changing file system entries
+  id: totrans-261
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.7 读取和更改文件系统条目
 - en: 8.7.1 Checking if a file or directory exists
+  id: totrans-262
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.7.1 检查文件或目录是否存在
 - en: '[`fs.existsSync(thePath)`](https://nodejs.org/api/fs.html#fsexistssyncpath)
     returns `true` if a file or directory exists at `thePath`:'
+  id: totrans-263
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.existsSync(thePath)`](https://nodejs.org/api/fs.html#fsexistssyncpath)如果`thePath`上存在文件或目录，则返回`true`：'
 - en: '[PRE29]'
+  id: totrans-264
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
     lists all descendants of the directory at `dirPath`.'
+  id: totrans-265
   prefs: []
   type: TYPE_NORMAL
+  zh: '[函数`traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)列出`dirPath`目录中所有后代。'
 - en: '8.7.2 Checking the stats of a file: Is it a directory? When was it created?
     Etc.'
+  id: totrans-266
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.7.2 检查文件的统计信息：它是一个目录吗？它是什么时候创建的？等等。
 - en: '[`fs.statSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsstatsyncpath-options)
     returns an instance of `fs.Stats` with information on the file or directory at
     `thePath`.'
+  id: totrans-267
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.statSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsstatsyncpath-options)返回一个`fs.Stats`实例，其中包含有关`thePath`上的文件或目录的信息。'
 - en: 'Interesting `options`:'
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的`options`：
 - en: '`.throwIfNoEntry` (default: `true`): What happens if there is no entity at
     `path`?'
+  id: totrans-269
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.throwIfNoEntry`（默认：`true`）：如果在`path`上没有实体会发生什么？'
 - en: If this option is `true`, an exception is thrown.
+  id: totrans-270
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果此选项为`true`，则会抛出异常。
 - en: If it is `false`, `undefined` is returned.
+  id: totrans-271
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果为`false`，则返回`undefined`。
 - en: '`.bigint` (default: `false`): If `true`, this function uses bigints for numeric
     values (such as timestamps, see below).'
+  id: totrans-272
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.bigint`（默认：`false`）：如果为`true`，则此函数将使用bigints作为数值（例如时间戳，请参见下文）。'
 - en: 'Properties of instances of [`fs.Stats`](https://nodejs.org/api/fs.html#class-fsstats):'
+  id: totrans-273
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`fs.Stats`](https://nodejs.org/api/fs.html#class-fsstats)实例的属性：'
 - en: What kind of file system entry is it?
+  id: totrans-274
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它是什么类型的文件系统条目？
 - en: '`stats.isFile()`'
+  id: totrans-275
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`stats.isFile()`'
 - en: '`stats.isDirectory()`'
+  id: totrans-276
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`stats.isDirectory()`'
 - en: '`stats.isSymbolicLink()`'
+  id: totrans-277
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`stats.size` is the size in bytes'
+  id: totrans-278
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Timestamps:'
+  id: totrans-279
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'There are three kinds of timestamps:'
+  id: totrans-280
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`stats.atime`: time of last access'
+  id: totrans-281
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`stats.mtime`: time of last modification'
+  id: totrans-282
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`stats.birthtime`: time of creation'
+  id: totrans-283
   prefs:
   - PREF_IND
   - PREF_IND
@@ -1213,143 +1787,175 @@
   type: TYPE_NORMAL
 - en: 'Each of these timestamps can be specified with three different units – for
     example, `atime`:'
+  id: totrans-284
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`stats.atime`: instance of `Date`'
+  id: totrans-285
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`stats.atimeMS`: milliseconds since the POSIX Epoch'
+  id: totrans-286
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`stats.atimeNs`: nanoseconds since the POSIX Epoch (requires option `.bigint`)'
+  id: totrans-287
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'In the following example, we use `fs.statSync()` to implement a function `isDirectory()`:'
+  id: totrans-288
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE30]'
+  id: totrans-289
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
     lists all descendants of the directory at `dirPath`.'
+  id: totrans-290
   prefs: []
   type: TYPE_NORMAL
 - en: '8.7.3 Changing file attributes: permissions, owner, group, timestamps'
+  id: totrans-291
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Let’s briefly look at functions for changing file attributes:'
+  id: totrans-292
   prefs: []
   type: TYPE_NORMAL
 - en: '[`fs.chmodSync(path, mode)`](https://nodejs.org/api/fs.html#fschmodsyncpath-mode)
     changes the permission of a file.'
+  id: totrans-293
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[`fs.chownSync(path, uid, gid)`](https://nodejs.org/api/fs.html#fschownsyncpath-uid-gid)
     changes the owner and group of a file.'
+  id: totrans-294
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[`fs.utimesSync(path, atime, mtime)`](https://nodejs.org/api/fs.html#fsutimessyncpath-atime-mtime)
     changes the timestamps of a file:'
+  id: totrans-295
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`atime`: time of last access'
+  id: totrans-296
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`mtime`: time of last modification'
+  id: totrans-297
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.8 Working with links
+  id: totrans-298
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'Functions for working with hard links:'
+  id: totrans-299
   prefs: []
   type: TYPE_NORMAL
 - en: '[`fs.linkSync(existingPath, newPath)`](https://nodejs.org/api/fs.html#fslinksyncexistingpath-newpath)
     create a hard link.'
+  id: totrans-300
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[`fs.unlinkSync(path)`](https://nodejs.org/api/fs.html#fsunlinksyncpath) removes
     a hard link and possibly the file it points to (if it is the last hard link to
     that file).'
+  id: totrans-301
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Functions for working with symbolic links:'
+  id: totrans-302
   prefs: []
   type: TYPE_NORMAL
 - en: '[`fs.symlinkSync(target, path, type?)`](https://nodejs.org/api/fs.html#fssymlinksynctarget-path-type)
     creates a symbolic link from `path` to `target`.'
+  id: totrans-303
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[`fs.readlinkSync(path, options?)`](https://nodejs.org/api/fs.html#fsreadlinksyncpath-options)
     returns the target of the symbolic link at `path`.'
+  id: totrans-304
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'The following functions operate on symbolic links without dereferencing them
     (note the name prefix “l”):'
+  id: totrans-305
   prefs: []
   type: TYPE_NORMAL
 - en: '[`fs.lchmodSync(path, mode)`](https://nodejs.org/api/fs.html#fslchmodsyncpath-mode)
     changes the permissions of the symbolic link at `path`.'
+  id: totrans-306
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[`fs.lchownSync(path, uid, gid)`](https://nodejs.org/api/fs.html#fslchownsyncpath-uid-gid)
     changes user and group of the symbolic link at `path`.'
+  id: totrans-307
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[`fs.lutimesSync(path, atime, mtime)`](https://nodejs.org/api/fs.html#fslutimessyncpath-atime-mtime)
     changes the timestamps of the symbolic link at `path`.'
+  id: totrans-308
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[`fs.lstatSync(path, options?)`](https://nodejs.org/api/fs.html#fslstatsyncpath-options)
     returns the stats (timestamps etc.) of the symbolic link at `path`.'
+  id: totrans-309
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Other useful functions:'
+  id: totrans-310
   prefs: []
   type: TYPE_NORMAL
 - en: '[`fs.realpathSync(path, options?)`](https://nodejs.org/api/fs.html#fsrealpathsyncpath-options)
     computes the canonical pathname by resolving dots (`.`), double dots (`..`), and
     symbolic links.'
+  id: totrans-311
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Options of functions that affect how symbolic links are handled:'
+  id: totrans-312
   prefs: []
   type: TYPE_NORMAL
 - en: '[`fs.cpSync(src, dest, options?)`](https://nodejs.org/api/fs.html#fscpsyncsrc-dest-options):'
+  id: totrans-313
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`.dereference` (default: `false`): If `true`, copy the files that symbolic
     links points to, not the symbolic links themselves.'
+  id: totrans-314
   prefs:
   - PREF_IND
   - PREF_UL
@@ -1357,39 +1963,47 @@
 - en: '`.verbatimSymlinks` (default: `false`): If `false`, the target of a copied
     symbolic link will be updated so that it still points to the same location. If
     `true`, the target won’t be changed.'
+  id: totrans-315
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.9 Further reading
+  id: totrans-316
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '“JavaScript for impatient programmers” has several chapters on writing asynchronous
     code:'
+  id: totrans-317
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[“Foundations of asynchronous programming in JavaScript”](https://exploringjs.com/impatient-js/ch_async-js.html)'
+  id: totrans-318
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[“Promises for asynchronous programming”](https://exploringjs.com/impatient-js/ch_promises.html)'
+  id: totrans-319
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[“Async functions”](https://exploringjs.com/impatient-js/ch_async-functions.html)'
+  id: totrans-320
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[“Asynchronous iteration”](https://exploringjs.com/impatient-js/ch_async-iteration.html)'
+  id: totrans-321
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/8)'
+  id: totrans-322
   prefs: []
   type: TYPE_NORMAL

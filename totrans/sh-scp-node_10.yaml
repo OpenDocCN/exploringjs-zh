@@ -1,1655 +1,2531 @@
 - en: 7 Working with file system paths and file URLs on Node.js
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 7 使用Node.js上的文件系统路径和文件URL
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-path.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-path.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-path.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-path.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 7.1 [Path-related functionality on Node.js](ch_nodejs-path.html#path-related-functionality-on-node.js)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.1 在Node.js上与路径相关的功能
 - en: 7.1.1 [The three ways of accessing the `'node:path'` API](ch_nodejs-path.html#the-three-ways-of-accessing-the-nodepath-api)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.1.1 访问`'node:path'` API的三种方式
 - en: 7.2 [Foundational path concepts and their API support](ch_nodejs-path.html#foundational-path-concepts-and-their-api-support)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.2 基本路径概念及其API支持
 - en: 7.2.1 [Path segments, path separators, path delimiters](ch_nodejs-path.html#path-syntax)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.2.1 [路径段、路径分隔符、路径分隔符](ch_nodejs-path.html#path-syntax)
 - en: 7.2.2 [The current working directory](ch_nodejs-path.html#the-current-working-directory)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.2.2 当前工作目录
 - en: 7.2.3 [Fully vs. partially qualified paths, resolving paths](ch_nodejs-path.html#fully-vs.-partially-qualified-paths-resolving-paths)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.2.3 完全vs.部分合格路径，解析路径
 - en: 7.3 [Getting the paths of standard directories via module `'node:os'`](ch_nodejs-path.html#standard-directory-paths)
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.3 通过模块`'node:os'`获取标准目录的路径
 - en: 7.4 [Concatenating paths](ch_nodejs-path.html#concatenating-paths)
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.4 连接路径
 - en: '7.4.1 [`path.resolve()`: concatenating paths to create fully qualified paths](ch_nodejs-path.html#path.resolve)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.4.1 [`path.resolve()`: 连接路径以创建完全合格的路径](ch_nodejs-path.html#path.resolve)'
 - en: '7.4.2 [`path.join()`: concatenating paths while preserving relative paths](ch_nodejs-path.html#path.join-concatenating-paths-while-preserving-relative-paths)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.4.2 [`path.join()`: 连接路径并保留相对路径](ch_nodejs-path.html#path.join-concatenating-paths-while-preserving-relative-paths)'
 - en: 7.5 [Ensuring paths are normalized, fully qualified, or relative](ch_nodejs-path.html#ensuring-paths-are-normalized-fully-qualified-or-relative)
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.5 确保路径被规范化、完全合格或相对
 - en: '7.5.1 [`path.normalize()`: ensuring paths are normalized](ch_nodejs-path.html#path.normalize-ensuring-paths-are-normalized)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.5.1 [`path.normalize()`: 确保路径被规范化](ch_nodejs-path.html#path.normalize-ensuring-paths-are-normalized)'
 - en: '7.5.2 [`path.resolve()` (one argument): ensuring paths are normalized and fully
     qualified](ch_nodejs-path.html#path.resolve-one-argument-ensuring-paths-are-normalized-and-fully-qualified)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.5.2 [`path.resolve()`（一个参数）：确保路径被规范化和完全合格](ch_nodejs-path.html#path.resolve-one-argument-ensuring-paths-are-normalized-and-fully-qualified)
 - en: '7.5.3 [`path.relative()`: creating relative paths](ch_nodejs-path.html#path.relative-creating-relative-paths)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.5.3 [`path.relative()`: 创建相对路径](ch_nodejs-path.html#path.relative-creating-relative-paths)'
 - en: '7.6 [Parsing paths: extracting various parts of a path (filename extension
     etc.)](ch_nodejs-path.html#parsing-paths-extracting-various-parts-of-a-path-filename-extension-etc.)'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.6 解析路径：提取路径的各个部分（文件名扩展名等）
 - en: '7.6.1 [`path.parse()`: creating an object with path parts](ch_nodejs-path.html#path.parse-creating-an-object-with-path-parts)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.6.1 [`path.parse()`: 创建具有路径部分的对象](ch_nodejs-path.html#path.parse-creating-an-object-with-path-parts)'
 - en: '7.6.2 [`path.basename()`: extracting the base of a path](ch_nodejs-path.html#path.basename-extracting-the-base-of-a-path)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.6.2 [`path.basename()`: 提取路径的基本部分](ch_nodejs-path.html#path.basename-extracting-the-base-of-a-path)'
 - en: '7.6.3 [`path.dirname()`: extracting the parent directory of a path](ch_nodejs-path.html#path.dirname-extracting-the-parent-directory-of-a-path)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.6.3 [`path.dirname()`: 提取路径的父目录](ch_nodejs-path.html#path.dirname-extracting-the-parent-directory-of-a-path)'
 - en: '7.6.4 [`path.extname()`: extracting the extension of a path](ch_nodejs-path.html#path.extname-extracting-the-extension-of-a-path)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.6.4 [`path.extname()`: 提取路径的扩展名](ch_nodejs-path.html#path.extname-extracting-the-extension-of-a-path)'
 - en: 7.7 [Categorizing paths](ch_nodejs-path.html#categorizing-paths)
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.7 对路径进行分类
 - en: '7.7.1 [`path.isAbsolute()`: Is a given path absolute?](ch_nodejs-path.html#path.isabsolute-is-a-given-path-absolute)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.7.1 [`path.isAbsolute()`: 给定路径是否绝对？](ch_nodejs-path.html#path.isabsolute-is-a-given-path-absolute)'
 - en: '7.8 [`path.format()`: creating paths out of parts](ch_nodejs-path.html#path.format)'
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '7.8 [`path.format()`: 从部分创建路径](ch_nodejs-path.html#path.format)'
 - en: '7.8.1 [Example: changing the filename extension](ch_nodejs-path.html#example-changing-the-filename-extension)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.8.1 示例：更改文件名扩展名
 - en: 7.9 [Using the same paths on different platforms](ch_nodejs-path.html#cross-platform-paths)
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.9 在不同平台上使用相同的路径
 - en: 7.9.1 [Relative platform-independent paths](ch_nodejs-path.html#relative-platform-independent-paths)
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.9.1 相对平台无关的路径
 - en: 7.10 [Using a library to match paths via *globs*](ch_nodejs-path.html#using-a-library-to-match-paths-via-globs)
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.10 使用库通过*globs*匹配路径
 - en: 7.10.1 [The minimatch API](ch_nodejs-path.html#the-minimatch-api)
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.10.1 minimatch API
 - en: 7.10.2 [Syntax of glob expressions](ch_nodejs-path.html#syntax-of-glob-expressions)
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.10.2 glob表达式的语法
 - en: 7.11 [Using `file:` URLs to refer to files](ch_nodejs-path.html#using-file-urls-to-refer-to-files)
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.11 [使用`file:` URL引用文件](ch_nodejs-path.html#using-file-urls-to-refer-to-files)
 - en: 7.11.1 [Class `URL`](ch_nodejs-path.html#class-url)
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.11.1 [Class `URL`](ch_nodejs-path.html#class-url)
 - en: 7.11.2 [Converting between URLs and file paths](ch_nodejs-path.html#converting-between-urls-and-file-paths)
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.11.2 在URL和文件路径之间转换
 - en: '7.11.3 [Use case for URLs: accessing files relative to the current module](ch_nodejs-path.html#accessing-sibling-files)'
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.11.3 URL的用例：访问相对于当前模块的文件
 - en: '7.11.4 [Use case for URLs: detecting if the current module is “main” (the app
     entry point)](ch_nodejs-path.html#detecting-if-module-is-main)'
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.11.4 URL的用例：检测当前模块是否为“main”（应用程序入口点）
 - en: 7.11.5 [Paths vs. `file:` URLs](ch_nodejs-path.html#paths-vs.-file-urls)
+  id: totrans-36
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 7.11.5 [路径 vs. `file:` URL](ch_nodejs-path.html#paths-vs.-file-urls)
 - en: '* * *'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: In this chapter, we learn how to work with file system paths and file URLs on
     Node.js.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将学习如何在 Node.js 上处理文件系统路径和文件 URL。
 - en: 7.1 Path-related functionality on Node.js
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.1 在 Node.js 上与路径相关的功能
 - en: 'In this chapter, we explore path-related functionality on Node.js:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将探索 Node.js 上与路径相关的功能：
 - en: Most path-related functionality is in module `'node:path'`.
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 大多数与路径相关的功能都在模块 `'node:path'` 中。
 - en: The global variable `process` has methods for changing the *current working
     directory* (what that is, is explained soon).
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 全局变量 `process` 有用于改变*当前工作目录*的方法（这是什么，很快就会解释）。
 - en: Module `'node:os'` has functions that return the paths of important directories.
+  id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块 `'node:os'` 有返回重要目录路径的函数。
 - en: 7.1.1 The three ways of accessing the `'node:path'` API
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.1.1 访问 `'node:path'` API 的三种方式
 - en: 'Module `''node:path''` is often imported as follows:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块 `'node:path'` 经常被导入如下：
 - en: '[PRE0]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'In this chapter, this import statement is occasionally omitted. We also omit
     the following import:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，有时会省略此导入语句。我们还省略了以下导入：
 - en: '[PRE1]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'We can access Node’s path API in three ways:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过三种方式访问 Node 的路径 API：
 - en: 'We can access platform-specific versions of the API:'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以访问特定于平台的 API 版本：
 - en: '`path.posix` supports Unixes including macOS.'
+  id: totrans-51
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`path.posix` 支持包括 macOS 在内的 Unix 系统。'
 - en: '`path.win32` supports Windows.'
+  id: totrans-52
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`path.win32` 支持 Windows。'
 - en: '`path` itself always supports the current platform. For example, this is a
     REPL interaction on macOS:'
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`path` 本身始终支持当前平台。例如，这是 macOS 上 REPL 交互的一个示例：'
 - en: '[PRE2]'
+  id: totrans-54
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Let’s see how function `path.parse()`, which parses file system paths, differs
     for the two platforms:'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看函数 `path.parse()` 如何在两个平台上解析文件系统路径的不同之处：
 - en: '[PRE3]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: We parse a Windows path – first correctly via the `path.win32` API, then via
     the `path.posix` API. We can see that in the latter case, the path isn’t correctly
     split into its parts – for example, the basename of the file should be `file.txt`
     (more on what the other properties mean later).
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们解析 Windows 路径 - 首先通过 `path.win32` API 正确解析，然后通过 `path.posix` API 解析。我们可以看到在后一种情况下，路径没有正确分割为其各个部分
+    - 例如，文件的基本名称应该是 `file.txt`（稍后会详细介绍其他属性的含义）。
 - en: 7.2 Foundational path concepts and their API support
+  id: totrans-58
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.2 基本路径概念及其 API 支持
 - en: 7.2.1 Path segments, path separators, path delimiters
+  id: totrans-59
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.2.1 路径段、路径分隔符、路径分隔符
 - en: 'Terminology:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 术语：
 - en: A non-empty path consists of one or more *path segments* – most often names
     of directories or files.
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 非空路径由一个或多个*路径段*组成，通常是目录或文件的名称。
 - en: 'A *path separator* is used to separate two adjacent path segments in a path.
     `path.sep` contains the path separator of the current platform:'
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*路径分隔符* 用于在路径中分隔两个相邻的路径段。`path.sep` 包含当前平台的路径分隔符：'
 - en: '[PRE4]'
+  id: totrans-63
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'A *path delimiter* separates elements in lists of paths. `path.delimiter` contains
     the path delimiter of the current platform:'
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*路径分隔符* 用于分隔路径列表中的元素。`path.delimiter` 包含当前平台的路径分隔符：'
 - en: '[PRE5]'
+  id: totrans-65
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: We can see path separators and path delimitors if we examine the PATH shell
     variable – which contains the paths where the operating system looks for executables
     when a command is entered in a shell.
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们检查 PATH shell 变量，我们可以看到路径分隔符和路径分隔符：
 - en: 'This is an example of a macOS PATH (shell variable `$PATH`):'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 macOS PATH 的一个示例（shell 变量 `$PATH`）：
 - en: '[PRE6]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: The split separator has a length of zero because [the lookbehind assertion](https://exploringjs.com/impatient-js/ch_regexps.html#regexp-lookbehind-assertions)
     `(?<=:)` matches if a given location is preceded by a colon but it does not capture
     anything. Therefore, the path delimiter `':'` is included in the preceding path.
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 分隔符的长度为零，因为[回顾断言](https://exploringjs.com/impatient-js/ch_regexps.html#regexp-lookbehind-assertions)
+    `(?<=:)` 匹配给定位置是否由冒号前导，但它不捕获任何内容。因此，路径分隔符 `':'` 包含在前面的路径中。
 - en: 'This is an example of a Windows PATH (shell variable `%Path%`):'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 Windows PATH 的一个示例（shell 变量 `%Path%`）：
 - en: '[PRE7]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 7.2.2 The current working directory
+  id: totrans-72
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.2.2 当前工作目录
 - en: 'Many shells have the concept of the *current working directory* (CWD) – “the
     directory I’m currently in”:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 许多 shell 都有*当前工作目录*（CWD）的概念 - “我当前所在的目录”：
 - en: If we use a command with a partially qualified path, that path is resolved against
     the CWD.
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们使用部分合格的路径执行命令，该路径将相对于当前工作目录进行解析。
 - en: If we omit a path when a command expects a path, the CWD is used.
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们在命令期望路径时省略路径，将使用当前工作目录。
 - en: On both Unixes and Windows, the command to change the CWD is `cd`.
+  id: totrans-76
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在 Unix 和 Windows 上，改变当前工作目录的命令是 `cd`。
 - en: '`process` is a global Node.js variable. It provides us with methods for getting
     and setting the CWD:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: '`process` 是一个全局的 Node.js 变量。它为我们提供了获取和设置当前工作目录的方法：'
 - en: '[`process.cwd()`](https://nodejs.org/api/process.html#processcwd) returns the
     CWD.'
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`process.cwd()`](https://nodejs.org/api/process.html#processcwd) 返回当前工作目录。'
 - en: '[`process.chdir(dirPath)`](https://nodejs.org/api/process.html#processchdirdirectory)
     changes the CWD to `dirPath`.'
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`process.chdir(dirPath)`](https://nodejs.org/api/process.html#processchdirdirectory)
+    将当前工作目录更改为 `dirPath`。'
 - en: There must be a directory at `dirPath`.
+  id: totrans-80
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dirPath` 必须存在一个目录。'
 - en: That change does not affect the shell, only the currently running Node.js process.
+  id: totrans-81
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这种更改不会影响 shell，只会影响当前正在运行的 Node.js 进程。
 - en: Node.js uses the CWD to fill in missing pieces whenever a path isn’t *fully
     qualified* (complete). That enables us to use partially qualified paths with various
     functions – e.g. `fs.readFileSync()`.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js 使用当前工作目录来填充缺失的部分，每当路径不是完全合格时。这使我们能够在各种函数中使用部分合格的路径，例如 `fs.readFileSync()`。
 - en: 7.2.2.1 The current working directory on Unix
+  id: totrans-83
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.2.2.1 Unix 上的当前工作目录
 - en: 'The following code demonstrates `process.chdir()` and `process.cwd()` on Unix:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了在 Unix 上使用 `process.chdir()` 和 `process.cwd()`：
 - en: '[PRE8]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 7.2.2.2 The current working directory on Windows
+  id: totrans-86
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.2.2.2 Windows 上的当前工作目录
 - en: 'So far, we have used the current working directory on Unix. Windows works differently:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们已经在 Unix 上使用了当前工作目录。Windows 的工作方式不同：
 - en: Each drive has a *current directory*.
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个驱动器都有一个*当前目录*。
 - en: There is a *current drive*.
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有一个*当前驱动器*。
 - en: 'We can use `path.chdir()` to set both at the same time:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用 `path.chdir()` 同时设置两者：
 - en: '[PRE9]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'When we revisit a drive, Node.js remembers the previous current directory of
     that drive:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们重新访问一个驱动器时，Node.js会记住该驱动器的先前当前目录：
 - en: '[PRE10]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 7.2.3 Fully vs. partially qualified paths, resolving paths
+  id: totrans-94
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.2.3 完全合格与部分合格的路径，解析路径
 - en: A *fully qualified path* does not rely on any other information and can be used
     as is.
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*完全合格的路径*不依赖于任何其他信息，可以直接使用。'
 - en: 'A *partially qualified path* is missing information: We need to turn it into
     a fully qualified path before we can use it. That is done by *resolving* it against
     a fully qualified path.'
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*部分合格的路径*缺少信息：我们需要将其转换为完全合格的路径才能使用。这是通过将其与完全合格的路径*解析*来完成的。'
 - en: 7.2.3.1 Fully and partially qualified paths on Unix
+  id: totrans-97
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.2.3.1 Unix上的完全合格和部分合格路径
 - en: 'Unix only knows two kinds of paths:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: Unix只知道两种路径：
 - en: '*Absolute paths* are fully qualified and start with a slash:'
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*绝对路径*是完全合格的，并以斜杠开头：'
 - en: '[PRE11]'
+  id: totrans-100
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '*Relative paths* are partially qualified and start with a filename or a dot:'
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*相对路径*是部分合格的，以文件名或点开头：'
 - en: '[PRE12]'
+  id: totrans-102
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Let’s use `path.resolve()` (which is explained in more detail [later](ch_nodejs-path.html#path.resolve))
     to resolve relative paths against absolute paths. The results are absolute paths:'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用`path.resolve()`（在[后面](ch_nodejs-path.html#path.resolve)有更详细的解释）来解析相对路径与绝对路径。结果是绝对路径：
 - en: '[PRE13]'
+  id: totrans-104
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 7.2.3.2 Fully and partially qualified paths on Windows
+  id: totrans-105
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.2.3.2 Windows上的完全合格和部分合格路径
 - en: 'Windows distinguishes four kinds of paths (for more information, see [Microsoft’s
     documentation](https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#fully-qualified-vs-relative-paths)):'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: Windows区分四种路径（有关更多信息，请参阅[Microsoft的文档](https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#fully-qualified-vs-relative-paths)）：
 - en: There are absolute paths and relative paths.
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有绝对路径和相对路径。
 - en: Each of those two kinds of paths can have a drive letter (“volume designator”)
     or not.
+  id: totrans-108
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这两种路径都可以有驱动器号（“卷标”)或者没有。
 - en: Absolute paths with drive letters are fully qualified. All other paths are partially
     qualified.
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 带有驱动器号的绝对路径是完全合格的。所有其他路径都是部分合格的。
 - en: '**Resolving an absolute path without a drive letter** against a fully qualified
     path `full`, picks up the drive letter of `full`:'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: '**解析没有驱动器号的绝对路径**与完全合格路径`full`，会获取`full`的驱动器号：'
 - en: '[PRE14]'
+  id: totrans-111
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '**Resolving a relative path without a drive letter** against a fully qualified
     path, can be viewed as updating the latter:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: '**解析没有驱动器号的相对路径**与完全合格路径，可以看作是更新后者：'
 - en: '[PRE15]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '**Resolving a relative path `rel` with a drive letter** against a fully qualified
     path `full` depends on the drive letter of `rel`:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: '**解析带有驱动器号的相对路径**与完全合格路径`full`取决于`rel`的驱动器号：'
 - en: Same drive letter as `full`? Resolve `rel` against `full`.
+  id: totrans-115
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与`full`相同的驱动器号？将`rel`解析为`full`。
 - en: Different drive letter than `full`? Resolve `rel` against the current directory
     of `rel`’s drive.
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与`full`不同的驱动器号？将`rel`解析为`rel`驱动器的当前目录。
 - en: 'That looks as follows:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 看起来如下：
 - en: '[PRE16]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 7.3 Getting the paths of standard directories via module `'node:os'`
+  id: totrans-119
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.3 通过模块`'node:os'`获取标准目录的路径
 - en: 'The module `''node:os''` provides us with the paths of two important directories:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块`'node:os'`为我们提供了两个重要目录的路径：
 - en: '[`os.homedir()`](https://nodejs.org/api/os.html#oshomedir) returns the path
     to the home directory of the current user – for example:'
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`os.homedir()`](https://nodejs.org/api/os.html#oshomedir)返回当前用户的主目录路径，例如：'
 - en: '[PRE17]'
+  id: totrans-122
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[`os.tmpdir()`](https://nodejs.org/api/os.html#ostmpdir) returns the path of
     the operating system’s directory for temporary files – for example:'
+  id: totrans-123
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`os.tmpdir()`](https://nodejs.org/api/os.html#ostmpdir)返回操作系统用于临时文件的目录路径，例如：'
 - en: '[PRE18]'
+  id: totrans-124
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 7.4 Concatenating paths
+  id: totrans-125
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.4 连接路径
 - en: 'There are two functions for concatenating paths:'
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两个用于连接路径的函数：
 - en: '`path.resolve()` always returns fully qualified paths'
+  id: totrans-127
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`path.resolve()`总是返回完全合格的路径'
 - en: '`path.join()` preserves relative paths'
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`path.join()` 保留相对路径'
 - en: '7.4.1 `path.resolve()`: concatenating paths to create fully qualified paths'
+  id: totrans-129
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.4.1 `path.resolve()`: 连接路径以创建完全合格的路径'
 - en: '[PRE19]'
+  id: totrans-130
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'Concatenates the `paths` and return a fully qualified path. It uses the following
     algorithm:'
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接`paths`并返回完全合格的路径。它使用以下算法：
 - en: Start with the current working directory.
+  id: totrans-132
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从当前工作目录开始。
 - en: Resolve `path[0]` against the previous result.
+  id: totrans-133
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将`path[0]`解析为先前的结果。
 - en: Resolve `path[1]` against the previous result.
+  id: totrans-134
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将`path[1]`解析为先前的结果。
 - en: Do the same for all remaining paths.
+  id: totrans-135
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对所有剩余的路径执行相同的操作。
 - en: Return the final result.
+  id: totrans-136
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回最终结果。
 - en: 'Without arguments, `path.resolve()` returns the path of the current working
     directory:'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有参数，`path.resolve()`返回当前工作目录的路径：
 - en: '[PRE20]'
+  id: totrans-138
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'One or more relative paths are used for resolution, starting with the current
     working directory:'
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个或多个相对路径用于解析，从当前工作目录开始：
 - en: '[PRE21]'
+  id: totrans-140
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'Any fully qualified path replaces the previous result:'
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 任何完全合格的路径都会替换先前的结果：
 - en: '[PRE22]'
+  id: totrans-142
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'That enables us to resolve partially qualified paths against fully qualified
     paths:'
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 这使我们能够解析部分合格的路径与完全合格的路径：
 - en: '[PRE23]'
+  id: totrans-144
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: '7.4.2 `path.join()`: concatenating paths while preserving relative paths'
+  id: totrans-145
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.4.2 `path.join()`: 连接路径同时保留相对路径'
 - en: '[PRE24]'
+  id: totrans-146
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'Starts with `paths[0]` and interprets the remaining paths as instructions for
     ascending or descending. In contrast to `path.resolve()`, this function preserves
     partially qualified paths: If `paths[0]` is partially qualified, the result is
     partially qualified. If it is fully qualified, the result is fully qualified.'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 从`paths[0]`开始，并将其余路径解释为上升或下降的指令。与`path.resolve()`相反，此函数保留部分合格的路径：如果`paths[0]`是部分合格的，则结果也是部分合格的。如果它是完全合格的，则结果也是完全合格的。
 - en: 'Examples of descending:'
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: 下降的例子：
 - en: '[PRE25]'
+  id: totrans-149
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Double dots ascend:'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 双点上升：
 - en: '[PRE26]'
+  id: totrans-151
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'Single dots do nothing:'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 单个点不起作用：
 - en: '[PRE27]'
+  id: totrans-153
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'If arguments after the first one are fully qualified paths, they are interpreted
     as relative paths:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果第一个参数之后的参数是完全合格的路径，则将其解释为相对路径：
 - en: '[PRE28]'
+  id: totrans-155
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'Using more than two arguments:'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用多于两个参数：
 - en: '[PRE29]'
+  id: totrans-157
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 7.5 Ensuring paths are normalized, fully qualified, or relative
+  id: totrans-158
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.5 确保路径被规范化，完全合格或相对
 - en: '7.5.1 `path.normalize()`: ensuring paths are normalized'
+  id: totrans-159
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.5.1 `path.normalize()`: 确保路径被规范化'
 - en: '[PRE30]'
+  id: totrans-160
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'On Unix, `path.normalize()`:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上，`path.normalize()`：
 - en: Removes path segments that are single dots (`.`).
+  id: totrans-162
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 删除单个点（`。`）的路径段。
 - en: Resolves path segments that are double dots (`..`).
+  id: totrans-163
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 解析双点（`..`）的路径段。
 - en: Turns multiple path separators into a single path separator.
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将多个路径分隔符转换为单个路径分隔符。
 - en: 'For example:'
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE31]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'On Windows, `path.normalize()`:'
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上，`path.normalize()`：
 - en: Removes path segments that are single dots (`.`).
+  id: totrans-168
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 删除单点（`.`）的路径段。
 - en: Resolves path segments that are double dots (`..`).
+  id: totrans-169
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 解析双点（`..`）的路径段。
 - en: Converts each path separator slash (`/`) – which is legal – into a the preferred
     path separator (`\`).
+  id: totrans-170
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将每个路径分隔符斜杠（`/`）转换为首选路径分隔符（`\`）。
 - en: Converts sequences of more than one path separator to single backslashes.
+  id: totrans-171
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将多个路径分隔符序列转换为单个反斜杠。
 - en: 'For example:'
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE32]'
+  id: totrans-173
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'Note that `path.join()` with a single argument also normalizes and works the
     same as `path.normalize()`:'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，使用单个参数的`path.join()`也会规范化并且与`path.normalize()`的工作方式相同：
 - en: '[PRE33]'
+  id: totrans-175
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: '7.5.2 `path.resolve()` (one argument): ensuring paths are normalized and fully
     qualified'
+  id: totrans-176
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.5.2 `path.resolve()`（一个参数）：确保路径被规范化和完全合格
 - en: We have already encountered [`path.resolve()`](ch_nodejs-path.html#path.resolve).
     Called with a single argument, it both normalizes paths and ensures that they
     are fully qualified.
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经遇到了[`path.resolve()`](ch_nodejs-path.html#path.resolve)。使用单个参数调用它，它会规范化路径并确保它们是完全合格的。
 - en: 'Using `path.resolve()` on Unix:'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上使用`path.resolve()`：
 - en: '[PRE34]'
+  id: totrans-179
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'Using `path.resolve()` on Windows:'
+  id: totrans-180
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上使用`path.resolve()`：
 - en: '[PRE35]'
+  id: totrans-181
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '7.5.3 `path.relative()`: creating relative paths'
+  id: totrans-182
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.5.3 `path.relative()`: 创建相对路径'
 - en: '[PRE36]'
+  id: totrans-183
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'Returns a relative path that gets us from `sourcePath` to `destinationPath`:'
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回一个相对路径，使我们从`sourcePath`到`destinationPath`：
 - en: '[PRE37]'
+  id: totrans-185
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'On Windows, we get a fully qualified path if `sourcePath` and `destinationPath`
     are on different drives:'
+  id: totrans-186
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上，如果`sourcePath`和`destinationPath`位于不同的驱动器上，则会得到一个完全合格的路径：
 - en: '[PRE38]'
+  id: totrans-187
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 'This function also works with relative paths:'
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 此函数还适用于相对路径：
 - en: '[PRE39]'
+  id: totrans-189
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '7.6 Parsing paths: extracting various parts of a path (filename extension etc.)'
+  id: totrans-190
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.6 解析路径：提取路径的各个部分（文件扩展名等）
 - en: '7.6.1 `path.parse()`: creating an object with path parts'
+  id: totrans-191
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.6.1 `path.parse()`: 创建具有路径部分的对象'
 - en: '[PRE40]'
+  id: totrans-192
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'Extracts various parts of `path` and returns them in an object with the following
     properties:'
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: 提取`path`的各个部分，并以具有以下属性的对象返回它们：
 - en: '`.base`: last segment of a path'
+  id: totrans-194
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.base`：路径的最后一部分'
 - en: '`.ext`: the filename extension of the base'
+  id: totrans-195
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.ext`：基本的文件扩展名'
 - en: '`.name`: the base without the extension. This part is also called the *stem*
     of a path.'
+  id: totrans-196
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.name`：没有扩展名的基本部分。这部分也被称为路径的*stem*。'
 - en: '`.root`: the beginning of a path (before the first segment)'
+  id: totrans-197
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.root`：路径的开始（第一个段之前）'
 - en: '`.dir`: the directory in which the base is located – the path without the base'
+  id: totrans-198
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.dir`：基本所在的目录-没有基本的路径'
 - en: 'Later, we’ll see [function `path.format()`](ch_nodejs-path.html#path.format)
     which is the inverse of `path.parse()`: It converts an object with path parts
     into a path.'
+  id: totrans-199
   prefs: []
   type: TYPE_NORMAL
+  zh: 稍后，我们将看到[函数`path.format()`](ch_nodejs-path.html#path.format)，它是`path.parse()`的反函数：它将具有路径部分的对象转换为路径。
 - en: '7.6.1.1 Example: `path.parse()` on Unix'
+  id: totrans-200
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.6.1.1 `path.parse()`在Unix上的示例
 - en: 'This is what using `path.parse()` on Unix looks like:'
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是在Unix上使用`path.parse()`的样子：
 - en: '[PRE41]'
+  id: totrans-202
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'The following diagram visualizes the extent of the parts:'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下图表可视化了各个部分的范围：
 - en: '[PRE42]'
+  id: totrans-204
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: For example, we can see that `.dir` is the path without the base. And that `.base`
     is `.name` plus `.ext`.
+  id: totrans-205
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，我们可以看到`.dir`是没有基本的路径。而`.base`是`.name`加上`.ext`。
 - en: '7.6.1.2 Example: `path.parse()` on Windows'
+  id: totrans-206
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.6.1.2 `path.parse()`在Windows上的示例
 - en: 'This is how `path.parse()` works on Windows:'
+  id: totrans-207
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`path.parse()`在Windows上的工作方式：
 - en: '[PRE43]'
+  id: totrans-208
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'This is a diagram for the result:'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是结果的图表：
 - en: '[PRE44]'
+  id: totrans-210
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: '7.6.2 `path.basename()`: extracting the base of a path'
+  id: totrans-211
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.6.2 `path.basename()`: 提取路径的基本部分'
 - en: '[PRE45]'
+  id: totrans-212
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'Returns the base of `path`:'
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回`path`的基本部分：
 - en: '[PRE46]'
+  id: totrans-214
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: 'Optionally, this function can also remove a suffix:'
+  id: totrans-215
   prefs: []
   type: TYPE_NORMAL
+  zh: 可选地，此函数还可以删除后缀：
 - en: '[PRE47]'
+  id: totrans-216
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: Removing the extension is case sensitive – even on Windows!
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 删除扩展名是区分大小写的-即使在Windows上也是如此！
 - en: '[PRE48]'
+  id: totrans-218
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: '7.6.3 `path.dirname()`: extracting the parent directory of a path'
+  id: totrans-219
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.6.3 `path.dirname()`: 提取路径的父目录'
 - en: '[PRE49]'
+  id: totrans-220
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: 'Returns the parent directory of the file or directory at `path`:'
+  id: totrans-221
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回`path`中文件或目录的父目录：
 - en: '[PRE50]'
+  id: totrans-222
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: '7.6.4 `path.extname()`: extracting the extension of a path'
+  id: totrans-223
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.6.4 `path.extname()`: 提取路径的扩展名'
 - en: '[PRE51]'
+  id: totrans-224
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: 'Returns the extension of `path`:'
+  id: totrans-225
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回`path`的扩展名：
 - en: '[PRE52]'
+  id: totrans-226
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: 7.7 Categorizing paths
+  id: totrans-227
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.7 对路径进行分类
 - en: '7.7.1 `path.isAbsolute()`: Is a given path absolute?'
+  id: totrans-228
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '7.7.1 `path.isAbsolute()`: 给定路径是否是绝对路径？'
 - en: '[PRE53]'
+  id: totrans-229
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: Returns `true` if `path` is absolute and `false` otherwise.
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果`path`是绝对路径则返回`true`，否则返回`false`。
 - en: 'The results on Unix are straightforward:'
+  id: totrans-231
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上的结果很直接：
 - en: '[PRE54]'
+  id: totrans-232
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: 'On Windows, “absolute” does not necessarily mean “fully qualified” (only the
     first path is fully qualified):'
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上，“绝对”并不一定意味着“完全合格”（只有第一个路径是完全合格的）：
 - en: '[PRE55]'
+  id: totrans-234
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: '7.8 `path.format()`: creating paths out of parts'
+  id: totrans-235
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '7.8 `path.format()`: 从部分创建路径'
 - en: '[PRE56]'
+  id: totrans-236
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: 'Creates a path out of a path object:'
+  id: totrans-237
   prefs: []
   type: TYPE_NORMAL
+  zh: 从路径对象创建路径：
 - en: '[PRE57]'
+  id: totrans-238
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: '7.8.1 Example: changing the filename extension'
+  id: totrans-239
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.8.1 示例：更改文件扩展名
 - en: 'We can use `path.format()` to change the extension of a path:'
+  id: totrans-240
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用`path.format()`来更改路径的扩展名：
 - en: '[PRE58]'
+  id: totrans-241
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: 'If we know the original filename extension, we can also use a regular expression
     to change the filename extension:'
+  id: totrans-242
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们知道原始文件名的扩展名，我们也可以使用正则表达式来更改文件名的扩展名：
 - en: '[PRE59]'
+  id: totrans-243
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: 7.9 Using the same paths on different platforms
+  id: totrans-244
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.9 在不同平台上使用相同的路径
 - en: 'Sometimes we’d like to use the same paths on different platforms. Then there
     are two issues that we are facing:'
+  id: totrans-245
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时我们希望在不同平台上使用相同的路径。然后我们面临两个问题：
 - en: The path separator may be different.
+  id: totrans-246
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 路径分隔符可能不同。
 - en: 'The file structure may be different: home directories and directories for temporary
     files may be in different locations, etc.'
+  id: totrans-247
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 文件结构可能不同：主目录和临时文件目录可能位于不同位置等。
 - en: 'As an example, consider a Node.js app that operates on a directory with data.
     Let’s assume that the app can be configured with two kinds of paths:'
+  id: totrans-248
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，考虑一个在一个包含数据的目录上运行的Node.js应用程序。假设该应用程序可以配置两种类型的路径：
 - en: Fully qualified paths anywhere on the system
+  id: totrans-249
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 系统中任何地方都是完全合格的路径
 - en: Paths inside the data directory
+  id: totrans-250
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数据目录内的路径
 - en: 'Due to the aforementioned issues:'
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于前面提到的问题：
 - en: We can’t reuse fully qualified paths between platforms.
+  id: totrans-252
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们不能在不同平台之间重用完全合格的路径。
 - en: Sometimes we need absolute paths. These have to be configured per “instance”
     of the data directory and stored externally (or inside it and ignored by version
     control). These paths stay put and are not moved with the data directory.
+  id: totrans-253
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有时我们需要绝对路径。这些必须针对数据目录的“实例”进行配置，并存储在外部（或内部并被版本控制忽略）。这些路径保持不变，不会随数据目录移动。
 - en: 'We can reuse paths that point into the data directory. Such paths may be stored
     in configuration files (inside the data directory or not) and in constants in
     the app’s code. To do that:'
+  id: totrans-254
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以重用指向数据目录的路径。这些路径可以存储在配置文件中（数据目录内或外）和应用程序代码中的常量中。为此：
 - en: We have to store them as relative paths.
+  id: totrans-255
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们必须将它们存储为相对路径。
 - en: We have to ensure that the path separator is correct on each platform.
+  id: totrans-256
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们必须确保每个平台上的路径分隔符是正确的。
 - en: The next subsection explains how both can be achieved.
+  id: totrans-257
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 下一小节解释了如何实现这两个目标。
 - en: 7.9.1 Relative platform-independent paths
+  id: totrans-258
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.9.1 相对平台无关的路径
 - en: 'Relative platform-independent paths can be stored as Arrays of path segments
     and turned into fully qualified platform-specific paths as follows:'
+  id: totrans-259
   prefs: []
   type: TYPE_NORMAL
+  zh: 相对平台无关的路径可以存储为路径段的数组，并按以下方式转换为完全合格的特定平台的路径：
 - en: '[PRE60]'
+  id: totrans-260
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: 'To create relative platform-specific paths, we can use:'
+  id: totrans-261
   prefs: []
   type: TYPE_NORMAL
+  zh: 要创建相对于特定平台的路径，我们可以使用：
 - en: '[PRE61]'
+  id: totrans-262
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: 'The following function converts relative platform-specific paths into platform-independent
     paths:'
+  id: totrans-263
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数将相对于特定平台的路径转换为平台无关的路径：
 - en: '[PRE62]'
+  id: totrans-264
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE62]'
 - en: 'Using `splitRelativePathIntoSegments()` on Unix:'
+  id: totrans-265
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上使用`splitRelativePathIntoSegments()`：
 - en: '[PRE63]'
+  id: totrans-266
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE63]'
 - en: 'Using `splitRelativePathIntoSegments()` on Windows:'
+  id: totrans-267
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上使用`splitRelativePathIntoSegments()`：
 - en: '[PRE64]'
+  id: totrans-268
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE64]'
 - en: 7.10 Using a library to match paths via *globs*
+  id: totrans-269
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.10 使用库通过*globs*匹配路径
 - en: 'The [npm module `''minimatch''`](https://github.com/isaacs/minimatch) lets
     us match paths against patterns that are called *glob expressions*, *glob patterns*,
     or *globs*:'
+  id: totrans-270
   prefs: []
   type: TYPE_NORMAL
+  zh: '[npm模块`''minimatch''`](https://github.com/isaacs/minimatch)让我们可以根据称为*glob表达式*、*glob模式*或*glob*的模式匹配路径：'
 - en: '[PRE65]'
+  id: totrans-271
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE65]'
 - en: 'Use cases for globs:'
+  id: totrans-272
   prefs: []
   type: TYPE_NORMAL
+  zh: 通配符的用例：
 - en: Specifying which files in a directory should be processed by a script.
+  id: totrans-273
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 指定目录中应由脚本处理的文件。
 - en: Specifying which files to ignore.
+  id: totrans-274
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 指定要忽略哪些文件。
 - en: 'More glob libraries:'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多的通配符库：
 - en: '[multimatch](https://github.com/sindresorhus/multimatch) extends minimatch
     with support for multiple patterns.'
+  id: totrans-276
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[multimatch](https://github.com/sindresorhus/multimatch)扩展了minimatch，支持多个模式。'
 - en: '[micromatch](https://github.com/micromatch/micromatch) is an alternative to
     minimatch and multimatch that has a similar API.'
+  id: totrans-277
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[micromatch](https://github.com/micromatch/micromatch)是minimatch和multimatch的替代品，具有类似的API。'
 - en: '[globby](https://github.com/sindresorhus/globby) is a library based on [fast-glob](https://github.com/mrmlnc/fast-glob)
     that adds convenience features.'
+  id: totrans-278
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[globby](https://github.com/sindresorhus/globby)是基于[fast-glob](https://github.com/mrmlnc/fast-glob)的库，添加了便利功能。'
 - en: 7.10.1 The minimatch API
+  id: totrans-279
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.10.1 minimatch API
 - en: The whole API of minimatch is documented in [the project’s readme file](https://github.com/isaacs/minimatch).
     In this subsection, we look at the most important functionality.
+  id: totrans-280
   prefs: []
   type: TYPE_NORMAL
+  zh: minimatch的整个API在[项目的自述文件](https://github.com/isaacs/minimatch)中有文档。在本小节中，我们将重点关注最重要的功能。
 - en: Minimatch compiles globs to JavaScript `RegExp` objects and uses those to match.
+  id: totrans-281
   prefs: []
   type: TYPE_NORMAL
+  zh: Minimatch将通配符编译为JavaScript `RegExp`对象，并使用它们进行匹配。
 - en: '7.10.1.1 `minimatch()`: compiling and matching once'
+  id: totrans-282
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '7.10.1.1 `minimatch()`: 编译和匹配一次'
 - en: '[PRE66]'
+  id: totrans-283
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE66]'
 - en: Returns `true` if `glob` matches `path` and `false` otherwise.
+  id: totrans-284
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果`glob`匹配`path`，则返回`true`，否则返回`false`。
 - en: 'Two interesting options:'
+  id: totrans-285
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个有趣的选项：
 - en: '`.dot: boolean` (default: `false`)'
+  id: totrans-286
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.dot: boolean`（默认值：`false`）'
 - en: 'If `true`, wildcard symbols such as `*` and `**` match “invisible” path segments
     (whose names begin with dots):'
+  id: totrans-287
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果为`true`，通配符符号如`*`和`**`将匹配“不可见”的路径段（其名称以点开头）：
 - en: '[PRE67]'
+  id: totrans-288
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE67]'
 - en: '`.matchBase: boolean` (default: `false`)'
+  id: totrans-289
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.matchBase: boolean`（默认值：`false`）'
 - en: 'If `true`, a pattern without slashes is matched against the basename of a path:'
+  id: totrans-290
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果为`true`，不带斜杠的模式将与路径的基本名称匹配：
 - en: '[PRE68]'
+  id: totrans-291
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE68]'
 - en: '7.10.1.2 `new minimatch.Minimatch()`: compiling once, matching multiple times'
+  id: totrans-292
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '7.10.1.2 `new minimatch.Minimatch()`: 编译一次，多次匹配'
 - en: 'Class `minimatch.Minimatch` enables us to only compile the glob to a regular
     expression once and match multiple times:'
+  id: totrans-293
   prefs: []
   type: TYPE_NORMAL
+  zh: 类`minimatch.Minimatch`使我们只需将通配符编译为正则表达式一次，就可以多次进行匹配：
 - en: '[PRE69]'
+  id: totrans-294
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE69]'
 - en: 'This is how this class is used:'
+  id: totrans-295
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是如何使用这个类的：
 - en: '[PRE70]'
+  id: totrans-296
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE70]'
 - en: 7.10.2 Syntax of glob expressions
+  id: totrans-297
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.10.2 通配符表达式的语法
 - en: 'This subsection covers the essentials of the syntax. But there are more features.
     These are documented here:'
+  id: totrans-298
   prefs: []
   type: TYPE_NORMAL
+  zh: 本小节涵盖了语法的基本要点。但还有更多功能。这些在这里记录：
 - en: '[Minimatch’s unit tests](https://github.com/isaacs/minimatch/tree/main/test)
     have many examples of globs.'
+  id: totrans-299
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Minimatch的单元测试](https://github.com/isaacs/minimatch/tree/main/test)有许多通配符的示例。'
 - en: The Bash Reference manual has [a section on filename expansion](https://www.gnu.org/software/bash/manual/bash.html#Filename-Expansion).
+  id: totrans-300
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Bash参考手册有[关于文件名扩展的部分](https://www.gnu.org/software/bash/manual/bash.html#Filename-Expansion)。
 - en: 7.10.2.1 Matching Windows paths
+  id: totrans-301
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.10.2.1 匹配Windows路径
 - en: 'Even on Windows, glob segments are separated by slashes – but they match both
     backslashes and slashes (which are legal path separators on Windows):'
+  id: totrans-302
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使在Windows上，通配符段也是由斜杠分隔的-但它们匹配反斜杠和斜杠（这些是Windows上合法的路径分隔符）：
 - en: '[PRE71]'
+  id: totrans-303
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE71]'
 - en: 7.10.2.2 Minimatch does not normalize paths
+  id: totrans-304
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.10.2.2 Minimatch不会规范化路径
 - en: 'Minimatch does not normalize paths for us:'
+  id: totrans-305
   prefs: []
   type: TYPE_NORMAL
+  zh: Minimatch不会为我们规范化路径：
 - en: '[PRE72]'
+  id: totrans-306
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE72]'
 - en: 'Therefore, we have to normalize paths if we don’t create them ourselves:'
+  id: totrans-307
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，如果我们不自己创建路径，我们必须规范化路径：
 - en: '[PRE73]'
+  id: totrans-308
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE73]'
 - en: '7.10.2.3 Patterns without wildcard symbols: path separators must line up'
+  id: totrans-309
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.10.2.3 不带通配符符号的模式：路径分隔符必须对齐
 - en: 'Patterns without *wildcard symbols* (that match more flexibly) must match exactly.
     Especially the path separators must line up:'
+  id: totrans-310
   prefs: []
   type: TYPE_NORMAL
+  zh: 不带通配符符号的模式（更灵活匹配）必须精确匹配。特别是路径分隔符必须对齐：
 - en: '[PRE74]'
+  id: totrans-311
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE74]'
 - en: That is, we must decide on either absolute or relative paths.
+  id: totrans-312
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说，我们必须决定是绝对路径还是相对路径。
 - en: 'With option `.matchBase`, we can match patterns without slashes against the
     basenames of paths:'
+  id: totrans-313
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用`.matchBase`选项，我们可以匹配不带斜杠的模式与路径的基本名称：
 - en: '[PRE75]'
+  id: totrans-314
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE75]'
 - en: 7.10.2.4 The asterisk (`*`) matches any (part of a) single segment
+  id: totrans-315
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.10.2.4 星号（`*`）匹配任何（部分）单个段
 - en: 'The *wildcard symbol* asterisk (`*`) matches any path segment or any part of
     a segment:'
+  id: totrans-316
   prefs: []
   type: TYPE_NORMAL
+  zh: 通配符符号*（`*`）匹配任何路径段或段的任何部分：
 - en: '[PRE76]'
+  id: totrans-317
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE76]'
 - en: 'The asterisk does not match “invisible files“ whose names start with dots.
     If we want to match those, we have to prefix the asterisk with a dot:'
+  id: totrans-318
   prefs: []
   type: TYPE_NORMAL
+  zh: 星号不匹配以点开头的“隐藏文件”。如果我们想匹配这些文件，我们必须在星号前加上点：
 - en: '[PRE77]'
+  id: totrans-319
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE77]'
 - en: 'Option `.dot` lets us switch off this behavior:'
+  id: totrans-320
   prefs: []
   type: TYPE_NORMAL
+  zh: 选项`.dot`让我们关闭这种行为：
 - en: '[PRE78]'
+  id: totrans-321
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE78]'
 - en: 7.10.2.5 The double asterisk (`**`) matches zero or more segments
+  id: totrans-322
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.10.2.5 双星号（`**`）匹配零个或多个段
 - en: '´`**/` matches zero or more segments:'
+  id: totrans-323
   prefs: []
   type: TYPE_NORMAL
+  zh: ´`**/`匹配零个或多个段：
 - en: '[PRE79]'
+  id: totrans-324
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE79]'
 - en: 'If we want to match relative paths, the pattern still must not start with a
     path separator:'
+  id: totrans-325
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想匹配相对路径，模式仍然不能以路径分隔符开头：
 - en: '[PRE80]'
+  id: totrans-326
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE80]'
 - en: 'The double asterisk does not match “invisible” path segments whose names start
     with dots:'
+  id: totrans-327
   prefs: []
   type: TYPE_NORMAL
+  zh: 双星号不匹配以点开头的“隐藏”路径段：
 - en: '[PRE81]'
+  id: totrans-328
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE81]'
 - en: 'We can switch off that behavior via option `.dot`:'
+  id: totrans-329
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过选项`.dot`关闭该行为：
 - en: '[PRE82]'
+  id: totrans-330
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE82]'
 - en: 7.10.2.6 Negating globs
+  id: totrans-331
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.10.2.6 否定通配符
 - en: 'If we start a glob with an exclamation mark, it matches if the pattern after
     the exclamation mark does not match:'
+  id: totrans-332
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们以感叹号开头的通配符，它将匹配感叹号后的模式不匹配的情况：
 - en: '[PRE83]'
+  id: totrans-333
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE83]'
 - en: 7.10.2.7 Alternative patterns
+  id: totrans-334
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.10.2.7 替代模式
 - en: 'Comma-separate patterns inside braces match if one of the patterns matches:'
+  id: totrans-335
   prefs: []
   type: TYPE_NORMAL
+  zh: 大括号内逗号分隔的模式匹配，如果其中一个模式匹配：
 - en: '[PRE84]'
+  id: totrans-336
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE84]'
 - en: 7.10.2.8 Ranges of integers
+  id: totrans-337
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.10.2.8 整数范围
 - en: 'A pair of integers separated by double dots defines a range of integers and
     matches if any of its elements matches:'
+  id: totrans-338
   prefs: []
   type: TYPE_NORMAL
+  zh: 由双点分隔的一对整数定义了整数范围，并且如果其任何元素匹配，则匹配：
 - en: '[PRE85]'
+  id: totrans-339
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE85]'
 - en: 'Padding with zeros is supported, too:'
+  id: totrans-340
   prefs: []
   type: TYPE_NORMAL
+  zh: 还支持用零填充：
 - en: '[PRE86]'
+  id: totrans-341
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE86]'
 - en: 7.11 Using `file:` URLs to refer to files
+  id: totrans-342
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 7.11 使用`file:` URL引用文件
 - en: 'There are two common ways to refer to files in Node.js:'
+  id: totrans-343
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Node.js中有两种常见的引用文件的方式：
 - en: Paths in strings
+  id: totrans-344
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串中的路径
 - en: Instances of `URL` with the protocol `file:`
+  id: totrans-345
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 具有协议`file:`的`URL`实例
 - en: 'For example:'
+  id: totrans-346
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE87]'
+  id: totrans-347
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE87]'
 - en: 7.11.1 Class `URL`
+  id: totrans-348
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.11.1 `URL`类
 - en: 'In this section, we take a closer look at class `URL`. More information on
     this class:'
+  id: totrans-349
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们更详细地了解了`URL`类。有关此类的更多信息：
 - en: 'Node.js documentation: section [“The WHATWG URL API”](https://nodejs.org/api/url.html#the-whatwg-url-api)'
+  id: totrans-350
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Node.js文档：部分[“WHATWG URL API”](https://nodejs.org/api/url.html#the-whatwg-url-api)
 - en: '[Section “API“](https://url.spec.whatwg.org/#api) of the WHATWG URL standard'
+  id: totrans-351
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: WHATWG URL标准的[“API”部分](https://url.spec.whatwg.org/#api)
 - en: 'In this chapter, we access class `URL` via a global variable because that’s
     how it’s used on other web platforms. But it can also be imported:'
+  id: totrans-352
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们通过全局变量访问`URL`类，因为这是在其他Web平台上使用的方式。但它也可以被导入：
 - en: '[PRE88]'
+  id: totrans-353
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE88]'
 - en: 7.11.1.1 URIs vs. relative references
+  id: totrans-354
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.1.1 URIs vs. 相对引用
 - en: 'URLs are a subset of URIs. RFC 3986, the standard for URIs, distinguishes [two
     kinds of *URI-references*](https://datatracker.ietf.org/doc/html/rfc3986#section-4.1):'
+  id: totrans-355
   prefs: []
   type: TYPE_NORMAL
+  zh: URL是URI的一个子集。URI的标准RFC 3986区分了[两种*URI引用*](https://datatracker.ietf.org/doc/html/rfc3986#section-4.1)：
 - en: A *URI* starts with [a scheme](https://datatracker.ietf.org/doc/html/rfc3986#section-3.1)
     followed by a colon separator.
+  id: totrans-356
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*URI*以[方案](https://datatracker.ietf.org/doc/html/rfc3986#section-3.1)开头，后跟冒号分隔符。'
 - en: All other URI references are *relative references*.
+  id: totrans-357
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有其他URI引用都是*相对引用*。
 - en: 7.11.1.2 Constructor of `URL`
+  id: totrans-358
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.1.2 `URL`的构造函数
 - en: 'Class `URL` can be instantiated in two ways:'
+  id: totrans-359
   prefs: []
   type: TYPE_NORMAL
+  zh: '`URL`类可以通过两种方式实例化：'
 - en: '`new URL(uri: string)`'
+  id: totrans-360
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new URL(uri: string)`'
 - en: '`uri` must be a URI. It specifies the URI of the new instance.'
+  id: totrans-361
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`uri`必须是一个URI。它指定了新实例的URI。'
 - en: '`new URL(uriRef: string, baseUri: string)`'
+  id: totrans-362
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new URL(uriRef: string, baseUri: string)`'
 - en: '`baseUri` must be a URI. If `uriRef` is a relative reference, it is resolved
     against `baseUri` and the result becomes the URI of the new instance.'
+  id: totrans-363
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`baseUri`必须是一个URI。如果`uriRef`是相对引用，它将根据`baseUri`解析，并且结果将成为新实例的URI。'
 - en: If `uriRef` is a URI, it completely replaces `baseUri` as the data on which
     the instance is based.
+  id: totrans-364
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果`uriRef`是一个URI，则它完全替换`baseUri`作为实例所基于的数据。
 - en: 'Here we can see the class in action:'
+  id: totrans-365
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里我们可以看到类的实际应用：
 - en: '[PRE89]'
+  id: totrans-366
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE89]'
 - en: 7.11.1.3 Resolving relative references against instances of `URL`
+  id: totrans-367
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.1.3 相对引用解析为`URL`实例
 - en: 'Let’s revisit this variant of the `URL` constructor:'
+  id: totrans-368
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们重新访问`URL`构造函数的这个变体：
 - en: '[PRE90]'
+  id: totrans-369
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE90]'
 - en: 'The argument `baseUri` is coerced to string. Therefore, any object can be used
     – as long as it becomes a valid URL when coereced to string:'
+  id: totrans-370
   prefs: []
   type: TYPE_NORMAL
+  zh: 参数`baseUri`被强制转换为字符串。因此，任何对象都可以使用-只要在强制转换为字符串时成为有效的URL：
 - en: '[PRE91]'
+  id: totrans-371
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE91]'
 - en: 'That enables us to resolve relative references against `URL` instances:'
+  id: totrans-372
   prefs: []
   type: TYPE_NORMAL
+  zh: 这使我们能够相对于`URL`实例解析相对引用：
 - en: '[PRE92]'
+  id: totrans-373
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE92]'
 - en: Used this way, the constructor is loosely similar to `path.resolve()`.
+  id: totrans-374
   prefs: []
   type: TYPE_NORMAL
+  zh: 以这种方式使用构造函数，它与`path.resolve()` loosly类似。
 - en: 7.11.1.4 Properties of `URL` instances
+  id: totrans-375
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.1.4 `URL`实例的属性
 - en: 'Instances of `URL` have the following properties:'
+  id: totrans-376
   prefs: []
   type: TYPE_NORMAL
+  zh: '`URL`实例具有以下属性：'
 - en: '[PRE93]'
+  id: totrans-377
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE93]'
 - en: 7.11.1.5 Converting URLs to strings
+  id: totrans-378
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.1.5 将URL转换为字符串
 - en: 'There are three common ways in which we can convert URLs to strings:'
+  id: totrans-379
   prefs: []
   type: TYPE_NORMAL
+  zh: 有三种常见的方法可以将URL转换为字符串：
 - en: '[PRE94]'
+  id: totrans-380
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE94]'
 - en: 'Method `.toJSON()` enables us to use URLs in JSON data:'
+  id: totrans-381
   prefs: []
   type: TYPE_NORMAL
+  zh: 方法`.toJSON()`使我们能够在JSON数据中使用URL：
 - en: '[PRE95]'
+  id: totrans-382
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE95]'
 - en: 7.11.1.6 Getting `URL` properties
+  id: totrans-383
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.1.6 获取`URL`属性
 - en: 'The properties of `URL` instances are not own data properties, they are implemented
     via getters and setters. In the next example, we use the utility function `pickProps()`
     (whose code is shown at the end), to copy the values returned by those getters
     into a plain object:'
+  id: totrans-384
   prefs: []
   type: TYPE_NORMAL
+  zh: '`URL`实例的属性不是自有数据属性，它们是通过getter和setter实现的。在下一个示例中，我们使用实用函数`pickProps()`（其代码在最后显示）将这些getter返回的值复制到普通对象中：'
 - en: '[PRE96]'
+  id: totrans-385
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE96]'
 - en: Alas, the pathname is a single atomic unit. That is, we can’t use class `URL`
     to access its parts (base, extension, etc.).
+  id: totrans-386
   prefs: []
   type: TYPE_NORMAL
+  zh: 遗憾的是，路径名是一个单一的原子单位。也就是说，我们不能使用`URL`类来访问其部分（基础，扩展名等）。
 - en: 7.11.1.7 Setting parts of a URL
+  id: totrans-387
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.1.7 设置URL的部分
 - en: 'We can also change parts of a URL by setting properties such as `.hostname`:'
+  id: totrans-388
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以通过设置`.hostname`等属性来更改URL的部分：
 - en: '[PRE97]'
+  id: totrans-389
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE97]'
 - en: 'We can use the setters to create URLs from parts ([idea by Haroen Viaene](https://twitter.com/haroenv/status/1545357986046017539)):'
+  id: totrans-390
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用setter从部分创建URL（[Haroen Viaene的想法](https://twitter.com/haroenv/status/1545357986046017539)）：
 - en: '[PRE98]'
+  id: totrans-391
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE98]'
 - en: 7.11.1.8 Managing search parameters via `.searchParams`
+  id: totrans-392
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.1.8 通过`.searchParams`管理搜索参数
 - en: We can use property `.searchParams` to manage the search parameters of URLs.
     Its value is an instance of [`URLSearchParams`](https://nodejs.org/api/url.html#class-urlsearchparams).
+  id: totrans-393
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用属性`.searchParams`来管理URL的搜索参数。其值是[`URLSearchParams`](https://nodejs.org/api/url.html#class-urlsearchparams)的实例。
 - en: 'We can use it to read search parameters:'
+  id: totrans-394
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以用它来读取搜索参数：
 - en: '[PRE99]'
+  id: totrans-395
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE99]'
 - en: 'We can also change search parameters via it:'
+  id: totrans-396
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以通过它更改搜索参数：
 - en: '[PRE100]'
+  id: totrans-397
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE100]'
 - en: 7.11.2 Converting between URLs and file paths
+  id: totrans-398
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.11.2 在URL和文件路径之间进行转换
 - en: 'It’s tempting to convert between file paths and URLs manually. For example,
     we can try to convert an `URL` instance `myUrl` to a file path via `myUrl.pathname`.
     However that doesn’t always work – it’s better to use [this function](https://nodejs.org/api/url.html#urlfileurltopathurl):'
+  id: totrans-399
   prefs: []
   type: TYPE_NORMAL
+  zh: 手动在文件路径和URL之间进行转换是很诱人的。例如，我们可以尝试通过`myUrl.pathname`将`URL`实例`myUrl`转换为文件路径。然而，这并不总是有效
+    - 最好使用[这个函数](https://nodejs.org/api/url.html#urlfileurltopathurl)：
 - en: '[PRE101]'
+  id: totrans-400
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE101]'
 - en: 'The following code compares the results of that function with the values of
     `.pathname`:'
+  id: totrans-401
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码将该函数的结果与`.pathname`的值进行比较：
 - en: '[PRE102]'
+  id: totrans-402
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE102]'
 - en: '[This function](https://nodejs.org/api/url.html#url_url_pathtofileurl_path)
     is the inverse of `url.fileURLToPath()`:'
+  id: totrans-403
   prefs: []
   type: TYPE_NORMAL
+  zh: '[这个函数](https://nodejs.org/api/url.html#url_url_pathtofileurl_path)是`url.fileURLToPath()`的逆操作：'
 - en: '[PRE103]'
+  id: totrans-404
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE103]'
 - en: 'It converts `path` to a file URL:'
+  id: totrans-405
   prefs: []
   type: TYPE_NORMAL
+  zh: 它将`path`转换为文件URL：
 - en: '[PRE104]'
+  id: totrans-406
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE104]'
 - en: '7.11.3 Use case for URLs: accessing files relative to the current module'
+  id: totrans-407
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.11.3 URL的用例：访问相对于当前模块的文件
 - en: 'One important use case for URLs is accessing a file that is a sibling of the
     current module:'
+  id: totrans-408
   prefs: []
   type: TYPE_NORMAL
+  zh: URL的一个重要用例是访问当前模块的同级文件：
 - en: '[PRE105]'
+  id: totrans-409
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE105]'
 - en: This function uses [`import.meta.url`](https://exploringjs.com/impatient-js/ch_modules.html#import.meta.url-on-node.js)
     which contains the URL of the current module (which is usually a `file:` URL on
     Node.js).
+  id: totrans-410
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个函数使用[`import.meta.url`](https://exploringjs.com/impatient-js/ch_modules.html#import.meta.url-on-node.js)，其中包含当前模块的URL（通常在Node.js上是`file:`
+    URL）。
 - en: 'Using `fetch()` would have made the previous code even more cross-platform.
     However, as of Node.js 18.9.0, `fetch()` doesn’t work for `file:` URLs yet:'
+  id: totrans-411
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用`fetch()`会使先前的代码更加跨平台。然而，截至Node.js 18.9.0，`fetch()`对于`file:` URL尚不起作用：
 - en: '[PRE106]'
+  id: totrans-412
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE106]'
 - en: '7.11.4 Use case for URLs: detecting if the current module is “main” (the app
     entry point)'
+  id: totrans-413
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.11.4 URL的用例：检测当前模块是否为“main”（应用程序入口点）
 - en: 'An ESM module can be used in two ways:'
+  id: totrans-414
   prefs: []
   type: TYPE_NORMAL
+  zh: ESM模块可以以两种方式使用：
 - en: It can be used as a library from which other modules can import values.
+  id: totrans-415
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 它可以作为其他模块可以导入值的库使用。
 - en: It can be used as script that we run via Node.js – e.g., from a command line.
     In that case, it is called the *main module*.
+  id: totrans-416
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 它可以作为我们通过Node.js运行的脚本使用 - 例如，从命令行。在这种情况下，它被称为*主模块*。
 - en: If we want a module to be used in both ways, we need a way to check if the current
     module is the main module because only then do we execute the script functionality.
     In this chapter, we learn how to perform that check.
+  id: totrans-417
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们希望一个模块以两种方式使用，我们需要一种方法来检查当前模块是否为主模块，因为只有在这种情况下我们才执行脚本功能。在本章中，我们将学习如何执行该检查。
 - en: 7.11.4.1 Determining if a CommonJS module is main
+  id: totrans-418
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.4.1 确定CommonJS模块是否为主要模块
 - en: 'With CommonJS, we can use the following pattern to detect if the current module
     was the entry point (source: [Node.js documentation](https://nodejs.org/api/modules.html#accessing-the-main-module)):'
+  id: totrans-419
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用CommonJS，我们可以使用以下模式来检测当前模块是否为入口点（来源：[Node.js文档](https://nodejs.org/api/modules.html#accessing-the-main-module)）：
 - en: '[PRE107]'
+  id: totrans-420
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE107]'
 - en: 7.11.4.2 Determining if an ESM module is main
+  id: totrans-421
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 7.11.4.2 确定ESM模块是否为主要模块
 - en: 'As of now, ESM modules have no simple built-in way to check if a module is
     main. Instead, we have to use the following workaround (based on [a tweet by Rich
     Harris](https://twitter.com/Rich_Harris/status/1355289863130673153)):'
+  id: totrans-422
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，ESM模块没有简单的内置方法来检查模块是否为主模块。相反，我们必须使用以下解决方法（基于[Rich Harris的一条推文](https://twitter.com/Rich_Harris/status/1355289863130673153)）：
 - en: '[PRE108]'
+  id: totrans-423
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE108]'
 - en: 'Explanations:'
+  id: totrans-424
   prefs: []
   type: TYPE_NORMAL
+  zh: 解释：
 - en: '[`import.meta.url`](https://exploringjs.com/impatient-js/ch_modules.html#import.meta.url)
     contains the URL of the currently executed ESM module.'
+  id: totrans-425
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`import.meta.url`](https://exploringjs.com/impatient-js/ch_modules.html#import.meta.url)包含当前执行的ESM模块的URL。'
 - en: If we are sure our code always runs locally (which may become less common in
     the future), we can omit the check in line A. If we do and the code does not run
     locally, at least we get an exception (and not a silent failure) – thanks to `url.fileURLToPath()`
     (see next item).
+  id: totrans-426
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们确定我们的代码始终在本地运行（这在将来可能变得不太常见），我们可以省略A行中的检查。如果我们这样做，而代码没有在本地运行，至少我们会得到一个异常（而不是静默失败）-
+    这要归功于`url.fileURLToPath()`（见下一项）。
 - en: We use `url.fileURLToPath()` to convert the URL to a local path. This function
     throws an exception if the protocol isn’t `file:`.
+  id: totrans-427
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们使用`url.fileURLToPath()`将URL转换为本地路径。如果协议不是`file:`，此函数会抛出异常。
 - en: '`process.argv[1]` contains the path of the initial module. The comparison in
     line B works because this value is always an absolute path – Node.js sets it up
     as follows ([source code](https://github.com/nodejs/node/blob/36fbbe0b86131fa2dcca558872b02335586e0089/lib/internal/bootstrap/pre_execution.js#L100-L107)):'
+  id: totrans-428
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`process.argv[1]`包含初始模块的路径。B行中的比较有效，因为这个值始终是绝对路径 - Node.js设置如下（[源代码](https://github.com/nodejs/node/blob/36fbbe0b86131fa2dcca558872b02335586e0089/lib/internal/bootstrap/pre_execution.js#L100-L107)）：'
 - en: '[PRE109]'
+  id: totrans-429
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE109]'
 - en: 7.11.5 Paths vs. `file:` URLs
+  id: totrans-430
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 7.11.5 路径 vs. `file:` URL
 - en: 'When shell scripts receive references to files or export references to files
     (e.g. by logging them on screen), they are virtually always paths. However, there
     are two cases where we need URLs (as discussed in previous subsections):'
+  id: totrans-431
   prefs: []
   type: TYPE_NORMAL
+  zh: 当shell脚本接收到文件的引用或导出文件的引用（例如在屏幕上记录它们）时，它们几乎总是路径。但是，有两种情况我们需要URL（如前面的小节中所讨论的）：
 - en: To access files relative to the current module
+  id: totrans-432
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 访问相对于当前模块的文件
 - en: To detect if the current module is running as a script
+  id: totrans-433
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 检测当前模块是否作为脚本运行
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/7)'
+  id: totrans-434
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/nodejs-shell-scripting/issues/7)'
