@@ -1,804 +1,1096 @@
 - en: '11 Properties: assignment vs. definition'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/deep-js/ch_property-assignment-vs-definition.html](https://exploringjs.com/deep-js/ch_property-assignment-vs-definition.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: 11.1 [Assignment vs. definition](ch_property-assignment-vs-definition.html#assignment-vs.-definition)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.1.1 [Assignment](ch_property-assignment-vs-definition.html#assignment)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.1.2 [Definition](ch_property-assignment-vs-definition.html#definition)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.2 [Assignment and definition in theory (optional)](ch_property-assignment-vs-definition.html#assignment-and-definition-in-theory-optional)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.2.1 [Assigning to a property](ch_property-assignment-vs-definition.html#assigning-to-a-property)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.2.2 [Defining a property](ch_property-assignment-vs-definition.html#defining-a-property)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.3 [Definition and assignment in practice](ch_property-assignment-vs-definition.html#definition-and-assignment-in-practice)
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.3.1 [Only definition allows us to create a property with arbitrary attributes](ch_property-assignment-vs-definition.html#only-definition-allows-us-to-create-a-property-with-arbitrary-attributes)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.3.2 [The assignment operator does not change properties in prototypes](ch_property-assignment-vs-definition.html#the-assignment-operator-does-not-change-properties-in-prototypes)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.3.3 [Assignment calls setters, definition doesn’t](ch_property-assignment-vs-definition.html#setters-and-assignment-vs-definition)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.3.4 [Inherited read-only properties prevent creating own properties via assignment](ch_property-assignment-vs-definition.html#inherited-properties-prevent-assignment)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.4 [Which language constructs use definition, which assignment?](ch_property-assignment-vs-definition.html#which-language-constructs-use-definition-which-assignment)
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.4.1 [The properties of an object literal are added via definition](ch_property-assignment-vs-definition.html#the-properties-of-an-object-literal-are-added-via-definition)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.4.2 [The assignment operator `=` always uses assignment](ch_property-assignment-vs-definition.html#the-assignment-operator-always-uses-assignment)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.4.3 [Public class fields are added via definition](ch_property-assignment-vs-definition.html#public-class-fields-are-added-via-definition)
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.5 [Further reading and sources of this chapter](ch_property-assignment-vs-definition.html#further-reading-and-sources-of-this-chapter-1)
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: 'There are two ways of creating or changing a property `prop` of an object `obj`:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
 - en: '*Assigning*: `obj.prop = true`'
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '*Defining*: `Object.defineProperty(obj, '''', {value: true})`'
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: This chapter explains how they work.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
 - en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Required knowledge:
     property attributes and property descriptors**'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
 - en: 'For this chapter, you should be familiar with property attributes and property
     descriptors. If you aren’t, check out [§9 “Property attributes: an introduction”](ch_property-attributes-intro.html).'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
 - en: 11.1 Assignment vs. definition
+  id: totrans-26
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 11.1.1 Assignment
+  id: totrans-27
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'We use the assignment operator `=` to assign a value `value` to a property
     `.prop` of an object `obj`:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'This operator works differently depending on what `.prop` looks like:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
 - en: 'Changing properties: If there is an own data property `.prop`, assignment changes
     its value to `value`.'
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Invoking setters: If there is an own or inherited setter for `.prop`, assignment
     invokes that setter.'
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Creating properties: If there is no own data property `.prop` and no own or
     inherited setter for it, assignment creates a new own data property.'
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: That is, the main purpose of assignment is making changes. That’s why it supports
     setters.
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
 - en: 11.1.2 Definition
+  id: totrans-35
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'To define a property with the key `propKey` of an object `obj`, we use an operation
     such as the following method:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'This method works differently depending on what the property looks like:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
 - en: 'Changing properties: If an own property with key `propKey` exists, defining
     changes its property attributes as specified by the property descriptor `propDesc`
     (if possible).'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Creating properties: Otherwise, defining creates an own property with the attributes
     specified by `propDesc` (if possible).'
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建属性：否则，定义将创建一个具有`propDesc`指定属性的自有属性（如果可能）。
 - en: That is, the main purpose of definition is to create an own property (even if
     there is an inherited setter, which it ignores) and to change property attributes.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说，定义的主要目的是创建一个自有属性（即使存在继承的setter，它也会忽略）并改变属性的属性。
 - en: 11.2 Assignment and definition in theory (optional)
+  id: totrans-42
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 11.2 理论上的赋值和定义（可选）
 - en: '![](../Images/c17f3239b9e1f5d335bb0adf8211d9d3.png)  **Property descriptors
     in the ECMAScript specification**'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/c17f3239b9e1f5d335bb0adf8211d9d3.png) **ECMAScript规范中的属性描述符**'
 - en: In specification operations, property descriptors are not JavaScript objects
     but [*Records*](https://tc39.es/ecma262/#sec-list-and-record-specification-type),
     a spec-internal data structure that has *fields*. The keys of fields are written
     in double brackets. For example, `Desc.[[Configurable]]` accesses the field `.[[Configurable]]`
     of `Desc`. These records are translated to and from JavaScript objects when interacting
     with the outside world.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 在规范操作中，属性描述符不是JavaScript对象，而是[*Records*](https://tc39.es/ecma262/#sec-list-and-record-specification-type)，这是一个规范内部的数据结构，具有*fields*。字段的键用双括号括起来。例如，`Desc.[[Configurable]]`访问`Desc`的`.[[Configurable]]`字段。这些记录在与外部世界交互时会被转换为JavaScript对象。
 - en: 11.2.1 Assigning to a property
+  id: totrans-45
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.2.1 分配属性
 - en: 'The actual work of assigning to a property is handled via [the following operation](https://tc39.es/ecma262/#sec-ordinarysetwithowndescriptor)
     in the ECMAScript specification:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过[ECMAScript规范中的以下操作](https://tc39.es/ecma262/#sec-ordinarysetwithowndescriptor)来处理属性的赋值工作：
 - en: '[PRE2]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'These are the parameters:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是参数：
 - en: '`O` is the object that is currently being visited.'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`O`是当前正在访问的对象。'
 - en: '`P` is the key of the property that we are assigning to.'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`P`是我们正在赋值的属性的键。'
 - en: '`V` is the value we are assigning.'
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`V`是我们正在赋值的值。'
 - en: '`Receiver` is the object where the assignment started.'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Receiver`是赋值开始的对象。'
 - en: '`ownDesc` is the descriptor of `O[P]` or `null` if that property doesn’t exist.'
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ownDesc`是`O[P]`的描述符，如果该属性不存在则为`null`。'
 - en: The return value is a boolean that indicates whether or not the operation succeeded.
     As explained [later in this chapter](ch_property-assignment-vs-definition.html#control-flow-of-assignment),
     strict-mode assignment throws a `TypeError` if `OrdinarySetWithOwnDescriptor()`
     fails.
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回值是一个布尔值，指示操作是否成功。如本章后面所述，严格模式赋值如果`OrdinarySetWithOwnDescriptor()`失败会抛出`TypeError`。
 - en: 'This is a high-level summary of the algorithm:'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是算法的高级摘要：
 - en: It traverses the prototype chain of `Receiver` until it finds a property whose
     key is `P`. The traversal is done by calling `OrdinarySetWithOwnDescriptor()`
     recursively. During recursion, `O` changes and points to the object that is currently
     being visited, but `Receiver` stays the same.
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它遍历`Receiver`的原型链，直到找到键为`P`的属性。遍历是通过递归调用`OrdinarySetWithOwnDescriptor()`来完成的。在递归过程中，`O`会改变并指向当前正在访问的对象，但`Receiver`保持不变。
 - en: Depending on what the traversal finds, an own property is created in `Receiver`
     (where recursion started) or something else happens.
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 根据遍历的结果，在`Receiver`（递归开始的地方）中创建一个自有属性，或者发生其他事情。
 - en: 'In more detail, this algorithm works as follows:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 更详细地说，这个算法的工作方式如下：
 - en: 'If `ownDesc` is `undefined`, then we haven’t yet found a property with key
     `P`:'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`ownDesc`是`undefined`，那么我们还没有找到一个带有键`P`的属性：
 - en: If `O` has a prototype `parent`, then we return `parent.[[Set]](P, V, Receiver)`.
     This continues our search. The method call usually ends up invoking `OrdinarySetWithOwnDescriptor()`
     recursively.
+  id: totrans-60
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`O`有一个原型`parent`，那么我们返回`parent.[[Set]](P, V, Receiver)`。这将继续我们的搜索。该方法调用通常最终会递归调用`OrdinarySetWithOwnDescriptor()`。
 - en: 'Otherwise, our search for `P` has failed and we set `ownDesc` as follows:'
+  id: totrans-61
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，我们对`P`的搜索失败了，并将`ownDesc`设置如下：
 - en: '[PRE3]'
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: With this `ownDesc`, the next `if` statement will create an own property in
     `Receiver`.
+  id: totrans-63
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 有了这个`ownDesc`，下一个`if`语句将在`Receiver`中创建一个自有属性。
 - en: 'If `ownDesc` specifies a data property, then we have found a property:'
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`ownDesc`指定了一个数据属性，那么我们已经找到了一个属性：
 - en: If `ownDesc.[[Writable]]` is `false`, return `false`. This means that any non-writable
     property `P` (own or inherited!) prevents assignment.
+  id: totrans-65
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`ownDesc.[[Writable]]`是`false`，则返回`false`。这意味着任何不可写的属性`P`（自有的或继承的）都会阻止赋值。
 - en: 'Let `existingDescriptor` be `Receiver.[[GetOwnProperty]](P)`. That is, retrieve
     the descriptor of the property where the assignment started. We now have:'
+  id: totrans-66
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 让`existingDescriptor`为`Receiver.[[GetOwnProperty]](P)`。也就是说，检索赋值开始的属性的描述符。现在我们有：
 - en: The current object `O` and the current property descriptor `ownDesc` on one
     hand.
+  id: totrans-67
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当前对象`O`和当前属性描述符`ownDesc`。
 - en: The original object `Receiver` and the original property descriptor `existingDescriptor`
     on the other hand.
+  id: totrans-68
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 原始对象`Receiver`和另一方面的原始属性描述符`existingDescriptor`。
 - en: 'If `existingDescriptor` is not `undefined`:'
+  id: totrans-69
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`existingDescriptor`不是`undefined`：
 - en: (If we get here, then we are still at the beginning of the prototype chain –
     we only recurse if `Receiver` does not have a property `P`.)
+  id: totrans-70
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （如果我们到了这里，那么我们仍然在原型链的开始处 - 只有在`Receiver`没有属性`P`时才会递归。）
 - en: 'The following two `if` conditions should never be `true` because `ownDesc`
     and `existingDesc` should be equal:'
+  id: totrans-71
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 以下两个`if`条件永远不应该为`true`，因为`ownDesc`和`existingDesc`应该相等：
 - en: If `existingDescriptor` specifies an accessor, return `false`.
+  id: totrans-72
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`existingDescriptor`指定了一个访问器，则返回`false`。
 - en: If `existingDescriptor.[[Writable]]` is `false`, return `false`.
+  id: totrans-73
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`existingDescriptor.[[Writable]]`是`false`，则返回`false`。
 - en: 'Return `Receiver.[[DefineOwnProperty]](P, { [[Value]]: V })`. This internal
     method performs definition, which we use to change the value of property `Receiver[P]`.
     The definition algorithm is described in the next subsection.'
+  id: totrans-74
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '返回`Receiver.[[DefineOwnProperty]](P, { [[Value]]: V })`。这个内部方法执行定义，我们用它来改变属性`Receiver[P]`的值。定义算法在下一小节中描述。'
 - en: 'Else:'
+  id: totrans-75
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则：
 - en: (If we get here, then `Receiver` does not have an own property with key `P`.)
+  id: totrans-76
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （如果我们到了这里，那么`Receiver`没有一个带有键`P`的自有属性。）
 - en: Return `CreateDataProperty(Receiver, P, V)`. ([This operation](https://tc39.es/ecma262/#sec-createdataproperty)
     creates an own data property in its first argument.)
+  id: totrans-77
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回 `CreateDataProperty(Receiver, P, V)`。([此操作](https://tc39.es/ecma262/#sec-createdataproperty)
+    在其第一个参数中创建自有数据属性。)
 - en: (If we get here, then `ownDesc` describes an accessor property that is own or
     inherited.)
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （如果我们到达这里，那么 `ownDesc` 描述的是自有或继承的访问器属性。）
 - en: Let `setter` be `ownDesc.[[Set]]`.
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 让 `setter` 为 `ownDesc.[[Set]]`。
 - en: If `setter` is `undefined`, return `false`.
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `setter` 是 `undefined`，返回 `false`。
 - en: Perform `Call(setter, Receiver, «V»)`. [`Call()`](https://tc39.es/ecma262/#sec-call)
     invokes the function object `setter` with `this` set to `Receiver` and the single
     parameter `V` (French quotes `«»` are used for lists in the specification).
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 执行 `Call(setter, Receiver, «V»)`。[`Call()`](https://tc39.es/ecma262/#sec-call)
+    调用函数对象 `setter`，并将 `this` 设置为 `Receiver`，单个参数 `V`（规范中使用法文引号 `«»` 表示列表）。
 - en: Return `true`.
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回 `true`。
 - en: 11.2.1.1 How do we get from an assignment to `OrdinarySetWithOwnDescriptor()`?
+  id: totrans-83
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 11.2.1.1 从赋值到 `OrdinarySetWithOwnDescriptor()` 的过程是如何进行的？
 - en: 'Evaluating an assignment without destructuring involves the following steps:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 在不涉及解构的赋值中，涉及以下步骤：
 - en: In the spec, evaluation starts in [the section on the runtime semantics of `AssignmentExpression`](https://tc39.es/ecma262/#sec-assignment-operators-runtime-semantics-evaluation).
     This section handles providing names for anonymous functions, destructuring, and
     more.
+  id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在规范中，评估从[赋值表达式的运行时语义部分](https://tc39.es/ecma262/#sec-assignment-operators-runtime-semantics-evaluation)开始。该部分处理为匿名函数提供名称、解构等。
 - en: If there is no destructuring pattern, then [`PutValue()`](https://tc39.es/ecma262/#sec-putvalue)
     is used to make the assignment.
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果没有解构模式，则使用 [`PutValue()`](https://tc39.es/ecma262/#sec-putvalue) 进行赋值。
 - en: For property assignments, `PutValue()` invokes the internal method `.[[Set]]()`.
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于属性赋值，`PutValue()` 调用内部方法 `.[[Set]]()`。
 - en: For ordinary objects, [`.[[Set]]()`](https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-set-p-v-receiver)
     calls `OrdinarySet()` (which calls `OrdinarySetWithOwnDescriptor()`) and returns
     the result.
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于普通对象，[`.[[Set]]()`](https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-set-p-v-receiver)
+    调用 `OrdinarySet()`（调用 `OrdinarySetWithOwnDescriptor()`）并返回结果。
 - en: Notably, `PutValue()` throws a `TypeError` in strict mode if the result of `.[[Set]]()`
     is `false`.
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 值得注意的是，在严格模式下，如果 `.[[Set]]()` 的结果为 `false`，`PutValue()` 会抛出 `TypeError`。
 - en: 11.2.2 Defining a property
+  id: totrans-90
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.2.2 定义属性
 - en: 'The actual work of defining a property is handled via [the following operation](https://tc39.es/ecma262/#sec-validateandapplypropertydescriptor)
     in the ECMAScript specification:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 定义属性的实际工作是通过 ECMAScript 规范中的[以下操作](https://tc39.es/ecma262/#sec-validateandapplypropertydescriptor)处理的：
 - en: '[PRE4]'
+  id: totrans-92
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'The parameters are:'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 参数是：
 - en: The object `O` where we want to define a property. There is a special validation-only
     mode where `O` is `undefined`. We are ignoring this mode here.
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们要定义属性的对象 `O`。这里有一个特殊的仅验证模式，其中 `O` 是 `undefined`。我们在这里忽略了这种模式。
 - en: The property key `P` of the property we want to define.
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们要定义的属性的属性键 `P`。
 - en: '`extensible` indicates if `O` is extensible.'
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`extensible` 表示 `O` 是否可扩展。'
 - en: '`Desc` is a property descriptor specifying the attributes we want the property
     to have.'
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Desc` 是指定属性所需的属性描述符。'
 - en: '`current` contains the property descriptor of an own property `O[P]` if it
     exists. Otherwise, `current` is `undefined`.'
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果存在，则 `current` 包含自有属性 `O[P]` 的属性描述符。否则，`current` 是 `undefined`。
 - en: The result of the operation is a boolean that indicates if it succeeded. Failure
     can have different consequences. Some callers ignore the result. Others, such
     as `Object.defineProperty()`, throw an exception if the result is `false`.
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 操作的结果是一个布尔值，指示操作是否成功。失败可能会产生不同的后果。有些调用者会忽略结果。其他调用者，如 `Object.defineProperty()`，如果结果为
+    `false`，则会抛出异常。
 - en: 'This is a summary of the algorithm:'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是算法的摘要：
 - en: If `current` is `undefined`, then property `P` does not currently exist and
     must be created.
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `current` 是 `undefined`，则属性 `P` 目前不存在，必须创建。
 - en: If `extensible` is `false`, return `false` indicating that the property could
     not be added.
+  id: totrans-102
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `extensible` 是 `false`，返回 `false` 表示无法添加属性。
 - en: Otherwise, check `Desc` and create either a data property or an accessor property.
+  id: totrans-103
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，检查 `Desc` 并创建数据属性或访问器属性。
 - en: Return `true`.
+  id: totrans-104
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回 `true`。
 - en: If `Desc` doesn’t have any fields, return `true` indicating that the operation
     succeeded (because no changes had to be made).
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `Desc` 没有任何字段，则返回 `true`，表示操作成功（因为不需要进行任何更改）。
 - en: 'If `current.[[Configurable]]` is `false`:'
+  id: totrans-106
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `current.[[Configurable]]` 是 `false`：
 - en: (`Desc` is not allowed to change attributes other than `value`.)
+  id: totrans-107
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （`Desc` 不允许改变除 `value` 之外的属性。）
 - en: If `Desc.[[Configurable]]` exists, it must have the same value as `current.[[Configurable]]`.
     If not, return `false`.
+  id: totrans-108
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `Desc.[[Configurable]]` 存在，则它必须与 `current.[[Configurable]]` 具有相同的值。如果不是，则返回
+    `false`。
 - en: 'Same check: `Desc.[[Enumerable]]`'
+  id: totrans-109
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 相同的检查：`Desc.[[Enumerable]]`
 - en: 'Next, we *validate* the property descriptor `Desc`: Can the attributes described
     by `current` be changed to the values specified by `Desc`? If not, return `false`.
     If yes, go on.'
+  id: totrans-110
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 接下来，我们*验证*属性描述符 `Desc`：`current` 描述的属性是否可以更改为 `Desc` 指定的值？如果不能，返回 `false`。如果可以，继续。
 - en: If the descriptor is *generic* (with no attributes specific to data properties
     or accessor properties), then validation is successful and we can move on.
+  id: totrans-111
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果描述符是*通用*的（没有特定于数据属性或访问器属性的属性），则验证成功，我们可以继续。
 - en: 'Else if one descriptor specifies a data property and the other an accessor
     property:'
+  id: totrans-112
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，如果一个描述符指定了数据属性，另一个指定了访问器属性：
 - en: The current property must be configurable (otherwise its attributes can’t be
     changed as necessary). If not, `false` is returned.
+  id: totrans-113
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当前属性必须是可配置的（否则其属性无法按需更改）。如果不是，返回 `false`。
 - en: Change the current property from a data property to an accessor property or
     vice versa. When doing so, the values of `.[[Configurable]]` and `.[[Enumerable]]`
     are preserved, all other attributes get [default values](ch_property-attributes-intro.html#property-attributes)
     (`undefined` for object-valued attributes, `false` for boolean-valued attributes).
+  id: totrans-114
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将当前属性从数据属性更改为访问器属性，反之亦然。在这样做时，`.[[Configurable]]`和`.[[Enumerable]]`的值被保留，所有其他属性获得[默认值](ch_property-attributes-intro.html#property-attributes)（对象值属性为`undefined`，布尔值属性为`false`）。
 - en: 'Else if both descriptors specify data properties:'
+  id: totrans-115
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，如果两个描述符都指定数据属性：
 - en: 'If both `current.[[Configurable]]` and `current.[[Writable]]` are `false`,
     then no changes are allowed and `Desc` and `current` must specify the same attributes:'
+  id: totrans-116
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`current.[[Configurable]]`和`current.[[Writable]]`都为`false`，则不允许进行任何更改，`Desc`和`current`必须指定相同的属性：
 - en: (Due to `current.[[Configurable]]` being `false`, `Desc.[[Configurable]]` and
     `Desc.[[Enumerable]]` were already checked previously and have the correct values.)
+  id: totrans-117
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （由于`current.[[Configurable]]`为`false`，`Desc.[[Configurable]]`和`Desc.[[Enumerable]]`已经在先前检查过，并且具有正确的值。）
 - en: If `Desc.[[Writable]]` exists and is `true`, then return `false`.
+  id: totrans-118
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`Desc.[[Writable]]`存在且为`true`，则返回`false`。
 - en: If `Desc.[[Value]]` exists and does not have the same value as `current.[[Value]]`,
     then return `false`.
+  id: totrans-119
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`Desc.[[Value]]`存在且与`current.[[Value]]`的值不同，则返回`false`。
 - en: There is nothing more to do. Return `true` indicating that the algorithm succeeded.
+  id: totrans-120
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 没有其他事情可做。返回`true`表示算法成功。
 - en: (Note that normally, we can’t change any attributes of a non-configurable property
     other than its value. The one exception to this rule is that we can always go
     from writable to non-writable. This algorithm handles this exception correctly.)
+  id: totrans-121
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （请注意，通常情况下，我们不能更改非可配置属性的任何属性，除了它的值。这个规则的一个例外是，我们总是可以从可写变为不可写。该算法正确处理了这个例外。）
 - en: 'Else (both descriptors specify accessor properties):'
+  id: totrans-122
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则（两个描述符都指定访问器属性）：
 - en: 'If `current.[[Configurable]]` is `false`, then no changes are allowed and `Desc`
     and `current` must specify the same attributes:'
+  id: totrans-123
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`current.[[Configurable]]`为`false`，则不允许进行任何更改，`Desc`和`current`必须指定相同的属性：
 - en: (Due to `current.[[Configurable]]` being `false`, `Desc.[[Configurable]]` and
     `Desc.[[Enumerable]]` were already checked previously and have the correct values.)
+  id: totrans-124
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （由于`current.[[Configurable]]`为`false`，`Desc.[[Configurable]]`和`Desc.[[Enumerable]]`已经在先前检查过，并且具有正确的值。）
 - en: If `Desc.[[Set]]` exists, it must have the same value as `current.[[Set]]`.
     If not, return `false`.
+  id: totrans-125
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`Desc.[[Set]]`存在，则它必须与`current.[[Set]]`具有相同的值。如果不是，则返回`false`。
 - en: 'Same check: `Desc.[[Get]]`'
+  id: totrans-126
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 相同的检查：`Desc.[[Get]]`
 - en: There is nothing more to do. Return `true` indicating that the algorithm succeeded.
+  id: totrans-127
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 没有其他事情可做。返回`true`表示算法成功。
 - en: Set the attributes of the property with key `P` to the values specified by `Desc`.
     Due to validation, we can be sure that all of the changes are allowed.
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将属性`P`的属性设置为`Desc`指定的值。由于验证，我们可以确保所有更改都是允许的。
 - en: Return `true`.
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回`true`。
 - en: 11.3 Definition and assignment in practice
+  id: totrans-130
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 11.3 定义和实践中的赋值
 - en: This section describes some consequences of how property definition and assignment
     work.
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节描述了属性定义和赋值的一些后果。
 - en: 11.3.1 Only definition allows us to create a property with arbitrary attributes
+  id: totrans-132
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.3.1 只有定义允许我们创建具有任意属性的属性
 - en: If we create an own property via assignment, it always creates properties whose
     attributes `writable`, `enumerable`, and `configurable` are all `true`.
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们通过赋值创建自有属性，它总是创建属性，其属性`writable`，`enumerable`和`configurable`都为`true`。
 - en: '[PRE5]'
+  id: totrans-134
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Therefore, if we want to specify arbitrary attributes, we must use definition.
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，如果我们想指定任意属性，我们必须使用定义。
 - en: And while we can create getters and setters inside object literals, we can’t
     add them later via assignment. Here, too, we need definition.
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 虽然我们可以在对象文字中创建getter和setter，但我们不能通过赋值后来添加它们。在这里，我们也需要定义。
 - en: 11.3.2 The assignment operator does not change properties in prototypes
+  id: totrans-137
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.3.2 赋值运算符不会更改原型中的属性
 - en: Let us consider the following setup, where `obj` inherits the property `prop`
     from `proto`.
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们考虑以下设置，其中`obj`从`proto`继承了属性`prop`。
 - en: '[PRE6]'
+  id: totrans-139
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'We can’t (destructively) change `proto.prop` by assigning to `obj.prop`. Doing
     so creates a new own property:'
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不能通过给`obj.prop`赋值来（破坏性地）更改`proto.prop`。这样做会创建一个新的自有属性：
 - en: '[PRE7]'
+  id: totrans-141
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'The rationale for this behavior is as follows: Prototypes can have properties
     whose values are shared by all of their descendants. If we want to change such
     a property in only one descendant, we must do so non-destructively, via overriding.
     Then the change does not affect the other descendants.'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种行为的原因如下：原型可以具有其所有后代共享的属性值。如果我们只想在一个后代中更改这样的属性，我们必须通过覆盖来进行非破坏性地更改。然后，更改不会影响其他后代。
 - en: 11.3.3 Assignment calls setters, definition doesn’t
+  id: totrans-143
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.3.3 赋值调用setter，定义不会
 - en: What is the difference between defining the property `.prop` of `obj` versus
     assigning to it?
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 定义`obj`的`.prop`属性与对其进行赋值有什么区别？
 - en: 'If we define, then our intention is to either create or change an own (non-inherited)
     property of `obj`. Therefore, definition ignores the inherited setter for `.prop`
     in the following example:'
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们定义，那么我们的意图是要创建或更改`obj`的自有（非继承的）属性。因此，在以下示例中，定义忽略了`.prop`的继承的setter：
 - en: '[PRE8]'
+  id: totrans-146
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'If, instead, we assign to `.prop`, then our intention is often to change something
     that already exists and that change should be handled by the setter:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，如果我们对`.prop`进行赋值，那么我们的意图通常是要更改已经存在的东西，并且这种更改应该由setter处理：
 - en: '[PRE9]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 11.3.4 Inherited read-only properties prevent creating own properties via assignment
+  id: totrans-149
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.3.4 继承的只读属性阻止通过赋值创建自己的属性
 - en: What happens if `.prop` is read-only in a prototype?
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果原型中的`.prop`是只读的会发生什么？
 - en: '[PRE10]'
+  id: totrans-151
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'In any object that inherits the read-only `.prop` from `proto`, we can’t use
     assignment to create an own property with the same key – for example:'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 在从`proto`继承只读`.prop`的任何对象中，我们不能使用赋值来创建具有相同键的自有属性，例如：
 - en: '[PRE11]'
+  id: totrans-153
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: Why can’t we assign? The rationale is that overriding an inherited property
     by creating an own property can be seen as [non-destructively changing](ch_updating-destructively-and-nondestructively.html)
     the inherited property. Arguably, if a property is non-writable, we shouldn’t
     be able to do that.
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
 - en: 'However, defining `.prop` still works and lets us override:'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE12]'
+  id: totrans-156
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Accessor properties that don’t have a setter are also considered to be read-only:'
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE13]'
+  id: totrans-158
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **The “override mistake”:
     pros and cons**'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
 - en: 'The fact that read-only properties prevent assignment earlier in the prototype
     chain, has been given the name *override mistake*:'
+  id: totrans-160
   prefs: []
   type: TYPE_NORMAL
 - en: It was introduced in ECMAScript 5.1.
+  id: totrans-161
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: On one hand, this behavior is consistent with how prototypal inheritance and
     setters work. (So, arguably, it is *not* a mistake.)
+  id: totrans-162
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: On the other hand, with the behavior, deep-freezing the global object causes
     unwanted side-effects.
+  id: totrans-163
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: There was an attempt to change the behavior, but that broke the library Lodash
     and was abandoned ([pull request on GitHub](https://github.com/tc39/ecma262/pull/1320#issuecomment-443485524)).
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Background knowledge:'
+  id: totrans-165
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[Pull request on GitHub](https://github.com/tc39/ecma262/pull/1307)'
+  id: totrans-166
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[Wiki page on ECMAScript.org](http://wiki.ecmascript.org/doku.php?id=strawman:fixing_override_mistake)
     ([archived](https://web.archive.org/web/20141230041441/http://wiki.ecmascript.org/doku.php?id=strawman:fixing_override_mistake))'
+  id: totrans-167
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 11.4 Which language constructs use definition, which assignment?
+  id: totrans-168
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
@@ -807,47 +1099,62 @@
     inherited setters are called. See [§11.3.3 “Assignment calls setters, definition
     doesn’t”](ch_property-assignment-vs-definition.html#setters-and-assignment-vs-definition)
     for more information.
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
 - en: 11.4.1 The properties of an object literal are added via definition
+  id: totrans-170
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'When we create properties via an object literal, JavaScript always uses definition
     (and therefore never calls inherited setters):'
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE14]'
+  id: totrans-172
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 11.4.2 The assignment operator `=` always uses assignment
+  id: totrans-173
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: The assignment operator `=` always uses assignment to create or change properties.
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE15]'
+  id: totrans-175
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 11.4.3 Public class fields are added via definition
+  id: totrans-176
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Alas, even though public class fields have the same syntax as assignment, they
     do *not* use assignment to create properties, they use definition (like properties
     in object literals):'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE16]'
+  id: totrans-178
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 11.5 Further reading and sources of this chapter
+  id: totrans-179
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[Section “Prototype chains”](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html#prototype-chains)
     in “JavaScript for impatient programmers”'
+  id: totrans-180
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
@@ -855,9 +1162,11 @@
     “The distinction between assignment and definition […] was not very important
     when all ES had was data properties and there was no way for ES code to manipulate
     property attributes.” [That changed with ECMAScript 5.]'
+  id: totrans-181
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/11)'
+  id: totrans-182
   prefs: []
   type: TYPE_NORMAL

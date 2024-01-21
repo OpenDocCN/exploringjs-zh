@@ -3,123 +3,146 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 10 保护对象免受更改
 - en: 原文：[https://exploringjs.com/deep-js/ch_protecting-objects.html](https://exploringjs.com/deep-js/ch_protecting-objects.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_protecting-objects.html](https://exploringjs.com/deep-js/ch_protecting-objects.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '10.1 [Levels of protection: preventing extensions, sealing, freezing](ch_protecting-objects.html#levels-of-protection-preventing-extensions-sealing-freezing)'
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.1 [保护级别：防止扩展、封闭、冻结](ch_protecting-objects.html#levels-of-protection-preventing-extensions-sealing-freezing)
 - en: 10.2 [Preventing extensions of objects](ch_protecting-objects.html#preventing-extensions-of-objects)
   id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.2 [防止对象扩展](ch_protecting-objects.html#preventing-extensions-of-objects)
 - en: 10.2.1 [Checking whether an object is extensible](ch_protecting-objects.html#checking-whether-an-object-is-extensible)
   id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.2.1 [检查对象是否可扩展](ch_protecting-objects.html#checking-whether-an-object-is-extensible)
 - en: 10.3 [Sealing objects](ch_protecting-objects.html#sealing-objects)
   id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.3 [封闭对象](ch_protecting-objects.html#sealing-objects)
 - en: 10.3.1 [Checking whether an object is sealed](ch_protecting-objects.html#checking-whether-an-object-is-sealed)
   id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.3.1 [检查对象是否已封闭](ch_protecting-objects.html#checking-whether-an-object-is-sealed)
 - en: 10.4 [Freezing objects](ch_protecting-objects.html#freezing-objects)
   id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.4 [冻结对象](ch_protecting-objects.html#freezing-objects)
 - en: 10.4.1 [Checking whether an object is frozen](ch_protecting-objects.html#checking-whether-an-object-is-frozen)
   id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.4.1 [检查对象是否已冻结](ch_protecting-objects.html#checking-whether-an-object-is-frozen)
 - en: 10.4.2 [Freezing is shallow](ch_protecting-objects.html#freezing-is-shallow)
   id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.4.2 [冻结是浅层的](ch_protecting-objects.html#freezing-is-shallow)
 - en: 10.4.3 [Implementing deep freezing](ch_protecting-objects.html#implementing-deep-freezing)
   id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.4.3 [实现深冻结](ch_protecting-objects.html#implementing-deep-freezing)
 - en: 10.5 [Further reading](ch_protecting-objects.html#further-reading-2)
   id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 10.5 [进一步阅读](ch_protecting-objects.html#further-reading-2)
 - en: '* * *'
   id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'In this chapter, we’ll look at how objects can be protected from being changed.
     Examples include: Preventing properties being added and preventing properties
     being changed.'
   id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将探讨如何保护对象免受更改。例如：防止添加属性和防止更改属性。
 - en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Required knowledge:
     property attributes**'
   id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **必需知识：属性特性**'
 - en: 'For this chapter, you should be familiar with property attributes. If you aren’t,
     check out [§9 “Property attributes: an introduction”](ch_property-attributes-intro.html).'
   id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，您应该熟悉属性特性。如果您不熟悉，请查看[§9“属性特性：简介”](ch_property-attributes-intro.html)。
 - en: '10.1 Levels of protection: preventing extensions, sealing, freezing'
   id: totrans-17
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 10.1 保护级别：防止扩展、封闭、冻结
 - en: 'JavaScript has three levels of protecting objects:'
   id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript有三个级别的对象保护：
 - en: '*Preventing extensions* makes it impossible to add new properties to an object.
     We can still delete and change properties, though.'
   id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*防止扩展*使得无法向对象添加新属性。但我们仍然可以删除和更改属性。'
 - en: 'Method: `Object.preventExtensions(obj)`'
   id: totrans-20
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法：`Object.preventExtensions(obj)`
 - en: '*Sealing* prevents extensions and makes all properties *unconfigurable* (roughly:
     we can’t change how a property works anymore).'
   id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*封闭*防止扩展并使所有属性*不可配置*（大致上：我们无法再改变属性的工作方式）。'
 - en: 'Method: `Object.seal(obj)`'
   id: totrans-22
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法：`Object.seal(obj)`
 - en: '*Freezing* seals an object after making all of its properties non-writable.
     That is, the object is not extensible, all properties are read-only and there
     is no way to change that.'
@@ -127,17 +150,20 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*冻结*在使所有属性不可写后封闭对象。也就是说，对象不可扩展，所有属性都是只读的，没有办法改变。'
 - en: 'Method: `Object.freeze(obj)`'
   id: totrans-24
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法：`Object.freeze(obj)`
 - en: 10.2 Preventing extensions of objects
   id: totrans-25
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 10.2 防止对象扩展
 - en: '[PRE0]'
   id: totrans-26
   prefs: []
@@ -147,27 +173,32 @@
   id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 该方法的工作方式如下：
 - en: If `obj` is not an object, it returns it.
   id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`obj`不是一个对象，则返回它。
 - en: Otherwise, it changes `obj` so that we can’t add properties anymore and returns
     it.
   id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，它会改变`obj`，使得我们无法再添加属性，并返回它。
 - en: The type parameter `<T>` expresses that the result has the same type as the
     parameter.
   id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型参数`<T>`表示结果与参数具有相同的类型。
 - en: 'Let’s use `Object.preventExtensions()` in an example:'
   id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们在一个例子中使用`Object.preventExtensions()`：
 - en: '[PRE1]'
   id: totrans-32
   prefs: []
@@ -177,6 +208,7 @@
   id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 但我们仍然可以删除属性：
 - en: '[PRE2]'
   id: totrans-34
   prefs: []
@@ -187,6 +219,7 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.2.1 检查对象是否可扩展
 - en: '[PRE3]'
   id: totrans-36
   prefs: []
@@ -196,6 +229,7 @@
   id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 检查`obj`是否可扩展 - 例如：
 - en: '[PRE4]'
   id: totrans-38
   prefs: []
@@ -206,6 +240,7 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 10.3 封闭对象
 - en: '[PRE5]'
   id: totrans-40
   prefs: []
@@ -215,11 +250,13 @@
   id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 该方法的描述：
 - en: If `obj` isn’t an object, it returns it.
   id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`obj`不是一个对象，则返回它。
 - en: 'Otherwise, it prevents extensions of `obj`, makes all of its properties *unconfigurable*,
     and returns it. The properties being unconfigurable means that they can’t be changed,
     anymore (except for their values): Read-only properties stay read-only, enumerable
@@ -228,11 +265,13 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，它会防止`obj`的扩展，使得所有属性*不可配置*，并返回它。属性不可配置意味着它们无法再被更改（除了它们的值）：只读属性保持只读，可枚举属性保持可枚举，等等。
 - en: The following example demonstrates that sealing makes the object non-extensible
     and its properties unconfigurable.
   id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例演示了封闭使对象不可扩展且其属性不可配置。
 - en: '[PRE6]'
   id: totrans-45
   prefs: []
@@ -242,6 +281,7 @@
   id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 但我们仍然可以更改属性`.first`的值：
 - en: '[PRE7]'
   id: totrans-47
   prefs: []
@@ -251,6 +291,7 @@
   id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 但我们无法更改其属性：
 - en: '[PRE8]'
   id: totrans-49
   prefs: []
@@ -261,6 +302,7 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.3.1 检查对象是否已封闭
 - en: '[PRE9]'
   id: totrans-51
   prefs: []
@@ -270,6 +312,7 @@
   id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 检查`obj`是否已封闭 - 例如：
 - en: '[PRE10]'
   id: totrans-53
   prefs: []
@@ -280,6 +323,7 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 10.4 冻结对象
 - en: '[PRE11]'
   id: totrans-55
   prefs: []
@@ -290,6 +334,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 该方法立即返回`obj`，如果它不是一个对象。
 - en: Otherwise, it makes all properties non-writable, seals `obj`, and returns it.
     That is, `obj` is not extensible, all properties are read-only and there is no
     way to change that.
@@ -297,6 +342,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，它会使所有属性不可写，封闭`obj`并返回它。也就是说，`obj`不可扩展，所有属性都是只读的，没有办法改变。
 - en: '[PRE12]'
   id: totrans-58
   prefs: []
@@ -307,6 +353,7 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.4.1 检查对象是否已冻结
 - en: '[PRE13]'
   id: totrans-60
   prefs: []
@@ -316,6 +363,7 @@
   id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 检查`obj`是否被冻结 - 例如：
 - en: '[PRE14]'
   id: totrans-62
   prefs: []
@@ -326,11 +374,13 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.4.2 冻结是浅层的
 - en: '`Object.freeze(obj)` only freezes `obj` and its properties. It does not freeze
     the values of those properties – for example:'
   id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Object.freeze(obj)`只会冻结`obj`及其属性。它不会冻结这些属性的值 - 例如：'
 - en: '[PRE15]'
   id: totrans-65
   prefs: []
@@ -341,10 +391,12 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.4.3 实现深冻结
 - en: 'If we want deep freezing, we need to implement it ourselves:'
   id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要深冻结，我们需要自己实现它：
 - en: '[PRE16]'
   id: totrans-68
   prefs: []
