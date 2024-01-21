@@ -3,96 +3,114 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 5 全局变量的详细了解
 - en: 原文：[https://exploringjs.com/deep-js/ch_global-scope.html](https://exploringjs.com/deep-js/ch_global-scope.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_global-scope.html](https://exploringjs.com/deep-js/ch_global-scope.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 5.1 [Scopes](ch_global-scope.html#scopes)
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.1 [作用域](ch_global-scope.html#scopes)
 - en: 5.2 [Lexical environments](ch_global-scope.html#lexical-environments)
   id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.2 [词法环境](ch_global-scope.html#lexical-environments)
 - en: 5.3 [The global object](ch_global-scope.html#the-global-object)
   id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.3 [全局对象](ch_global-scope.html#the-global-object)
 - en: 5.4 [In browsers, `globalThis` does not point directly to the global object](ch_global-scope.html#window-proxy)
   id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.4 [在浏览器中，`globalThis` 不直接指向全局对象](ch_global-scope.html#window-proxy)
 - en: 5.5 [The global environment](ch_global-scope.html#the-global-environment)
   id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5 [全局环境](ch_global-scope.html#the-global-environment)
 - en: 5.5.1 [Script scope and module scopes](ch_global-scope.html#script-scope-and-module-scopes)
   id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5.1 [脚本作用域和模块作用域](ch_global-scope.html#script-scope-and-module-scopes)
 - en: '5.5.2 [Creating variables: declarative record vs. object record](ch_global-scope.html#creating-variables-declarative-record-vs.-object-record)'
   id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5.2 [创建变量：声明记录 vs. 对象记录](ch_global-scope.html#creating-variables-declarative-record-vs.-object-record)
 - en: 5.5.3 [Getting or setting variables](ch_global-scope.html#getting-or-setting-variables)
   id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5.3 [获取或设置变量](ch_global-scope.html#getting-or-setting-variables)
 - en: 5.5.4 [Global ECMAScript variables and global host variables](ch_global-scope.html#global-ecmascript-variables-and-global-host-variables)
   id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5.4 [全局 ECMAScript 变量和全局宿主变量](ch_global-scope.html#global-ecmascript-variables-and-global-host-variables)
 - en: '5.6 [Conclusion: Why does JavaScript have both normal global variables and
     the global object?](ch_global-scope.html#conclusion-why-does-javascript-have-both-normal-global-variables-and-the-global-object)'
   id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.6 [结论：为什么 JavaScript 同时具有普通全局变量和全局对象？](ch_global-scope.html#conclusion-why-does-javascript-have-both-normal-global-variables-and-the-global-object)
 - en: 5.7 [Further reading and sources of this chapter](ch_global-scope.html#further-reading-and-sources-of-this-chapter)
   id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.7 [本章的进一步阅读和来源](ch_global-scope.html#further-reading-and-sources-of-this-chapter)
 - en: '* * *'
   id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'In this chapter, we take a detailed look at how JavaScript’s global variables
     work. Several interesting phenomena play a role: the scope of scripts, the so-called
     *global object*, and more.'
   id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将详细了解 JavaScript 的全局变量是如何工作的。有几个有趣的现象起到了作用：脚本的作用域，所谓的*全局对象*等等。
 - en: 5.1 Scopes
   id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.1 作用域
 - en: 'The *lexical scope* (short: *scope*) of a variable is the region of a program
     where it can be accessed. JavaScript’s scopes are *static* (they don’t change
     at runtime) and they can be nested – for example:'
   id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 变量的*词法作用域*（简称：*作用域*）是程序中可以访问它的区域。JavaScript 的作用域是*静态*的（在运行时不会改变），并且可以嵌套 - 例如：
 - en: '[PRE0]'
   id: totrans-18
   prefs: []
@@ -103,21 +121,25 @@
   id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: '`if` 语句引入的作用域（B 行）嵌套在函数 `func()` 的作用域（A 行）内。'
 - en: The innermost surrounding scope of a scope S is called the *outer scope* of
     S. In the example, `func` is the outer scope of `if`.
   id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 作用域 S 的最内层包围作用域称为 S 的*外部作用域*。在例子中，`func` 是 `if` 的外部作用域。
 - en: 5.2 Lexical environments
   id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.2 词法环境
 - en: 'In the JavaScript language specification, scopes are “implemented” via *lexical
     environments*. They consist of two components:'
   id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 JavaScript 语言规范中，作用域通过*词法环境*“实现”。它们由两个组件组成：
 - en: An *environment record* that maps variable names to variable values (think dictionary).
     This is the actual storage space for the variables of the scope. The name-value
     entries in the record are called *bindings*.
@@ -125,38 +147,46 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将变量名映射到变量值的*环境记录*（类似于字典）。这是作用域变量的实际存储空间。记录中的名称-值条目称为*绑定*。
 - en: A reference to the *outer environment* – the environment for the outer scope.
   id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作用域的*外部环境*的引用 - 外部作用域的环境。
 - en: The tree of nested scopes is therefore represented by a tree of environments
     linked by outer environment references.
   id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，嵌套作用域的树由外部环境引用链接的环境树表示。
 - en: 5.3 The global object
   id: totrans-26
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.3 全局对象
 - en: 'The global object is an object whose properties become global variables. (We’ll
     examine soon how exactly it fits into the tree of environments.) It can be accessed
     via the following global variables:'
   id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 全局对象是一个对象，其属性成为全局变量。（我们很快将会详细讨论它如何适配环境树。）可以通过以下全局变量访问它：
 - en: 'Available on all platforms: [`globalThis`](https://exploringjs.com/impatient-js/ch_variables-assignment.html#globalThis).
     The name is based on the fact that it has the same value as `this` in global scope.'
   id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在所有平台上都可用：[`globalThis`](https://exploringjs.com/impatient-js/ch_variables-assignment.html#globalThis)。其名称基于它在全局作用域中与
+    `this` 具有相同的值。
 - en: 'Other variables for the global object are not available on all platforms:'
   id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 全局对象的其他变量在所有平台上都不可用：
 - en: '`window` is the classic way of referring to the global object. It works in
     normal browser code, but not in *Web Workers* (processes running concurrently
     to the normal browser process) and not on Node.js.'
@@ -165,6 +195,8 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`window` 是指向全局对象的经典方式。它在正常的浏览器代码中有效，但在*Web Workers*（与正常浏览器进程并发运行的进程）和 Node.js
+    中无效。'
 - en: '`self` is available everywhere in browsers (including in Web Workers). But
     it isn’t supported by Node.js.'
   id: totrans-31
@@ -172,27 +204,32 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`self` 在浏览器中随处可用（包括在 Web Workers 中）。但它不受 Node.js 支持。'
 - en: '`global` is only available on Node.js.'
   id: totrans-32
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`global` 仅在 Node.js 上可用。'
 - en: 5.4 In browsers, `globalThis` does not point directly to the global object
   id: totrans-33
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.4 在浏览器中，`globalThis` 不直接指向全局对象
 - en: 'In browsers, `globalThis` does not point directly to the global, there is an
     indirection. As an example, consider an iframe on a web page:'
   id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 在浏览器中，`globalThis` 不直接指向全局对象，而是有一个间接引用。例如，考虑网页上的 iframe：
 - en: Whenever the `src` of the iframe changes, it gets a new global object.
   id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每当 iframe 的 `src` 改变时，它都会获得一个新的全局对象。
 - en: However, `globalThis` always has the same value. That value can be checked from
     outside the iframe, as demonstrated below (inspired by [an example in the `globalThis`
     proposal](https://github.com/tc39/proposal-global#html-and-the-windowproxy)).
@@ -200,10 +237,12 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然而，`globalThis` 总是具有相同的值。可以从 iframe 外部检查该值，如下所示（灵感来自[`globalThis`提案中的一个例子](https://github.com/tc39/proposal-global#html-and-the-windowproxy)）。
 - en: 'File `parent.html`:'
   id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 文件 `parent.html`：
 - en: '[PRE1]'
   id: totrans-38
   prefs: []
@@ -213,6 +252,7 @@
   id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 文件 `iframe.html`：
 - en: '[PRE2]'
   id: totrans-40
   prefs: []
