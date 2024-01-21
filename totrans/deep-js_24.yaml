@@ -3,148 +3,177 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 17 通过实现Promise来探索Promise
 - en: 原文：[https://exploringjs.com/deep-js/ch_implementing-promises.html](https://exploringjs.com/deep-js/ch_implementing-promises.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_implementing-promises.html](https://exploringjs.com/deep-js/ch_implementing-promises.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '17.1 [Refresher: states of Promises](ch_implementing-promises.html#refresher-states-of-promises)'
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.1 [复习：Promise的状态](ch_implementing-promises.html#refresher-states-of-promises)
 - en: '17.2 [Version 1: Stand-alone Promise](ch_implementing-promises.html#version-1-stand-alone-promise)'
   id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.2 [版本1：独立的Promise](ch_implementing-promises.html#version-1-stand-alone-promise)
 - en: 17.2.1 [Method `.then()`](ch_implementing-promises.html#method-.then)
   id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.2.1 [方法`.then()`](ch_implementing-promises.html#method-.then)
 - en: 17.2.2 [Method `.resolve()`](ch_implementing-promises.html#method-.resolve)
   id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.2.2 [方法`.resolve()`](ch_implementing-promises.html#method-.resolve)
 - en: '17.3 [Version 2: Chaining `.then()` calls](ch_implementing-promises.html#version-2-chaining-.then-calls)'
   id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.3 [版本2：链接`.then()`调用](ch_implementing-promises.html#version-2-chaining-.then-calls)
 - en: 17.4 [Convenience method `.catch()`](ch_implementing-promises.html#convenience-method-.catch)
   id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.4 [便捷方法`.catch()`](ch_implementing-promises.html#convenience-method-.catch)
 - en: 17.5 [Omitting reactions](ch_implementing-promises.html#omitting-reactions)
   id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.5 [省略反应](ch_implementing-promises.html#omitting-reactions)
 - en: 17.6 [The implementation](ch_implementing-promises.html#the-implementation)
   id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.6 [实现](ch_implementing-promises.html#the-implementation)
 - en: '17.7 [Version 3: Flattening Promises returned from `.then()` callbacks](ch_implementing-promises.html#version-3-flattening-promises-returned-from-.then-callbacks)'
   id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.7 [版本3：扁平化从`.then()`回调返回的Promise](ch_implementing-promises.html#version-3-flattening-promises-returned-from-.then-callbacks)
 - en: 17.7.1 [Returning Promises from a callback of `.then()`](ch_implementing-promises.html#returning-promises-from-a-callback-of-.then)
   id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.7.1 [从`.then()`的回调中返回Promise](ch_implementing-promises.html#returning-promises-from-a-callback-of-.then)
 - en: 17.7.2 [Flattening makes Promise states more complicated](ch_implementing-promises.html#flattening-makes-promise-states-more-complicated)
   id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.7.2 [扁平化使Promise状态更加复杂](ch_implementing-promises.html#flattening-makes-promise-states-more-complicated)
 - en: 17.7.3 [Implementing Promise-flattening](ch_implementing-promises.html#implementing-promise-flattening)
   id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.7.3 [实现Promise扁平化](ch_implementing-promises.html#implementing-promise-flattening)
 - en: '17.8 [Version 4: Exceptions thrown in reaction callbacks](ch_implementing-promises.html#version-4-exceptions-thrown-in-reaction-callbacks)'
   id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.8 [版本4：在反应回调中抛出异常](ch_implementing-promises.html#version-4-exceptions-thrown-in-reaction-callbacks)
 - en: '17.9 [Version 5: Revealing constructor pattern](ch_implementing-promises.html#version-5-revealing-constructor-pattern)'
   id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 17.9 [版本5：揭示构造函数模式](ch_implementing-promises.html#version-5-revealing-constructor-pattern)
 - en: '* * *'
   id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '![](../Images/0c2cffc9b09a6e4a1ac19d36b7230eed.png)  **Required knowledge:
     Promises**'
   id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/0c2cffc9b09a6e4a1ac19d36b7230eed.png)  **所需知识：Promise**'
 - en: For this chapter, you should be roughly familiar with Promises, but much relevant
     knowledge is also reviewed here. If necessary, you can read [the chapter on Promises
     in “JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_promises.html).
   id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，您应该对Promise有一定了解，但这里也复习了许多相关知识。如果需要，您可以阅读[“JavaScript for impatient programmers”中关于Promise的章节](https://exploringjs.com/impatient-js/ch_promises.html)。
 - en: 'In this chapter, we will approach Promises from a different angle: Instead
     of using this API, we will create a simple implementation of it. This different
     angle once helped me greatly with making sense of Promises.'
   id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这一章中，我们将从不同的角度来接触Promise：我们将创建一个简单的实现。这种不同的角度曾经帮助我很大地理解Promise。
 - en: The Promise implementation is the class `ToyPromise`. In order to be easier
     to understand, it doesn’t completely match the API. But it is close enough to
     still give us much insight into how Promises work.
   id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: Promise的实现是`ToyPromise`类。为了更容易理解，它并不完全匹配API。但它足够接近，仍然能让我们深入了解Promise的工作原理。
 - en: '![](../Images/0c2cffc9b09a6e4a1ac19d36b7230eed.png)  **Repository with code**'
   id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/0c2cffc9b09a6e4a1ac19d36b7230eed.png)  **带有代码的存储库**'
 - en: '`ToyPromise` is available on GitHub, in the repository [`toy-promise`](https://github.com/rauschma/toy-promise).'
   id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToyPromise`可以在GitHub上找到，存储在[`toy-promise`](https://github.com/rauschma/toy-promise)存储库中。'
 - en: '17.1 Refresher: states of Promises'
   id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 17.1 复习：Promise的状态
 - en: '![](../Images/2464420838a24a1e997c946490e804d6.png)'
   id: totrans-25
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/2464420838a24a1e997c946490e804d6.png)'
 - en: 'Figure 11: The states of a Promise (simplified version): A Promise is initially
     pending. If we resolve it, it becomes fulfilled. If we reject it, it becomes rejected.'
   id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 图11：Promise的状态（简化版本）：Promise最初是pending状态。如果我们解决它，它就会变成fulfilled。如果我们拒绝它，它就会变成rejected。
 - en: 'We start with a simplified version of how Promise states work (fig. [11](#fig:promise-states-simple)):'
   id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们从一个简化版本开始解释Promise状态的工作方式（图[11](#fig:promise-states-simple)）：
 - en: A Promise is initially *pending*.
   id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Promise最初是*pending*状态。
 - en: If a Promise is *resolved* with a value `v`, it becomes *fulfilled* (later,
     we’ll see that resolving can also reject). `v` is now the *fulfillment value*
     of the Promise.
@@ -152,70 +181,85 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果一个Promise被值`v` *resolved*，它就会变成*fulfilled*（稍后，我们将看到解决也可以拒绝）。`v`现在是Promise的*fulfillment
+    value*。
 - en: If a Promise is *rejected* with an error `e`, it becomes *rejected*. `e` is
     now the *rejection value* of the Promise.
   id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果一个Promise被错误`e` *rejected*，它就会变成*rejected*。`e`现在是Promise的*rejection value*。
 - en: '17.2 Version 1: Stand-alone Promise'
   id: totrans-31
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 17.2 版本1：独立的Promise
 - en: 'Our first implementation is a stand-alone Promise with minimal functionality:'
   id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的第一个实现是一个独立的Promise，具有最小的功能：
 - en: We can create a Promise.
   id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以创建一个Promise。
 - en: We can resolve or reject a Promise and we can only do it once.
   id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以解决或拒绝一个Promise，而且只能做一次。
 - en: We can register *reactions* (callbacks) via `.then()`. Registering must do the
     right thing independently of whether the Promise has already been settled or not.
   id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过`.then()`注册*reactions*（回调）。注册必须独立于Promise是否已经解决或未解决而做正确的事情。
 - en: '`.then()` does not support chaining, yet – it does not return anything.'
   id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.then()`目前不支持链接，它不返回任何东西。'
 - en: '`ToyPromise1` is a class with three prototype methods:'
   id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToyPromise1`是一个具有三个原型方法的类：'
 - en: '`ToyPromise1.prototype.resolve(value)`'
   id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToyPromise1.prototype.resolve(value)`'
 - en: '`ToyPromise1.prototype.reject(reason)`'
   id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToyPromise1.prototype.reject(reason)`'
 - en: '`ToyPromise1.prototype.then(onFulfilled, onRejected)`'
   id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToyPromise1.prototype.then(onFulfilled, onRejected)`'
 - en: That is, `resolve` and `reject` are methods (and not functions handed to a callback
     parameter of the constructor).
   id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说，`resolve`和`reject`是方法（而不是传递给构造函数回调参数的函数）。
 - en: 'This is how this first implementation is used:'
   id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是第一个实现的用法：
 - en: '[PRE0]'
   id: totrans-43
   prefs: []
@@ -231,21 +275,25 @@
   id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 图12说明了我们的第一个`ToyPromise`是如何工作的。
 - en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **The diagrams of the
     data flow in Promises are optional**'
   id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png) **Promises中的数据流图是可选的**'
 - en: The motivation for the diagrams is to have a visual explanation for how Promises
     work. But they are optional. If you find them confusing, you can ignore them and
     focus on the code.
   id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 图表的动机是为Promises的工作原理提供一个视觉解释。但它们是可选的。如果你觉得它们令人困惑，你可以忽略它们，专注于代码。
 - en: '![](../Images/e65f0282853cd39c5f190034058283ac.png)'
   id: totrans-48
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/e65f0282853cd39c5f190034058283ac.png)'
 - en: 'Figure 12: `ToyPromise1`: If a Promise is resolved, the provided value is passed
     on to the *fulfillment reactions* (first arguments of `.then()`). If a Promise
     is rejected, the provided value is passed on to the *rejection reactions* (second
@@ -253,27 +301,32 @@
   id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 图12：`ToyPromise1`：如果Promise被解决，提供的值将传递给*满足反应*（`.then()`的第一个参数）。如果Promise被拒绝，提供的值将传递给*拒绝反应*（`.then()`的第二个参数）。
 - en: 17.2.1 Method `.then()`
   id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 17.2.1 方法`.then()`
 - en: 'Let’s examine `.then()` first. It has to handle two cases:'
   id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们先来看一下`.then()`。它必须处理两种情况：
 - en: If the Promise is still pending, it queues invocations of `onFulfilled` and
     `onRejected`. They are to be used later, when the Promise is settled.
   id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果Promise仍处于挂起状态，则会排队调用`onFulfilled`和`onRejected`。它们将在Promise解决时使用。
 - en: If the Promise is already fulfilled or rejected, `onFulfilled` or `onRejected`
     can be invoked right away.
   id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果Promise已经被满足或拒绝，`onFulfilled`或`onRejected`可以立即被调用。
 - en: '[PRE2]'
   id: totrans-54
   prefs: []
@@ -283,6 +336,7 @@
   id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 上一个代码片段使用以下辅助函数：
 - en: '[PRE3]'
   id: totrans-56
   prefs: []
@@ -297,11 +351,14 @@
   id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: Promise必须始终异步解决。这就是为什么我们不直接执行任务，而是将它们添加到事件循环的任务队列中（浏览器、Node.js等）。请注意，真正的Promise
+    API不使用普通任务（如`setTimeout()`），它使用[*微任务*](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/)，它们与当前普通任务紧密耦合，并且总是直接执行。
 - en: 17.2.2 Method `.resolve()`
   id: totrans-58
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 17.2.2 方法`.resolve()`
 - en: '`.resolve()` works as follows: If the Promise is already settled, it does nothing
     (ensuring that a Promise can only be settled once). Otherwise, the state of the
     Promise changes to `''fulfilled''` and the result is cached in `this.promiseResult`.
@@ -309,6 +366,7 @@
   id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.resolve()`的工作方式如下：如果Promise已经解决，它什么也不做（确保Promise只能解决一次）。否则，Promise的状态将更改为`''fulfilled''`，结果将缓存在`this.promiseResult`中。接下来，将调用到目前为止已排队的所有满足反应。'
 - en: '[PRE4]'
   id: totrans-60
   prefs: []
@@ -323,21 +381,25 @@
   id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: '`reject()`类似于`resolve()`。'
 - en: '17.3 Version 2: Chaining `.then()` calls'
   id: totrans-63
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 17.3 版本2：链接`.then()`调用
 - en: '![](../Images/b17ddb8b605b284cdb68bb5baf7692ee.png)'
   id: totrans-64
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/b17ddb8b605b284cdb68bb5baf7692ee.png)'
 - en: 'Figure 13: `ToyPromise2` chains `.then()` calls: `.then()` now returns a Promise
     that is resolved by whatever value is returned by the fulfillment reaction or
     the rejection reaction.'
   id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 图13：`ToyPromise2`链接`.then()`调用：`.then()`现在返回一个Promise，该Promise由满足反应或拒绝反应返回的任何值解决。
 - en: 'The next feature we implement is chaining (fig. [13](#fig:promise-impl2-chaining)):
     A value that we return from a fulfillment reaction or a rejection reaction can
     be handled by a fulfilment reaction in a following `.then()` call. (In the next
@@ -346,20 +408,24 @@
   id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们实现的下一个特性是链接（图13）：我们从满足反应或拒绝反应中返回的值可以由后续的`.then()`调用中的满足反应处理。（在下一个版本中，由于特殊支持返回Promises，链接将变得更加有用。）
 - en: 'In the following example:'
   id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的示例中：
 - en: 'First `.then()`: We return a value in a fulfillment reaction.'
   id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 第一个`.then()`：我们在满足反应中返回一个值。
 - en: 'Second `.then()`: We receive that value via a fulfillment reaction.'
   id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 第二个`.then()`：我们通过满足反应接收该值。
 - en: '[PRE6]'
   id: totrans-70
   prefs: []
@@ -369,16 +435,19 @@
   id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的示例中：
 - en: 'First `.then()`: We return a value in a rejection reaction.'
   id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 第一个`.then()`：我们在拒绝反应中返回一个值。
 - en: 'Second `.then()`: We receive that value via a fulfillment reaction.'
   id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 第二个`.then()`：我们通过满足反应接收该值。
 - en: '[PRE7]'
   id: totrans-74
   prefs: []
@@ -389,6 +458,7 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 17.4 便利方法`.catch()`
 - en: The new version introduces a convenience method `.catch()` that makes it easier
     to only provide a rejection reaction. Note that only providing a fulfillment reaction
     is already easy – we simply omit the second parameter of `.then()` (see previous
@@ -396,10 +466,12 @@
   id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 新版本引入了一个方便的方法`.catch()`，使得只提供拒绝反应更容易。请注意，只提供满足反应已经很容易 - 我们只需省略`.then()`的第二个参数（参见上一个示例）。
 - en: 'The previous example looks nicer if we use it (line A):'
   id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用它，上一个示例看起来更好（A行）：
 - en: '[PRE8]'
   id: totrans-78
   prefs: []
@@ -409,6 +481,7 @@
   id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下两个方法调用是等效的：
 - en: '[PRE9]'
   id: totrans-80
   prefs: []
@@ -418,6 +491,7 @@
   id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是`.catch()`的实现方式：
 - en: '[PRE10]'
   id: totrans-82
   prefs: []
@@ -428,15 +502,18 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 17.5 省略反应
 - en: The new version also forwards fulfillments if we omit a fulfillment reaction
     and it forwards rejections if we omit a rejection reaction. Why is that useful?
   id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 新版本还会在我们省略满足反应时转发满足，并在我们省略拒绝反应时转发拒绝。这有什么用呢？
 - en: 'The following example demonstrates passing on rejections:'
   id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例演示了如何传递拒绝：
 - en: '[PRE11]'
   id: totrans-86
   prefs: []
@@ -447,10 +524,12 @@
   id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: '`rejectionReaction`现在可以处理`someAsyncFunction()`、`fulfillmentReaction1`和`fulfillmentReaction2`的拒绝。'
 - en: 'The following example demonstrates passing on fulfillments:'
   id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例演示了如何传递满足：
 - en: '[PRE12]'
   id: totrans-89
   prefs: []

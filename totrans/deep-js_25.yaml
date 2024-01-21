@@ -1,1231 +1,1819 @@
 - en: 18 Metaprogramming with Proxies
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 18 元编程与代理
 - en: 原文：[https://exploringjs.com/deep-js/ch_proxies.html](https://exploringjs.com/deep-js/ch_proxies.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_proxies.html](https://exploringjs.com/deep-js/ch_proxies.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 18.1 [Overview](ch_proxies.html#overview-proxies)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.1 概述
 - en: 18.2 [Programming versus metaprogramming](ch_proxies.html#programming-vs-metaprogramming)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.2 编程与元编程
 - en: 18.2.1 [Kinds of metaprogramming](ch_proxies.html#kinds-of-metaprogramming)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.2.1 元编程的种类
 - en: 18.3 [Proxies explained](ch_proxies.html#proxies-explained)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3 [代理解释](ch_proxies.html#proxies-explained)
 - en: 18.3.1 [An example](ch_proxies.html#an-example)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.1 一个例子
 - en: 18.3.2 [Function-specific traps](ch_proxies.html#function-specific-traps)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.2 特定函数陷阱
 - en: 18.3.3 [Intercepting method calls](ch_proxies.html#intercepting-method-calls)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.3 拦截方法调用
 - en: 18.3.4 [Revocable Proxies](ch_proxies.html#revocable-proxies)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.4 可撤销代理
 - en: 18.3.5 [Proxies as prototypes](ch_proxies.html#proxies-as-prototypes)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.5 代理作为原型
 - en: 18.3.6 [Forwarding intercepted operations](ch_proxies.html#forwarding-intercepted-operations)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.6 [转发拦截操作](ch_proxies.html#forwarding-intercepted-operations)
 - en: '18.3.7 [Pitfall: not all objects can be wrapped transparently by Proxies](ch_proxies.html#mechanisms-ignored-by-proxies)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.3.7 [陷阱：并非所有对象都可以被代理透明包装](ch_proxies.html#mechanisms-ignored-by-proxies)
 - en: 18.4 [Use cases for Proxies](ch_proxies.html#proxy-use-cases)
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4 代理的用例
 - en: 18.4.1 [Tracing property accesses (`get`, `set`)](ch_proxies.html#tracing-property-accesses-get-set)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.1 跟踪属性访问（`get`，`set`）
 - en: 18.4.2 [Warning about unknown properties (`get`, `set`)](ch_proxies.html#warning-about-unknown-properties-get-set)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.2 关于未知属性的警告（`get`，`set`）
 - en: 18.4.3 [Negative Array indices (`get`)](ch_proxies.html#negative-array-indices-via-proxies)
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.3 负数组索引（`get`）
 - en: 18.4.4 [Data binding (`set`)](ch_proxies.html#data-binding-set)
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.4 数据绑定（`set`）
 - en: 18.4.5 [Accessing a restful web service (method calls)](ch_proxies.html#accessing-a-restful-web-service-method-calls)
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.5 访问restful web服务（方法调用）
 - en: 18.4.6 [Revocable references](ch_proxies.html#revocable-references)
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.6 可撤销引用
 - en: 18.4.7 [Implementing the DOM in JavaScript](ch_proxies.html#implementing-the-dom-in-javascript)
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.7 在JavaScript中实现DOM
 - en: 18.4.8 [More use cases](ch_proxies.html#more-use-cases)
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.8 更多用例
 - en: 18.4.9 [Libraries that are using Proxies](ch_proxies.html#libraries-that-are-using-proxies)
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.4.9 使用代理的库
 - en: 18.5 [The design of the Proxy API](ch_proxies.html#design-proxy-api)
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.5 代理API的设计
 - en: '18.5.1 [Stratification: keeping base level and meta level separate](ch_proxies.html#stratification-keeping-base-level-and-meta-level-separate)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.5.1 分层：保持基本级别和元级别分开
 - en: 18.5.2 [Virtual objects versus wrappers](ch_proxies.html#virtual-objects-versus-wrappers)
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.5.2 虚拟对象与包装器
 - en: 18.5.3 [Transparent virtualization and handler encapsulation](ch_proxies.html#transparent-virtualization-and-handler-encapsulation)
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.5.3 透明虚拟化和处理程序封装
 - en: 18.5.4 [The meta object protocol and Proxy traps](ch_proxies.html#meta-object-protocol)
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.5.4 元对象协议和代理陷阱
 - en: 18.5.5 [Enforcing invariants for Proxies](ch_proxies.html#enforcing-invariants-for-proxies)
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.5.5 强制代理的不变性
 - en: '18.6 [FAQ: Proxies](ch_proxies.html#faq-proxies)'
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.6 [常见问题：代理](ch_proxies.html#faq-proxies)
 - en: 18.6.1 [Where is the `enumerate` trap?](ch_proxies.html#where-is-the-enumerate-trap)
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.6.1 `enumerate`陷阱在哪里？
 - en: '18.7 [Reference: the Proxy API](ch_proxies.html#reference-proxy-api)'
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.7 [参考：代理API](ch_proxies.html#reference-proxy-api)
 - en: 18.7.1 [Creating Proxies](ch_proxies.html#creating-proxies)
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.7.1 创建代理
 - en: 18.7.2 [Handler methods](ch_proxies.html#handler-methods)
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.7.2 [处理程序方法](ch_proxies.html#handler-methods)
 - en: 18.7.3 [Invariants of handler methods](ch_proxies.html#invariants-of-handler-methods)
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.7.3 处理程序方法的不变性
 - en: 18.7.4 [Operations that affect the prototype chain](ch_proxies.html#operations-that-affect-the-prototype-chain)
+  id: totrans-36
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.7.4 影响原型链的操作
 - en: 18.7.5 [Reflect](ch_proxies.html#reflect)
+  id: totrans-37
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.7.5 反射
 - en: 18.8 [Conclusion](ch_proxies.html#conclusion-proxies)
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.8 结论
 - en: 18.9 [Further reading](ch_proxies.html#further-reading-proxies)
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 18.9 进一步阅读
 - en: '* * *'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 18.1 Overview
+  id: totrans-41
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.1 概述
 - en: Proxies enable us to intercept and customize operations performed on objects
     (such as getting properties). They are a *metaprogramming* feature.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理使我们能够拦截和定制对对象执行的操作（例如获取属性）。它们是一种*元编程*特性。
 - en: 'In the following example:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中：
 - en: '`proxy` is an empty object.'
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`proxy`是一个空对象。'
 - en: '`handler` can intercept operations that are performed on `proxy`, by implementing
     certain methods.'
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过实现特定方法，`handler`可以拦截对`proxy`执行的操作。
 - en: If the handler does not intercept an operation, it is forwarded to `target`.
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果处理程序不拦截操作，则将其转发到`target`。
 - en: 'We are only intercepting one operation – `get` (getting properties):'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们只拦截一个操作 - `get`（获取属性）：
 - en: '[PRE0]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'When we get the property `proxy.size`, the handler intercepts that operation:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们获取属性`proxy.size`时，处理程序会拦截该操作：
 - en: '[PRE1]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: See [the reference for the complete API](ch_proxies.html#reference-proxy-api)
     for a list of operations that can be intercepted.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 查看[完整API的参考](ch_proxies.html#reference-proxy-api)以获取可以拦截的操作列表。
 - en: 18.2 Programming versus metaprogramming
+  id: totrans-52
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.2 编程与元编程
 - en: Before we can get into what Proxies are and why they are useful, we first need
     to understand what *metaprogramming* is.
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们深入了解代理是什么以及它们为何有用之前，我们首先需要了解什么是*元编程*。
 - en: 'In programming, there are levels:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 在编程中，有不同的层次：
 - en: 'At the *base level* (also called: *application level*), code processes user
     input.'
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在*基础级别*（也称为：*应用级别*），代码处理用户输入。
 - en: At the *meta level*, code processes base level code.
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在*元级别*，代码处理基础级别的代码。
 - en: Base and meta level can be different languages. In the following meta program,
     the metaprogramming language is JavaScript and the base programming language is
     Java.
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 基础和元级别可以是不同的语言。在下面的元程序中，元编程语言是JavaScript，基础编程语言是Java。
 - en: '[PRE2]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Metaprogramming can take different forms. In the previous example, we have printed
     Java code to the console. Let’s use JavaScript as both metaprogramming language
     and base programming language. The classic example for this is the [`eval()` function](https://exploringjs.com/impatient-js/ch_callables.html#eval),
     which lets us evaluate/compile JavaScript code on the fly. In the interaction
     below, we use it to evaluate the expression `5 + 2`.
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 元编程可以采用不同的形式。在前面的示例中，我们已经将Java代码打印到控制台。让我们将JavaScript用作元编程语言和基础编程语言。这方面的经典示例是[`eval()`函数](https://exploringjs.com/impatient-js/ch_callables.html#eval)，它允许我们动态评估/编译JavaScript代码。在下面的交互中，我们使用它来评估表达式`5
+    + 2`。
 - en: '[PRE3]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Other JavaScript operations may not look like metaprogramming, but actually
     are, if we look closer:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 其他JavaScript操作可能看起来不像元编程，但实际上是的，如果我们仔细看的话：
 - en: '[PRE4]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: The program is examining its own structure while running. This doesn’t look
     like metaprogramming, because the separation between programming constructs and
     data structures is fuzzy in JavaScript. All of the `Object.*` methods can be considered
     metaprogramming functionality.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 程序在运行时检查其自身的结构。这看起来不像元编程，因为JavaScript中编程构造和数据结构之间的分离是模糊的。所有的`Object.*`方法都可以被视为元编程功能。
 - en: 18.2.1 Kinds of metaprogramming
+  id: totrans-64
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.2.1 元编程的种类
 - en: 'Reflective metaprogramming means that a program processes itself. [Kiczales
     et al. [2]](ch_proxies.html#further-reading-proxies) distinguish three kinds of
     reflective metaprogramming:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 反射元编程意味着程序处理自身。[Kiczales等人[2]](ch_proxies.html#further-reading-proxies)区分了三种反射元编程：
 - en: '**Introspection:** We have read-only access to the structure of a program.'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**内省：**我们对程序的结构具有只读访问权限。'
 - en: '**Self-modification:** We can change that structure.'
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**自修改：**我们可以改变那个结构。'
 - en: '**Intercession:** We can redefine the semantics of some language operations.'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**介入：**我们可以重新定义一些语言操作的语义。'
 - en: Let’s look at examples.
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看一些例子。
 - en: '**Example: introspection.** `Object.keys()` performs introspection (see previous
     example).'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例：内省。**`Object.keys()`执行内省（请参阅上一个示例）。'
 - en: '**Example: self-modification.** The following function `moveProperty` moves
     a property from a source to a target. It performs self-modification via the bracket
     operator for property access, the assignment operator and the `delete` operator.
     (In production code, we’d probably use [property descriptors](ch_property-attributes-intro.html#property-descriptors)
     for this task.)'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例：自修改。**以下函数`moveProperty`将属性从源移动到目标。它通过使用方括号运算符进行属性访问、赋值运算符和`delete`运算符来进行自修改。（在生产代码中，我们可能会使用[属性描述符](ch_property-attributes-intro.html#property-descriptors)来完成此任务。）'
 - en: '[PRE5]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'This is how `moveProperty()` is used:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: '`moveProperty()`的使用方法如下：'
 - en: '[PRE6]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: ECMAScript 5 doesn’t support intercession; Proxies were created to fill that
     gap.
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: ECMAScript 5不支持介入；代理被创建来填补这一空白。
 - en: 18.3 Proxies explained
+  id: totrans-76
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.3 代理解释
 - en: 'Proxies bring intercession to JavaScript. They work as follows. There are many
     operations that we can perform on an object `obj` – for example:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理将介入JavaScript。它们的工作原理如下。我们可以对对象`obj`执行许多操作，例如：
 - en: Getting the property `prop` of an object `obj` (`obj.prop`)
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 获取对象`obj`的属性`prop`（`obj.prop`）
 - en: Checking whether an object `obj` has a property `prop` (`'prop' in obj`)
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 检查对象`obj`是否具有属性`prop`（`'prop' in obj`）
 - en: 'Proxies are special objects that allow us to customize some of these operations.
     A Proxy is created with two parameters:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理是特殊的对象，允许我们定制其中一些操作。代理是由两个参数创建的：
 - en: '`handler`: For each operation, there is a corresponding handler method that
     – if present – performs that operation. Such a method *intercepts* the operation
     (on its way to the target) and is called a *trap* – a term borrowed from the domain
     of operating systems.'
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`handler`：对于每个操作，都有一个相应的处理程序方法，如果存在，就执行该操作。这样的方法*拦截*了操作（在其传递到目标的途中），并被称为*陷阱*——这个术语是从操作系统的领域借来的。'
 - en: '`target`: If the handler doesn’t intercept an operation, then it is performed
     on the target. That is, it acts as a fallback for the handler. In a way, the Proxy
     wraps the target.'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`target`：如果处理程序不拦截操作，那么它将在目标上执行。也就是说，它充当处理程序的后备。在某种程度上，代理包装了目标。'
 - en: 'Note: The verb form of “intercession” is “to intercede”. Interceding is bidirectional
     in nature. Intercepting is unidirectional in nature.'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：“介入”的动词形式是“介入”。介入是双向的。拦截是单向的。
 - en: 18.3.1 An example
+  id: totrans-84
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.1 一个示例
 - en: In the following example, the handler intercepts the operations `get` and `has`.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的示例中，处理程序拦截了`get`和`has`操作。
 - en: '[PRE7]'
+  id: totrans-86
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'If we get a property (line A) or use the `in` operator (line B), the handler
     intercepts those operations:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们获取属性（行A）或使用`in`运算符（行B），处理程序将拦截这些操作：
 - en: '[PRE8]'
+  id: totrans-88
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'The handler doesn’t implement the trap `set` (setting properties). Therefore,
     setting `proxy.age` is forwarded to `target` and leads to `target.age` being set:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 处理程序没有实现`set`陷阱（设置属性）。因此，设置`proxy.age`会被转发到`target`，并导致设置`target.age`：
 - en: '[PRE9]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 18.3.2 Function-specific traps
+  id: totrans-91
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.2 特定于函数的陷阱
 - en: 'If the target is a function, two additional operations can be intercepted:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果目标是一个函数，可以拦截两个额外的操作：
 - en: '`apply`: Making a function call. Triggered via:'
+  id: totrans-93
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`apply`：进行函数调用。通过以下方式触发：'
 - en: '`proxy(···)`'
+  id: totrans-94
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`proxy(···)`'
 - en: '`proxy.call(···)`'
+  id: totrans-95
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`proxy.call(···)`'
 - en: '`proxy.apply(···)`'
+  id: totrans-96
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`proxy.apply(···)`'
 - en: '`construct`: Making a constructor call. Triggered via:'
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`construct`：进行构造函数调用。通过以下方式触发：'
 - en: '`new proxy(···)`'
+  id: totrans-98
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new proxy(···)`'
 - en: 'The reason for only enabling these traps for function targets is simple: Otherwise,
     we wouldn’t be able to forward the operations `apply` and `construct`.'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 之所以只为函数目标启用这些陷阱的原因很简单：否则，我们将无法转发操作`apply`和`construct`。
 - en: 18.3.3 Intercepting method calls
+  id: totrans-100
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.3 拦截方法调用
 - en: 'If we want to intercept method calls via a Proxy, we are facing a challenge:
     There is no trap for method calls. Instead, a method call is viewed as a sequence
     of two operations:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想通过代理拦截方法调用，我们面临一个挑战：没有方法调用的陷阱。相反，方法调用被视为两个操作的序列：
 - en: A `get` to retrieve a function
+  id: totrans-102
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get`检索函数'
 - en: An `apply` to call that function
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个`apply`来调用那个函数
 - en: 'Therefore, if we want to intercept method calls, we need to intercept two operations:'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，如果我们想要拦截方法调用，我们需要拦截两个操作：
 - en: First, we intercept the `get` and return a function.
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 首先，我们拦截`get`并返回一个函数。
 - en: Second, we intercept the invocation of that function.
+  id: totrans-106
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 其次，我们拦截该函数的调用。
 - en: The following code demonstrates how that is done.
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了如何实现这一点。
 - en: '[PRE10]'
+  id: totrans-108
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: We are not using a Proxy for the second interception; we are simply wrapping
     the original method in a function.
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们并没有使用代理进行第二次拦截；我们只是将原始方法包装在一个函数中。
 - en: 'Let’s use the following object to try out `traceMethodCalls()`:'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用以下对象来尝试`traceMethodCalls()`：
 - en: '[PRE11]'
+  id: totrans-111
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: Even the call `this.multiply()` inside `obj.squared()` is traced! That’s because
     `this` keeps referring to the Proxy.
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 甚至在`obj.squared()`内部调用`this.multiply()`也会被追踪！这是因为`this`一直指向代理。
 - en: This is not the most efficient solution. One could, for example, cache methods.
     Furthermore, Proxies themselves have an impact on performance.
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 这不是最有效的解决方案。例如，可以缓存方法。此外，代理本身会影响性能。
 - en: 18.3.4 Revocable Proxies
+  id: totrans-114
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.4 可撤销的代理
 - en: 'Proxies can be *revoked* (switched off):'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理可以被*撤销*（关闭）：
 - en: '[PRE12]'
+  id: totrans-116
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: After we call the function `revoke` for the first time, any operation we apply
     to `proxy` causes a `TypeError`. Subsequent calls of `revoke` have no further
     effect.
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一次调用函数`revoke`后，我们对`proxy`应用的任何操作都会导致`TypeError`。后续调用`revoke`不会产生进一步的影响。
 - en: '[PRE13]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 18.3.5 Proxies as prototypes
+  id: totrans-119
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.5 代理作为原型
 - en: A Proxy `proto` can become the prototype of an object `obj`. Some operations
     that begin in `obj` may continue in `proto`. One such operation is `get`.
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理`proto`可以成为对象`obj`的原型。在`obj`中开始的一些操作可能会在`proto`中继续。其中一个操作是`get`。
 - en: '[PRE14]'
+  id: totrans-121
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: The property `weight` can’t be found in `obj`, which is why the search continues
     in `proto` and the trap `get` is triggered there. There are more operations that
     affect prototypes; they are listed at the end of this chapter.
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 在`obj`中找不到`weight`属性，因此搜索会继续在`proto`中，并在那里触发`get`陷阱。还有更多影响原型的操作；它们在本章末尾列出。
 - en: 18.3.6 Forwarding intercepted operations
+  id: totrans-123
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.6 转发拦截的操作
 - en: 'Operations whose traps the handler doesn’t implement are automatically forwarded
     to the target. Sometimes there is some task we want to perform in addition to
     forwarding the operation. For example, intercepting and logging all operations,
     without preventing them from reaching the target:'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 处理程序没有实现的操作的陷阱会自动转发到目标。有时，除了转发操作之外，我们还想执行一些任务。例如，拦截和记录所有操作，而不阻止它们到达目标：
 - en: '[PRE15]'
+  id: totrans-125
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '18.3.6.1 Improvement: using `Reflect.*`'
+  id: totrans-126
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.3.6.1 改进：使用`Reflect.*`
 - en: For each trap, we first log the name of the operation and then forward it by
     performing it manually. JavaScript has the module-like object `Reflect` that helps
     with forwarding.
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于每个陷阱，我们首先记录操作的名称，然后通过手动执行它来转发它。JavaScript有一个类似模块的对象`Reflect`，可以帮助转发。
 - en: 'For each trap:'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于每个陷阱：
 - en: '[PRE16]'
+  id: totrans-129
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '`Reflect` has a method:'
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Reflect`有一个方法：'
 - en: '[PRE17]'
+  id: totrans-131
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: If we use `Reflect`, the previous example looks as follows.
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用`Reflect`，前面的示例如下。
 - en: '[PRE18]'
+  id: totrans-133
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '18.3.6.2 Improvement: implementing the handler with Proxy'
+  id: totrans-134
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.3.6.2 改进：使用代理实现处理程序
 - en: 'Now what each of the traps does is so similar that we can implement the handler
     via a Proxy:'
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在每个陷阱的作用如此相似，以至于我们可以通过代理来实现处理程序：
 - en: '[PRE19]'
+  id: totrans-136
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: For each trap, the Proxy asks for a handler method via the `get` operation and
     we give it one. That is, all of the handler methods can be implemented via the
     single meta-method `get`. It was one of the goals for the Proxy API to make this
     kind of virtualization simple.
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于每个陷阱，代理通过`get`操作请求处理程序方法，我们给出一个。也就是说，所有处理程序方法都可以通过单个元方法`get`来实现。代理API的目标之一是使这种虚拟化变得简单。
 - en: 'Let’s use this Proxy-based handler:'
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用基于代理的处理程序：
 - en: '[PRE20]'
+  id: totrans-139
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '18.3.7 Pitfall: not all objects can be wrapped transparently by Proxies'
+  id: totrans-140
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.3.7 陷阱：并非所有对象都可以被代理透明包装
 - en: A Proxy object can be seen as intercepting operations performed on its target
     object – the Proxy wraps the target. The Proxy’s handler object is like an observer
     or listener for the Proxy. It specifies which operations should be intercepted
     by implementing corresponding methods (`get` for reading a property, etc.). If
     the handler method for an operation is missing then that operation is not intercepted.
     It is simply forwarded to the target.
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理对象可以被视为拦截对其目标对象执行的操作 - 代理包装目标。代理的处理程序对象就像代理的观察者或监听器。它通过实现相应的方法（`get`用于读取属性等）指定应拦截哪些操作。如果操作的处理程序方法丢失，则该操作不会被拦截。它会被简单地转发到目标。
 - en: Therefore, if the handler is the empty object, the Proxy should transparently
     wrap the target. Alas, that doesn’t always work.
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，如果处理程序是空对象，则代理应该透明地包装目标。然而，这并不总是有效。
 - en: 18.3.7.1 Wrapping an object affects `this`
+  id: totrans-143
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.3.7.1 包装对象会影响`this`
 - en: 'Before we dig deeper, let’s quickly review how wrapping a target affects `this`:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 在深入研究之前，让我们快速回顾一下包装目标如何影响`this`：
 - en: '[PRE21]'
+  id: totrans-145
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'If we call `target.myMethod()` directly, `this` points to `target`:'
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们直接调用`target.myMethod()`，`this`指向`target`：
 - en: '[PRE22]'
+  id: totrans-147
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'If we invoke that method via the Proxy, `this` points to `proxy`:'
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们通过代理调用该方法，`this`指向`proxy`：
 - en: '[PRE23]'
+  id: totrans-149
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: That is, if the Proxy forwards a method call to the target, `this` is not changed.
     As a consequence, the Proxy continues to be in the loop if the target uses `this`,
     e.g., to make a method call.
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说，如果代理将方法调用转发到目标，`this`不会改变。因此，如果目标使用`this`（例如，进行方法调用），代理将继续循环。
 - en: 18.3.7.2 Objects that can’t be wrapped transparently
+  id: totrans-151
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.3.7.2 无法透明包装的对象
 - en: 'Normally, Proxies with empty handlers wrap targets transparently: we don’t
     notice that they are there and they don’t change the behavior of the targets.'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常，具有空处理程序的代理会透明地包装目标：我们不会注意到它们的存在，它们也不会改变目标的行为。
 - en: 'If, however, a target associates information with `this` via a mechanism that
     is not controlled by Proxies, we have a problem: things fail, because different
     information is associated depending on whether the target is wrapped or not.'
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，如果目标通过代理无法控制的机制与`this`关联信息，我们会遇到问题：事情会失败，因为根据目标是否被包装，关联不同的信息。
 - en: 'For example, the following class `Person` stores private information in the
     WeakMap `_name` (more information on this technique is given in [*JavaScript for
     impatient programmers*](https://exploringjs.com/impatient-js/ch_weakmaps.html#private-data-in-weakmaps)):'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，以下`Person`类将私有信息存储在WeakMap`_name`中（有关此技术的更多信息，请参见[*JavaScript for impatient
+    programmers*](https://exploringjs.com/impatient-js/ch_weakmaps.html#private-data-in-weakmaps)）：
 - en: '[PRE24]'
+  id: totrans-155
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'Instances of `Person` can’t be wrapped transparently:'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Person`的实例无法被透明地包装：'
 - en: '[PRE25]'
+  id: totrans-157
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '`jane.name` is different from the wrapped `proxy.name`. The following implementation
     does not have this problem:'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: '`jane.name`与包装的`proxy.name`不同。以下实现没有这个问题：'
 - en: '[PRE26]'
+  id: totrans-159
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 18.3.7.3 Wrapping instances of built-in constructors
+  id: totrans-160
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.3.7.3 包装内置构造函数的实例
 - en: 'Instances of most built-in constructors also use a mechanism that is not intercepted
     by Proxies. They therefore can’t be wrapped transparently, either. We can see
     that if we use an instance of `Date`:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数内置构造函数的实例也使用代理无法拦截的机制。因此，它们也无法被透明地包装。如果我们使用`Date`的一个实例，我们可以看到：
 - en: '[PRE27]'
+  id: totrans-162
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'The mechanism that is unaffected by Proxies is called *internal slots*. These
     slots are property-like storage associated with instances. The specification handles
     these slots as if they were properties with names in square brackets. For example,
     the following method is internal and can be invoked on all objects `O`:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理不受影响的机制称为*内部槽*。这些槽是与实例关联的类似属性的存储。规范将这些槽处理为具有方括号名称的属性。例如，以下方法是内部的，可以在所有对象`O`上调用：
 - en: '[PRE28]'
+  id: totrans-164
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: In contrast to properties, accessing internal slots is not done via normal “get”
     and “set” operations. If `.getFullYear()` is invoked via a Proxy, it can’t find
     the internal slot it needs on `this` and complains via a `TypeError`.
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 与属性不同，访问内部槽不是通过正常的“获取”和“设置”操作完成的。如果通过代理调用`.getFullYear()`，它无法在`this`上找到它需要的内部槽，并通过`TypeError`进行投诉。
 - en: 'For `Date` methods, [the language specification states](https://tc39.es/ecma262/#sec-properties-of-the-date-prototype-object):'
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于`Date`方法，[语言规范规定](https://tc39.es/ecma262/#sec-properties-of-the-date-prototype-object)：
 - en: Unless explicitly defined otherwise, the methods of the Date prototype object
     defined below are not generic and the `this` value passed to them must be an object
     that has a `[[DateValue]]` internal slot that has been initialized to a time value.
+  id: totrans-167
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 除非另有规定，下面定义的Date原型对象的方法不是通用的，传递给它们的`this`值必须是已初始化为时间值的具有`[[DateValue]]`内部槽的对象。
 - en: 18.3.7.4 A work-around
+  id: totrans-168
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.3.7.4 解决方法
 - en: 'As a work-around, we can change how the handler forwards method calls and selectively
     set `this` to the target and not the Proxy:'
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为解决方法，我们可以改变处理程序如何转发方法调用，并有选择地将`this`设置为目标而不是代理：
 - en: '[PRE29]'
+  id: totrans-170
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: The drawback of this approach is that none of the operations that the method
     performs on `this` go through the Proxy.
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法的缺点是，方法在`this`上执行的所有操作都不会通过代理。
 - en: 18.3.7.5 Arrays can be wrapped transparently
+  id: totrans-172
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.3.7.5 数组可以被透明地包装
 - en: 'In contrast to other built-ins, Arrays can be wrapped transparently:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 与其他内置对象不同，数组可以被透明地包装：
 - en: '[PRE30]'
+  id: totrans-174
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: The reason for Arrays being wrappable is that, even though property access is
     customized to make `.length` work, Array methods don’t rely on internal slots
     – they are generic.
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组可包装的原因是，即使属性访问被定制以使`.length`工作，数组方法不依赖于内部槽 - 它们是通用的。
 - en: 18.4 Use cases for Proxies
+  id: totrans-176
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.4 代理的用例
 - en: This section demonstrates what Proxies can be used for. That will give us the
     opportunity to see the API in action.
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节演示了代理可以用于什么。这将使我们有机会看到API的实际应用。
 - en: 18.4.1 Tracing property accesses (`get`, `set`)
+  id: totrans-178
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.1 跟踪属性访问（`get`，`set`）
 - en: 'Let’s assume we have a function `tracePropertyAccesses(obj, propKeys)` that
     logs whenever a property of `obj`, whose key is in the Array `propKeys`, is set
     or got. In the following code, we apply that function to an instance of the class
     `Point`:'
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 假设我们有一个函数`tracePropertyAccesses(obj, propKeys)`，每当`obj`的属性被设置或获取时，它都会记录下来，其键在数组`propKeys`中。在下面的代码中，我们将该函数应用于`Point`类的一个实例：
 - en: '[PRE31]'
+  id: totrans-180
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'Getting and setting properties of the traced object `p` has the following effects:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 获取和设置被跟踪对象`p`的属性具有以下效果：
 - en: '[PRE32]'
+  id: totrans-182
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'Intriguingly, tracing also works whenever `Point` accesses the properties because
     `this` now refers to the traced object, not to an instance of `Point`:'
+  id: totrans-183
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，当`Point`访问属性时，跟踪也会起作用，因为此时`this`指的是被跟踪的对象，而不是`Point`的一个实例：
 - en: '[PRE33]'
+  id: totrans-184
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 18.4.1.1 Implementing `tracePropertyAccesses()` without Proxies
+  id: totrans-185
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.4.1.1 不使用代理实现`tracePropertyAccesses()`
 - en: Without Proxies we’d implement `tracePropertyAccesses()` as follows. We replace
     each property with a getter and a setter that traces accesses. The setters and
     getters use an extra object, `propData`, to store the data of the properties.
     Note that we are destructively changing the original implementation, which means
     that we are metaprogramming.
+  id: totrans-186
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果没有代理，我们将如下实现`tracePropertyAccesses()`。我们用一个getter和一个setter替换每个属性来跟踪访问。这些setter和getter使用额外的对象`propData`来存储属性的数据。请注意，我们正在破坏性地改变原始实现，这意味着我们正在元编程。
 - en: '[PRE34]'
+  id: totrans-187
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'The parameter `log` makes it easier to unit-test this function:'
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 参数`log`使得对这个函数进行单元测试更容易：
 - en: '[PRE35]'
+  id: totrans-189
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: 18.4.1.2 Implementing `tracePropertyAccesses()` with a Proxy
+  id: totrans-190
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.4.1.2 使用代理实现`tracePropertyAccesses()`
 - en: Proxies give us a simpler solution. We intercept property getting and setting
     and don’t have to change the implementation.
+  id: totrans-191
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理给了我们一个更简单的解决方案。我们拦截属性的获取和设置，不需要改变实现。
 - en: '[PRE36]'
+  id: totrans-192
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 18.4.2 Warning about unknown properties (`get`, `set`)
+  id: totrans-193
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.2 关于未知属性的警告（`get`，`set`）
 - en: When it comes to accessing properties, JavaScript is very forgiving. For example,
     if we try to read a property and misspell its name, we don’t get an exception
     – we get the result `undefined`.
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: 在访问属性方面，JavaScript非常宽容。例如，如果我们尝试读取一个属性并拼错它的名称，我们不会得到异常 - 我们会得到结果`undefined`。
 - en: 'We can use Proxies to get an exception in such a case. This works as follows.
     We make the Proxy a prototype of an object. If a property isn’t found in the object,
     the `get` trap of the Proxy is triggered:'
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用代理在这种情况下得到一个异常。工作原理如下。我们将代理作为对象的原型。如果在对象中找不到属性，则会触发代理的`get`陷阱：
 - en: If the property doesn’t even exist in the prototype chain after the Proxy, it
     really is missing and we throw an exception.
+  id: totrans-196
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果在代理之后的原型链中甚至不存在属性，则确实缺少该属性，我们会抛出异常。
 - en: Otherwise, we return the value of the inherited property. We do so by forwarding
     the `get` operation to the target (the Proxy gets its prototype from the target).
+  id: totrans-197
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，我们返回继承属性的值。我们通过将`get`操作转发到目标（代理从目标获取其原型）来这样做。
 - en: 'This is an implementation of this approach:'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是这种方法的一个实现：
 - en: '[PRE37]'
+  id: totrans-199
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'Let’s use `PropertyChecker` for an object:'
+  id: totrans-200
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们为一个对象使用`PropertyChecker`：
 - en: '[PRE38]'
+  id: totrans-201
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 18.4.2.1 `PropertyChecker` as a class
+  id: totrans-202
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.4.2.1 `PropertyChecker`作为一个类
 - en: 'If we turn `PropertyChecker` into a constructor, we can use it for classes
     via `extends`:'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将`PropertyChecker`转换为构造函数，我们可以通过`extends`在类中使用它。
 - en: '[PRE39]'
+  id: totrans-204
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: 'This is the prototype chain of `point`:'
+  id: totrans-205
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`point`的原型链：
 - en: '[PRE40]'
+  id: totrans-206
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 18.4.2.2 Preventing the accidental creation of properties
+  id: totrans-207
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.4.2.2 防止意外创建属性
 - en: 'If we are worried about accidentally *creating* properties, we have two options:'
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们担心意外*创建*属性，我们有两个选择：
 - en: We can either wrap a Proxy around objects that traps `set`.
+  id: totrans-209
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以将代理包装在捕获`set`的对象周围。
 - en: Or we can make an object `obj` non-extensible via [`Object.preventExtensions(obj)`](ch_protecting-objects.html#preventing-extensions-of-objects),
     which means that JavaScript doesn’t let us add new (own) properties to `obj`.
+  id: totrans-210
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '或者我们可以通过[`Object.preventExtensions(obj)`](ch_protecting-objects.html#preventing-extensions-of-objects)使对象`obj`不可扩展，这意味着JavaScript不允许我们向`obj`添加新的（自有）属性。 '
 - en: 18.4.3 Negative Array indices (`get`)
+  id: totrans-211
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.3 负数组索引（`get`）
 - en: 'Some Array methods let us refer to the last element via `-1`, to the second-to-last
     element via `-2`, etc. For example:'
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些数组方法允许我们通过`-1`引用最后一个元素，通过`-2`引用倒数第二个元素，依此类推。例如：
 - en: '[PRE41]'
+  id: totrans-213
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: Alas, that doesn’t work when accessing elements via the bracket operator (`[]`).
     We can, however, use Proxies to add that capability. The following function `createArray()`
     creates Arrays that support negative indices. It does so by wrapping Proxies around
     Array instances. The Proxies intercept the `get` operation that is triggered by
     the bracket operator.
+  id: totrans-214
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，当通过括号运算符（`[]`）访问元素时，这种方法不起作用。但是，我们可以使用代理来添加这种功能。以下函数`createArray()`创建支持负索引的数组。它通过在数组实例周围包装代理来实现。代理拦截了由括号运算符触发的`get`操作。
 - en: '[PRE42]'
+  id: totrans-215
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: 18.4.4 Data binding (`set`)
+  id: totrans-216
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.4 数据绑定（`set`）
 - en: 'Data binding is about syncing data between objects. One popular use case are
     widgets based on the MVC (Model View Controler) pattern: With data binding, the
     *view* (the widget) stays up-to-date if we change the *model* (the data visualized
     by the widget).'
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据绑定是关于在对象之间同步数据的。一个常见的用例是基于MVC（模型视图控制器）模式的小部件：通过数据绑定，*视图*（小部件）会保持最新状态，如果我们改变*模型*（小部件可视化的数据）。
 - en: To implement data binding, we have to observe and react to changes made to an
     object. The following code snippet is a sketch of how observing changes could
     work for Arrays.
+  id: totrans-218
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了实现数据绑定，我们必须观察并对对象所做的更改做出反应。以下代码片段是对如何观察数组的更改进行工作的草图。
 - en: '[PRE43]'
+  id: totrans-219
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 18.4.5 Accessing a restful web service (method calls)
+  id: totrans-220
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.5 访问restful web服务（方法调用）
 - en: A Proxy can be used to create an object on which arbitrary methods can be invoked.
     In the following example, the function `createWebService()` creates one such object,
     `service`. Invoking a method on `service` retrieves the contents of the web service
     resource with the same name. Retrieval is handled via a Promise.
+  id: totrans-221
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理可以用来创建一个可以调用任意方法的对象。在以下示例中，函数`createWebService()`创建了一个这样的对象`service`。在`service`上调用方法会检索具有相同名称的web服务资源的内容。检索是通过Promise处理的。
 - en: '[PRE44]'
+  id: totrans-222
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: The following code is a quick and dirty implementation of `createWebService`
     without Proxies. We need to know beforehand what methods will be invoked on `service`.
     The parameter `propKeys` provides us with that information; it holds an Array
     with method names.
+  id: totrans-223
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码是`createWebService`的一个快速而粗糙的实现，没有代理。我们需要事先知道在`service`上将调用哪些方法。参数`propKeys`提供了这些信息；它保存了一个包含方法名称的数组。
 - en: '[PRE45]'
+  id: totrans-224
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'With Proxies, `createWebService()` is simpler:'
+  id: totrans-225
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用代理，`createWebService()`更简单：
 - en: '[PRE46]'
+  id: totrans-226
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: Both implementations use the following function to make HTTP GET requests (how
     it works is explained in [*JavaScript for impatient programmers*](https://exploringjs.com/impatient-js/ch_promises.html#promisifying-xmlhttprequest)).
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: 这两种实现都使用以下函数来进行HTTP GET请求（其工作原理在[*JavaScript for impatient programmers*](https://exploringjs.com/impatient-js/ch_promises.html#promisifying-xmlhttprequest)中有解释）。
 - en: '[PRE47]'
+  id: totrans-228
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 18.4.6 Revocable references
+  id: totrans-229
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.6 可撤销的引用
 - en: '*Revocable references* work as follows: A client is not allowed to access an
     important resource (an object) directly, only via a reference (an intermediate
     object, a wrapper around the resource). Normally, every operation applied to the
     reference is forwarded to the resource. After the client is done, the resource
     is protected by *revoking* the reference, by switching it off. Henceforth, applying
     operations to the reference throws exceptions and nothing is forwarded, anymore.'
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: '*可撤销的引用*的工作原理如下：客户端不允许直接访问重要资源（对象），只能通过引用（中间对象，资源的包装器）访问。通常，对引用应用的每个操作都会转发到资源。客户端完成后，通过*撤销*引用来保护资源，关闭它。此后，对引用应用操作会抛出异常，不再转发。'
 - en: In the following example, we create a revocable reference for a resource. We
     then read one of the resource’s properties via the reference. That works, because
     the reference grants us access. Next, we revoke the reference. Now the reference
     doesn’t let us read the property, anymore.
+  id: totrans-231
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，我们为一个资源创建了一个可撤销的引用。然后，我们通过引用读取了资源的一个属性。这是有效的，因为引用授予了我们访问权限。接下来，我们撤销了引用。现在引用不再让我们读取属性。
 - en: '[PRE48]'
+  id: totrans-232
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: 'Proxies are ideally suited for implementing revocable references, because they
     can intercept and forward operations. This is a simple Proxy-based implementation
     of `createRevocableReference`:'
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理非常适合实现可撤销的引用，因为它们可以拦截和转发操作。这是一个基于代理的`createRevocableReference`的简单实现：
 - en: '[PRE49]'
+  id: totrans-234
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: The code can be simplified via the Proxy-as-handler technique from the previous
     section. This time, the handler basically is the `Reflect` object. Thus, the `get`
     trap normally returns the appropriate `Reflect` method. If the reference has been
     revoked, a `TypeError` is thrown, instead.
+  id: totrans-235
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过上一节的代理作为处理程序技术，可以简化代码。这一次，处理程序基本上是`Reflect`对象。因此，`get`陷阱通常返回适当的`Reflect`方法。如果引用已被撤销，则会抛出`TypeError`。
 - en: '[PRE50]'
+  id: totrans-236
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: However, we don’t have to implement revocable references ourselves because Proxies
     can be revoked. This time, the revoking happens in the Proxy, not in the handler.
     All the handler has to do is forward every operation to the target. As we have
     seen that happens automatically if the handler doesn’t implement any traps.
+  id: totrans-237
   prefs: []
   type: TYPE_NORMAL
+  zh: 但是，我们不必自己实现可撤销的引用，因为代理可以被撤销。这一次，撤销发生在代理中，而不是在处理程序中。处理程序所要做的就是将每个操作转发到目标。正如我们已经看到的，如果处理程序没有实现任何陷阱，那么这将自动发生。
 - en: '[PRE51]'
+  id: totrans-238
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: 18.4.6.1 Membranes
+  id: totrans-239
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.4.6.1 膜
 - en: '*Membranes* build on the idea of revocable references: Libraries for safely
     running untrusted code wrap a membrane around that code to isolate it and to keep
     the rest of the system safe. Objects pass the membrane in two directions:'
+  id: totrans-240
   prefs: []
   type: TYPE_NORMAL
+  zh: 膜基于可撤销引用的想法构建：用于安全运行不受信任代码的库在该代码周围包装一个膜，以隔离它并保持系统的其余部分安全。对象在两个方向上通过膜传递：
 - en: The untrusted code may receive objects (“dry objects”) from the outside.
+  id: totrans-241
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不受信任的代码可能会从外部接收对象（“干燥对象”）。
 - en: Or it may hand objects (“wet objects”) to the outside.
+  id: totrans-242
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 或者它可能将对象（“湿对象”）交给外部。
 - en: In both cases, revocable references are wrapped around the objects. Objects
     returned by wrapped functions or methods are also wrapped. Additionally, if a
     wrapped wet object is passed back into a membrane, it is unwrapped.
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这两种情况下，可撤销的引用被包装在对象周围。由包装函数或方法返回的对象也被包装。此外，如果将包装的对象传回膜中，则会被解包。
 - en: Once the untrusted code is done, all of the revocable references are revoked.
     As a result, none of its code on the outside can be executed anymore and outside
     objects that it references, cease to work as well. The [Caja Compiler](https://developers.google.com/caja/)
     is “a tool for making third party HTML, CSS and JavaScript safe to embed in your
     website”. It uses membranes to achieve this goal.
+  id: totrans-244
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦不受信任的代码完成，所有可撤销的引用都被撤销。因此，外部的代码将不再被执行，它引用的外部对象也将停止工作。Caja编译器是“用于使第三方HTML、CSS和JavaScript安全嵌入到您的网站中的工具”。它使用膜来实现这一目标。
 - en: 18.4.7 Implementing the DOM in JavaScript
+  id: totrans-245
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.7 在JavaScript中实现DOM
 - en: 'The browsers’ Document Object Model (DOM) is usually implemented as a mix of
     JavaScript and C++. Implementing it in pure JavaScript is useful for:'
+  id: totrans-246
   prefs: []
   type: TYPE_NORMAL
+  zh: 浏览器的文档对象模型（DOM）通常是由JavaScript和C++混合实现的。在纯JavaScript中实现它对于以下情况很有用：
 - en: Emulating a browser environment, e.g. to manipulate HTML in Node.js. [jsdom](https://github.com/tmpvar/jsdom)
     is one library that does that.
+  id: totrans-247
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模拟浏览器环境，例如在Node.js中操作HTML。jsdom是一个可以实现这一功能的库。
 - en: Making the DOM faster (switching between JavaScript and C++ costs time).
+  id: totrans-248
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 加快DOM的速度（在JavaScript和C++之间切换需要时间）。
 - en: Alas, the standard DOM can do things that are not easily replicated in JavaScript.
     For example, most DOM collections are live views on the current state of the DOM
     that change dynamically whenever the DOM changes. As a result, pure JavaScript
     implementations of the DOM are not very efficient. One of the reasons for adding
     Proxies to JavaScript was to enable more efficient DOM implementations.
+  id: totrans-249
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，标准的DOM可以做一些在JavaScript中不容易复制的事情。例如，大多数DOM集合都是对DOM当前状态的动态更改的实时视图。因此，纯JavaScript实现的DOM并不是非常高效的。向JavaScript添加代理的原因之一是为了实现更高效的DOM。
 - en: 18.4.8 More use cases
+  id: totrans-250
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.8 更多用例
 - en: 'There are more use cases for Proxies. For example:'
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理还有更多的用例。例如：
 - en: 'Remoting: Local placeholder objects forward method invocations to remote objects.
     This use case is similar to the web service example.'
+  id: totrans-252
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 远程：本地占位符对象将方法调用转发到远程对象。这个用例类似于Web服务的例子。
 - en: 'Data access objects for databases: Reading and writing to the object reads
     and writes to the database. This use case is similar to the web service example.'
+  id: totrans-253
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数据库的数据访问对象：读取和写入对象会读取和写入数据库。这个用例类似于Web服务的例子。
 - en: 'Profiling: Intercept method invocations to track how much time is spent in
     each method. This use case is similar to the tracing example.'
+  id: totrans-254
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 分析：拦截方法调用以跟踪每个方法花费的时间。这个用例类似于跟踪的例子。
 - en: 18.4.9 Libraries that are using Proxies
+  id: totrans-255
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.4.9 使用代理的库
 - en: '[*Immer* (by Michel Weststrate)](https://github.com/immerjs/immer) helps with
     non-destructively updating data. The changes that should be applied are specified
     by invoking methods, setting properties, setting Array elements, etc. of a (potentially
     nested) *draft state*. Draft states are implemented via Proxies.'
+  id: totrans-256
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Immer（由Michel Weststrate）有助于非破坏性地更新数据。应用的更改是通过调用方法、设置属性、设置数组元素等来指定的。草案状态是通过代理实现的。
 - en: '[*MobX*](https://mobx.js.org/) lets you observe changes to data structures
     such as objects, Arrays and class instances. That is implemented via Proxies.'
+  id: totrans-257
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: MobX让您观察数据结构（如对象、数组和类实例）的更改。这是通过代理实现的。
 - en: '[*Alpine.js* (by Caleb Porzio)](https://github.com/alpinejs/alpine) is a frontend
     library that implements data binding via Proxies.'
+  id: totrans-258
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Alpine.js（由Caleb Porzio）是一个前端库，通过代理实现数据绑定。
 - en: '[*on-change* (by Sindre Sorhus)](https://github.com/sindresorhus/on-change)
     observes changes to an object (via Proxies) and reports them.'
+  id: totrans-259
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: on-change（由Sindre Sorhus）观察对象的更改（通过代理）并报告它们。
 - en: '[*Env utility* (by Nicholas C. Zakas)](https://github.com/humanwhocodes/env)
     lets you access environment variables via properties and throws exceptions if
     they don’t exist. That is implemented via Proxies.'
+  id: totrans-260
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[*Env utility*（由Nicholas C. Zakas）](https://github.com/humanwhocodes/env)允许您通过属性访问环境变量，并在它们不存在时抛出异常。这是通过代理实现的。'
 - en: '[*LDflex* (by Ruben Verborgh and Ruben Taelman)](https://github.com/LDflex/LDflex)
     provides a query language for Linked Data (think Semantic Web). The fluid query
     API is implemented via Proxies.'
+  id: totrans-261
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[*LDflex*（由Ruben Verborgh和Ruben Taelman）](https://github.com/LDflex/LDflex)提供了一个用于链接数据（考虑语义网络）的查询语言。流畅的查询API是通过代理实现的。'
 - en: 18.5 The design of the Proxy API
+  id: totrans-262
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 18.5 代理API的设计
 - en: In this section, we go deeper into how Proxies work and why they work that way.
+  id: totrans-263
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们将更深入地了解代理的工作原理以及为什么它们以这种方式工作。
 - en: '18.5.1 Stratification: keeping base level and meta level separate'
+  id: totrans-264
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.5.1 分层：保持基本级别和元级别分开
 - en: 'Firefox used to support a limited from of interceding metaprogramming for a
     while: If an object `O` had a method named `__noSuchMethod__`, it was notified
     whenever a method was invoked on `O` that didn’t exist. The following code demonstrates
     how that worked:'
+  id: totrans-265
   prefs: []
   type: TYPE_NORMAL
+  zh: Firefox曾经支持一种有限的元编程形式：如果对象`O`有一个名为`__noSuchMethod__`的方法，那么每当在`O`上调用一个不存在的方法时，它都会被通知。以下代码演示了它是如何工作的：
 - en: '[PRE52]'
+  id: totrans-266
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: Thus, `__noSuchMethod__` works similarly to a Proxy trap. In contrast to Proxies,
     the trap is an own or inherited method of the object whose operations we want
     to intercept. The problem with that approach is that base level (normal methods)
     and meta level (`__noSuchMethod__`) are mixed. Base-level code may accidentally
     invoke or see a meta level method and there is the possibility of accidentally
     defining a meta level method.
+  id: totrans-267
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，`__noSuchMethod__`的工作方式类似于代理陷阱。与代理相反，陷阱是我们想要拦截其操作的对象的自有或继承方法。这种方法的问题在于基本级别（普通方法）和元级别（`__noSuchMethod__`）混合在一起。基本级别的代码可能会意外调用或看到元级别的方法，并且可能会意外定义一个元级别的方法。
 - en: 'Even in standard ECMAScript, base level and meta level are sometimes mixed.
     For example, the following metaprogramming mechanisms can fail, because they exist
     at the base level:'
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使在标准的ECMAScript中，基本级别和元级别有时会混合在一起。例如，以下元编程机制可能会失败，因为它们存在于基本级别：
 - en: '`obj.hasOwnProperty(propKey)`: This call can fail if a property in the prototype
     chain overrides the built-in implementation. For example, in the following code,
     `obj` causes a failure:'
+  id: totrans-269
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`obj.hasOwnProperty(propKey)`: 如果原型链中的属性覆盖了内置实现，则此调用可能会失败。例如，在以下代码中，`obj`会导致失败：'
 - en: '[PRE53]'
+  id: totrans-270
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: 'These are safe ways of invoking `.hasOwnProperty()`:'
+  id: totrans-271
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 这些是调用`.hasOwnProperty()`的安全方式：
 - en: '[PRE54]'
+  id: totrans-272
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: '`func.call(···)`, `func.apply(···)`: For both methods, problem and solution
     are the same as with `.hasOwnProperty()`.'
+  id: totrans-273
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`func.call(···)`, `func.apply(···)`: 对于这两种方法，问题和解决方案与`.hasOwnProperty()`相同。'
 - en: '`obj.__proto__`: In plain objects, `__proto__` is a special property that lets
     us get and set the prototype of the receiver. Hence, when we use plain objects
     as dictionaries, we must [avoid `__proto__` as a property key](https://exploringjs.com/impatient-js/ch_single-objects.html#the-pitfalls-of-using-an-object-as-a-dictionary).'
+  id: totrans-274
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`obj.__proto__`: 在普通对象中，`__proto__`是一个特殊属性，它允许我们获取和设置接收者的原型。因此，当我们将普通对象用作字典时，我们必须[避免将`__proto__`作为属性键](https://exploringjs.com/impatient-js/ch_single-objects.html#the-pitfalls-of-using-an-object-as-a-dictionary)。'
 - en: 'By now, it should be obvious that making (base level) property keys special
     is problematic. Therefore, Proxies are *stratified*: Base level (the Proxy object)
     and meta level (the handler object) are separate.'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，应该很明显，使（基本级别）属性键特殊是有问题的。因此，代理是*分层*的：基本级别（代理对象）和元级别（处理程序对象）是分开的。
 - en: 18.5.2 Virtual objects versus wrappers
+  id: totrans-276
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.5.2 虚拟对象与包装器
 - en: 'Proxies are used in two roles:'
+  id: totrans-277
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理有两种角色：
 - en: 'As *wrappers*, they *wrap* their targets, they control access to them. Examples
     of wrappers are: revocable resources and tracing via Proxies.'
+  id: totrans-278
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作为*包装器*，它们*包装*它们的目标，控制对它们的访问。包装器的示例包括：可撤销资源和通过代理进行跟踪。
 - en: As *virtual objects*, they are simply objects with special behavior and their
     targets don’t matter. An example is a Proxy that forwards method calls to a remote
     object.
+  id: totrans-279
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作为*虚拟对象*，它们只是具有特殊行为的对象，它们的目标并不重要。一个例子是代理，它将方法调用转发到远程对象。
 - en: An earlier design of the Proxy API conceived Proxies as purely virtual objects.
     However, it turned out that even in that role, a target was useful, to enforce
     invariants (which are explained later) and as a fallback for traps that the handler
     doesn’t implement.
+  id: totrans-280
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理API的早期设计将代理视为纯粹的虚拟对象。然而，事实证明，即使在这种角色中，目标也是有用的，用于强制执行不变量（稍后解释）并作为处理程序没有实现的陷阱的后备。
 - en: 18.5.3 Transparent virtualization and handler encapsulation
+  id: totrans-281
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.5.3 透明虚拟化和处理程序封装
 - en: 'Proxies are shielded in two ways:'
+  id: totrans-282
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理有两种方式进行屏蔽：
 - en: It is impossible to determine whether an object is a Proxy or not (*transparent
     virtualization*).
+  id: totrans-283
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 无法确定对象是否是代理（*透明虚拟化*）。
 - en: We can’t access a handler via its Proxy (*handler encapsulation*).
+  id: totrans-284
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们无法通过其代理访问处理程序（*处理程序封装*）。
 - en: Both principles give Proxies considerable power for impersonating other objects.
     One reason for enforcing *invariants* (as explained later) is to keep that power
     in check.
+  id: totrans-285
   prefs: []
   type: TYPE_NORMAL
+  zh: 这两个原则赋予了代理模式相当大的权力，可以模拟其他对象。强制执行*不变量*（稍后解释）的一个原因是为了控制这种权力。
 - en: 'If we do need a way to tell Proxies apart from non-Proxies, we have to implement
     it ourselves. The following code is a module `lib.mjs` that exports two functions:
     one of them creates Proxies, the other one determines whether an object is one
     of those Proxies.'
+  id: totrans-286
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们确实需要一种方法来区分代理和非代理，我们必须自己实现。以下代码是一个模块`lib.mjs`，它导出了两个函数：一个用于创建代理，另一个用于确定对象是否是这些代理之一。
 - en: '[PRE55]'
+  id: totrans-287
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: This module uses the data structure `WeakSet` for keeping track of Proxies.
     `WeakSet` is ideally suited for this purpose, because it doesn’t prevent its elements
     from being garbage-collected.
+  id: totrans-288
   prefs: []
   type: TYPE_NORMAL
+  zh: 该模块使用数据结构`WeakSet`来跟踪代理。`WeakSet`非常适合这个目的，因为它不会阻止其元素被垃圾回收。
 - en: The next example shows how `lib.mjs` can be used.
+  id: totrans-289
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一个示例展示了如何使用`lib.mjs`。
 - en: '[PRE56]'
+  id: totrans-290
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: 18.5.4 The meta object protocol and Proxy traps
+  id: totrans-291
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 18.5.4 元对象协议和代理陷阱
 - en: In this section, we examine how JavaScript is structured internally and how
     the set of Proxy traps was chosen.
+  id: totrans-292
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们将研究JavaScript的内部结构以及选择Proxy陷阱集的方式。
 - en: In the context of programming languages and API design, a *protocol* is a set
     of interfaces plus rules for using them. The ECMAScript specification describes
     how to execute JavaScript code. It includes a [protocol for handling objects](https://tc39.es/ecma262/#sec-ordinary-and-exotic-objects-behaviours).
@@ -1234,85 +1822,124 @@
     objects have. “Internal” means that they exist only in the specification (JavaScript
     engines may or may not have them) and are not accessible from JavaScript. The
     names of internal methods are written in double square brackets.
+  id: totrans-293
   prefs: []
   type: TYPE_NORMAL
+  zh: 在编程语言和API设计的上下文中，*协议*是一组接口加上使用它们的规则。ECMAScript规范描述了如何执行JavaScript代码。它包括一个[处理对象的协议](https://tc39.es/ecma262/#sec-ordinary-and-exotic-objects-behaviours)。这个协议在元级别上运行，有时被称为*元对象协议*（MOP）。JavaScript
+    MOP由所有对象都具有的内部方法组成。 “内部”意味着它们只存在于规范中（JavaScript引擎可能有也可能没有），并且无法从JavaScript访问。内部方法的名称用双方括号写成。
 - en: The internal method for getting properties is called [`.[[Get]]()`](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots-get-p-receiver).
     If we use double underscores instead of double brackets, this method would roughly
     be implemented as follows in JavaScript.
+  id: totrans-294
   prefs: []
   type: TYPE_NORMAL
+  zh: 获取属性的内部方法称为[`.[[Get]]()`](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots-get-p-receiver)。如果我们使用双下划线而不是双方括号，这个方法在JavaScript中大致实现如下。
 - en: '[PRE57]'
+  id: totrans-295
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: 'The MOP methods called in this code are:'
+  id: totrans-296
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这段代码中调用的MOP方法有：
 - en: '`[[GetOwnProperty]]` (trap `getOwnPropertyDescriptor`)'
+  id: totrans-297
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`[[GetOwnProperty]]`（陷阱`getOwnPropertyDescriptor`）'
 - en: '`[[GetPrototypeOf]]` (trap `getPrototypeOf`)'
+  id: totrans-298
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`[[GetPrototypeOf]]`（陷阱`getPrototypeOf`）'
 - en: '`[[Get]]` (trap `get`)'
+  id: totrans-299
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`[[Get]]`（陷阱`get`）'
 - en: '`[[Call]]` (trap `apply`)'
+  id: totrans-300
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`[[Call]]`（陷阱`apply`）'
 - en: 'In line A we can see why Proxies in a prototype chain find out about `get`
     if a property isn’t found in an “earlier” object: If there is no own property
     whose key is `propKey`, the search continues in the prototype `parent` of `this`.'
+  id: totrans-301
   prefs: []
   type: TYPE_NORMAL
+  zh: 在A行中，我们可以看到原型链中的代理是如何找到`get`的，如果在“早期”对象中找不到属性：如果没有键为`propKey`的自有属性，则搜索将继续在`this`的原型`parent`中进行。
 - en: '**Fundamental versus derived operations.** We can see that `.[[Get]]()` calls
     other MOP operations. Operations that do that are called *derived*. Operations
     that don’t depend on other operations are called *fundamental*.'
+  id: totrans-302
   prefs: []
   type: TYPE_NORMAL
+  zh: '**基本与派生操作。**我们可以看到`.[[Get]]()`调用其他MOP操作。这样做的操作称为*派生*。不依赖其他操作的操作称为*基本*。'
 - en: 18.5.4.1 The meta object protocol of Proxies
+  id: totrans-303
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.4.1 代理的元对象协议
 - en: The [meta object protocol of Proxies](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots)
     is different from that of normal objects. For normal objects, derived operations
     call other operations. For Proxies, each operation (regardless of whether it is
     fundamental or derived) is either intercepted by a handler method or forwarded
     to the target.
+  id: totrans-304
   prefs: []
   type: TYPE_NORMAL
+  zh: '[代理的元对象协议](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots)与普通对象的不同。对于普通对象，派生操作调用其他操作。对于代理，每个操作（无论是基本还是派生）都会被处理程序方法拦截或转发到目标。'
 - en: Which operations should be interceptable via Proxies?
+  id: totrans-305
   prefs: []
   type: TYPE_NORMAL
+  zh: 哪些操作应该通过代理进行拦截？
 - en: One possibility is to only provide traps for fundamental operations.
+  id: totrans-306
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一种可能性是只为基本操作提供陷阱。
 - en: The alternative is to include some derived operations.
+  id: totrans-307
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 另一种选择是包括一些派生操作。
 - en: The upside of doing the latter is that it increases performance and is more
     convenient. For example, if there weren’t a trap for `get`, we’d have to implement
     its functionality via `getOwnPropertyDescriptor`.
+  id: totrans-308
   prefs: []
   type: TYPE_NORMAL
+  zh: 这样做的好处是可以提高性能并更加方便。例如，如果没有`get`的陷阱，我们将不得不通过`getOwnPropertyDescriptor`来实现其功能。
 - en: A downside of including derived traps is that that can lead to Proxies behaving
     inconsistently. For example, `get` may return a value that is different from the
     value in the descriptor returned by `getOwnPropertyDescriptor`.
+  id: totrans-309
   prefs: []
   type: TYPE_NORMAL
+  zh: 包括派生陷阱的一个缺点是可能导致代理行为不一致。例如，`get`可能返回与`getOwnPropertyDescriptor`返回的描述符中的值不同的值。
 - en: '18.5.4.2 Selective interception: Which operations should be interceptable?'
+  id: totrans-310
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 18.5.4.2 选择性拦截：哪些操作应该是可拦截的？
 - en: 'Interception by Proxies is *selective*: we can’t intercept every language operation.
     Why were some operations excluded? Let’s look at two reasons.'
+  id: totrans-311
   prefs: []
   type: TYPE_NORMAL
+  zh: 代理的拦截是*选择性*的：我们无法拦截每个语言操作。为什么有些操作被排除在外？让我们看两个原因。
 - en: First, *stable* operations are not well suited for interception. An operation
     is *stable* if it always produces the same results for the same arguments. If
     a Proxy can trap a stable operation, it can become unstable and thus unreliable.
@@ -1322,48 +1949,61 @@
     is by applying an operation to the target instead of the Proxy. As explained later,
     when we look at how invariants are enfored for Proxies, this happens when `Object.getPrototypeOf()`
     is applied to a Proxy whose target is non-extensible.
+  id: totrans-312
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，*稳定*操作不太适合拦截。如果一个操作总是对相同的参数产生相同的结果，则该操作是*稳定*的。如果代理可以拦截稳定操作，它可能会变得不稳定，因此不可靠。[严格相等](http://speakingjs.com/es5/ch09.html#_strict_equality)（`===`）就是这样一个稳定操作。它无法被拦截，其结果是通过将代理本身视为另一个对象来计算的。另一种保持稳定性的方法是将操作应用于目标而不是代理。稍后将在我们看如何对代理执行不变性时解释，当`Object.getPrototypeOf()`应用于目标不可扩展的代理时会发生这种情况。
 - en: A second reason for not making more operations interceptable is that interception
     means executing custom code in situations where that normally isn’t possible.
     The more this interleaving of code happens, the harder it is to understand and
     debug a program. It also affects performance negatively.
+  id: totrans-313
   prefs: []
   type: TYPE_NORMAL
 - en: '18.5.4.3 Traps: `get` versus `invoke`'
+  id: totrans-314
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'If we want to create virtual methods via Proxies, we have to return functions
     from a `get` trap. That raises the question: why not introduce an extra trap for
     method invocations (e.g. `invoke`)? That would enable us to distinguish between:'
+  id: totrans-315
   prefs: []
   type: TYPE_NORMAL
 - en: Getting properties via `obj.prop` (trap `get`)
+  id: totrans-316
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Invoking methods via `obj.prop()` (trap `invoke`)
+  id: totrans-317
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: There are two reasons for not doing so.
+  id: totrans-318
   prefs: []
   type: TYPE_NORMAL
 - en: First, not all implementations distinguish between `get` and `invoke`. For example,
     [Apple’s JavaScriptCore doesn’t](https://mail.mozilla.org/pipermail/es-discuss/2010-May/011062.html).
+  id: totrans-319
   prefs: []
   type: TYPE_NORMAL
 - en: Second, extracting a method and invoking it later via `.call()` or `.apply()`
     should have the same effect as invoking the method via dispatch. In other words,
     the following two variants should work equivalently. If there were an extra trap
     `invoke`, then that equivalence would be harder to maintain.
+  id: totrans-320
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE58]'
+  id: totrans-321
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: 18.5.4.3.1 Use cases for `invoke`
+  id: totrans-322
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
@@ -1371,96 +2011,119 @@
     `invoke`. Those things are therefore impossible with the current Proxy API. Two
     examples are: auto-binding and intercepting missing methods. Let’s examine how
     one would implement them if Proxies supported `invoke`.'
+  id: totrans-323
   prefs: []
   type: TYPE_NORMAL
 - en: '**Auto-binding.** By making a Proxy the prototype of an object `obj`, we can
     automatically bind methods:'
+  id: totrans-324
   prefs: []
   type: TYPE_NORMAL
 - en: Retrieving the value of a method `m` via `obj.m` returns a function whose `this`
     is bound to `obj`.
+  id: totrans-325
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`obj.m()` performs a method call.'
+  id: totrans-326
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Auto-binding helps with using methods as callbacks. For example, variant 2
     from the previous example becomes simpler:'
+  id: totrans-327
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE59]'
+  id: totrans-328
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: '**Intercepting missing methods.** `invoke` lets a Proxy emulate the previously
     mentioned `__noSuchMethod__` mechanism. The Proxy would again become the prototype
     of an object `obj`. It would react differently depending on how an unknown property
     `prop` is accessed:'
+  id: totrans-329
   prefs: []
   type: TYPE_NORMAL
 - en: If we read that property via `obj.prop`, no interception happens and `undefined`
     is returned.
+  id: totrans-330
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: If we make the method call `obj.prop()` then the Proxy intercepts and, e.g.,
     notifies a callback.
+  id: totrans-331
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 18.5.5 Enforcing invariants for Proxies
+  id: totrans-332
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: Before we look at what invariants are and how they are enforced for Proxies,
     let’s review how objects can be protected via non-extensibility and non-configurability.
+  id: totrans-333
   prefs: []
   type: TYPE_NORMAL
 - en: 18.5.5.1 Protecting objects
+  id: totrans-334
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'There are two ways of protecting objects:'
+  id: totrans-335
   prefs: []
   type: TYPE_NORMAL
 - en: 'Non-extensibility protects objects: If an object is non-extensible, we can’t
     add properties and we can’t change its prototype.'
+  id: totrans-336
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Non-configurability protects properties (or rather, their attributes):'
+  id: totrans-337
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The boolean attribute `writable` controls whether a property’s value can be
     changed.
+  id: totrans-338
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: The boolean attribute `configurable` controls whether a property’s attributes
     can be changed.
+  id: totrans-339
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: For more information on this topic, see [§10 “Protecting objects from being
     changed”](ch_protecting-objects.html).
+  id: totrans-340
   prefs: []
   type: TYPE_NORMAL
 - en: 18.5.5.2 Enforcing invariants
+  id: totrans-341
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'Traditionally, non-extensibility and non-configurability are:'
+  id: totrans-342
   prefs: []
   type: TYPE_NORMAL
 - en: 'Universal: They work for all objects.'
+  id: totrans-343
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Monotonic: Once switched on, they can’t be switched off again.'
+  id: totrans-344
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
@@ -1469,121 +2132,152 @@
     because they are not intrinsically bound by non-extensibility etc. The Proxy API
     prevents that from happening by checking the target object and the results of
     handler methods.
+  id: totrans-345
   prefs: []
   type: TYPE_NORMAL
 - en: The next two subsections describe four invariants. An exhaustive list of invariants
     is given at the end of this chapter.
+  id: totrans-346
   prefs: []
   type: TYPE_NORMAL
 - en: 18.5.5.3 Two invariants that are enforced via the target object
+  id: totrans-347
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'The following two invariants involve non-extensibility and non-configurability.
     These are enforced by using the target object for bookkeeping: results returned
     by handler methods have to be mostly in sync with the target object.'
+  id: totrans-348
   prefs: []
   type: TYPE_NORMAL
 - en: 'Invariant: If `Object.preventExtensions(obj)` returns `true` then all future
     calls must return `false` and `obj` must now be non-extensible.'
+  id: totrans-349
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Enforced for Proxies by throwing a `TypeError` if the handler returns `true`,
     but the target object is not extensible.
+  id: totrans-350
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Invariant: Once an object has been made non-extensible, `Object.isExtensible(obj)`
     must always return `false`.'
+  id: totrans-351
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Enforced for Proxies by throwing a `TypeError` if the result returned by the
     handler is not the same (after coercion) as `Object.isExtensible(target)`.
+  id: totrans-352
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 18.5.5.4 Two invariants that are enforced by checking return values
+  id: totrans-353
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'The following two invariants are enforced by checking return values:'
+  id: totrans-354
   prefs: []
   type: TYPE_NORMAL
 - en: 'Invariant: `Object.isExtensible(obj)` must return a boolean.'
+  id: totrans-355
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Enforced for Proxies by coercing the value returned by the handler to a boolean.
+  id: totrans-356
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Invariant: `Object.getOwnPropertyDescriptor(obj, ···)` must return an object
     or `undefined`.'
+  id: totrans-357
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Enforced for Proxies by throwing a `TypeError` if the handler doesn’t return
     an appropriate value.
+  id: totrans-358
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 18.5.5.5 Benefits of invariants
+  id: totrans-359
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'Enforcing invariants has the following benefits:'
+  id: totrans-360
   prefs: []
   type: TYPE_NORMAL
 - en: Proxies work like all other objects with regard to extensibility and configurability.
     Therefore, universality is maintained. This is achieved without preventing Proxies
     from virtualizing (impersonating) protected objects.
+  id: totrans-361
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A protected object can’t be misrepresented by wrapping a Proxy around it. Misrepresentation
     can be caused by bugs or by malicious code.
+  id: totrans-362
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The next two sections give examples of invariants being enforced.
+  id: totrans-363
   prefs: []
   type: TYPE_NORMAL
 - en: '18.5.5.6 Example: the prototype of a non-extensible target must be represented
     faithfully'
+  id: totrans-364
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: In response to the `getPrototypeOf` trap, the Proxy must return the target’s
     prototype if the target is non-extensible.
+  id: totrans-365
   prefs: []
   type: TYPE_NORMAL
 - en: 'To demonstrate this invariant, let’s create a handler that returns a prototype
     that is different from the target’s prototype:'
+  id: totrans-366
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE60]'
+  id: totrans-367
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: 'Faking the prototype works if the target is extensible:'
+  id: totrans-368
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE61]'
+  id: totrans-369
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: We do, however, get an error if we fake the prototype for a non-extensible object.
+  id: totrans-370
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE62]'
+  id: totrans-371
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE62]'
 - en: '18.5.5.7 Example: non-writable non-configurable target properties must be represented
     faithfully'
+  id: totrans-372
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
@@ -1591,75 +2285,99 @@
     must return that property’s value in response to a `get` trap. To demonstrate
     this invariant, let’s create a handler that always returns the same value for
     properties.
+  id: totrans-373
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE63]'
+  id: totrans-374
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE63]'
 - en: 'Property `target.manufacturer` is not both non-writable and non-configurable,
     which means that the handler is allowed to pretend that it has a different value:'
+  id: totrans-375
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE64]'
+  id: totrans-376
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE64]'
 - en: 'However, property `target.model` is both non-writable and non-configurable.
     Therefore, we can’t fake its value:'
+  id: totrans-377
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE65]'
+  id: totrans-378
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE65]'
 - en: '18.6 FAQ: Proxies'
+  id: totrans-379
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 18.6.1 Where is the `enumerate` trap?
+  id: totrans-380
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'ECMAScript 6 originally had a trap `enumerate` that was triggered by `for-in`
     loops. But it was recently removed, to simplify Proxies. `Reflect.enumerate()`
     was removed, as well. ([Source: TC39 notes](https://github.com/tc39/tc39-notes/blob/master/es7/2016-01/2016-01-28.md))'
+  id: totrans-381
   prefs: []
   type: TYPE_NORMAL
 - en: '18.7 Reference: the Proxy API'
+  id: totrans-382
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'This section is a quick reference for the Proxy API:'
+  id: totrans-383
   prefs: []
   type: TYPE_NORMAL
 - en: The global object `Proxy`
+  id: totrans-384
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The global object `Reflect`
+  id: totrans-385
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'The reference uses the following custom type:'
+  id: totrans-386
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE66]'
+  id: totrans-387
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE66]'
 - en: 18.7.1 Creating Proxies
+  id: totrans-388
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'There are two ways to create Proxies:'
+  id: totrans-389
   prefs: []
   type: TYPE_NORMAL
 - en: '`const proxy = new Proxy(target, handler)`'
+  id: totrans-390
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Creates a new Proxy object with the given target and the given handler.
+  id: totrans-391
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`const {proxy, revoke} = Proxy.revocable(target, handler)`'
+  id: totrans-392
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
@@ -1667,10 +2385,12 @@
     be called multiple times, but only the first call has an effect and switches `proxy`
     off. Afterwards, any operation performed on `proxy` leads to a `TypeError` being
     thrown.
+  id: totrans-393
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: 18.7.2 Handler methods
+  id: totrans-394
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
@@ -1678,183 +2398,223 @@
     operations trigger them. Several traps return boolean values. For the traps `has`
     and `isExtensible`, the boolean is the result of the operation. For all other
     traps, the boolean indicates whether the operation succeeded or not.
+  id: totrans-395
   prefs: []
   type: TYPE_NORMAL
 - en: 'Traps for all objects:'
+  id: totrans-396
   prefs: []
   type: TYPE_NORMAL
 - en: '`defineProperty(target, propKey, propDesc): boolean`'
+  id: totrans-397
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.defineProperty(proxy, propKey, propDesc)`'
+  id: totrans-398
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`deleteProperty(target, propKey): boolean`'
+  id: totrans-399
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`delete proxy[propKey]`'
+  id: totrans-400
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`delete proxy.someProp`'
+  id: totrans-401
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`get(target, propKey, receiver): any`'
+  id: totrans-402
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`receiver[propKey]`'
+  id: totrans-403
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`receiver.someProp`'
+  id: totrans-404
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`getOwnPropertyDescriptor(target, propKey): undefined|PropDesc`'
+  id: totrans-405
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.getOwnPropertyDescriptor(proxy, propKey)`'
+  id: totrans-406
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`getPrototypeOf(target): null|object`'
+  id: totrans-407
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.getPrototypeOf(proxy)`'
+  id: totrans-408
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`has(target, propKey): boolean`'
+  id: totrans-409
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`propKey in proxy`'
+  id: totrans-410
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`isExtensible(target): boolean`'
+  id: totrans-411
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.isExtensible(proxy)`'
+  id: totrans-412
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`ownKeys(target): Array<PropertyKey>`'
+  id: totrans-413
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.getOwnPropertyPropertyNames(proxy)` (only uses string keys)'
+  id: totrans-414
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.getOwnPropertyPropertySymbols(proxy)` (only uses symbol keys)'
+  id: totrans-415
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.keys(proxy)` (only uses enumerable string keys; enumerability is checked
     via `Object.getOwnPropertyDescriptor`)'
+  id: totrans-416
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`preventExtensions(target): boolean`'
+  id: totrans-417
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.preventExtensions(proxy)`'
+  id: totrans-418
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`set(target, propKey, value, receiver): boolean`'
+  id: totrans-419
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`receiver[propKey] = value`'
+  id: totrans-420
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`receiver.someProp = value`'
+  id: totrans-421
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`setPrototypeOf(target, proto): boolean`'
+  id: totrans-422
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.setPrototypeOf(proxy, proto)`'
+  id: totrans-423
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Traps for functions (available if target is a function):'
+  id: totrans-424
   prefs: []
   type: TYPE_NORMAL
 - en: '`apply(target, thisArgument, argumentsList): any`'
+  id: totrans-425
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`proxy.apply(thisArgument, argumentsList)`'
+  id: totrans-426
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`proxy.call(thisArgument, ...argumentsList)`'
+  id: totrans-427
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`proxy(...argumentsList)`'
+  id: totrans-428
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`construct(target, argumentsList, newTarget): object`'
+  id: totrans-429
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`new proxy(..argumentsList)`'
+  id: totrans-430
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 18.7.2.1 Fundamental operations versus derived operations
+  id: totrans-431
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'The following operations are *fundamental*, they don’t use other operations
     to do their work: `apply`, `defineProperty`, `deleteProperty`, `getOwnPropertyDescriptor`,
     `getPrototypeOf`, `isExtensible`, `ownKeys`, `preventExtensions`, `setPrototypeOf`'
+  id: totrans-432
   prefs: []
   type: TYPE_NORMAL
 - en: All other operations are *derived*, they can be implemented via fundamental
     operations. For example, `get` can be implemented by iterating over the prototype
     chain via `getPrototypeOf` and calling `getOwnPropertyDescriptor` for each chain
     member until either an own property is found or the chain ends.
+  id: totrans-433
   prefs: []
   type: TYPE_NORMAL
 - en: 18.7.3 Invariants of handler methods
+  id: totrans-434
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
@@ -1863,60 +2623,73 @@
     must do X” below, it means that a `TypeError` is thrown if it doesn’t. Some invariants
     restrict return values, others restrict parameters. The correctness of a trap’s
     return value is ensured in two ways:'
+  id: totrans-435
   prefs: []
   type: TYPE_NORMAL
 - en: If a boolean is expected, coercion is used to convert non-booleans to legal
     values.
+  id: totrans-436
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: In all other cases, an illegal value cause a `TypeError`.
+  id: totrans-437
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'This is the complete list of invariants that are enforced:'
+  id: totrans-438
   prefs: []
   type: TYPE_NORMAL
 - en: '`apply(target, thisArgument, argumentsList): any`'
+  id: totrans-439
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: No invariants are enforced.
+  id: totrans-440
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: Only active if the target is callable.
+  id: totrans-441
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`construct(target, argumentsList, newTarget): object`'
+  id: totrans-442
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The result returned by the handler must be an object (not `null` or any other
     primitive value).
+  id: totrans-443
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: Only active if the target is constructible.
+  id: totrans-444
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`defineProperty(target, propKey, propDesc): boolean`'
+  id: totrans-445
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the target is not extensible, then we can’t add new properties.
+  id: totrans-446
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: If `propDesc` sets the attribute `configurable` to `false`, then the target
     must have a non-configurable own property whose key is `propKey`.
+  id: totrans-447
   prefs:
   - PREF_IND
   - PREF_UL
@@ -1924,6 +2697,7 @@
 - en: If `propDesc` sets both attributes `configurable` and `writable` to `false`,
     then the target must have an own property with the key is `propKey` that is non-configurable
     and non-writable.
+  id: totrans-448
   prefs:
   - PREF_IND
   - PREF_UL
@@ -1931,180 +2705,214 @@
 - en: 'If the target has an own property with the key `propKey`, then `propDesc` must
     be compatible with that property: If we redefine the target property with the
     descriptor, no exception must be thrown.'
+  id: totrans-449
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`deleteProperty(target, propKey): boolean`'
+  id: totrans-450
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'A property can’t be reported as deleted if:'
+  id: totrans-451
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: The target has a non-configurable own property with key `propKey`.
+  id: totrans-452
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: The target is non-extensible and has a own property with key `propKey`.
+  id: totrans-453
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`get(target, propKey, receiver): any`'
+  id: totrans-454
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the target has an own, non-writable, non-configurable data property whose
     key is `propKey`, then the handler must return that property’s value.
+  id: totrans-455
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the target has an own, non-configurable, getter-less accessor property, then
     the handler must return `undefined`.
+  id: totrans-456
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`getOwnPropertyDescriptor(target, propKey): undefined|PropDesc`'
+  id: totrans-457
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The handler must return either `undefined` or an object.
+  id: totrans-458
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: Non-configurable own properties of the target can’t be reported as non-existent
     by the handler.
+  id: totrans-459
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the target is non-extensible, then exactly the target’s own properties must
     be reported by the handler as existing.
+  id: totrans-460
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the handler reports a property as non-configurable, then that property must
     be a non-configurable own property of the target.
+  id: totrans-461
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the handler reports a property as non-configurable and non-writable, then
     that property must be a non-configurable non-writable own property of the target.
+  id: totrans-462
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`getPrototypeOf(target): null|object`'
+  id: totrans-463
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The result must be either `null` or an object.
+  id: totrans-464
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the target object is not extensible, then the handler must return the prototype
     of the target object.
+  id: totrans-465
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`has(target, propKey): boolean`'
+  id: totrans-466
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Non-configurable own properties of the target can’t be reported as non-existent.
+  id: totrans-467
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the target is non-extensible, then no own property of the target can be reported
     as non-existent.
+  id: totrans-468
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`isExtensible(target): boolean`'
+  id: totrans-469
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: After coercion to boolean, the value returned by the handler must be the same
     as `target.isExtensible()`.
+  id: totrans-470
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`ownKeys(target): Array<PropertyKey>`'
+  id: totrans-471
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The handler must return an object, which treated as Array-like and converted
     into an Array.
+  id: totrans-472
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: The resulting Array must not contain duplicate entries.
+  id: totrans-473
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: Each element of the result must be either a string or a symbol.
+  id: totrans-474
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: The result must contain the keys of all non-configurable own properties of the
     target.
+  id: totrans-475
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: If the target is not extensible, then the result must contain exactly the keys
     of the own properties of the target (and no other values).
+  id: totrans-476
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`preventExtensions(target): boolean`'
+  id: totrans-477
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The handler must only return a truthy value (indicating a successful change)
     if `target.isExtensible()` is `false`.
+  id: totrans-478
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`set(target, propKey, value, receiver): boolean`'
+  id: totrans-479
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The property can’t be changed if the target has a non-writable, non-configurable
     data property whose key is `propKey`. In that case, `value` must be the value
     of that property or a `TypeError` is thrown.
+  id: totrans-480
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: The property can’t be set in any way if the corresponding own target property
     is a non-configurable accessor without a setter.
+  id: totrans-481
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`setPrototypeOf(target, proto): boolean`'
+  id: totrans-482
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
@@ -2112,19 +2920,23 @@
     as follows: If the target is not extensible and the handler returns a truthy value
     (indicating a successful change), then `proto` must be the same as the prototype
     of the target. Otherwise, a `TypeError` is thrown.'
+  id: totrans-483
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **Invariants in the ECMAScript
     specification**'
+  id: totrans-484
   prefs: []
   type: TYPE_NORMAL
 - en: In the spec, the invariants are listed in section [“Proxy Object Internal Methods
     and Internal Slots”](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots).
+  id: totrans-485
   prefs: []
   type: TYPE_NORMAL
 - en: 18.7.4 Operations that affect the prototype chain
+  id: totrans-486
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
@@ -2134,48 +2946,59 @@
     own methods (that are not visible to JavaScript code). But in this section, we
     pretend that they are normal methods that have the same names as the traps. The
     parameter `target` becomes the receiver of the method call.
+  id: totrans-487
   prefs: []
   type: TYPE_NORMAL
 - en: '`target.get(propertyKey, receiver)`'
+  id: totrans-488
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: If `target` has no own property with the given key, `get` is invoked on the
     prototype of `target`.
+  id: totrans-489
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`target.has(propertyKey)`'
+  id: totrans-490
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Similarly to `get`, `has` is invoked on the prototype of `target` if `target`
     has no own property with the given key.
+  id: totrans-491
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`target.set(propertyKey, value, receiver)`'
+  id: totrans-492
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Similarly to `get`, `set` is invoked on the prototype of `target` if `target`
     has no own property with the given key.
+  id: totrans-493
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: All other operations only affect own properties, they have no effect on the
     prototype chain.
+  id: totrans-494
   prefs: []
   type: TYPE_NORMAL
 - en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **Internal operations
     in the ECMAScript specification**'
+  id: totrans-495
   prefs: []
   type: TYPE_NORMAL
 - en: In the spec, these (and other) operations are described in section “[Ordinary
     Object Internal Methods and Internal Slots](https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots)”.
+  id: totrans-496
   prefs: []
   type: TYPE_NORMAL
 - en: 18.7.5 Reflect
+  id: totrans-497
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
@@ -2183,35 +3006,43 @@
     meta object protocol as methods. The names of those methods are the same as those
     of the handler methods, which, [as we have seen](ch_proxies.html#forwarding-intercepted-operations),
     helps with forwarding operations from the handler to the target.
+  id: totrans-498
   prefs: []
   type: TYPE_NORMAL
 - en: '`Reflect.apply(target, thisArgument, argumentsList): any`'
+  id: totrans-499
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Similar to `Function.prototype.apply()`.
+  id: totrans-500
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.construct(target, argumentsList, newTarget=target): object`'
+  id: totrans-501
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The `new` operator as a function. `target` is the constructor to invoke, the
     optional parameter `newTarget` points to the constructor that started the current
     chain of constructor calls.
+  id: totrans-502
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.defineProperty(target, propertyKey, propDesc): boolean`'
+  id: totrans-503
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Similar to `Object.defineProperty()`.
+  id: totrans-504
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.deleteProperty(target, propertyKey): boolean`'
+  id: totrans-505
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
@@ -2221,144 +3052,176 @@
     The only way to protect properties from deletion is by making them non-configurable.
     In sloppy mode, the `delete` operator returns the same results. But in strict
     mode, it throws a `TypeError` instead of returning `false`.'
+  id: totrans-506
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.get(target, propertyKey, receiver=target): any`'
+  id: totrans-507
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A function that gets properties. The optional parameter `receiver` points to
     the object where the getting started. It is needed when `get` reaches a getter
     later in the prototype chain. Then it provides the value for `this`.
+  id: totrans-508
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.getOwnPropertyDescriptor(target, propertyKey): undefined|PropDesc`'
+  id: totrans-509
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Same as `Object.getOwnPropertyDescriptor()`.
+  id: totrans-510
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.getPrototypeOf(target): null|object`'
+  id: totrans-511
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Same as `Object.getPrototypeOf()`.
+  id: totrans-512
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.has(target, propertyKey): boolean`'
+  id: totrans-513
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The `in` operator as a function.
+  id: totrans-514
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.isExtensible(target): boolean`'
+  id: totrans-515
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Same as `Object.isExtensible()`.
+  id: totrans-516
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.ownKeys(target): Array<PropertyKey>`'
+  id: totrans-517
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Returns all own property keys in an Array: the string keys and symbol keys
     of all own enumerable and non-enumerable properties.'
+  id: totrans-518
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.preventExtensions(target): boolean`'
+  id: totrans-519
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Similar to `Object.preventExtensions()`.
+  id: totrans-520
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.set(target, propertyKey, value, receiver=target): boolean`'
+  id: totrans-521
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A function that sets properties.
+  id: totrans-522
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '`Reflect.setPrototypeOf(target, proto): boolean`'
+  id: totrans-523
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The new standard way of setting the prototype of an object. The current non-standard
     way, that works in most engines, is to set the special property `__proto__`.
+  id: totrans-524
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: Several methods have boolean results. For `.has()` and `.isExtensible()`, they
     are the results of the operation. For the remaining methods, they indicate whether
     the operation succeeded.
+  id: totrans-525
   prefs: []
   type: TYPE_NORMAL
 - en: 18.7.5.1 Use cases for `Reflect` besides forwarding
+  id: totrans-526
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: Apart from forwarding operations, [why is `Reflect` useful [4]](ch_proxies.html#further-reading-proxies)?
+  id: totrans-527
   prefs: []
   type: TYPE_NORMAL
 - en: 'Different return values: `Reflect` duplicates the following methods of `Object`,
     but its methods return booleans indicating whether the operation succeeded (where
     the `Object` methods return the object that was modified).'
+  id: totrans-528
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.defineProperty(obj, propKey, propDesc): object`'
+  id: totrans-529
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.preventExtensions(obj): object`'
+  id: totrans-530
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Object.setPrototypeOf(obj, proto): object`'
+  id: totrans-531
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Operators as functions: The following `Reflect` methods implement functionality
     that is otherwise only available via operators:'
+  id: totrans-532
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Reflect.construct(target, argumentsList, newTarget=target): object`'
+  id: totrans-533
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Reflect.deleteProperty(target, propertyKey): boolean`'
+  id: totrans-534
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Reflect.get(target, propertyKey, receiver=target): any`'
+  id: totrans-535
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Reflect.has(target, propertyKey): boolean`'
+  id: totrans-536
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Reflect.set(target, propertyKey, value, receiver=target): boolean`'
+  id: totrans-537
   prefs:
   - PREF_IND
   - PREF_UL
@@ -2366,93 +3229,116 @@
 - en: 'Shorter version of `apply()`: If we want to be completely safe about invoking
     the method `apply()` on a function, we can’t do so via dynamic dispatch, because
     the function may have an own property with the key `''apply''`:'
+  id: totrans-538
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE67]'
+  id: totrans-539
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE67]'
 - en: 'Using `Reflect.apply()` is shorter than the safe version:'
+  id: totrans-540
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '[PRE68]'
+  id: totrans-541
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE68]'
 - en: 'No exceptions when deleting properties: the `delete` operator throws in strict
     mode if we try to delete a non-configurable own property. `Reflect.deleteProperty()`
     returns `false` in that case.'
+  id: totrans-542
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 18.7.5.2 `Object.*` versus `Reflect.*`
+  id: totrans-543
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: Going forward, `Object` will host operations that are of interest to normal
     applications, while `Reflect` will host operations that are more low-level.
+  id: totrans-544
   prefs: []
   type: TYPE_NORMAL
 - en: 18.8 Conclusion
+  id: totrans-545
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: This concludes our in-depth look at the Proxy API. One thing to be aware of
     is that Proxies slow down code. That may matter if performance is critical.
+  id: totrans-546
   prefs: []
   type: TYPE_NORMAL
 - en: On the other hand, performance is often not crucial and it is nice to have the
     metaprogramming power that Proxies give us.
+  id: totrans-547
   prefs: []
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-548
   prefs: []
   type: TYPE_NORMAL
 - en: '**Acknowledgements:**'
+  id: totrans-549
   prefs: []
   type: TYPE_NORMAL
 - en: 'Allen Wirfs-Brock pointed out the pitfall explained in [§18.3.7 “Pitfall: not
     all objects can be wrapped transparently by Proxies”](ch_proxies.html#mechanisms-ignored-by-proxies).'
+  id: totrans-550
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The idea for [§18.4.3 “Negative Array indices (`get`)”](ch_proxies.html#negative-array-indices-via-proxies)
     comes from a [blog post](http://h3manth.com/new/blog/2013/negative-array-index-in-javascript/)
     by [Hemanth.HM](https://twitter.com/gnumanth).
+  id: totrans-551
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: André Jaenisch contributed to the list of libraries that use Proxies.
+  id: totrans-552
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 18.9 Further reading
+  id: totrans-553
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[1] “[On the design of the ECMAScript Reflection API](http://soft.vub.ac.be/Publications/2012/vub-soft-tr-12-03.pdf)”
     by Tom Van Cutsem and Mark Miller. Technical report, 2012\. [Important source
     of this chapter.]'
+  id: totrans-554
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[2] “[The Art of the Metaobject Protocol](http://mitpress.mit.edu/books/art-metaobject-protocol)”
     by Gregor Kiczales, Jim des Rivieres and Daniel G. Bobrow. Book, 1991.'
+  id: totrans-555
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[3] “[Putting Metaclasses to Work: A New Dimension in Object-Oriented Programming](http://www.pearsonhighered.com/educator/product/Putting-Metaclasses-to-Work-A-New-Dimension-in-ObjectOriented-Programming/9780201433050.page)”
     by Ira R. Forman and Scott H. Danforth. Book, 1999.'
+  id: totrans-556
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[4] “[Harmony-reflect: Why should I use this library?](https://github.com/tvcutsem/harmony-reflect/wiki)”
     by Tom Van Cutsem. [Explains why `Reflect` is useful.]'
+  id: totrans-557
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/23)'
+  id: totrans-558
   prefs: []
   type: TYPE_NORMAL
