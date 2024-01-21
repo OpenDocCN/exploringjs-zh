@@ -1,497 +1,704 @@
 - en: 24 Exception handling
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/impatient-js/ch_exception-handling.html](https://exploringjs.com/impatient-js/ch_exception-handling.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: '24.1 [Motivation: throwing and catching exceptions](ch_exception-handling.html#motivation-throwing-and-catching-exceptions)'
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.2 [`throw`](ch_exception-handling.html#throw)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.2.1 [What values should we throw?](ch_exception-handling.html#what-values-should-we-throw)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.3 [The `try` statement](ch_exception-handling.html#the-try-statement)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.3.1 [The `try` block](ch_exception-handling.html#the-try-block)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.3.2 [The `catch` clause](ch_exception-handling.html#the-catch-clause)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.3.3 [The `finally` clause](ch_exception-handling.html#the-finally-clause)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.4 [`Error` and its subclasses](ch_exception-handling.html#error-classes)
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.4.1 [Class `Error`](ch_exception-handling.html#class-Error)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.4.2 [The built-in subclasses of `Error`](ch_exception-handling.html#error-subclasses)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.4.3 [Subclassing `Error`](ch_exception-handling.html#subclassing-error)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.5 [Chaining errors](ch_exception-handling.html#chaining-errors)
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.5.1 [Why would we want to chain errors?](ch_exception-handling.html#why-would-we-want-to-chain-errors)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.5.2 [Chaining errors via `error.cause` [ES2022]](ch_exception-handling.html#error.cause)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '24.5.3 [An alternative to `.cause`: a custom error class](ch_exception-handling.html#an-alternative-to-.cause-a-custom-error-class)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
 - en: This chapter covers how JavaScript handles exceptions.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: '![](../Images/b666ba365e94edaf0ef510fd7e12c7de.png)  **Why doesn’t JavaScript
     throw exceptions more often?**'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
 - en: JavaScript didn’t support exceptions until ES3\. That explains why they are
     used sparingly by the language and its standard library.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
 - en: '24.1 Motivation: throwing and catching exceptions'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'Consider the following code. It reads profiles stored in files into an Array
     with instances of class `Profile`:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Let’s examine what happens in line B: An error occurred, but the best place
     to handle the problem is not the current location, it’s line A. There, we can
     skip the current file and move on to the next one.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
 - en: 'Therefore:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
 - en: In line B, we use a `throw` statement to indicate that there was a problem.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: In line A, we use a `try-catch` statement to handle the problem.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'When we throw, the following constructs are active:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: One by one, `throw` exits the nested constructs, until it encounters a `try`
     statement. Execution continues in the `catch` clause of that `try` statement.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
 - en: 24.2 `throw`
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'This is the syntax of the `throw` statement:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 24.2.1 What values should we throw?
+  id: totrans-35
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: Any value can be thrown in JavaScript. However, it’s best to use instances of
     `Error` or a subclass because they support additional features such as stack traces
     and error chaining (see [§24.4 “`Error` and its subclasses”](ch_exception-handling.html#error-classes)).
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
 - en: 'That leaves us with the following options:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
 - en: 'Using class `Error` directly. That is less limiting in JavaScript than in a
     more static language because we can add our own properties to instances:'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-39
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Using one of [the subclasses of `Error`](ch_exception-handling.html#error-subclasses).
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Subclassing `Error` (more details are explained [later](ch_exception-handling.html#subclassing-error)):'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-42
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 24.3 The `try` statement
+  id: totrans-43
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'The maximal version of the `try` statement looks as follows:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'We can combine these clauses as follows:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
 - en: '`try-catch`'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`try-finally`'
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`try-catch-finally`'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 24.3.1 The `try` block
+  id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: The `try` block can be considered the body of the statement. This is where we
     execute the regular code.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
 - en: 24.3.2 The `catch` clause
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'If an exception reaches the `try` block, then it is assigned to the parameter
     of the `catch` clause and the code in that clause is executed. Next, execution
     normally continues after the `try` statement. That may change if:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
 - en: There is a `return`, `break`, or `throw` inside the `catch` block.
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: There is a `finally` clause (which is always executed before the `try` statement
     ends).
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The following code demonstrates that the value that is thrown in line A is indeed
     caught in line B.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE6]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 24.3.2.1 Omitting the `catch` binding [ES2019]
+  id: totrans-58
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 24.3.2.1 省略`catch`绑定[ES2019]
 - en: 'We can omit the `catch` parameter if we are not interested in the value that
     was thrown:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们对抛出的值不感兴趣，我们可以省略`catch`参数：
 - en: '[PRE7]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: That may occasionally be useful. For example, Node.js has the API function [`assert.throws(func)`](https://nodejs.org/api/assert.html#assert_assert_throws_fn_error_message)
     that checks whether an error is thrown inside `func`. It could be implemented
     as follows.
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 这可能偶尔会有用。例如，Node.js有API函数[`assert.throws(func)`](https://nodejs.org/api/assert.html#assert_assert_throws_fn_error_message)，用于检查`func`内部是否抛出错误。可以这样实现。
 - en: '[PRE8]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: However, a more complete implementation of this function would have a `catch`
     parameter and would, for example, check that its type is as expected.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，这个函数的更完整的实现将有一个`catch`参数，并且，例如，检查其类型是否符合预期。
 - en: 24.3.3 The `finally` clause
+  id: totrans-64
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 24.3.3 `finally`子句
 - en: The code inside the `finally` clause is always executed at the end of a `try`
     statement – no matter what happens in the `try` block or the `catch` clause.
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: '`finally`子句中的代码总是在`try`语句的末尾执行 - 无论`try`块或`catch`子句中发生了什么。'
 - en: 'Let’s look at a common use case for `finally`: We have created a resource and
     want to always destroy it when we are done with it, no matter what happens while
     working with it. We would implement that as follows:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看一个`finally`的常见用例：我们创建了一个资源，并且希望在完成后始终销毁它，无论在处理它时发生了什么。我们可以这样实现：
 - en: '[PRE9]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 24.3.3.1 `finally` is always executed
+  id: totrans-68
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 24.3.3.1 `finally`总是被执行
 - en: 'The `finally` clause is always executed, even if an error is thrown (line A):'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: '`finally`子句总是被执行，即使抛出错误（A行）：'
 - en: '[PRE10]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'And even if there is a `return` statement (line A):'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使有`return`语句（A行）：
 - en: '[PRE11]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 24.4 `Error` and its subclasses
+  id: totrans-73
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 24.4 `Error`及其子类
 - en: '`Error` is the common superclass of all built-in error classes.'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Error`是所有内置错误类的通用超类。'
 - en: 24.4.1 Class `Error`
+  id: totrans-75
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 24.4.1 类`Error`
 - en: 'This is what `Error`’s instance properties and constructor look like:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`Error`的实例属性和构造函数的样子：
 - en: '[PRE12]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'The constructor has two parameters:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 构造函数有两个参数：
 - en: '`message` specifies an error message.'
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`message`指定了错误消息。'
 - en: '`options` was introduced in ECMAScript 2022\. It contains an object where one
     property is currently supported:'
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`options`在ECMAScript 2022中被引入。它包含一个对象，其中一个属性目前受支持：'
 - en: '`.cause` specifies which exception (if any) caused the current error.'
+  id: totrans-81
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.cause`指定了导致当前错误的异常（如果有）。'
 - en: The subsections after the next one explain the instance properties `.message`,
     `.cause` and `.stack` in more detail.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来的子节将更详细地解释实例属性`.message`、`.cause`和`.stack`。
 - en: 24.4.1.1 `Error.prototype.name`
+  id: totrans-83
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 24.4.1.1 `Error.prototype.name`
 - en: 'Each built-in error class `E` has a property `E.prototype.name`:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个内置错误类`E`都有一个属性`E.prototype.name`：
 - en: '[PRE13]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Therefore, there are two ways to get the name of the class of a built-in error
     object:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，有两种方法可以获取内置错误对象的类名：
 - en: '[PRE14]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 24.4.1.2 Error instance property `.message`
+  id: totrans-88
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 24.4.1.2 错误实例属性`.message`
 - en: '`.message` contains just the error message:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.message`只包含错误消息：'
 - en: '[PRE15]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'If we omit the message then the empty string is used as a default value (inherited
     from `Error.prototype.message`):'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们省略消息，那么空字符串将被用作默认值（从`Error.prototype.message`继承）：
 - en: 'If we omit the message, it is the empty string:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们省略消息，它就是空字符串：
 - en: '[PRE16]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 24.4.1.3 Error instance property `.stack`
+  id: totrans-94
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 24.4.1.3 错误实例属性`.stack`
 - en: The instance property `.stack` is not an ECMAScript feature, but it is widely
     supported by JavaScript engines. It is usually a string, but its exact structure
     is not standardized and varies between engines.
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 实例属性`.stack`不是ECMAScript特性，但它被JavaScript引擎广泛支持。它通常是一个字符串，但其确切结构没有标准化，并且在引擎之间有所不同。
 - en: 'This is what it looks like on the JavaScript engine V8:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是在JavaScript引擎V8上的样子：
 - en: '[PRE17]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 24.4.1.4 Error instance property `.cause` [ES2022]
+  id: totrans-98
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 24.4.1.4 错误实例属性`.cause` [ES2022]
 - en: The instance property `.cause` is created via the options object in the second
     parameter of `new Error()`. It specifies which other error caused the current
     one.
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 实例属性`.cause`是通过`new Error()`的第二个参数中的选项对象创建的。它指定了哪个其他错误导致了当前错误。
 - en: '[PRE18]'
+  id: totrans-100
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: For information on how to use this property see [§24.5 “Chaining errors”](ch_exception-handling.html#chaining-errors).
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关如何使用此属性的信息，请参阅[§24.5“链接错误”](ch_exception-handling.html#chaining-errors)。
 - en: 24.4.2 The built-in subclasses of `Error`
+  id: totrans-102
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 24.4.2 `Error`的内置子类
 - en: '`Error` has the following subclasses – quoting [the ECMAScript specification](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard):'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Error`有以下子类 - 引用[ECMAScript规范](https://tc39.github.io/ecma262/#sec-native-error-types-used-in-this-standard)：'
 - en: '[`AggregateError`](ch_promises.html#Promise.any-AggregateError) [ES2021] represents
     multiple errors at once. In the standard library, only `Promise.any()` uses it.'
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`AggregateError`](ch_promises.html#Promise.any-AggregateError) [ES2021] 代表一次性表示多个错误。在标准库中，只有`Promise.any()`使用它。'
 - en: '`RangeError` indicates a value that is not in the set or range of allowable
     values.'
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`RangeError`指示一个不在可允许值的集合或范围内的值。'
 - en: '`ReferenceError` indicates that an invalid reference value has been detected.'
+  id: totrans-106
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ReferenceError`指示检测到无效引用值。'
 - en: '`SyntaxError` indicates that a parsing error has occurred.'
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`SyntaxError`指示发生了解析错误。'
 - en: '`TypeError` is used to indicate an unsuccessful operation when none of the
     other *NativeError* objects are an appropriate indication of the failure cause.'
+  id: totrans-108
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypeError`用于指示未成功操作，当其他*NativeError*对象都不适合表示失败原因时。'
 - en: '`URIError` indicates that one of the global URI handling functions was used
     in a way that is incompatible with its definition.'
+  id: totrans-109
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`URIError`指示全局URI处理函数之一的使用方式与其定义不兼容。'
 - en: 24.4.3 Subclassing `Error`
+  id: totrans-110
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 24.4.3 对`Error`进行子类化
 - en: 'Since ECMAScript 2022, the `Error` constructor accepts two parameters (see
     previous subsection). Therefore, we have two choices when subclassing it: We can
     either omit the constructor in our subclass or we can invoke `super()` like this:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 自ECMAScript 2022以来，`Error`构造函数接受两个参数（参见前面的子节）。因此，在对其进行子类化时，我们有两种选择：要么在子类中省略构造函数，要么像这样调用`super()`：
 - en: '[PRE19]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 24.5 Chaining errors
+  id: totrans-113
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 24.5 链接错误
 - en: 24.5.1 Why would we want to chain errors?
+  id: totrans-114
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 24.5.1 为什么我们想要链接错误？
 - en: 'Sometimes, we catch errors that are thrown during a more deeply nested function
     call and would like to attach more information to it:'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，我们捕获在更深层嵌套的函数调用期间抛出的错误，并希望附加更多信息：
 - en: '[PRE20]'
+  id: totrans-116
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: The statements inside the `try` clause may throw all kinds of errors. In most
     cases, an error won’t be aware of the path of the file that caused it. That‘s
     why we would like to attach that information in line A.
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: '`try`子句中的语句可能会引发各种错误。在大多数情况下，错误不会意识到导致它的文件路径。这就是为什么我们想在A行附加该信息的原因。'
 - en: 24.5.2 Chaining errors via `error.cause` [ES2022]
+  id: totrans-118
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 24.5.2 通过`error.cause`链接错误[ES2022]
 - en: 'Since ECMAScript 2022, `new Error()` lets us specify what caused it:'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 自ECMAScript 2022以来，`new Error()`让我们指定引起错误的原因：
 - en: '[PRE21]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '24.5.3 An alternative to `.cause`: a custom error class'
+  id: totrans-121
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 24.5.3 `.cause`的替代方法：自定义错误类
 - en: The following custom error class supports chaining. It is forward compatible
     with `.cause`.
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下自定义错误类支持链接。它与`.cause`向前兼容。
 - en: '[PRE22]'
+  id: totrans-123
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: Exception
     handling**'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **练习：异常处理**'
 - en: '`exercises/exception-handling/call_function_test.mjs`'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/exception-handling/call_function_test.mjs`'
 - en: '![](../Images/4ca05ad97a693bee61e4fd6459232e60.png)  **Quiz**'
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/4ca05ad97a693bee61e4fd6459232e60.png)  **测验**'
 - en: See [quiz app](ch_quizzes-exercises.html#quizzes).
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 请参阅[测验应用程序](ch_quizzes-exercises.html#quizzes)。
 - en: '[Comments](https://github.com/rauschma/impatient-js/issues/42)'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/impatient-js/issues/42)'
