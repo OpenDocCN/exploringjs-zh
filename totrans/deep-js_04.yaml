@@ -1,1045 +1,1554 @@
 - en: 2 Type coercion in JavaScript
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 2 JavaScript中的类型强制转换
 - en: 原文：[https://exploringjs.com/deep-js/ch_type-coercion.html](https://exploringjs.com/deep-js/ch_type-coercion.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_type-coercion.html](https://exploringjs.com/deep-js/ch_type-coercion.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 2.1 [What is type coercion?](ch_type-coercion.html#what-is-type-coercion)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.1 [什么是类型强制转换？](ch_type-coercion.html#what-is-type-coercion)
 - en: 2.1.1 [Dealing with type coercion](ch_type-coercion.html#dealing-with-type-coercion)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.1.1 [处理类型强制转换](ch_type-coercion.html#dealing-with-type-coercion)
 - en: 2.2 [Operations that help implement coercion in the ECMAScript specification](ch_type-coercion.html#operations-that-help-implement-coercion-in-the-ecmascript-specification)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.2 [实现ECMAScript规范中的强制转换的操作](ch_type-coercion.html#operations-that-help-implement-coercion-in-the-ecmascript-specification)
 - en: 2.2.1 [Converting to primitive types and objects](ch_type-coercion.html#converting-to-primitive-types-and-objects)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.2.1 [转换为原始类型和对象](ch_type-coercion.html#converting-to-primitive-types-and-objects)
 - en: 2.2.2 [Converting to numeric types](ch_type-coercion.html#converting-to-numeric-types)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.2.2 [转换为数值类型](ch_type-coercion.html#converting-to-numeric-types)
 - en: 2.2.3 [Converting to property keys](ch_type-coercion.html#converting-to-property-keys)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.2.3 [转换为属性键](ch_type-coercion.html#converting-to-property-keys)
 - en: 2.2.4 [Converting to Array indices](ch_type-coercion.html#converting-to-array-indices)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.2.4 [转换为数组索引](ch_type-coercion.html#converting-to-array-indices)
 - en: 2.2.5 [Converting to Typed Array elements](ch_type-coercion.html#converting-to-typed-array-elements)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.2.5 [转换为Typed Array元素](ch_type-coercion.html#converting-to-typed-array-elements)
 - en: '2.3 [Intermission: expressing specification algorithms in JavaScript](ch_type-coercion.html#intermission-expressing-specification-algorithms-in-javascript)'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.3 [插曲：用JavaScript表达规范算法](ch_type-coercion.html#intermission-expressing-specification-algorithms-in-javascript)
 - en: 2.4 [Example coercion algorithms](ch_type-coercion.html#example-coercion-algorithms)
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.4 [强制转换算法示例](ch_type-coercion.html#example-coercion-algorithms)
 - en: 2.4.1 [`ToPrimitive()`](ch_type-coercion.html#toprimitive)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.4.1 [`ToPrimitive()`](ch_type-coercion.html#toprimitive)
 - en: 2.4.2 [`ToString()` and related operations](ch_type-coercion.html#tostring-and-related-operations)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.4.2 [`ToString()`和相关操作](ch_type-coercion.html#tostring-and-related-operations)
 - en: 2.4.3 [`ToPropertyKey()`](ch_type-coercion.html#topropertykey)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.4.3 [`ToPropertyKey()`](ch_type-coercion.html#topropertykey)
 - en: 2.4.4 [`ToNumeric()` and related operations](ch_type-coercion.html#tonumeric-and-related-operations)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.4.4 [`ToNumeric()`和相关操作](ch_type-coercion.html#tonumeric-and-related-operations)
 - en: 2.5 [Operations that coerce](ch_type-coercion.html#operations-that-coerce)
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.5 [强制转换的操作](ch_type-coercion.html#operations-that-coerce)
 - en: 2.5.1 [Addition operator (`+`)](ch_type-coercion.html#addition-operator)
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.5.1 [加法运算符（`+`）](ch_type-coercion.html#addition-operator)
 - en: 2.5.2 [Abstract Equality Comparison (`==`)](ch_type-coercion.html#abstract-equality-comparison)
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.5.2 [抽象相等比较（`==`）](ch_type-coercion.html#abstract-equality-comparison)
 - en: '2.6 [Glossary: terms related to type conversion](ch_type-coercion.html#glossary-terms-related-to-type-conversion)'
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 2.6 [术语表：与类型转换相关的术语](ch_type-coercion.html#glossary-terms-related-to-type-conversion)
 - en: '* * *'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: In this chapter, we examine the role of *type coercion* in JavaScript. We will
     go relatively deeply into this subject and, e.g., look into how the ECMAScript
     specification handles coercion.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将深入探讨JavaScript中*类型强制转换*的作用。我们将相对深入地研究这个主题，例如，看看ECMAScript规范如何处理强制转换。
 - en: 2.1 What is type coercion?
+  id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 2.1 什么是类型强制转换？
 - en: 'Each operation (function, operator, etc.) expects its parameters to have certain
     types. If a value doesn’t have the right type for a parameter, three common options
     for, e.g., a function are:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个操作（函数、运算符等）都期望其参数具有某些类型。如果一个值对于参数没有正确的类型，例如，函数的三种常见选项是：
 - en: 'The function can throw an exception:'
+  id: totrans-25
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 该函数可以抛出异常：
 - en: '[PRE0]'
+  id: totrans-26
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The function can return an error value:'
+  id: totrans-27
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 该函数可以返回错误值：
 - en: '[PRE1]'
+  id: totrans-28
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'The function can convert its arguments to useful values:'
+  id: totrans-29
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 该函数可以将其参数转换为有用的值：
 - en: '[PRE2]'
+  id: totrans-30
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: In (3), the operation performs an implicit type conversion. That is called *type
     coercion*.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 在（3）中，该操作执行隐式类型转换。这就是所谓的*类型强制转换*。
 - en: 'JavaScript initially didn’t have exceptions, which is why it uses coercion
     and error values for most of its operations:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript最初没有异常，这就是为什么它对大多数操作使用强制转换和错误值的原因：
 - en: '[PRE3]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'However, there are also cases (especially when it comes to newer features)
     where it throws exceptions if an argument doesn’t have the right type:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，也有一些情况（特别是涉及较新功能时），如果参数没有正确的类型，它会抛出异常：
 - en: 'Accessing properties of `null` or `undefined`:'
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 访问`null`或`undefined`的属性：
 - en: '[PRE4]'
+  id: totrans-36
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Using symbols:'
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用符号：
 - en: '[PRE5]'
+  id: totrans-38
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Mixing bigints and numbers:'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 混合大整数和数字：
 - en: '[PRE6]'
+  id: totrans-40
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'New-calling or function-calling values that don’t support that operation:'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 调用或函数调用不支持该操作的值：
 - en: '[PRE7]'
+  id: totrans-42
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Changing read-only properties (only throws in strict mode):'
+  id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 更改只读属性（在严格模式下会抛出）：
 - en: '[PRE8]'
+  id: totrans-44
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 2.1.1 Dealing with type coercion
+  id: totrans-45
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.1.1 处理类型强制转换
 - en: 'Two common ways of dealing with coercion are:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 处理强制转换的两种常见方法是：
 - en: 'A caller can explicitly convert values so that they have the right types. For
     example, in the following interaction, we want to multiply two numbers encoded
     as strings:'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 调用者可以显式转换值，使其具有正确的类型。例如，在以下交互中，我们想要将两个编码为字符串的数字相乘：
 - en: '[PRE9]'
+  id: totrans-48
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'A caller can let the operation make the conversion for them:'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 调用者可以让操作为其进行转换：
 - en: '[PRE10]'
+  id: totrans-50
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'I usually prefer the former, because it clarifies my intention: I expect `x`
     and `y` not to be numbers, but want to multiply two numbers.'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 我通常更喜欢前者，因为它澄清了我的意图：我希望`x`和`y`不是数字，但想要将两个数字相乘。
 - en: 2.2 Operations that help implement coercion in the ECMAScript specification
+  id: totrans-52
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 2.2 实现ECMAScript规范中的强制转换的操作
 - en: The following sections describe the most important internal functions used by
     the ECMAScript specification to convert actual parameters to expected types.
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下各节描述了ECMAScript规范中使用的最重要的内部函数，用于将实际参数转换为期望的类型。
 - en: 'For example, in TypeScript, we would write:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，在TypeScript中，我们会这样写：
 - en: '[PRE11]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'In the specification, this looks [as follows](https://tc39.es/ecma262/#sec-multiplicative-operators-runtime-semantics-evaluation)
     (translated to JavaScript, so that it is easier to understand):'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 在规范中，这看起来像[如下](https://tc39.es/ecma262/#sec-multiplicative-operators-runtime-semantics-evaluation)（转换为JavaScript，以便更容易理解）：
 - en: '[PRE12]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 2.2.1 Converting to primitive types and objects
+  id: totrans-58
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.2.1 转换为原始类型和对象
 - en: 'Whenever primitive types or objects are expected, the following conversion
     functions are used:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 每当期望原始类型或对象时，将使用以下转换函数：
 - en: '`ToBoolean()`'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToBoolean()`'
 - en: '`ToNumber()`'
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToNumber()`'
 - en: '`ToBigInt()`'
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToBigInt()`'
 - en: '`ToString()`'
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToString()`'
 - en: '`ToObject()`'
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToObject()`'
 - en: 'These internal functions have analogs in JavaScript that are very similar:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些内部函数在JavaScript中有非常相似的类似物：
 - en: '[PRE13]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: After the introduction of bigints, which exists alongside numbers, the specification
     often uses `ToNumeric()` where it previously used `ToNumber()`. Read on for more
     information.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 在引入了与数字并存的bigint之后，规范通常在先前使用`ToNumber()`的地方使用`ToNumeric()`。继续阅读以获取更多信息。
 - en: 2.2.2 Converting to numeric types
+  id: totrans-68
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.2.2 转换为数值类型
 - en: 'At the moment, JavaScript has [two built-in numeric types](https://tc39.es/ecma262/#sec-numeric-types):
     number and bigint.'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 目前，JavaScript有[两种内置的数值类型](https://tc39.es/ecma262/#sec-numeric-types)：number和bigint。
 - en: '`ToNumeric()` returns a numeric value `num`. Its callers usually invoke a method
     `mthd` of the specification type of `num`:'
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToNumeric()`返回一个数值`num`。它的调用者通常调用规范类型`num`的方法`mthd`：'
 - en: '[PRE14]'
+  id: totrans-71
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Among others, the following operations use `ToNumeric`:'
+  id: totrans-72
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 除其他外，以下操作使用`ToNumeric`：
 - en: Prefix and postfix `++` operator
+  id: totrans-73
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 前缀和后缀`++`运算符
 - en: '`*` operator'
+  id: totrans-74
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`*`运算符'
 - en: '`ToInteger(x)` is used whenever a number without a fraction is expected. The
     range of the result is often restricted further afterwards.'
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToInteger(x)`在期望没有小数的数字时使用。结果的范围通常在之后进一步限制。'
 - en: It calls `ToNumber(x)` and removes the fraction (similar to `Math.trunc()`).
+  id: totrans-76
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它调用`ToNumber(x)`并删除小数（类似于`Math.trunc()`）。
 - en: 'Operations that use `ToInteger()`:'
+  id: totrans-77
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用`ToInteger()`的操作：
 - en: '`Number.prototype.toString(radix?)`'
+  id: totrans-78
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Number.prototype.toString(radix?)`'
 - en: '`String.prototype.codePointAt(pos)`'
+  id: totrans-79
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`String.prototype.codePointAt(pos)`'
 - en: '`Array.prototype.slice(start, end)`'
+  id: totrans-80
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array.prototype.slice(start, end)`'
 - en: Etc.
+  id: totrans-81
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: '`ToInt32()`, `ToUint32()` coerce numbers to 32-bit integers and are used by
     bitwise operators (see tbl. [1](#tbl:bitwise-number-operator-coercion)).'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToInt32()`，`ToUint32()`将数字强制转换为32位整数，并被位运算符使用（见tbl. [1](#tbl:bitwise-number-operator-coercion)）。'
 - en: '`ToInt32()`: signed, range [−2^(31), 2^(31)−1] (limits are included)'
+  id: totrans-83
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToInt32()`：有符号，范围[−2^(31), 2^(31)−1]（包括限制）'
 - en: '`ToUint32()`: unsigned (hence the `U`), range [0, 2^(32)−1] (limits are included)'
+  id: totrans-84
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToUint32()`：无符号（因此有`U`），范围[0, 2^(32)−1]（包括限制）'
 - en: 'Table 1: Coercion of the operands of bitwise number operators (BigInt operators
     don’t limit the number of bits).'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 表1：位数运算符的操作数的强制转换（BigInt运算符不限制位数）。
 - en: '| Operator | Left operand | Right operand | result type |'
+  id: totrans-86
   prefs: []
   type: TYPE_TB
+  zh: '| 运算符 | 左操作数 | 右操作数 | 结果类型 |'
 - en: '| --- | --- | --- | --- |'
+  id: totrans-87
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- |'
 - en: '| `<<` | `ToInt32()` | `ToUint32()` | `Int32` |'
+  id: totrans-88
   prefs: []
   type: TYPE_TB
+  zh: '| `<<` | `ToInt32()` | `ToUint32()` | `Int32` |'
 - en: '| signed `>>` | `ToInt32()` | `ToUint32()` | `Int32` |'
+  id: totrans-89
   prefs: []
   type: TYPE_TB
+  zh: '| signed `>>` | `ToInt32()` | `ToUint32()` | `Int32` |'
 - en: '| unsigned `>>>` | `ToInt32()` | `ToUint32()` | `Uint32` |'
+  id: totrans-90
   prefs: []
   type: TYPE_TB
+  zh: '| unsigned `>>>` | `ToInt32()` | `ToUint32()` | `Uint32` |'
 - en: '| `&`, `^`, `&#124;` | `ToInt32()` | `ToUint32()` | `Int32` |'
+  id: totrans-91
   prefs: []
   type: TYPE_TB
+  zh: '| `&`, `^`, `&#124;` | `ToInt32()` | `ToUint32()` | `Int32` |'
 - en: '| `~` | — | `ToInt32()` | `Int32` |'
+  id: totrans-92
   prefs: []
   type: TYPE_TB
+  zh: '| `~` | — | `ToInt32()` | `Int32` |'
 - en: 2.2.3 Converting to property keys
+  id: totrans-93
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.2.3 转换为属性键
 - en: '`ToPropertyKey()` returns a string or a symbol and is used by:'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToPropertyKey()`返回一个字符串或符号，并被以下使用：'
 - en: The bracket operator `[]`
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 括号运算符`[]`
 - en: Computed property keys in object literals
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对象字面量中的计算属性键
 - en: The left-hand side of the `in` operator
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`in`运算符的左操作数'
 - en: '`Object.defineProperty(_, P, _)`'
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.defineProperty(_, P, _)`'
 - en: '`Object.fromEntries()`'
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.fromEntries()`'
 - en: '`Object.getOwnPropertyDescriptor()`'
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertyDescriptor()`'
 - en: '`Object.prototype.hasOwnProperty()`'
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.prototype.hasOwnProperty()`'
 - en: '`Object.prototype.propertyIsEnumerable()`'
+  id: totrans-102
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.prototype.propertyIsEnumerable()`'
 - en: Several methods of `Reflect`
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Reflect`的几种方法'
 - en: 2.2.4 Converting to Array indices
+  id: totrans-104
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.2.4 转换为数组索引
 - en: '`ToLength()` is used (directly) mainly for string indices.'
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToLength()`主要用于字符串索引。'
 - en: Helper function for `ToIndex()`
+  id: totrans-106
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToIndex()`的辅助函数'
 - en: 'Range of result `l`: 0 ≤ `l` ≤ 2^(53)−1'
+  id: totrans-107
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果范围`l`：0 ≤ `l` ≤ 2^(53)−1
 - en: '`ToIndex()` is used for Typed Array indices.'
+  id: totrans-108
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToIndex()`用于Typed Array索引。'
 - en: 'Main difference with `ToLength()`: throws an exception if argument is out of
     range.'
+  id: totrans-109
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与`ToLength()`的主要区别：如果参数超出范围，则抛出异常。
 - en: 'Range of result `i`: 0 ≤ `i` ≤ 2^(53)−1'
+  id: totrans-110
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果范围`i`：0 ≤ `i` ≤ 2^(53)−1
 - en: '`ToUint32()` is used for Array indices.'
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToUint32()`用于数组索引。'
 - en: 'Range of result `i`: 0 ≤ `i` < 2^(32)−1 (the upper limit is excluded, to leave
     room for the `.length`)'
+  id: totrans-112
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果范围`i`：0 ≤ `i` < 2^(32)−1（上限被排除，为`.length`留出空间）
 - en: 2.2.5 Converting to Typed Array elements
+  id: totrans-113
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.2.5 转换为Typed Array元素
 - en: 'When we set the value of a Typed Array element, one of the following conversion
     functions is used:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们设置Typed Array元素的值时，将使用以下转换函数之一：
 - en: '`ToInt8()`'
+  id: totrans-115
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToInt8()`'
 - en: '`ToUint8()`'
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToUint8()`'
 - en: '`ToUint8Clamp()`'
+  id: totrans-117
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToUint8Clamp()`'
 - en: '`ToInt16()`'
+  id: totrans-118
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToInt16()`'
 - en: '`ToUint16()`'
+  id: totrans-119
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToUint16()`'
 - en: '`ToInt32()`'
+  id: totrans-120
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToInt32()`'
 - en: '`ToUint32()`'
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToUint32()`'
 - en: '`ToBigInt64()`'
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToBigInt64()`'
 - en: '`ToBigUint64()`'
+  id: totrans-123
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToBigUint64()`'
 - en: '2.3 Intermission: expressing specification algorithms in JavaScript'
+  id: totrans-124
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 2.3 中场休息：用JavaScript表达规范算法
 - en: 'In the remainder of this chapter, we’ll encounter several specification algorithms,
     but “implemented” as JavaScript. The following list shows how some frequently
     used patterns are translated from specification to JavaScript:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章的其余部分，我们将遇到几种规范算法，但是“实现”为JavaScript。以下列表显示了一些经常使用的模式如何从规范转换为JavaScript：
 - en: 'Spec: If Type(value) is String'
+  id: totrans-126
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 规范：如果Type(value)是String
 - en: 'JavaScript: `if (TypeOf(value) === ''string'')`'
+  id: totrans-127
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: JavaScript：`if (TypeOf(value) === 'string')`
 - en: (very loose translation; `TypeOf()` is defined below)
+  id: totrans-128
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: （非常宽松的翻译；`TypeOf()`在下面定义）
 - en: 'Spec: If IsCallable(method) is true'
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 规范：如果IsCallable(method)为true
 - en: 'JavaScript: `if (IsCallable(method))`'
+  id: totrans-130
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: JavaScript：`if (IsCallable(method))`
 - en: (`IsCallable()` is defined below)
+  id: totrans-131
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: （`IsCallable()`在下面定义）
 - en: 'Spec: Let numValue be ToNumber(value)'
+  id: totrans-132
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 规范：让numValue成为ToNumber(value)
 - en: 'JavaScript: `let numValue = Number(value)`'
+  id: totrans-133
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: JavaScript：`let numValue = Number(value)`
 - en: 'Spec: Let isArray be IsArray(O)'
+  id: totrans-134
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 规范：让isArray成为IsArray(O)
 - en: 'JavaScript: `let isArray = Array.isArray(O)`'
+  id: totrans-135
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: JavaScript：`let isArray = Array.isArray(O)`
 - en: 'Spec: If O has a [[NumberData]] internal slot'
+  id: totrans-136
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 规范：如果O具有[[NumberData]]内部插槽
 - en: 'JavaScript: `if (''__NumberData__'' in O)`'
+  id: totrans-137
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: JavaScript：`if ('__NumberData__' in O)`
 - en: 'Spec: Let tag be Get(O, @@toStringTag)'
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 规范：让tag成为Get(O, @@toStringTag)
 - en: 'JavaScript: `let tag = O[Symbol.toStringTag]`'
+  id: totrans-139
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: JavaScript：`let tag = O[Symbol.toStringTag]`
 - en: 'Spec: Return the string-concatenation of “[object ", tag, and "]”.'
+  id: totrans-140
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 规范：返回字符串连接的“[object ”、tag和“]”。
 - en: 'JavaScript: `return ''[object '' + tag + '']'';`'
+  id: totrans-141
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: JavaScript：`return '[object ' + tag + ']';`
 - en: '`let` (and not `const`) is used to match the language of the specification.'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: '`let`（而不是`const`）用于匹配规范的语言。'
 - en: Some things are omitted – for example, the [ReturnIfAbrupt shorthands](https://tc39.es/ecma262/#sec-returnifabrupt-shorthands)
     `?` and `!`.
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 有一些东西被省略了 - 例如，[ReturnIfAbrupt shorthands](https://tc39.es/ecma262/#sec-returnifabrupt-shorthands)
+    `?` 和 `!`。
 - en: '[PRE15]'
+  id: totrans-144
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 2.4 Example coercion algorithms
+  id: totrans-145
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 2.4 示例强制算法
 - en: 2.4.1 `ToPrimitive()`
+  id: totrans-146
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.4.1 `ToPrimitive()`
 - en: '[The operation `ToPrimitive()`](https://tc39.es/ecma262/#sec-toprimitive) is
     an intermediate step for many coercion algorithms (some of which we’ll see later
     in this chapter). It converts an arbitrary values to primitive values.'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: '[The operation `ToPrimitive()`](https://tc39.es/ecma262/#sec-toprimitive) 是许多强制算法的中间步骤（本章后面将看到其中一些）。它将任意值转换为原始值。'
 - en: '`ToPrimitive()` is used often in the spec because most operators can only work
     with primitive values. For example, we can use the addition operator (`+`) to
     add numbers and to concatenate strings, but we can’t use it to concatenate Arrays.'
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToPrimitive()`在规范中经常使用，因为大多数操作符只能使用原始值。例如，我们可以使用加法操作符（`+`）来添加数字和连接字符串，但不能用它来连接数组。'
 - en: 'This is what the JavaScript version of `ToPrimitive()` looks like:'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是JavaScript版本的`ToPrimitive()`的样子：
 - en: '[PRE16]'
+  id: totrans-150
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '`ToPrimitive()` lets objects override the conversion to primitive via `Symbol.toPrimitive`
     (line A). If an object doesn’t do that, it is passed on to `OrdinaryToPrimitive()`:'
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToPrimitive()`允许对象通过`Symbol.toPrimitive`（第A行）覆盖转换为原始值。如果对象没有这样做，则将其传递给`OrdinaryToPrimitive()`：'
 - en: '[PRE17]'
+  id: totrans-152
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 2.4.1.1 Which hints do callers of `ToPrimitive()` use?
+  id: totrans-153
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 2.4.1.1 调用`ToPrimitive()`的提示是什么？
 - en: 'The parameter `hint` can have one of three values:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 参数`hint`可以有三个值中的一个：
 - en: '`''number''` means: if possible, `input` should be converted to a number.'
+  id: totrans-155
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''number''`表示：如果可能的话，`input`应该转换为数字。'
 - en: '`''string''` means: if possible, `input` should be converted to a string.'
+  id: totrans-156
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''string''`表示：如果可能的话，`input`应该转换为字符串。'
 - en: '`''default''` means: there is no preference for either numbers or strings.'
+  id: totrans-157
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''default''`表示：对于数字或字符串没有偏好。'
 - en: 'These are a few examples of how various operations use `ToPrimitive()`:'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下是各种操作如何使用`ToPrimitive()`的几个示例：
 - en: '`hint === ''number''`. The following operations prefer numbers:'
+  id: totrans-159
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`hint === ''number''`。以下操作更偏向于数字：'
 - en: '`ToNumeric()`'
+  id: totrans-160
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToNumeric()`'
 - en: '`ToNumber()`'
+  id: totrans-161
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToNumber()`'
 - en: '`ToBigInt()`, `BigInt()`'
+  id: totrans-162
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToBigInt()`，`BigInt()`'
 - en: Abstract Relational Comparison (`<`)
+  id: totrans-163
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 抽象关系比较（`<`）
 - en: '`hint === ''string''`. The following operations prefer strings:'
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`hint === ''string''`。以下操作更偏向于字符串：'
 - en: '`ToString()`'
+  id: totrans-165
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToString()`'
 - en: '`ToPropertyKey()`'
+  id: totrans-166
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ToPropertyKey()`'
 - en: '`hint === ''default''`. The following operations are neutral w.r.t. the type
     of the returned primitive value:'
+  id: totrans-167
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`hint === ''default''`。以下操作对返回的原始值的类型是中立的：'
 - en: Abstract Equality Comparison (`==`)
+  id: totrans-168
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 抽象相等比较（`==`）
 - en: Addition Operator (`+`)
+  id: totrans-169
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 加法操作符（`+`）
 - en: '`new Date(value)` (`value` can be either a number or a string)'
+  id: totrans-170
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new Date(value)`（`value`可以是数字或字符串）'
 - en: As we have seen, the default behavior is for `'default'` being handled as if
     it were `'number'`. Only instances of `Symbol` and `Date` override this behavior
     (shown later).
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 正如我们所见，默认行为是将`'default'`处理为`'number'`。只有`Symbol`和`Date`的实例覆盖了这种行为（稍后会介绍）。
 - en: 2.4.1.2 Which methods are called to convert objects to Primitives?
+  id: totrans-172
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 2.4.1.2 将对象转换为原始值时调用的方法是哪些？
 - en: 'If the conversion to primitive isn’t overridden via `Symbol.toPrimitive`, `OrdinaryToPrimitive()`
     calls either or both of the following two methods:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果通过`Symbol.toPrimitive`未覆盖对原始值的转换，`OrdinaryToPrimitive()`将调用以下两种方法中的一个或两个：
 - en: '`''toString''` is called first if `hint` indicates that we’d like the primitive
     value to be a string.'
+  id: totrans-174
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`hint`指示我们希望原始值是字符串，则首先调用`'toString'`。
 - en: '`''valueOf''` is called first if `hint` indicates that we’d like the primitive
     value to be a number.'
+  id: totrans-175
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`hint`指示我们希望原始值是数字，则首先调用`'valueOf'`。
 - en: 'The following code demonstrates how that works:'
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了这是如何工作的：
 - en: '[PRE18]'
+  id: totrans-177
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'A method with the property key `Symbol.toPrimitive` overrides the normal conversion
     to primitive. That is only done twice in the standard library:'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 具有属性键`Symbol.toPrimitive`的方法覆盖了正常的转换为原始值。标准库中只有两次这样做：
 - en: '`Symbol.prototype[Symbol.toPrimitive](hint)`'
+  id: totrans-179
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Symbol.prototype[Symbol.toPrimitive](hint)`'
 - en: If the receiver is an instance of `Symbol`, this method always returns the wrapped
     symbol.
+  id: totrans-180
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果接收者是`Symbol`的实例，则此方法始终返回包装的符号。
 - en: The rationale is that instances of `Symbol` have a `.toString()` method that
     returns strings. But even if `hint` is `'string'`, `.toString()` should not be
     called so that we don’t accidentally convert instances of `Symbol` to strings
     (which are a completely different kind of property key).
+  id: totrans-181
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 其理由是`Symbol`的实例具有返回字符串的`.toString()`方法。但是，即使`hint`是`'string'`，也不应该调用`.toString()`，以免意外将`Symbol`的实例转换为字符串（这是一种完全不同类型的属性键）。
 - en: '`Date.prototype[Symbol.toPrimitive](hint)`'
+  id: totrans-182
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Date.prototype[Symbol.toPrimitive](hint)`'
 - en: Explained in more detail next.
+  id: totrans-183
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 下面会更详细解释。
 - en: 2.4.1.3 `Date.prototype[Symbol.toPrimitive]()`
+  id: totrans-184
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 2.4.1.3 `Date.prototype[Symbol.toPrimitive]()`
 - en: 'This is how Dates handle being converted to primitive values:'
+  id: totrans-185
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是日期处理转换为原始值的方式：
 - en: '[PRE19]'
+  id: totrans-186
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'The only difference with the default algorithm is that `''default''` becomes
     `''string''` (and not `''number''`). This can be observed if we use operations
     that set `hint` to `''default''`:'
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: 与默认算法唯一的区别是`'default'`变为`'string'`（而不是`'number'`）。如果我们使用将`hint`设置为`'default'`的操作，就可以观察到这一点：
 - en: '[The `==` operator](ch_type-coercion.html#abstract-equality-comparison) coerces
     objects to primitives (with a default hint) if the other operand is a primitive
     value other than `undefined`, `null`, and `boolean`. In the following interaction,
     we can see that the result of coercing the date is a string:'
+  id: totrans-188
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[The `==` operator](ch_type-coercion.html#abstract-equality-comparison) 如果另一个操作数是除`undefined`、`null`和`boolean`之外的原始值，则将对象强制转换为原始值（使用默认提示）。在以下交互中，我们可以看到将日期强制转换的结果是一个字符串：'
 - en: '[PRE20]'
+  id: totrans-189
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '[The `+` operator](ch_type-coercion.html#addition-operator) coerces both operands
     to primitives (with a default hint). If one of the results is a string, it performs
     string concatenation (otherwise it performs numeric addition). In the following
     interaction, we can see that the result of coercing the date is a string because
     the operator returns a string.'
+  id: totrans-190
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`+`运算符](ch_type-coercion.html#addition-operator)将两个操作数强制转换为原始值（使用默认提示）。如果其中一个结果是字符串，则执行字符串连接（否则执行数字相加）。在下面的交互中，我们可以看到将日期强制转换的结果是一个字符串，因为操作符返回一个字符串。'
 - en: '[PRE21]'
+  id: totrans-191
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 2.4.2 `ToString()` and related operations
+  id: totrans-192
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.4.2 `ToString()`和相关操作
 - en: 'This is the JavaScript version of `ToString()`:'
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`ToString()`的JavaScript版本：
 - en: '[PRE22]'
+  id: totrans-194
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: Note how this function uses `ToPrimitive()` as an intermediate step for objects,
     before converting the primitive result to a string (line A).
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，此函数在将对象转换为字符串之前使用`ToPrimitive()`作为中间步骤，然后将原始结果转换为字符串（第A行）。
 - en: '`ToString()` deviates in an interesting way from how `String()` works: If `argument`
     is a symbol, the former throws a `TypeError` while the latter doesn’t. Why is
     that? The default for symbols is that converting them to strings throws exceptions:'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToString()`以有趣的方式偏离了`String()`的工作方式：如果`argument`是一个符号，前者会抛出`TypeError`，而后者不会。为什么会这样？符号的默认值是将它们转换为字符串会抛出异常：'
 - en: '[PRE23]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'That default is overridden in `String()` and `Symbol.prototype.toString()`
     (both are described in the next subsections):'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: '`String()`和`Symbol.prototype.toString()`中都覆盖了默认值（它们都在下一小节中描述）：'
 - en: '[PRE24]'
+  id: totrans-199
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 2.4.2.1 `String()`
+  id: totrans-200
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 2.4.2.1 `String()`
 - en: '[PRE25]'
+  id: totrans-201
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '`String()` works differently, depending on whether it is invoked via a function
     call or via `new`. It uses [`new.target`](https://exploringjs.com/es6/ch_classes.html#sec_allocating-and-initializing-instances)
     to distinguish the two.'
+  id: totrans-202
   prefs: []
   type: TYPE_NORMAL
+  zh: '`String()`的工作方式不同，取决于是通过函数调用还是通过`new`调用。它使用[`new.target`](https://exploringjs.com/es6/ch_classes.html#sec_allocating-and-initializing-instances)来区分这两种情况。'
 - en: 'These are the helper functions `StringCreate()` and `SymbolDescriptiveString()`:'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是辅助函数`StringCreate()`和`SymbolDescriptiveString()`：
 - en: '[PRE26]'
+  id: totrans-204
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 2.4.2.2 `Symbol.prototype.toString()`
+  id: totrans-205
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 2.4.2.2 `Symbol.prototype.toString()`
 - en: In addition to `String()`, we can also use method `.toString()` to convert a
     symbol to a string. Its specification looks as follows.
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了`String()`之外，我们还可以使用方法`.toString()`将符号转换为字符串。其规范如下。
 - en: '[PRE27]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 2.4.2.3 `Object.prototype.toString`
+  id: totrans-208
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 2.4.2.3 `Object.prototype.toString`
 - en: 'The default specification for `.toString()` looks as follows:'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.toString()`的默认规范如下：'
 - en: '[PRE28]'
+  id: totrans-210
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'This operation is used if we convert plain objects to strings:'
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将普通对象转换为字符串，则使用此操作：
 - en: '[PRE29]'
+  id: totrans-212
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'By default, it is also used if we convert instances of classes to strings:'
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，如果我们将类的实例转换为字符串，则也会使用它：
 - en: '[PRE30]'
+  id: totrans-214
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'Normally, we would override `.toString()` in order to configure the string
     representation of `MyClass`, but we can also change what comes after “`object`”
     inside the string with the square brackets:'
+  id: totrans-215
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常，我们会重写`.toString()`以配置`MyClass`的字符串表示形式，但我们也可以更改字符串中“`object`”后面的内容，使用方括号：
 - en: '[PRE31]'
+  id: totrans-216
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'It is interesting to compare the overriding versions of `.toString()` with
     the original version in `Object.prototype`:'
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较`.toString()`的重写版本与`Object.prototype`中的原始版本是很有趣的：
 - en: '[PRE32]'
+  id: totrans-218
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 2.4.3 `ToPropertyKey()`
+  id: totrans-219
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.4.3 `ToPropertyKey()`
 - en: '`ToPropertyKey()` is used by, among others, the bracket operator. This is how
     it works:'
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToPropertyKey()`被方括号运算符等使用。它的工作方式如下：'
 - en: '[PRE33]'
+  id: totrans-221
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: Once again, objects are converted to primitives before working with primitives.
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次，对象在使用原始值之前被转换为原始值。
 - en: 2.4.4 `ToNumeric()` and related operations
+  id: totrans-223
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.4.4 `ToNumeric()`和相关操作
 - en: '`ToNumeric()` is used by, among others, by the multiplication operator (`*`).
     This is how it works:'
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToNumeric()`被乘法运算符(`*`)等使用。它的工作方式如下：'
 - en: '[PRE34]'
+  id: totrans-225
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 2.4.4.1 `ToNumber()`
+  id: totrans-226
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 2.4.4.1 `ToNumber()`
 - en: '`ToNumber()` works as follows:'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToNumber()`的工作方式如下：'
 - en: '[PRE35]'
+  id: totrans-228
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: The structure of `ToNumber()` is similar to the structure of `ToString()`.
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToNumber()`的结构类似于`ToString()`的结构。'
 - en: 2.5 Operations that coerce
+  id: totrans-230
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 2.5 强制转换操作
 - en: 2.5.1 Addition operator (`+`)
+  id: totrans-231
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.5.1 加法运算符(`+`)
 - en: 'This is how JavaScript’s addition operator is specified:'
+  id: totrans-232
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是JavaScript的加法运算符的规范：
 - en: '[PRE36]'
+  id: totrans-233
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'Steps of this algorithm:'
+  id: totrans-234
   prefs: []
   type: TYPE_NORMAL
+  zh: 此算法的步骤：
 - en: Both operands are converted to primitive values.
+  id: totrans-235
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 两个操作数都被转换为原始值。
 - en: If one of the results is a string, both are converted to strings and concatenated
     (line A).
+  id: totrans-236
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果其中一个结果是字符串，则两者都将转换为字符串并连接（第A行）。
 - en: Otherwise, both operands are converted to numeric values and added (line B).
     `Type()` returns the ECMAScript specification type of `lnum`. `.add()` is a method
     of [numeric types](https://tc39.es/ecma262/#sec-numeric-types).
+  id: totrans-237
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，两个操作数将转换为数值并相加（第B行）。`Type()`返回`lnum`的ECMAScript规范类型。`.add()`是[数值类型](https://tc39.es/ecma262/#sec-numeric-types)的一个方法。
 - en: 2.5.2 Abstract Equality Comparison (`==`)
+  id: totrans-238
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 2.5.2 抽象相等比较(`==`)
 - en: '[PRE37]'
+  id: totrans-239
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'The following operations are not shown here:'
+  id: totrans-240
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下操作在此处未显示：
 - en: '[`strictEqualityComparison()`](https://tc39.es/ecma262/#sec-strict-equality-comparison)'
+  id: totrans-241
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`strictEqualityComparison()`](https://tc39.es/ecma262/#sec-strict-equality-comparison)'
 - en: '[`StringToBigInt()`](https://tc39.es/ecma262/#sec-stringtobigint)'
+  id: totrans-242
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`StringToBigInt()`](https://tc39.es/ecma262/#sec-stringtobigint)'
 - en: '[`isSameMathematicalValue()`](https://tc39.es/ecma262/#mathematical-value)'
+  id: totrans-243
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`isSameMathematicalValue()`](https://tc39.es/ecma262/#mathematical-value)'
 - en: '2.6 Glossary: terms related to type conversion'
+  id: totrans-244
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 2.6 与类型转换相关的术语表
 - en: 'Now that we have taken a closer look at how JavaScript’s type coercion works,
     let’s conclude with a brief glossary of terms related to type conversion:'
+  id: totrans-245
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们已经更仔细地了解了JavaScript的类型转换工作方式，让我们用与类型转换相关的术语简要总结一下：
 - en: In *type conversion*, we want the output value to have a given type. If the
     input value already has that type, it is simply returned unchanged. Otherwise,
     it is converted to a value that has the desired type.
+  id: totrans-246
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在*类型转换*中，我们希望输出值具有给定类型。如果输入值已经具有该类型，则简单地返回它。否则，它将被转换为具有所需类型的值。
 - en: '*Explicit type conversion* means that the programmer uses an operation (a function,
     an operator, etc.) to trigger a type conversion. Explicit conversions can be:'
+  id: totrans-247
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*显式类型转换*意味着程序员使用操作（函数、运算符等）来触发类型转换。显式转换可以是：'
 - en: '*Checked*: If a value can’t be converted, an exception is thrown.'
+  id: totrans-248
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*已检查*：如果值无法转换，则会抛出异常。'
 - en: '*Unchecked*: If a value can’t be converted, an error value is returned.'
+  id: totrans-249
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*未经检查*：如果一个值无法转换，就会返回一个错误值。'
 - en: What *type casting* is, depends on the programming language. For example, in
     Java, it is explicit checked type conversion.
+  id: totrans-250
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*类型转换*取决于编程语言。例如，在Java中，它是显式的检查类型转换。'
 - en: '*Type coercion* is implicit type conversion: An operation automatically converts
     its arguments to the types it needs. Can be checked or unchecked or something
     in-between.'
+  id: totrans-251
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*类型强制*是隐式类型转换：一个操作会自动将其参数转换为它所需的类型。可以是检查的、未经检查的或介于两者之间的。'
 - en: '[Source: [Wikipedia](https://en.wikipedia.org/wiki/Type_conversion)]'
+  id: totrans-252
   prefs: []
   type: TYPE_NORMAL
+  zh: '[来源：[维基百科](https://en.wikipedia.org/wiki/Type_conversion)]'
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/2)'
+  id: totrans-253
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/deep-js/issues/2)'

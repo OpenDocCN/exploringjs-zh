@@ -1,627 +1,947 @@
 - en: 3 The destructuring algorithm
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 3 解构算法
 - en: 原文：[https://exploringjs.com/deep-js/ch_destructuring-algorithm.html](https://exploringjs.com/deep-js/ch_destructuring-algorithm.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_destructuring-algorithm.html](https://exploringjs.com/deep-js/ch_destructuring-algorithm.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 3.1 [Preparing for the pattern matching algorithm](ch_destructuring-algorithm.html#preparing-for-the-pattern-matching-algorithm)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.1 [为模式匹配算法做准备](ch_destructuring-algorithm.html#preparing-for-the-pattern-matching-algorithm)
 - en: 3.1.1 [Using declarative rules for specifying the matching algorithm](ch_destructuring-algorithm.html#using-declarative-rules-for-specifying-the-matching-algorithm)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.1.1 [使用声明性规则指定匹配算法](ch_destructuring-algorithm.html#using-declarative-rules-for-specifying-the-matching-algorithm)
 - en: 3.1.2 [Evaluating expressions based on the declarative rules](ch_destructuring-algorithm.html#evaluating-expressions-based-on-the-declarative-rules)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.1.2 [基于声明性规则评估表达式](ch_destructuring-algorithm.html#evaluating-expressions-based-on-the-declarative-rules)
 - en: 3.2 [The pattern matching algorithm](ch_destructuring-algorithm.html#the-pattern-matching-algorithm)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.2 [模式匹配算法](ch_destructuring-algorithm.html#the-pattern-matching-algorithm)
 - en: 3.2.1 [Patterns](ch_destructuring-algorithm.html#patterns)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.2.1 [模式](ch_destructuring-algorithm.html#patterns)
 - en: 3.2.2 [Rules for variable](ch_destructuring-algorithm.html#rules-for-variable)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.2.2 [变量的规则](ch_destructuring-algorithm.html#rules-for-variable)
 - en: 3.2.3 [Rules for object patterns](ch_destructuring-algorithm.html#rules-for-object-patterns)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.2.3 [对象模式的规则](ch_destructuring-algorithm.html#rules-for-object-patterns)
 - en: 3.2.4 [Rules for Array patterns](ch_destructuring-algorithm.html#rules-for-array-patterns)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.2.4 [数组模式的规则](ch_destructuring-algorithm.html#rules-for-array-patterns)
 - en: 3.3 [Empty object patterns and Array patterns](ch_destructuring-algorithm.html#empty-object-patterns-and-array-patterns)
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.3 [空对象模式和数组模式](ch_destructuring-algorithm.html#empty-object-patterns-and-array-patterns)
 - en: 3.4 [Applying the algorithm](ch_destructuring-algorithm.html#applying-the-algorithm)
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.4 [应用算法](ch_destructuring-algorithm.html#applying-the-algorithm)
 - en: '3.4.1 [Background: passing parameters via matching](ch_destructuring-algorithm.html#background-passing-parameters-via-matching)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.4.1 [背景：通过匹配传递参数](ch_destructuring-algorithm.html#background-passing-parameters-via-matching)
 - en: 3.4.2 [Using `move2()`](ch_destructuring-algorithm.html#using-move2)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.4.2 [使用`move2()`](ch_destructuring-algorithm.html#using-move2)
 - en: 3.4.3 [Using `move1()`](ch_destructuring-algorithm.html#using-move1)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.4.3 [使用`move1()`](ch_destructuring-algorithm.html#using-move1)
 - en: '3.4.4 [Conclusion: Default values are a feature of pattern parts](ch_destructuring-algorithm.html#conclusion-default-values-are-a-feature-of-pattern-parts)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 3.4.4 [结论：默认值是模式部分的特性](ch_destructuring-algorithm.html#conclusion-default-values-are-a-feature-of-pattern-parts)
 - en: '* * *'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'In this chapter, we look at destructuring from a different angle: as a recursive
     pattern matching algorithm.'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们以不同的角度看待解构：作为一种递归模式匹配算法。
 - en: 'The algorithm will give us a better understanding of default values. That will
     be useful at the end, where we’ll try to figure out how the following two functions
     differ:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 该算法将使我们更好地理解默认值。这在最后将会很有用，我们将尝试弄清楚以下两个函数的区别：
 - en: '[PRE0]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 3.1 Preparing for the pattern matching algorithm
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 3.1 为模式匹配算法做准备
 - en: 'A destructuring assignment looks like this:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 解构赋值看起来像这样：
 - en: '[PRE1]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: We want to use `pattern` to extract data from `value`.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们想使用`pattern`从`value`中提取数据。
 - en: 'We will now look at an algorithm for performing this kind of assignment. This
     algorithm is known in functional programming as *pattern matching* (short: *matching*).
     It specifies the operator `←` (“match against”) that matches a `pattern` against
     a `value` and assigns to variables while doing so:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们现在将看一个执行这种赋值的算法。这个算法在函数式编程中被称为*模式匹配*（简称：*匹配*）。它指定了运算符`←`（“匹配”）来将`pattern`与`value`匹配并在此过程中赋值给变量：
 - en: '[PRE2]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'We will only explore destructuring assignment, but destructuring variable declarations
     and destructuring parameter definitions work similarly. We won’t go into advanced
     features, either: Computed property keys, property value shorthands, and object
     properties and array elements as assignment targets, are beyond the scope of this
     chapter.'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们只会探讨解构赋值，但解构变量声明和解构参数定义的工作方式类似。我们也不会涉及高级特性：计算属性键，属性值简写，以及对象属性和数组元素作为赋值目标，超出了本章的范围。
 - en: The specification for the match operator consists of declarative rules that
     descend into the structures of both operands. The declarative notation may take
     some getting used to, but it makes the specification more concise.
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 匹配运算符的规范包括下降到两个操作数的结构的声明性规则。声明性符号可能需要一些时间来适应，但它使规范更加简洁。
 - en: 3.1.1 Using declarative rules for specifying the matching algorithm
+  id: totrans-29
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.1.1 使用声明性规则指定匹配算法
 - en: 'The declarative rules used in this chapter operate on input and produce the
     result of the algorithm via side effects. This is one such rule (which we’ll see
     again later):'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章中使用的声明性规则操作输入，并通过副作用产生算法的结果。这是一个这样的规则（我们稍后会再次看到）：
 - en: '(2c) `{key: «pattern», «properties»} ← obj`'
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '(2c) `{key: «pattern», «properties»} ← obj`'
 - en: '[PRE3]'
+  id: totrans-32
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'This rule has the following parts:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 此规则有以下部分：
 - en: (2c) is the *number* of the rule. The number is used to refer to the rule.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (2c)是规则的*编号*。该编号用于引用规则。
 - en: The *head* (first line) describes what the input must look like so that this
     rule can be applied.
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*head*（第一行）描述了输入必须是什么样子，以便应用此规则。'
 - en: The *body* (remaining lines) describes what happens if the rule is applied.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*body*（剩余行）描述了规则应用时发生的情况。'
 - en: In rule (2c), the head means that this rule can be applied if there is an object
     pattern with at least one property (whose key is `key`) and zero or more remaining
     properties. The effect of this rule is that execution continues with the property
     value pattern being matched against `obj.key` and the remaining properties being
     matched against `obj`.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 在规则（2c）中，头部表示如果存在至少一个属性（其键为`key`）和零个或多个剩余属性的对象模式，则可以应用此规则。此规则的效果是继续执行，将属性值模式与`obj.key`匹配，并将剩余属性与`obj`匹配。
 - en: 'Let’s consider one more rule from this chapter:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们考虑本章中的另一条规则：
 - en: (2e) `{} ← obj` (no properties left)
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (2e) `{} ← obj`（没有剩余属性）
 - en: '[PRE4]'
+  id: totrans-40
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: In rule (2e), the head means that this rule is executed if the empty object
     pattern `{}` is matched against a value `obj`. The body means that, in this case,
     we are done.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 在规则(2e)中，头部意味着如果空对象模式`{}`与值`obj`匹配，则执行此规则。主体意味着在这种情况下，我们已经完成了。
 - en: Together, rule (2c) and rule (2e) form a declarative loop that iterates over
     the properties of the pattern on the left-hand side of the arrow.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 规则(2c)和规则(2e)一起形成了一个声明性循环，它遍历箭头左侧模式的属性。
 - en: 3.1.2 Evaluating expressions based on the declarative rules
+  id: totrans-43
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.1.2 基于声明性规则评估表达式
 - en: 'The complete algorithm is specified via a sequence of declarative rules. Let’s
     assume we want to evaluate the following matching expression:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 完整的算法是通过一系列声明性规则指定的。假设我们想要评估以下匹配表达式：
 - en: '[PRE5]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: To apply a sequence of rules, we go over them from top to bottom and execute
     the first applicable rule. If there is a matching expression in the body of that
     rule, the rules are applied again. And so on.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了应用一系列规则，我们从上到下遍历它们，并执行第一个适用的规则。如果在该规则的主体中有匹配的表达式，则再次应用规则。依此类推。
 - en: 'Sometimes the head includes a condition that also determines if a rule is applicable
     – for example:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时头部包括一个条件，该条件还确定了规则是否适用-例如：
 - en: (3a) `[«elements»] ← non_iterable`
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (3a) `[«elements»] ← non_iterable`（非法值）
 - en: '`if (!isIterable(non_iterable))`'
+  id: totrans-49
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`if (!isIterable(non_iterable))`'
 - en: '[PRE6]'
+  id: totrans-50
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 3.2 The pattern matching algorithm
+  id: totrans-51
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 3.2 模式匹配算法
 - en: 3.2.1 Patterns
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.2.1 模式
 - en: 'A pattern is either:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 模式要么是：
 - en: 'A variable: `x`'
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个变量：`x`
 - en: 'An object pattern: `{«properties»}`'
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个对象模式：`{«properties»}`
 - en: 'An Array pattern: `[«elements»]`'
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个数组模式：`[«elements»]`
 - en: The next three sections specify rules for handling these three cases in matching
     expressions.
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来的三个部分指定了处理这三种情况的匹配表达式的规则。
 - en: 3.2.2 Rules for variable
+  id: totrans-58
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.2.2 变量规则
 - en: '`x ← value` (including `undefined` and `null`)'
+  id: totrans-59
   prefs:
   - PREF_UL
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`x ← value`（包括`undefined`和`null`）'
 - en: '[PRE7]'
+  id: totrans-60
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 3.2.3 Rules for object patterns
+  id: totrans-61
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.2.3 对象模式规则
 - en: (2a) `{«properties»} ← undefined` (illegal value)
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (2a) `{«properties»} ← undefined`（非法值）
 - en: '[PRE8]'
+  id: totrans-63
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: (2b) `{«properties»} ← null` (illegal value)
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (2b) `{«properties»} ← null`（非法值）
 - en: '[PRE9]'
+  id: totrans-65
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '(2c) `{key: «pattern», «properties»} ← obj`'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '(2c) `{key: «pattern», «properties»} ← obj`'
 - en: '[PRE10]'
+  id: totrans-67
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '(2d) `{key: «pattern» = default_value, «properties»} ← obj`'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '(2d) `{key: «pattern» = default_value, «properties»} ← obj`'
 - en: '[PRE11]'
+  id: totrans-69
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: (2e) `{} ← obj` (no properties left)
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (2e) `{} ← obj`（没有剩余属性）
 - en: '[PRE12]'
+  id: totrans-71
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: Rules 2a and 2b deal with illegal values. Rules 2c–2e loop over the properties
     of the pattern. In rule 2d, we can see that a default value provides an alternative
     to match against if there is no matching property in `obj`.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 规则2a和2b处理非法值。规则2c-2e循环遍历模式的属性。在规则2d中，我们可以看到默认值提供了一个与`obj`中没有匹配属性对应的替代方案。
 - en: 3.2.4 Rules for Array patterns
+  id: totrans-73
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.2.4 数组模式规则
 - en: '**Array pattern and iterable.** The algorithm for Array destructuring starts
     with an Array pattern and an iterable:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: '**数组模式和可迭代对象。** 数组解构的算法从数组模式和可迭代对象开始：'
 - en: (3a) `[«elements»] ← non_iterable` (illegal value)
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (3a) `[«elements»] ← non_iterable`（非法值）
 - en: '`if (!isIterable(non_iterable))`'
+  id: totrans-76
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`if (!isIterable(non_iterable))`'
 - en: '[PRE13]'
+  id: totrans-77
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: (3b) `[«elements»] ← iterable`
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (3b) `[«elements»] ← iterable`
 - en: '`if (isIterable(iterable))`'
+  id: totrans-79
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`if (isIterable(iterable))`'
 - en: '[PRE14]'
+  id: totrans-80
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Helper function:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 辅助函数：
 - en: '[PRE15]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '**Array elements and iterator.** The algorithm continues with:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: '**数组元素和迭代器。** 算法继续进行：'
 - en: The elements of the pattern (left-hand side of the arrow)
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模式的元素（箭头左侧）
 - en: The iterator that was obtained from the iterable (right-hand side of the arrow)
+  id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从可迭代对象（箭头右侧）获得的迭代器
 - en: 'These are the rules:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是规则：
 - en: (3c) `«pattern», «elements» ← iterator`
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (3c) `«pattern», «elements» ← iterator`
 - en: '[PRE16]'
+  id: totrans-88
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: (3d) `«pattern» = default_value, «elements» ← iterator`
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (3d) `«pattern» = default_value, «elements» ← iterator`
 - en: '[PRE17]'
+  id: totrans-90
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: (3e) `, «elements» ← iterator` (hole, elision)
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (3e) `, «elements» ← iterator`（空位，省略）
 - en: '[PRE18]'
+  id: totrans-92
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: (3f) `...«pattern» ← iterator` (always last part!)
+  id: totrans-93
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (3f) `...«pattern» ← iterator`（总是最后一部分！）
 - en: '[PRE19]'
+  id: totrans-94
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: (3g) `← iterator` (no elements left)
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (3g) `← iterator`（没有剩余元素）
 - en: '[PRE20]'
+  id: totrans-96
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'Helper function:'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 辅助函数：
 - en: '[PRE21]'
+  id: totrans-98
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: An iterator being finished is similar to missing properties in objects.
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 迭代器完成类似于对象中缺少的属性。
 - en: 3.3 Empty object patterns and Array patterns
+  id: totrans-100
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 3.3 空对象模式和数组模式
 - en: 'Interesting consequence of the algorithm’s rules: We can destructure with empty
     object patterns and empty Array patterns.'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 算法规则的有趣结果：我们可以使用空对象模式和空数组模式进行解构。
 - en: 'Given an empty object pattern `{}`: If the value to be destructured is neither
     `undefined` nor `null`, then nothing happens. Otherwise, a `TypeError` is thrown.'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定一个空对象模式`{}`：如果要解构的值既不是`undefined`也不是`null`，则什么也不会发生。否则，将抛出`TypeError`。
 - en: '[PRE22]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'Given an empty Array pattern `[]`: If the value to be destructured is iterable,
     then nothing happens. Otherwise, a `TypeError` is thrown.'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定一个空的数组模式`[]`：如果要解构的值是可迭代的，则什么也不会发生。否则，将抛出`TypeError`。
 - en: '[PRE23]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'In other words: Empty destructuring patterns force values to have certain characteristics,
     but have no other effects.'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说：空解构模式强制值具有某些特征，但没有其他效果。
 - en: 3.4 Applying the algorithm
+  id: totrans-107
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 3.4 应用算法
 - en: 'In JavaScript, named parameters are simulated via objects: The caller uses
     an object literal and the callee uses destructuring. This simulation is explained
     in detail in [“JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_callables.html#named-parameters).
     The following code shows an example: function `move1()` has two named parameters,
     `x` and `y`:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript中，通过对象模拟命名参数：调用者使用对象文字，被调用者使用解构。这个模拟在[“JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_callables.html#named-parameters)中有详细解释。以下代码显示了一个例子：函数`move1()`有两个命名参数`x`和`y`：
 - en: '[PRE24]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'There are three default values in line A:'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: A行中有三个默认值：
 - en: The first two default values allow us to omit `x` and `y`.
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 前两个默认值允许我们省略`x`和`y`。
 - en: The third default value allows us to call `move1()` without parameters (as in
     the last line).
+  id: totrans-112
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 第三个默认值允许我们调用`move1()`而不带参数（就像最后一行一样）。
 - en: But why would we define the parameters as in the previous code snippet? Why
     not as follows?
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 但是为什么我们要像前面的代码片段中定义参数呢？为什么不像下面这样？
 - en: '[PRE25]'
+  id: totrans-114
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: To see why `move1()` is correct, we are going to use both functions in two examples.
     Before we do that, let’s see how the passing of parameters can be explained via
     matching.
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 要看`move1()`为什么是正确的，我们将在两个示例中使用这两个函数。在这之前，让我们看看参数的传递如何可以通过匹配来解释。
 - en: '3.4.1 Background: passing parameters via matching'
+  id: totrans-116
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.4.1 背景：通过匹配传递参数
 - en: For function calls, *formal parameters* (inside function definitions) are matched
     against *actual parameters* (inside function calls). As an example, take the following
     function definition and the following function call.
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 在函数调用中，*形式参数*（在函数定义内部）与*实际参数*（在函数调用内部）进行匹配。例如，考虑以下函数定义和以下函数调用。
 - en: '[PRE26]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: The parameters `a` and `b` are set up similarly to the following destructuring.
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 参数`a`和`b`的设置类似于以下解构。
 - en: '[PRE27]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 3.4.2 Using `move2()`
+  id: totrans-121
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.4.2 使用`move2()`
 - en: Let’s examine how destructuring works for `move2()`.
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看`move2()`的解构是如何工作的。
 - en: '**Example 1.** The function call `move2()` leads to this destructuring:'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例1.** 函数调用`move2()`导致这种解构：'
 - en: '[PRE28]'
+  id: totrans-124
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'The single Array element on the left-hand side does not have a match on the
     right-hand side, which is why `{x,y}` is matched against the default value and
     not against data from the right-hand side (rules 3b, 3d):'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 左侧的单个数组元素在右侧没有匹配，这就是为什么`{x,y}`与默认值匹配而不是与右侧数据匹配的原因（规则3b，3d）：
 - en: '[PRE29]'
+  id: totrans-126
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'The left-hand side contains *property value shorthands*. It is an abbreviation
     for:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 左侧包含*属性值简写*。这是一个缩写形式：
 - en: '[PRE30]'
+  id: totrans-128
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'This destructuring leads to the following two assignments (rules 2c, 1):'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种解构导致以下两个赋值（规则2c，1）：
 - en: '[PRE31]'
+  id: totrans-130
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: This is what we wanted. However, in the next example, we are not as lucky.
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是我们想要的。但是，在下一个示例中，我们就没有那么幸运了。
 - en: '**Example 2.** Let’s examine the function call `move2({z: 3})` which leads
     to the following destructuring:'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例2.** 让我们检查函数调用`move2({z: 3})`，这导致以下解构：'
 - en: '[PRE32]'
+  id: totrans-133
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'There is an Array element at index 0 on the right-hand side. Therefore, the
     default value is ignored and the next step is (rule 3d):'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 右侧有一个索引为0的数组元素。因此，默认值被忽略，下一步是（规则3d）：
 - en: '[PRE33]'
+  id: totrans-135
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: That leads to both `x` and `y` being set to `undefined`, which is not what we
     want. The problem is that `{x,y}` is not matched against the default value, anymore,
     but against `{z:3}`.
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 这导致`x`和`y`都设置为`undefined`，这不是我们想要的。问题在于`{x,y}`不再与默认值匹配，而是与`{z:3}`匹配。
 - en: 3.4.3 Using `move1()`
+  id: totrans-137
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.4.3 使用`move1()`
 - en: Let’s try `move1()`.
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们尝试`move1()`。
 - en: '**Example 1:** `move1()`'
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例1：** `move1()`'
 - en: '[PRE34]'
+  id: totrans-140
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'We don’t have an Array element at index 0 on the right-hand side and use the
     default value (rule 3d):'
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在右侧没有一个索引为0的数组元素，并且使用默认值（规则3d）：
 - en: '[PRE35]'
+  id: totrans-142
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: 'The left-hand side contains property value shorthands, which means that this
     destructuring is equivalent to:'
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 左侧包含属性值简写，这意味着这种解构等同于：
 - en: '[PRE36]'
+  id: totrans-144
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'Neither property `x` nor property `y` have a match on the right-hand side.
     Therefore, the default values are used and the following destructurings are performed
     next (rule 2d):'
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 左侧的属性`x`和属性`y`都没有在右侧匹配。因此，使用默认值，并且接下来执行以下解构（规则2d）：
 - en: '[PRE37]'
+  id: totrans-146
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'That leads to the following assignments (rule 1):'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 这导致以下赋值（规则1）：
 - en: '[PRE38]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: Here, we get what we want. Let’s see if our luck holds with the next example.
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，我们得到了我们想要的。让我们看看我们的运气是否在下一个示例中持续。
 - en: '**Example 2:** `move1({z: 3})`'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例2：** `move1({z: 3})`'
 - en: '[PRE39]'
+  id: totrans-151
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: 'The first element of the Array pattern has a match on the right-hand side and
     that match is used to continue destructuring (rule 3d):'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组模式的第一个元素在右侧有一个匹配，并且该匹配用于继续解构（规则3d）：
 - en: '[PRE40]'
+  id: totrans-153
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'Like in example 1, there are no properties `x` and `y` on the right-hand side
     and the default values are used:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 与示例1一样，在右侧没有属性`x`和`y`，并且使用默认值：
 - en: '[PRE41]'
+  id: totrans-155
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: It works as desired! This time, the pattern with `x` and `y` being matched against
     `{z:3}` is not a problem, because they have their own local default values.
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 它按预期工作！这次，模式中的`x`和`y`与`{z:3}`匹配不是问题，因为它们有自己的本地默认值。
 - en: '3.4.4 Conclusion: Default values are a feature of pattern parts'
+  id: totrans-157
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 3.4.4 结论：默认值是模式部分的一个特性
 - en: The examples demonstrate that default values are a feature of pattern parts
     (object properties or Array elements). If a part has no match or is matched against
     `undefined` then the default value is used. That is, the pattern is matched against
     the default value, instead.
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些示例表明默认值是模式部分（对象属性或数组元素）的一个特性。如果一个部分没有匹配或与`undefined`匹配，则使用默认值。也就是说，模式与默认值匹配，而不是与实际值匹配。
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/3)'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/deep-js/issues/3)'
