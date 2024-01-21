@@ -3,48 +3,57 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 13 实例化类的技术
 - en: 原文：[https://exploringjs.com/deep-js/ch_creating-class-instances.html](https://exploringjs.com/deep-js/ch_creating-class-instances.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_creating-class-instances.html](https://exploringjs.com/deep-js/ch_creating-class-instances.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '13.1 [The problem: initializing a property asynchronously](ch_creating-class-instances.html#the-problem-initializing-a-property-asynchronously)'
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.1 [问题：异步初始化属性](ch_creating-class-instances.html#the-problem-initializing-a-property-asynchronously)
 - en: '13.2 [Solution: Promise-based constructor](ch_creating-class-instances.html#solution-promise-based-constructor)'
   id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.2 [解决方案：基于Promise的构造函数](ch_creating-class-instances.html#solution-promise-based-constructor)
 - en: 13.2.1 [Using an immediately-invoked asynchronous arrow function](ch_creating-class-instances.html#using-an-immediately-invoked-asynchronous-arrow-function)
   id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.2.1 [使用立即调用的异步箭头函数](ch_creating-class-instances.html#using-an-immediately-invoked-asynchronous-arrow-function)
 - en: '13.3 [Solution: static factory method](ch_creating-class-instances.html#solution-static-factory-method)'
   id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.3 [解决方案：静态工厂方法](ch_creating-class-instances.html#solution-static-factory-method)
 - en: '13.3.1 [Improvement: private constructor via secret token](ch_creating-class-instances.html#improvement-private-constructor-via-secret-token)'
   id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.3.1 [改进：通过秘密令牌私有构造函数](ch_creating-class-instances.html#improvement-private-constructor-via-secret-token)
 - en: '13.3.2 [Improvement: constructor throws, factory method borrows the class prototype](ch_creating-class-instances.html#improvement-constructor-throws-factory-method-borrows-the-class-prototype)'
   id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.3.2 [改进：构造函数抛出，工厂方法借用类原型](ch_creating-class-instances.html#improvement-constructor-throws-factory-method-borrows-the-class-prototype)
 - en: '13.3.3 [Improvement: instances are inactive by default, activated by factory
     method](ch_creating-class-instances.html#improvement-instances-are-inactive-by-default-activated-by-factory-method)'
   id: totrans-9
@@ -52,31 +61,37 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.3.3 [改进：实例默认处于非活动状态，由工厂方法激活](ch_creating-class-instances.html#improvement-instances-are-inactive-by-default-activated-by-factory-method)
 - en: '13.3.4 [Variant: separate factory function](ch_creating-class-instances.html#variant-separate-factory-function)'
   id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.3.4 [变体：单独的工厂函数](ch_creating-class-instances.html#variant-separate-factory-function)
 - en: 13.4 [Subclassing a Promise-based constructor (optional)](ch_creating-class-instances.html#subclassing-a-promise-based-constructor-optional)
   id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.4 [基于Promise的构造函数的子类化（可选）](ch_creating-class-instances.html#subclassing-a-promise-based-constructor-optional)
 - en: 13.5 [Conclusion](ch_creating-class-instances.html#conclusion-1)
   id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.5 [结论](ch_creating-class-instances.html#conclusion-1)
 - en: 13.6 [Further reading](ch_creating-class-instances.html#further-reading-3)
   id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 13.6 [进一步阅读](ch_creating-class-instances.html#further-reading-3)
 - en: '* * *'
   id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'In this chapter, we examine several approaches for creating instances of classes:
     Constructors, factory functions, etc. We do so by solving one concrete problem
     several times. The focus of this chapter is on classes, which is why alternatives
@@ -84,16 +99,19 @@
   id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将研究创建类实例的几种方法：构造函数，工厂函数等。我们通过多次解决一个具体的问题来做到这一点。本章的重点是类，因此忽略了类的替代方案。
 - en: '13.1 The problem: initializing a property asynchronously'
   id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.1 问题：异步初始化属性
 - en: 'The following container class is supposed to receive the contents of its property
     `.data` asynchronously. This is our first attempt:'
   id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下容器类应该异步接收其属性`.data`的内容。这是我们的第一次尝试：
 - en: '[PRE0]'
   id: totrans-18
   prefs: []
@@ -103,6 +121,7 @@
   id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 此代码的关键问题：属性`.data`最初为`undefined`。
 - en: '[PRE1]'
   id: totrans-20
   prefs: []
@@ -113,6 +132,7 @@
   id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在A行，我们声明了[私有字段](https://2ality.com/2019/07/private-class-fields.html) `.#data`，我们在B行和C行中使用。
 - en: The Promise inside the constructor of `DataContainer` is settled asynchronously,
     which is why we can only see the final value of `.data` if we finish the current
     task and start a new one, via `setTimeout()`. In other words, the instance of
@@ -120,11 +140,13 @@
   id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '`DataContainer`构造函数内部的Promise是异步解决的，这就是为什么我们只有在完成当前任务并启动新任务（通过`setTimeout()`）后才能看到`.data`的最终值。换句话说，当我们第一次看到它时，`DataContainer`实例尚未完全初始化。'
 - en: '13.2 Solution: Promise-based constructor'
   id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.2 解决方案：基于Promise的构造函数
 - en: 'What if we delay access to the instance of `DataContainer` until it is fully
     initialized? We can achieve that by returning a Promise from the constructor.
     By default, a constructor returns a new instance of the class that it is part
@@ -132,6 +154,7 @@
   id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们延迟访问`DataContainer`实例直到完全初始化，会怎么样？我们可以通过从构造函数返回一个Promise来实现这一点。默认情况下，构造函数返回其所属类的新实例。如果我们明确返回一个对象，我们可以覆盖它：
 - en: '[PRE2]'
   id: totrans-25
   prefs: []
@@ -143,48 +166,57 @@
   id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们必须等到可以访问我们的实例（B行）。在数据“下载”后（A行）将其传递给我们。此代码中可能出现两种错误：
 - en: The download may fail and produce a rejection.
   id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 下载可能失败并产生拒绝。
 - en: An exception may be thrown in the body of the first `.then()` callback.
   id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在第一个`.then()`回调的主体中可能会抛出异常。
 - en: In either case, the errors become rejections of the Promise that is returned
     from the constructor.
   id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 在任何一种情况下，错误都会成为从构造函数返回的Promise的拒绝。
 - en: 'Pros and cons:'
   id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 利弊：
 - en: A benefit of this approach is that we can only access the instance once it is
     fully initialized. And there is no other way of creating instances of `DataContainer`.
   id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这种方法的好处是，只有在完全初始化后才能访问实例。没有其他方法可以创建`DataContainer`的实例。
 - en: A disadvantage is that it may be surprising to have a constructor return a Promise
     instead of an instance.
   id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '一个缺点是构造函数返回一个Promise而不是一个实例。 '
 - en: 13.2.1 Using an immediately-invoked asynchronous arrow function
   id: totrans-33
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.2.1 使用立即调用的异步箭头函数
 - en: 'Instead of using the Promise API directly to create the Promise that is returned
     from the constructor, we can also use an asynchronous arrow function that [we
     invoke immediately](https://exploringjs.com/impatient-js/ch_async-functions.html#immediately-invoked-async-arrow-functions):'
   id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 不是直接使用Promise API来创建从构造函数返回的Promise，我们也可以使用一个异步箭头函数，[我们立即调用](https://exploringjs.com/impatient-js/ch_async-functions.html#immediately-invoked-async-arrow-functions)：
 - en: '[PRE3]'
   id: totrans-35
   prefs: []
@@ -195,33 +227,39 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.3 解决方案：静态工厂方法
 - en: 'A *static factory method* of a class `C` creates instances of `C` and is an
     alternative to using `new C()`. Common names for static factory methods in JavaScript:'
   id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 类`C`的*静态工厂方法*创建`C`的实例，是使用`new C()`的替代方法。JavaScript中静态工厂方法的常见名称：
 - en: '`.create()`: Creates a new instance. Example: `Object.create()`'
   id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.create()`: 创建一个新实例。示例：`Object.create()`'
 - en: '`.from()`: Creates a new instance based on a different object, by copying and/or
     converting it. Example: `Array.from()`'
   id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.from()`: 创建一个基于不同对象的新实例，通过复制和/或转换它。示例：`Array.from()`'
 - en: '`.of()`: Creates a new instance by assembling values specified via arguments.
     Example: `Array.of()`'
   id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.of()`: 通过使用参数指定的值创建一个新实例。示例：`Array.of()`'
 - en: 'In the following example, `DataContainer.create()` is a static factory method.
     It returns Promises for instances of `DataContainer`:'
   id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的示例中，`DataContainer.create()`是一个静态工厂方法。它返回`DataContainer`的实例的Promise：
 - en: '[PRE4]'
   id: totrans-42
   prefs: []
@@ -232,32 +270,38 @@
   id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 这次，所有异步功能都包含在`.create()`中，这使得类的其余部分完全同步，因此更简单。
 - en: 'Pros and cons:'
   id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 优缺点：
 - en: A benefit of this approach is that the constructor becomes simple.
   id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这种方法的一个好处是构造函数变得简单。
 - en: A disadvantage of this approach is that it’s now possible to create instances
     that are incorrectly set up, via `new DataContainer()`.
   id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这种方法的一个缺点是现在可能会创建不正确设置的实例，通过`new DataContainer()`。
 - en: '13.3.1 Improvement: private constructor via secret token'
   id: totrans-47
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.1 改进：通过秘密令牌的私有构造函数
 - en: 'If we want to ensure that instances are always correctly set up, we must ensure
     that only `DataContainer.create()` can invoke the constructor of `DataContainer`.
     We can achieve that via a secret token:'
   id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要确保实例始终正确设置，我们必须确保只有`DataContainer.create()`可以调用`DataContainer`的构造函数。我们可以通过一个秘密令牌来实现：
 - en: '[PRE5]'
   id: totrans-49
   prefs: []
@@ -269,30 +313,36 @@
   id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果`secretToken`和`DataContainer`位于同一个模块中，并且只有后者被导出，那么外部方无法访问`secretToken`，因此无法创建`DataContainer`的实例。
 - en: 'Pros and cons:'
   id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 优缺点：
 - en: 'Benefit: safe and straightforward.'
   id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：安全且直观。
 - en: 'Disadvantage: slightly verbose.'
   id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：稍微冗长。
 - en: '13.3.2 Improvement: constructor throws, factory method borrows the class prototype'
   id: totrans-54
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.2 改进：构造函数抛出，工厂方法借用类原型
 - en: 'The following variant of our solution disables the constructor of `DataContainer`
     and uses a trick to create instances of it another way (line A):'
   id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们解决方案的以下变体禁用了`DataContainer`的构造函数，并使用一个技巧以另一种方式创建它的实例（行A）：
 - en: '[PRE6]'
   id: totrans-56
   prefs: []
@@ -304,20 +354,24 @@
   id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 在内部，`DataContainer`的实例是其原型为`DataContainer.prototype`的任何对象。这就是为什么我们可以通过`Object.create()`（行A）创建实例，也是为什么`instanceof`在行B中起作用的原因。
 - en: 'Pros and cons:'
   id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 优缺点：
 - en: 'Benefit: elegant; `instanceof` works.'
   id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：优雅；`instanceof`有效。
 - en: 'Disadvantages:'
   id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：
 - en: Creating instances is not completely prevented. To be fair, though, the work-around
     via `Object.create()` can also be used for our previous solutions.
   id: totrans-61
@@ -325,6 +379,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 无法完全阻止创建实例。不过公平地说，通过`Object.create()`的解决方案也可以用于我们之前的解决方案。
 - en: We can’t use [private fields](https://2ality.com/2019/07/private-class-fields.html)
     and [private methods](https://2ality.com/2019/07/private-methods-accessors-in-classes.html)
     in `DataContainer`, because those are only set up correctly for instances that
@@ -334,18 +389,21 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们不能在`DataContainer`中使用[私有字段](https://2ality.com/2019/07/private-class-fields.html)和[私有方法](https://2ality.com/2019/07/private-methods-accessors-in-classes.html)，因为这些只对通过构造函数创建的实例正确设置。
 - en: '13.3.3 Improvement: instances are inactive by default, activated by factory
     method'
   id: totrans-63
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.3 改进：实例默认处于非活动状态，由工厂方法激活
 - en: 'Another, more verbose variant is that, by default, instances are switched off
     via the flag `.#active`. The initialization method `.#init()` that switches them
     on cannot be accessed externally, but `Data.container()` can invoke it:'
   id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一种更冗长的变体是，默认情况下，实例通过标志`.#active`关闭。将它们打开的初始化方法`.#init()`不能从外部访问，但`Data.container()`可以调用它：
 - en: '[PRE7]'
   id: totrans-65
   prefs: []
@@ -356,21 +414,25 @@
   id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 标志`.#active`通过私有方法`.#check()`强制执行，必须在每个方法的开始处调用它。
 - en: The major downside of this solution is its verbosity. There is also a risk of
     forgetting to invoke `.#check()` in each method.
   id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种解决方案的主要缺点是冗长。还有一个风险，就是在每个方法中忘记调用`.#check()`。
 - en: '13.3.4 Variant: separate factory function'
   id: totrans-68
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.4 变体：单独的工厂函数
 - en: 'For completeness sake, I’ll show another variant: Instead of using a static
     method as a factory you can also use a separate stand-alone function.'
   id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了完整起见，我将展示另一种变体：不使用静态方法作为工厂，您也可以使用一个单独的独立函数。
 - en: '[PRE8]'
   id: totrans-70
   prefs: []
@@ -381,29 +443,35 @@
   id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 独立函数作为工厂偶尔是有用的，但在这种情况下，我更喜欢静态方法：
 - en: The stand-alone function can’t access private members of `DataContainer`.
   id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 独立函数无法访问`DataContainer`的私有成员。
 - en: I prefer the way `DataContainer.create()` looks.
   id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我更喜欢`DataContainer.create()`的方式。
 - en: 13.4 Subclassing a Promise-based constructor (optional)
   id: totrans-74
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.4 以Promise为基础的构造函数进行子类化（可选）
 - en: In general, subclassing is something to use sparingly.
   id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 一般来说，子类化是一种需要谨慎使用的东西。
 - en: With a separate factory function, it is relatively easy to extend `DataContainer`.
   id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用单独的工厂函数，相对容易扩展`DataContainer`。
 - en: Alas, extending the class with the Promise-based constructor leads to severe
     limitations. In the following example, we subclass `DataContainer`. The subclass
     `SubDataContainer` has its own private field `.#moreData` that it initializes
@@ -412,6 +480,7 @@
   id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，使用基于Promise的构造函数扩展类会导致严重的限制。在下面的示例中，我们对`DataContainer`进行子类化。子类`SubDataContainer`有自己的私有字段`.#moreData`，它通过连接到其超类的构造函数返回的Promise来异步初始化。
 - en: '[PRE9]'
   id: totrans-78
   prefs: []
