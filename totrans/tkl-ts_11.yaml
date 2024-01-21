@@ -1,463 +1,683 @@
 - en: 9 Creating web apps via TypeScript and webpack
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 9 创建Web应用程序通过TypeScript和webpack
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_webpack-typescript.html](https://exploringjs.com/tackling-ts/ch_webpack-typescript.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/tackling-ts/ch_webpack-typescript.html](https://exploringjs.com/tackling-ts/ch_webpack-typescript.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 9.1 [Required knowledge](ch_webpack-typescript.html#required-knowledge-1)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.1 所需知识
 - en: 9.2 [Limitations](ch_webpack-typescript.html#limitations-1)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.2 [限制](ch_webpack-typescript.html#limitations-1)
 - en: 9.3 [The repository `ts-demo-webpack`](ch_webpack-typescript.html#the-repository-ts-demo-webpack)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.3 [存储库`ts-demo-webpack`](ch_webpack-typescript.html#the-repository-ts-demo-webpack)
 - en: 9.4 [`package.json`](ch_webpack-typescript.html#package.json-1)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.4 [`package.json`](ch_webpack-typescript.html#package.json-1)
 - en: 9.5 [`webpack.config.js`](ch_webpack-typescript.html#webpack.config.js)
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.5 [`webpack.config.js`](ch_webpack-typescript.html#webpack.config.js)
 - en: 9.6 [`tsconfig.json`](ch_webpack-typescript.html#tsconfig.json-2)
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.6 [`tsconfig.json`](ch_webpack-typescript.html#tsconfig.json-2)
 - en: 9.7 [`index.html`](ch_webpack-typescript.html#index.html)
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.7 [`index.html`](ch_webpack-typescript.html#index.html)
 - en: 9.8 [`main.ts`](ch_webpack-typescript.html#main.ts)
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.8 [`main.ts`](ch_webpack-typescript.html#main.ts)
 - en: 9.9 [Installing, building and running the web app](ch_webpack-typescript.html#installing-building-and-running-the-web-app)
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.9 [安装、构建和运行Web应用程序](ch_webpack-typescript.html#installing-building-and-running-the-web-app)
 - en: 9.9.1 [Building in Visual Studio Code](ch_webpack-typescript.html#building-in-visual-studio-code)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.9.1 [在Visual Studio Code中构建](ch_webpack-typescript.html#building-in-visual-studio-code)
 - en: '9.10 [Using webpack without a loader: `webpack-no-loader.config.js`](ch_webpack-typescript.html#using-webpack-without-a-loader-webpack-no-loader.config.js)'
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 9.10 [在没有加载器的情况下使用webpack：`webpack-no-loader.config.js`](ch_webpack-typescript.html#using-webpack-without-a-loader-webpack-no-loader.config.js)
 - en: '* * *'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: This chapter describes how to create web apps via TypeScript and webpack. We
     will only be using the DOM API, not a particular frontend framework.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章描述了如何通过TypeScript和webpack创建Web应用程序。我们将仅使用DOM API，而不是特定的前端框架。
 - en: '![](../Images/ef04c4c2601874494d82453a9b525b87.png)  **GitHub repository: `ts-demo-webpack`**'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/ef04c4c2601874494d82453a9b525b87.png) **GitHub存储库：`ts-demo-webpack`**'
 - en: '[The repository `ts-demo-webpack`](https://github.com/rauschma/ts-demo-webpack)
     that we are working with in this chapter, can be downloaded from GitHub.'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '[存储库`ts-demo-webpack`](https://github.com/rauschma/ts-demo-webpack)我们在本章中使用的，可以从GitHub下载。'
 - en: 9.1 Required knowledge
+  id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.1 所需知识
 - en: 'You should be roughly familiar with:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 你应该对以下内容有大致的了解：
 - en: '[npm](https://docs.npmjs.com/about-npm/)'
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[npm](https://docs.npmjs.com/about-npm/)'
 - en: '[webpack](https://webpack.js.org)'
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[webpack](https://webpack.js.org)'
 - en: 9.2 Limitations
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.2 限制
 - en: 'In this chapter, we stick with what is best supported by TypeScript: CommonJS
     modules, bundled as script files.'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们坚持使用TypeScript最好支持的内容：CommonJS模块，捆绑为脚本文件。
 - en: 9.3 The repository `ts-demo-webpack`
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.3 存储库`ts-demo-webpack`
 - en: 'This is how the repository `ts-demo-webpack` is structured:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是存储库`ts-demo-webpack`的结构：
 - en: '[PRE0]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The web app is built as follows:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: Web应用程序的构建方式如下：
 - en: 'Input:'
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：
 - en: The TypeScript files in `ts/`
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ts/`中的TypeScript文件'
 - en: All JavaScript code that is installed via npm and imported by the TypeScript
     files
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有通过npm安装并由TypeScript文件导入的JavaScript代码
 - en: The HTML files in `html/`
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`html/`中的HTML文件'
 - en: 'Output – directory `build/` with the complete web app:'
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出 - 目录`build/`中的完整Web应用程序：
 - en: The TypeScript files are compiled to JavaScript code, combined with the npm-installed
     JavaScript and written to the script file `build/main-bundle.js`. This process
     is called *bundling* and `main-bundle.js` is a bundle file.
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript文件被编译为JavaScript代码，与通过npm安装的JavaScript组合，并写入脚本文件`build/main-bundle.js`。这个过程称为*捆绑*，`main-bundle.js`是一个捆绑文件。
 - en: Each HTML file is copied to `build/`.
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个HTML文件都被复制到`build/`中。
 - en: 'Both output tasks are handled by webpack:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个输出任务都由webpack处理：
 - en: Copying the files in `html/` to `build/` is done via the webpack *plugin* `copy-webpack-plugin`.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过webpack的*插件*`copy-webpack-plugin`将`html/`中的文件复制到`build/`中。
 - en: 'This chapter explores two different workflows for bundling:'
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 本章探讨了两种不同的捆绑工作流程：
 - en: Either webpack directly compiles TypeScript files into the bundle, with the
     help of the *loader* `ts-loader`.
+  id: totrans-38
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 要么webpack直接将TypeScript文件编译成捆绑包，借助*加载器*`ts-loader`。
 - en: Or we compile the TypeScript files ourselves, to Javascript files in the directory
     `dist/` (like we did in [the previous chpater](ch_npm-cjs-typescript.html)). Then
     webpack doesn’t need a loader and only bundles JavaScript files.
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 或者我们自己编译TypeScript文件，将其编译为JavaScript文件，放在目录`dist/`中（就像我们在[上一章](ch_npm-cjs-typescript.html)中所做的那样）。然后webpack不需要加载器，只需要捆绑JavaScript文件。
 - en: Most of this chapter is about using webpack with `ts-loader`. At the end, we
     briefly look at the other workflow.
+  id: totrans-40
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 本章大部分内容都是关于使用`ts-loader`的webpack。最后，我们简要地看一下其他工作流程。
 - en: 9.4 `package.json`
+  id: totrans-41
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.4 `package.json`
 - en: '`package.json` contains metadata for the project:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`包含项目的元数据：'
 - en: '[PRE1]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'The properties work as follows:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性的工作如下：
 - en: '`"private": true` means that npm doesn’t complain if we don’t provide a package
     name and a package version.'
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"private": true`表示如果我们不提供包名称和包版本，npm不会抱怨。'
 - en: 'Scripts:'
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 脚本：
 - en: '`tsc, tscw`: These scripts invoke the TypeScript compiler directly. We don’t
     need them if we use webpack with `ts-loader`. However, they are useful if we use
     webpack without `ts-loader` (as demonstrated at the end of this chapter).'
+  id: totrans-47
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`tsc, tscw`：这些脚本直接调用TypeScript编译器。如果我们使用`ts-loader`，则不需要它们。但是，如果我们在不使用`ts-loader`的情况下使用webpack（如本章末尾所示），它们是有用的。'
 - en: '`wp`: runs webpack once, compile everything.'
+  id: totrans-48
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`wp`：运行webpack一次，编译所有内容。'
 - en: '`wpw`: runs webpack in watch mode, where it watches the input files and only
     compiles files that change.'
+  id: totrans-49
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`wpw`：以监视模式运行webpack，它会监视输入文件，并只编译更改的文件。'
 - en: '`serve`: runs the server `http-server` and serves the directory `build/` with
     the fully assembled web app.'
+  id: totrans-50
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`serve`：运行服务器`http-server`并提供完全组装的Web应用程序的目录`build/`。'
 - en: 'Dependencies:'
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 依赖项：
 - en: 'Four packages related to webpack:'
+  id: totrans-52
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与webpack相关的四个软件包：
 - en: '`webpack`: the core of webpack'
+  id: totrans-53
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`webpack`：webpack的核心'
 - en: '`webpack-cli`: a command line interface for the core'
+  id: totrans-54
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`webpack-cli`：核心的命令行界面'
 - en: '`ts-loader`: a *loader* for `.ts` files that compiles them to JavaScript'
+  id: totrans-55
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ts-loader`：用于将`.ts`文件编译为JavaScript的*加载器*'
 - en: '`copy-webpack-plugin`: a *plugin* that copies files from one location to another
     one'
+  id: totrans-56
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`copy-webpack-plugin`：一个*插件*，将文件从一个位置复制到另一个位置'
 - en: 'Needed by `ts-loader`: `typescript`'
+  id: totrans-57
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ts-loader`所需：`typescript`'
 - en: 'Serves the web app: `http-server`'
+  id: totrans-58
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为Web应用提供服务：`http-server`
 - en: 'Library plus type definitions that the TypeScript code uses: `lodash`, `@types/lodash`'
+  id: totrans-59
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript代码使用的库加上类型定义：`lodash`，`@types/lodash`
 - en: 9.5 `webpack.config.js`
+  id: totrans-60
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.5 `webpack.config.js`
 - en: 'This is how we configure webpack:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们配置webpack的方式：
 - en: '[PRE2]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Properties:'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性：
 - en: '`entry`: An *entry point* is the file where webpack starts collecting the data
     for an output bundle. First it adds the entry point file to the bundle, then the
     imports of the entry point, then the imports of the imports, etc. The value of
     property `entry` is an object whose property keys specify names of entry points
     and whose property values specify paths of entry points.'
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`entry`：*入口点*是webpack开始收集输出包数据的文件。首先将入口点文件添加到包中，然后是入口点的导入，然后是导入的导入，依此类推。属性`entry`的值是一个对象，其属性键指定入口点的名称，其属性值指定入口点的路径。'
 - en: '`output` specifies the path of the output bundle. `[name]` is mainly useful
     when there are multiple entry points (and therefore multiple output bundles).
     It is replaced with the name of the entry point when assembling the path.'
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`output`指定输出包的路径。当存在多个入口点（因此存在多个输出包）时，`[name]`主要有用。在组装路径时，它将被入口点的名称替换。 '
 - en: '`resolve` configures how webpack converts *specifiers* (IDs) of modules to
     locations of files.'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`resolve`配置webpack如何将模块的*规范符*（ID）转换为文件的位置。'
 - en: '`module` configures *loaders* (plugins that process files) and more.'
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`module`配置*加载程序*（处理文件的插件）等。'
 - en: '`plugins` configures *plugins* which can change and augment webpack’s behavior
     in a variety of ways.'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`plugins`配置*插件*，可以以各种方式更改和增强webpack的行为。'
 - en: For more information on configuring webpack, see [the webpack website](https://webpack.js.org/concepts/).
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关配置webpack的更多信息，请参阅[webpack网站](https://webpack.js.org/concepts/)。
 - en: 9.6 `tsconfig.json`
+  id: totrans-70
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.6 `tsconfig.json`
 - en: 'This file configures the TypeScript compiler:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 此文件配置TypeScript编译器：
 - en: '[PRE3]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: The option `outDir` is not needed if we use webpack with `ts-loader`. However,
     we’ll need it if we use webpack without a loader (as explained later in this chapter).
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用`ts-loader`与webpack，则不需要选项`outDir`。但是，如果我们在本章后面解释的情况下使用webpack而不使用加载程序，则需要它。
 - en: 9.7 `index.html`
+  id: totrans-74
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.7 `index.html`
 - en: 'This is the HTML page of the web app:'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是Web应用程序的HTML页面：
 - en: '[PRE4]'
+  id: totrans-76
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: The `<div>` with the ID `"output"` is where the web app displays its output.
     `main-bundle.js` contains the bundled code.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 具有ID`"output"`的`<div>`是Web应用程序显示其输出的位置。`main-bundle.js`包含捆绑代码。
 - en: 9.8 `main.ts`
+  id: totrans-78
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.8 `main.ts`
 - en: 'This is the TypeScript code of the web app:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是Web应用程序的TypeScript代码：
 - en: '[PRE5]'
+  id: totrans-80
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Step 1: We use [Lodash’s function `template()`](https://lodash.com/docs/4.17.15#template)
     to turn a string with custom template syntax into a function `compiled()` that
     maps data to HTML. The string defines two blanks to be filled in via data:'
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 步骤1：我们使用[Lodash的函数`template()`](https://lodash.com/docs/4.17.15#template)将具有自定义模板语法的字符串转换为函数`compiled()`，该函数将数据映射到HTML。字符串定义了两个要通过数据填充的空白：
 - en: '`<%- heading %>`'
+  id: totrans-82
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`<%- heading %>`'
 - en: '`<%- dateTimeString %>`'
+  id: totrans-83
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`<%- dateTimeString %>`'
 - en: 'Step 2: Apply `compiled()` to the data (an object with two properties) to generate
     HTML.'
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 步骤2：将`compiled()`应用于数据（具有两个属性的对象）以生成HTML。
 - en: 9.9 Installing, building and running the web app
+  id: totrans-85
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.9 安装，构建和运行Web应用程序
 - en: 'First we need to install all npm packages that our web app depends on:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们需要安装我们的web应用程序依赖的所有npm包：
 - en: '[PRE6]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Then we need to run webpack (which was installed during the previous step)
     via a script in `package.json`:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，我们需要通过`package.json`中的脚本运行在上一步安装的webpack：
 - en: '[PRE7]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: From now on, webpack watches the files in the repository for changes and rebuilds
     the web app whenever it detects any.
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 从现在开始，webpack会监视存储库中的文件以进行更改，并在检测到任何更改时重新构建web应用程序。
 - en: 'In a different command line, we can now start a web server that serves the
     contents of `build/` on localhost:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 在另一个命令行中，我们现在可以启动一个Web服务器，该服务器在本地主机上提供`build/`的内容：
 - en: '[PRE8]'
+  id: totrans-92
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: If we go to the URL printed out by the web server, we can see the web app in
     action.
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们转到Web服务器打印的URL，我们可以看到Web应用程序正在运行。
 - en: Note that simple reloading may not be enough to see the results after changes
     – due to caching. You may have to force-reload by pressing shift when reloading.
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，简单的重新加载可能不足以在更改后看到结果-由于缓存。您可能需要在重新加载时按住shift键来强制重新加载。
 - en: 9.9.1 Building in Visual Studio Code
+  id: totrans-95
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.9.1 在Visual Studio Code中构建
 - en: 'Instead of building from a command line, we can also do that from within Visual
     Studio Code, via a so-called *build task*:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了从命令行构建外，我们还可以通过Visual Studio Code内部进行构建，通过所谓的*构建任务*：
 - en: Execute “Configure Default Build Task…” from the “Terminal” menu.
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从“终端”菜单中执行“配置默认构建任务…”。
 - en: 'Choose “npm: wpw”.'
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '选择“npm: wpw”。'
 - en: 'A *problem matcher* handles the conversion of tool output into lists of *problems*
     (infos, warning, and errors). The default works well in this case. If you want
     to be explicit, you can specify a value in `.vscode/tasks.json`:'
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*问题匹配器*处理工具输出到*问题*（信息，警告和错误）列表的转换。默认情况下，在这种情况下工作良好。如果要明确，可以在`.vscode/tasks.json`中指定一个值：'
 - en: '[PRE9]'
+  id: totrans-100
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: We can now start webpack via “Run Build Task…” from the “Terminal” menu.
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们现在可以通过“终端”菜单中的“运行构建任务…”来启动webpack。
 - en: '9.10 Using webpack without a loader: `webpack-no-loader.config.js`'
+  id: totrans-102
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.10 在没有加载程序的情况下使用webpack：`webpack-no-loader.config.js`
 - en: Instead of using on `ts-loader`, we can also first compile our TypeScript files
     to JavaScript files and then bundle those via webpack. How the first of those
     two steps works, is described in [the previous chapter](ch_npm-cjs-typescript.html).
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了使用`ts-loader`之外，我们还可以首先将TypeScript文件编译为JavaScript文件，然后通过webpack捆绑这些文件。前两个步骤中的第一个步骤的工作原理在[上一章](ch_npm-cjs-typescript.html)中有描述。
 - en: 'We now don’t have to configure `ts-loader` and our webpack configuration file
     is simpler:'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们不必配置`ts-loader`，我们的webpack配置文件更简单：
 - en: '[PRE10]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Note that `entry.main` is different. In the other config file, it is:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，`entry.main`是不同的。在另一个配置文件中，它是：
 - en: '[PRE11]'
+  id: totrans-107
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: Why would we want to produce intermediate files before bundling them? One benefit
     is that we can use Node.js to run unit tests for some of the TypeScript code.
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么我们要在捆绑之前生成中间文件？一个好处是我们可以使用Node.js运行一些TypeScript代码的单元测试。
 - en: '[Comments](https://github.com/rauschma/tackling-ts/issues/9)'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/tackling-ts/issues/9)'
