@@ -3,125 +3,149 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 19 数组的类型化
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_typing-arrays.html](https://exploringjs.com/tackling-ts/ch_typing-arrays.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/tackling-ts/ch_typing-arrays.html](https://exploringjs.com/tackling-ts/ch_typing-arrays.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 19.1 [Roles of Arrays](ch_typing-arrays.html#roles-of-arrays)
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.1 [数组的角色](ch_typing-arrays.html#roles-of-arrays)
 - en: 19.2 [Ways of typing Arrays](ch_typing-arrays.html#ways-of-typing-arrays)
   id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.2 [数组的类型化方式](ch_typing-arrays.html#ways-of-typing-arrays)
 - en: '19.2.1 [Array role “list”: Array type literals vs. interface type `Array`](ch_typing-arrays.html#array-role-list-array-type-literals-vs.-interface-type-array)'
   id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.2.1 [数组角色“列表”：数组类型字面量 vs. 接口类型`Array`](ch_typing-arrays.html#array-role-list-array-type-literals-vs.-interface-type-array)
 - en: '19.2.2 [Array role “tuple”: tuple type literals](ch_typing-arrays.html#array-role-tuple-tuple-type-literals)'
   id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.2.2 [数组角色“元组”：元组类型字面量](ch_typing-arrays.html#array-role-tuple-tuple-type-literals)
 - en: '19.2.3 [Objects that are also Array-ish: interfaces with index signatures](ch_typing-arrays.html#objects-that-are-also-array-ish-interfaces-with-index-signatures)'
   id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.2.3 [也是类似数组的对象：带有索引签名的接口](ch_typing-arrays.html#objects-that-are-also-array-ish-interfaces-with-index-signatures)
 - en: '19.3 [Pitfall: type inference doesn’t always get Array types right](ch_typing-arrays.html#pitfall-type-inference-doesnt-always-get-array-types-right)'
   id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.3 [陷阱：类型推断并不总是正确获取数组类型](ch_typing-arrays.html#pitfall-type-inference-doesnt-always-get-array-types-right)
 - en: 19.3.1 [Inferring types of Arrays is difficult](ch_typing-arrays.html#inferring-types-of-arrays-is-difficult)
   id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.3.1 [推断数组类型很困难](ch_typing-arrays.html#inferring-types-of-arrays-is-difficult)
 - en: 19.3.2 [Type inference for non-empty Array literals](ch_typing-arrays.html#type-inference-for-non-empty-array-literals)
   id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.3.2 [非空数组字面量的类型推断](ch_typing-arrays.html#type-inference-for-non-empty-array-literals)
 - en: 19.3.3 [Type inference for empty Array literals](ch_typing-arrays.html#type-inference-for-empty-array-literals)
   id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.3.3 [空数组字面量的类型推断](ch_typing-arrays.html#type-inference-for-empty-array-literals)
 - en: 19.3.4 [`const` assertions for Arrays and type inference](ch_typing-arrays.html#const-assertions-for-arrays-and-type-inference)
   id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.3.4 [对数组和类型推断进行`const`断言](ch_typing-arrays.html#const-assertions-for-arrays-and-type-inference)
 - en: '19.4 [Pitfall: TypeScript assumes indices are never out of bounds](ch_typing-arrays.html#pitfall-typescript-assumes-indices-are-never-out-of-bounds)'
   id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 19.4 [陷阱：TypeScript假设索引永远不会越界](ch_typing-arrays.html#pitfall-typescript-assumes-indices-are-never-out-of-bounds)
 - en: '* * *'
   id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: In this chapter, we examine how Arrays can be typed in TypeScript.
   id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将讨论如何在TypeScript中为数组添加类型。
 - en: 19.1 Roles of Arrays
   id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 19.1 数组的角色
 - en: 'Arrays can play the following roles in JavaScript (either one or a mix of them):'
   id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组在JavaScript中可以扮演以下角色（单一或混合）：
 - en: 'Lists: All elements have the same type. The length of the Array varies.'
   id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 列表：所有元素具有相同的类型。数组的长度不同。
 - en: 'Tuple: The length of the Array is fixed. The elements do not necessarily have
     the same type.'
   id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 元组：数组的长度是固定的。元素不一定具有相同的类型。
 - en: TypeScript accommodates these two roles by offering various ways of typing arrays.
     We will look at those next.
   id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript通过提供各种数组类型化的方式来适应这两种角色。我们将在下面看看这些方式。
 - en: 19.2 Ways of typing Arrays
   id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 19.2 数组的类型化方式
 - en: '19.2.1 Array role “list”: Array type literals vs. interface type `Array`'
   id: totrans-22
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 19.2.1 数组角色“列表”：数组类型字面量 vs. 接口类型`Array`
 - en: 'An Array type literal consists of the element type followed by `[]`. In the
     following code, the Array type literal is `string[]`:'
   id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组类型字面量由元素类型后跟`[]`组成。在下面的代码中，数组类型字面量是`string[]`：
 - en: '[PRE0]'
   id: totrans-24
   prefs: []
@@ -132,6 +156,7 @@
   id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组类型字面量是使用全局通用接口类型`Array`的简写：
 - en: '[PRE1]'
   id: totrans-26
   prefs: []
@@ -142,6 +167,7 @@
   id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果元素类型更复杂，我们需要使用数组类型字面量的括号：
 - en: '[PRE2]'
   id: totrans-28
   prefs: []
@@ -151,6 +177,7 @@
   id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这种情况下，通用类型`Array`更适用：
 - en: '[PRE3]'
   id: totrans-30
   prefs: []
@@ -161,12 +188,14 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 19.2.2 数组角色“元组”：元组类型字面量
 - en: 'If the Array has a fixed length and each element has a different, fixed type
     that depends on its position, then we can use tuple type literals such as `[string,
     string, boolean]`:'
   id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果数组的长度固定，并且每个元素具有不同的固定类型，取决于其位置，则我们可以使用元组类型字面量，例如`[string, string, boolean]`：
 - en: '[PRE4]'
   id: totrans-33
   prefs: []
@@ -177,10 +206,12 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 19.2.3 也是类似数组的对象：带有索引签名的接口
 - en: 'If an interface has only an index signature, we can use it for Arrays:'
   id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个接口只有一个索引签名，我们可以用它来表示数组：
 - en: '[PRE5]'
   id: totrans-36
   prefs: []
@@ -192,6 +223,7 @@
   id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 具有索引签名和属性签名的接口仅适用于对象（因为索引元素和属性需要同时定义）：
 - en: '[PRE6]'
   id: totrans-38
   prefs: []
@@ -202,17 +234,20 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 19.3 陷阱：类型推断并不总是正确获取数组类型
 - en: 19.3.1 Inferring types of Arrays is difficult
   id: totrans-40
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 19.3.1 推断数组类型很困难
 - en: 'Due to the two roles of Arrays, it is impossible for TypeScript to always guess
     the right type. As an example, consider the following Array literal that is assigned
     to the variable `fields`:'
   id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于数组的两种角色，TypeScript不可能总是猜对类型。例如，考虑以下分配给变量`fields`的数组字面量：
 - en: '[PRE7]'
   id: totrans-42
   prefs: []
@@ -222,6 +257,7 @@
   id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: '`fields`的最佳类型是什么？以下都是合理的选择：'
 - en: '[PRE8]'
   id: totrans-44
   prefs: []
@@ -257,11 +293,13 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 19.3.2 非空数组字面量的类型推断
 - en: 'When we use non-empty Array literals, TypeScript’s default is to infer list
     types (not tuple types):'
   id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们使用非空数组字面量时，TypeScript的默认值是推断列表类型（而不是元组类型）：
 - en: '[PRE14]'
   id: totrans-52
   prefs: []
@@ -271,6 +309,7 @@
   id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，这并不总是我们想要的：
 - en: '[PRE15]'
   id: totrans-54
   prefs: []
@@ -281,6 +320,7 @@
   id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过在`const`声明中添加类型注释来解决这个问题，从而避免类型推断：
 - en: '[PRE16]'
   id: totrans-56
   prefs: []
@@ -291,11 +331,13 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 19.3.3 空数组字面量的类型推断
 - en: 'If we initialize a variable with an empty Array literal, then TypeScript initially
     infers the type `any[]` and incrementally updates that type as we make changes:'
   id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们用空数组字面量初始化一个变量，那么TypeScript最初会推断类型为`any[]`，并在我们进行更改时逐渐更新该类型：
 - en: '[PRE17]'
   id: totrans-59
   prefs: []
@@ -305,10 +347,12 @@
   id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，初始推断类型不受后续发生的影响。
 - en: 'If we use assignment instead of `.push()`, things work the same:'
   id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用赋值而不是`.push()`，事情会保持不变：
 - en: '[PRE18]'
   id: totrans-62
   prefs: []
