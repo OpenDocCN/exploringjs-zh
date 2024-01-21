@@ -1,751 +1,1073 @@
 - en: 9 Native Node.js streams
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-streams.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-streams.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: '9.1 [Recap: asynchronous iteration and asynchronous generators](ch_nodejs-streams.html#recap-asynchronous-iteration-and-asynchronous-generators)'
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.2 [Streams](ch_nodejs-streams.html#streams)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.2.1 [Pipelining](ch_nodejs-streams.html#pipelining)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.2.2 [Text encodings](ch_nodejs-streams.html#text-encodings)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '9.2.3 [Helper function: `readableToString()`](ch_nodejs-streams.html#helper-function-readabletostring)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.2.4 [A few preliminary remarks](ch_nodejs-streams.html#a-few-preliminary-remarks)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.3 [Readable streams](ch_nodejs-streams.html#readable-streams)
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.3.1 [Creating readable streams](ch_nodejs-streams.html#creating-readable-streams)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.3.2 [Reading chunks from readable streams via `for-await-of`](ch_nodejs-streams.html#Readable-async-iteration)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.3.3 [Reading lines from readable streams via module `'node:readlines'`](ch_nodejs-streams.html#readline-async-iteration)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.4 [Transforming readable streams via async generators](ch_nodejs-streams.html#transforming-Readable-via-async-generator)
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.4.1 [Going from chunks to numbered lines in async iterables](ch_nodejs-streams.html#chunksToLines)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.5 [Writable streams](ch_nodejs-streams.html#writable-streams)
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.5.1 [Creating writable streams for files](ch_nodejs-streams.html#creating-writable-streams-for-files)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.5.2 [Writing to writable streams](ch_nodejs-streams.html#writing-to-Writable)
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '9.6 [Quick reference: stream-related functionality](ch_nodejs-streams.html#quick-reference-stream-related-functionality)'
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.7 [Further reading and sources of this chapter](ch_nodejs-streams.html#further-reading-and-sources-of-this-chapter)
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
 - en: This chapter is an introduction to Node’s native streams. They support [asynchronous
     iteration](https://exploringjs.com/impatient-js/ch_async-iteration.html) which
     makes them easier to work with and which is what we will mostly use in this chapter.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
 - en: Note that cross-platform *web streams* are covered in [§10 “Using web streams
     on Node.js”](ch_web-streams.html). We will mostly use those in this book. Therefore,
     you can skip the current chapter if you want to.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
 - en: '9.1 Recap: asynchronous iteration and asynchronous generators'
+  id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[Asynchronous iteration](https://exploringjs.com/impatient-js/ch_async-iteration.html)
     is a protocol for retrieving the contents of a data container asynchronously (meaning
     the current “task” may be paused before retrieving an item).'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
 - en: '[Asynchronous generators](https://exploringjs.com/impatient-js/ch_async-iteration.html#async-generators)
     help with async iteration. For example, this is an asynchronous generator function:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The `for-await-of` loop iterates over the input `asyncIterable`. This loop is
     also available in normal asynchronous functions.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The `yield` feeds values into the asynchronous iterable that is returned by
     this generator.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'In the remainder of the chapter, pay close attention to whether a function
     is an async function or an async generator function:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 9.2 Streams
+  id: totrans-31
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'A stream is a pattern whose core idea is to “divide and conquer” a large amount
     of data: We can handle it if we split it into smaller pieces and handle one portion
     at a time.'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
 - en: 'Node.js supports several kinds of streams – for example:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
 - en: '*Readable streams* are streams from which we can read data. In other words,
     they are sources of data. An example is a *readable file stream*, which lets us
     read the contents of a file.'
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '*Writable streams* are streams to which we can write data. In other words,
     they are sinks for data. An example is a *writable file stream*, which lets us
     write data to a file.'
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A *transform stream* is both readable and writable. As a writable stream, it
     receives pieces of data, *transforms* (changes or discards) them and then outputs
     them as a readable stream.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 9.2.1 Pipelining
+  id: totrans-37
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'To process streamed data in multiple steps, we can *pipeline* (connect) streams:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
 - en: Input is received via a readable stream.
+  id: totrans-39
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: Each processing step is performed via a transform stream.
+  id: totrans-40
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 每个处理步骤都是通过转换流执行的。
 - en: 'For the last processing step, we have two options:'
+  id: totrans-41
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 对于最后的处理步骤，我们有两个选项：
 - en: We can write the data in the most recent readable stream into a writable stream.
     That is, the writable stream is the last element of our pipeline.
+  id: totrans-42
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以将最近的可读流中的数据写入可写流。也就是说，可写流是我们管道的最后一个元素。
 - en: We can process the data in the most recent readable stream in some other manner.
+  id: totrans-43
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以以其他方式处理最近的可读流中的数据。
 - en: Part (2) is optional.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 部分（2）是可选的。
 - en: 9.2.2 Text encodings
+  id: totrans-45
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.2.2 文本编码
 - en: 'When creating text streams, it is best to always specify an encoding:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 创建文本流时，最好始终指定编码：
 - en: 'The Node.js docs have [a list of supported encodings and their default spellings](https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings)
     – for example:'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Node.js文档中有[支持的编码及其默认拼写的列表](https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings)
+    - 例如：
 - en: '`''utf8''`'
+  id: totrans-48
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '''utf8'''
 - en: '`''utf16le''`'
+  id: totrans-49
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '''utf16le'''
 - en: '`''base64''`'
+  id: totrans-50
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '''base64'''
 - en: 'A few different spellings are also allowed. You can use [`Buffer.isEncoding()`](https://nodejs.org/api/buffer.html#buffer_class_method_buffer_isencoding_encoding)
     to check which ones are:'
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 也允许一些不同的拼写。您可以使用[`Buffer.isEncoding()`](https://nodejs.org/api/buffer.html#buffer_class_method_buffer_isencoding_encoding)来检查哪些是：
 - en: '[PRE2]'
+  id: totrans-52
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The default value for encodings is `null`, which is equivalent to `'utf8'`.
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 编码的默认值是`null`，等同于`'utf8'`。
 - en: '9.2.3 Helper function: `readableToString()`'
+  id: totrans-54
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.2.3 辅助函数：`readableToString()`
 - en: We will occasionally use the following helper function. You don’t need to understand
     how it works, only (roughly) what it does.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们偶尔会使用以下辅助函数。您不需要理解它的工作原理，只需（大致）了解它的作用。
 - en: '[PRE3]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: This function is implemented via the event-based API. We’ll later see a simpler
     way of doing this – via async iteration.
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 此函数是通过基于事件的API实现的。稍后我们将看到一个更简单的方法 - 通过异步迭代。
 - en: 9.2.4 A few preliminary remarks
+  id: totrans-58
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.2.4 一些初步说明
 - en: We’ll only use text streams in this chapter.
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在本章中，我们只会使用文本流。
 - en: In the examples, we’ll occasionally encounter `await` being used at the top
     level. In that case, we imagine that we are [inside a module](https://github.com/tc39/proposal-top-level-await)
     or inside the body of an async function.
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在示例中，我们偶尔会遇到`await`被用于顶层。在这种情况下，我们假设我们在[模块内](https://github.com/tc39/proposal-top-level-await)或在异步函数的主体内。
 - en: 'Whenever there are newlines, we support both:'
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每当有换行符时，我们都支持：
 - en: 'Unix: `''\n''` (LF)'
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Unix：`'\n'`（LF）
 - en: 'Windows: `''\r\n''` (CR LF)The newline characters of the current platform can
     be accessed via [the constant `EOL`](https://nodejs.org/api/os.html#os_os_eol)
     in module `os`.'
+  id: totrans-63
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Windows：`'\r\n'`（CR LF）当前平台的换行符可以通过模块`os`中的常量`EOL`访问。
 - en: 9.3 Readable streams
+  id: totrans-64
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.3 可读流
 - en: 9.3.1 Creating readable streams
+  id: totrans-65
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.3.1 创建可读流
 - en: 9.3.1.1 Creating readable streams from files
+  id: totrans-66
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 9.3.1.1 从文件创建可读流
 - en: 'We can use [`fs.createReadStream()`](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options)
     to create readable streams:'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用[`fs.createReadStream()`](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options)来创建可读流：
 - en: '[PRE4]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '9.3.1.2 `Readable.from()`: Creating readable streams from iterables'
+  id: totrans-69
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '9.3.1.2 `Readable.from()`: 从可迭代对象创建可读流'
 - en: The static method [`Readable.from(iterable, options?)`](https://nodejs.org/api/stream.html#stream_stream_readable_from_iterable_options)
     creates a readable stream which holds the data contained in `iterable`. `iterable`
     can be a synchronous iterable or an asynchronous iterable. The parameter `options`
     is optional and can, among other things, be used to specify a text encoding.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 静态方法[`Readable.from(iterable, options?)`](https://nodejs.org/api/stream.html#stream_stream_readable_from_iterable_options)创建一个可读流，其中包含`iterable`中包含的数据。`iterable`可以是同步可迭代对象或异步可迭代对象。参数`options`是可选的，可以用于指定文本编码等其他内容。
 - en: '[PRE5]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 9.3.1.2.1 Creating readable streams from strings
+  id: totrans-72
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
+  zh: 9.3.1.2.1 从字符串创建可读流
 - en: '`Readable.from()` accepts any iterable and can therefore also be used to convert
     strings to streams:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Readable.from()`接受任何可迭代对象，因此也可以用于将字符串转换为流：'
 - en: '[PRE6]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[At the moment](https://github.com/nodejs/node/blob/master/lib/internal/streams/from.js),
     `Readable.from()` treats a string like any other iterable and therefore iterates
     over its code points. That isn’t ideal, performance-wise, but should be OK for
     most use cases. I expect `Readable.from()` to be often used with strings, so maybe
     there will be optimizations in the future.'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: '[目前](https://github.com/nodejs/node/blob/master/lib/internal/streams/from.js)，`Readable.from()`将字符串视为任何其他可迭代对象，因此会迭代其代码点。从性能上讲，这并不理想，但对于大多数用例来说应该是可以的。我期望`Readable.from()`经常与字符串一起使用，所以也许将来会有优化。'
 - en: 9.3.2 Reading chunks from readable streams via `for-await-of`
+  id: totrans-76
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.3.2 通过`for-await-of`从可读流中读取块
 - en: 'Every readable stream is asynchronously iterable, which means that we can use
     a `for-await-of` loop to read its contents:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个可读流都是异步可迭代的，这意味着我们可以使用`for-await-of`循环来读取其内容：
 - en: '[PRE7]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 9.3.2.1 Collecting the contents of a readable stream in a string
+  id: totrans-79
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 9.3.2.1 在字符串中收集可读流的内容
 - en: The following function is a simpler reimplementation of the function that we
     have seen at the beginning of this chapter.
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数是本章开头所见函数的简化重新实现。
 - en: '[PRE8]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Note that, in this case, we had to use an async function because we wanted to
     return a Promise.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，在这种情况下，我们必须使用异步函数，因为我们想要返回一个Promise。
 - en: 9.3.3 Reading lines from readable streams via module `'node:readlines'`
+  id: totrans-83
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.3.3 通过模块`'node:readlines'`从可读流中读取行
 - en: 'The built-in module `''node:readline''` lets us read lines from readable streams:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 内置模块`'node:readline'`让我们可以从可读流中读取行：
 - en: '[PRE9]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 9.4 Transforming readable streams via async generators
+  id: totrans-86
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.4 通过异步生成器转换可读流
 - en: 'Async iteration provides an elegant alternative to transform streams for processing
     streamed data in multiple steps:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 异步迭代提供了一个优雅的替代方案，用于在多个步骤中处理流式数据的转换流：
 - en: The input is a readable stream.
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入是一个可读流。
 - en: The first transformation is performed by an async generator that iterates over
     the readable streams and yields as it sees fit.
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 第一个转换是通过一个异步生成器执行的，该生成器遍历可读流并在适当时产生。
 - en: Optionally, we can transform further, by using more async generators.
+  id: totrans-90
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可选地，我们可以通过使用更多的异步生成器来进一步转换。
 - en: 'At the end, we have several options for handling the async iterable returned
     by the last generator:'
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最后，我们有几种处理最后一个生成器返回的异步可迭代对象的选项：
 - en: We can convert it to a readable stream via `Readable.from()` (which can later
     be piped into a writable stream).
+  id: totrans-92
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过`Readable.from()`将其转换为可读流（稍后可以传输到可写流）。
 - en: We can use an async function to process it.
+  id: totrans-93
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以使用异步函数来处理它。
 - en: Etc.
+  id: totrans-94
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: 'To summarize, these are the pieces of such processing pipelines:'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 总之，这些是这样的处理管道的组成部分：
 - en: readable
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 可读的
 - en: → first async generator [→ … → last async generator]
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: → 第一个异步生成器 [→ … → 最后一个异步生成器]
 - en: → readable or async function
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: → 可读或异步函数
 - en: 9.4.1 Going from chunks to numbered lines in async iterables
+  id: totrans-99
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.4.1 从块到异步可迭代对象中的编号行
 - en: In the next example, we’ll see an example of a processing pipeline as it was
     just explained.
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，我们将看到一个刚刚解释过的处理管道的示例。
 - en: '[PRE10]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'The processing pipeline is set up in line A. The steps are:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 处理管道在A行设置。步骤是：
 - en: '`chunksToLines()`: Go from an async iterable with chunks to an async iterable
     with lines.'
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`chunksToLines()`: 从具有块的异步可迭代对象转换为具有行的异步可迭代对象。'
 - en: '`numberLines()`: Go from an async iterable with lines to an async iterable
     with numbered lines.'
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`numberLines()`: 从具有行的异步可迭代对象转换为具有编号行的异步可迭代对象。'
 - en: '`logLines()`: Log the items in an async iterable.'
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`logLines()`: 记录异步可迭代对象中的项目。'
 - en: 'Observation:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 观察：
 - en: Both input and output of `chunksToLines()` and `numberLines()` are async iterables.
     That’s why they are async generators (as indicated by `async` and `*`).
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`chunksToLines()`和`numberLines()`的输入和输出都是异步可迭代对象。这就是为什么它们是异步生成器（由`async`和`*`指示）。'
 - en: Only the input of `logLines()` is an async iterable. That’s why it is an async
     function (as indicated by `async`).
+  id: totrans-108
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`logLines()`的输入是异步可迭代对象。这就是为什么它是一个异步函数（由`async`指示）。'
 - en: 9.5 Writable streams
+  id: totrans-109
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.5 可写流
 - en: 9.5.1 Creating writable streams for files
+  id: totrans-110
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.5.1 创建文件的可写流
 - en: 'We can use [`fs.createWriteStream()`](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)
     to create writable streams:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用[`fs.createWriteStream()`](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)来创建可写流：
 - en: '[PRE11]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 9.5.2 Writing to writable streams
+  id: totrans-113
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 9.5.2 向可写流写入数据
 - en: 'In this section, we look at approaches to writing to a writable stream:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们将探讨向可写流写入数据的方法：
 - en: Writing directly to the writable stream via its method `.write()`.
+  id: totrans-115
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 通过其方法`.write()`直接向可写流写入数据。
 - en: Using function `pipeline()` from module `stream` to pipe a readable stream to
     the writable stream.
+  id: totrans-116
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 使用模块`stream`中的函数`pipeline()`将可读流传输到可写流。
 - en: To demonstrate these approaches, we use them to implement the same function
     `writeIterableToFile()`.
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了演示这些方法，我们使用它们来实现相同的函数`writeIterableToFile()`。
 - en: Method `.pipe()` of readable streams also supports piping but it has a downside
     and it’s better to avoid it.
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 可读流的`.pipe()`方法也支持管道传输，但它有一个缺点，最好避免使用它。
 - en: 9.5.2.1 `writable.write(chunk)`
+  id: totrans-119
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 9.5.2.1 `writable.write(chunk)`
 - en: 'When it comes to writing data to streams, there are two callback-based mechanisms
     that help us:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 在向流中写入数据时，有两种基于回调的机制可以帮助我们：
 - en: Event `'drain'` signals that backpressure is over.
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 事件`'drain'`表示背压已经解除。
 - en: 'Function `finished()` invokes a callback when a stream:'
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 函数`finished()`在流：
 - en: Is no longer readable or writable
+  id: totrans-123
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不再可读或可写
 - en: Has experienced an error or a premature close event
+  id: totrans-124
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 已经遇到错误或过早关闭事件
 - en: 'In the following example, we promisify these mechanisms so that we can use
     them via an async function:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，我们将这些机制转换为Promise，以便我们可以通过异步函数使用它们：
 - en: '[PRE12]'
+  id: totrans-126
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: The default version of `stream.finished()` is callback-based but can be turned
     into a Promise-based version via `util.promisify()` (line A).
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: '`stream.finished()`的默认版本是基于回调的，但可以通过`util.promisify()`（A行）转换为基于Promise的版本。'
 - en: 'We used the following two patterns:'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用了以下两种模式：
 - en: 'Writing to a writable stream while handling backpressure (line B):'
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在处理背压的情况下向可写流写入数据（B行）：
 - en: '[PRE13]'
+  id: totrans-130
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Closing a writable stream and waiting until writing is done (line C):'
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 关闭可写流并等待写入完成（C行）：
 - en: '[PRE14]'
+  id: totrans-132
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 9.5.2.2 Piping readable streams to writable streams via `stream.pipeline()`
+  id: totrans-133
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 9.5.2.2 通过`stream.pipeline()`将可读流传输到可写流
 - en: 'In line A, we use a promisified version of `stream.pipeline()` to pipe a readable
     stream `readable` to a writable stream `writable`:'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 在A行，我们使用`stream.pipeline()`的Promise版本将可读流`readable`传输到可写流`writable`：
 - en: '[PRE15]'
+  id: totrans-135
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '9.5.2.3 Not recommended: `readable.pipe(destination)`'
+  id: totrans-136
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 9.5.2.3 不推荐：`readable.pipe(destination)`
 - en: 'Method `readable.pipe()` also supports piping, but has [a caveat](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options):
     If the readable emits an error, then the writable is not closed automatically.
     `pipeline()` does not have that caveat.'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 可读的`.pipe()`方法也支持管道传输，但有[一个警告](https://nodejs.org/api/stream.html#stream_readable_pipe_destination)：如果可读流发出错误，则可写流不会自动关闭。`pipeline()`没有这个警告。
 - en: '9.6 Quick reference: stream-related functionality'
+  id: totrans-138
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.6 快速参考：与流相关的功能
 - en: 'Module `os`:'
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块`os`：
 - en: '`const EOL: string` [(since 0.7.8)](https://nodejs.org/api/os.html#os_os_eol)'
+  id: totrans-140
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`const EOL: string`（自0.7.8起）(https://nodejs.org/api/os.html#os_os_eol)'
 - en: Contains the end-of-line character sequence used by the current platform.
+  id: totrans-141
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 包含当前平台使用的行尾字符序列。
 - en: 'Module `buffer`:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块`buffer`：
 - en: '`Buffer.isEncoding(encoding: string): boolean` [(since 0.9.1)](https://nodejs.org/api/buffer.html#buffer_class_method_buffer_isencoding_encoding)'
+  id: totrans-143
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Buffer.isEncoding(encoding: string): boolean`（自0.9.1起）(https://nodejs.org/api/buffer.html#buffer_class_method_buffer_isencoding_encoding)'
 - en: 'Returns `true` if `encoding` correctly names one of the supported Node.js encodings
     for text. [Supported encodings](https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings)
     include:'
+  id: totrans-144
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果`encoding`正确命名了受支持的Node.js文本编码之一，则返回`true`。[支持的编码](https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings)包括：
 - en: '`''utf8''`'
+  id: totrans-145
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''utf8''`'
 - en: '`''utf16le''`'
+  id: totrans-146
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''utf16le''`'
 - en: '`''ascii''`'
+  id: totrans-147
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''ascii''`'
 - en: '`''latin1`'
+  id: totrans-148
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''latin1`'
 - en: '`''base64''`'
+  id: totrans-149
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''base64''`'
 - en: '`''hex''` (each byte as two hexadecimal characters)'
+  id: totrans-150
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''hex''`（每个字节表示为两个十六进制字符）'
 - en: 'Module `stream`:'
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块`stream`：
 - en: '`Readable.prototype[Symbol.asyncIterator](): AsyncIterableIterator<any>` [(since
     10.0.0)](https://nodejs.org/api/stream.html#stream_readable_symbol_asynciterator)'
+  id: totrans-152
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Readable.prototype[Symbol.asyncIterator](): AsyncIterableIterator<any>`（自10.0.0起）(https://nodejs.org/api/stream.html#stream_readable_symbol_asynciterator)'
 - en: Readable streams are asynchronously iterable. For example, you can use `for-await-of`
     loops in asyc functions or async generators to iterate over them.
+  id: totrans-153
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 可读流是异步可迭代的。例如，您可以在异步函数或异步生成器中使用`for-await-of`循环来迭代它们。
 - en: '`finished(stream: ReadableStream | WritableStream | ReadWriteStream, callback:
     (err?: ErrnoException | null) => void): () => Promise<void>` [(since 10.0.0)](https://nodejs.org/api/stream.html#stream_stream_finished_stream_options_callback)'
+  id: totrans-154
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`finished(stream: ReadableStream | WritableStream | ReadWriteStream, callback:
+    (err?: ErrnoException | null) => void): () => Promise<void>` [(自10.0.0起)](https://nodejs.org/api/stream.html#stream_stream_finished_stream_options_callback)'
 - en: The returned Promise is settled when reading/writing is done or there was an
     error.
+  id: totrans-155
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 当读取/写入完成或出现错误时，返回的Promise将被解决。
 - en: 'This promisified version is created as follows:'
+  id: totrans-156
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此promisified版本的创建方式如下：
 - en: '[PRE16]'
+  id: totrans-157
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '`pipeline(...streams: Array<ReadableStream|ReadWriteStream|WritableStream>):
     Promise<void>` [(since 10.0.0)](https://nodejs.org/api/stream.html#stream_stream_pipeline_streams_callback)'
+  id: totrans-158
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`pipeline(...streams: Array<ReadableStream|ReadWriteStream|WritableStream>):
+    Promise<void>` [(自10.0.0起)](https://nodejs.org/api/stream.html#stream_stream_pipeline_streams_callback)'
 - en: Pipes between streams. The returned Promise is settled when the pipeline is
     complete or when there was an error.
+  id: totrans-159
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 流之间的管道。当管道完成或出现错误时，返回的Promise将被解决。
 - en: 'This promisified version is created as follows:'
+  id: totrans-160
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此promisified版本的创建方式如下：
 - en: '[PRE17]'
+  id: totrans-161
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '`Readable.from(iterable: Iterable<any> | AsyncIterable<any>, options?: ReadableOptions):
     Readable` [(since 12.3.0)](https://nodejs.org/api/stream.html#stream_stream_readable_from_iterable_options)'
+  id: totrans-162
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Readable.from(iterable: Iterable<any> | AsyncIterable<any>, options?: ReadableOptions):
+    Readable` [(自12.3.0起)](https://nodejs.org/api/stream.html#stream_stream_readable_from_iterable_options)'
 - en: Converts an iterable into a readable stream.
+  id: totrans-163
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 将可迭代对象转换为可读流。
 - en: '[PRE18]'
+  id: totrans-164
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: These options are the same as the options for the `Readable` constructor and
     [documented](https://nodejs.org/api/stream.html#stream_new_stream_readable_options)
     there.
+  id: totrans-165
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 这些选项与`Readable`构造函数的选项相同，并在[此处](https://nodejs.org/api/stream.html#stream_new_stream_readable_options)有文档记录。
 - en: 'Module `fs`:'
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块`fs`：
 - en: '`createReadStream(path: string | Buffer | URL, options?: string | {encoding?:
     string; start?: number}): ReadStream` [(since 2.3.0)](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options)'
+  id: totrans-167
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`createReadStream(path: string | Buffer | URL, options?: string | {encoding?:
+    string; start?: number}): ReadStream` [(自2.3.0起)](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options)'
 - en: Creates a readable stream. More options are available.
+  id: totrans-168
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建可读流。还有更多选项可用。
 - en: '`createWriteStream(path: PathLike, options?: string | {encoding?: string; flags?:
     string; mode?: number; start?: number}): WriteStream` [(since 2.3.0)](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)'
+  id: totrans-169
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`createWriteStream(path: PathLike, options?: string | {encoding?: string; flags?:
+    string; mode?: number; start?: number}): WriteStream` [(自2.3.0起)](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)'
 - en: With option `.flags` you can specify if you want to write or append and what
     happens if a file does or does not exist. More options are available.
+  id: totrans-170
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 使用`.flags`选项，您可以指定是要写入还是追加，以及文件存在或不存在时会发生什么。还有更多选项可用。
 - en: The static type information in this section is based on [Definitely Typed](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node).
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节中的静态类型信息基于[Definitely Typed](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node)。
 - en: 9.7 Further reading and sources of this chapter
+  id: totrans-172
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 9.7 进一步阅读和本章的来源
 - en: '[Section “Streams Compatibility with Async Generators and Async Iterators”](https://nodejs.org/api/stream.html#stream_streams_compatibility_with_async_generators_and_async_iterators)
     in the Node.js docs'
+  id: totrans-173
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Node.js文档中的“流与异步生成器和异步迭代器兼容性”章节](https://nodejs.org/api/stream.html#stream_streams_compatibility_with_async_generators_and_async_iterators)'
 - en: '[Chapter “Async functions”](https://exploringjs.com/impatient-js/ch_async-functions.html)
     in “JavaScript for impatient programmers”'
+  id: totrans-174
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“JavaScript for impatient programmers”中的“异步函数”章节](https://exploringjs.com/impatient-js/ch_async-functions.html)'
 - en: '[Chapter “Asynchronous iteration”](https://exploringjs.com/impatient-js/ch_async-iteration.html)
     in “JavaScript for impatient programmers”'
+  id: totrans-175
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“JavaScript for impatient programmers”中的“异步迭代”章节](https://exploringjs.com/impatient-js/ch_async-iteration.html)'
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/9)'
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/nodejs-shell-scripting/issues/9)'
