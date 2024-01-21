@@ -1,0 +1,418 @@
+- en: 8 Creating CommonJS-based npm packages via TypeScript
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/tackling-ts/ch_npm-cjs-typescript.html](https://exploringjs.com/tackling-ts/ch_npm-cjs-typescript.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.1 [Required knowledge](ch_npm-cjs-typescript.html#required-knowledge)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2 [Limitations](ch_npm-cjs-typescript.html#limitations)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.3 [The repository `ts-demo-npm-cjs`](ch_npm-cjs-typescript.html#the-repository-ts-demo-npm-cjs)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.4 [`.gitignore`](ch_npm-cjs-typescript.html#gitignore)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.5 [`.npmignore`](ch_npm-cjs-typescript.html#npmignore)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.6 [`package.json`](ch_npm-cjs-typescript.html#package.json)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.6.1 [Scripts](ch_npm-cjs-typescript.html#scripts)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.6.2 [`dependencies` vs. `devDependencies`](ch_npm-cjs-typescript.html#dependencies-vs.-devdependencies)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.6.3 [More information on `package.json`](ch_npm-cjs-typescript.html#more-information-on-package.json)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.7 [`tsconfig.json`](ch_npm-cjs-typescript.html#tsconfig.json-1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.8 [TypeScript code](ch_npm-cjs-typescript.html#typescript-code)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.8.1 [`index.ts`](ch_npm-cjs-typescript.html#index.ts)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.8.2 [`index_test.ts`](ch_npm-cjs-typescript.html#index_test.ts)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter describes how to use TypeScript to create packages for the package
+    manager npm that are based on the CommonJS module format.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/ef04c4c2601874494d82453a9b525b87.png)  **GitHub repository: `ts-demo-npm-cjs`**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we are exploring [the repository `ts-demo-npm-cjs`](https://github.com/rauschma/ts-demo-npm-cjs)
+    which can be downloaded on GitHub. (I deliberately have not published it as a
+    package to npm.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.1 Required knowledge
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'You should be roughly familiar with:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[*CommonJS modules*](https://nodejs.org/api/modules.html) – a module format
+    that originated in, and was designed for, server-side JavaScript. It was popularized
+    by the server-side JavaScript platform [*Node.js*](https://nodejs.org/). CommonJS
+    modules preceded JavaScript’s built-in [ECMAScript modules](https://exploringjs.com/impatient-js/ch_modules.html)
+    and are still much used and very well supported by tooling (IDEs, built tools,
+    etc.).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[TypeScript’s modules](https://www.typescriptlang.org/docs/handbook/modules.html)
+    – whose syntax is based on ECMAScript modules. However, they are often compiled
+    to CommonJS modules.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[npm packages](https://docs.npmjs.com/packages-and-modules/) – directories
+    with files that are installed via the npm package manager. They can contain CommonJS
+    modules, ECMAScript modules, and various other files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2 Limitations
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In this chapter, we are using what TypeScript currently supports best:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: All our TypeScript code is compiled to CommonJS modules with the filename extension
+    `.js`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: All external imports are CommonJS modules, too.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Especially on Node.js, TypeScript currently doesn’t really support ECMAScript
+    modules and filename extensions other than `.js`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.3 The repository `ts-demo-npm-cjs`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is how the repository `ts-demo-npm-cjs` is structured:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Apart from the `package.json` for the package, the repository contains:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ts/src/index.ts`: the actual code of the package'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ts/test/index_test.ts`: a test for `index.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`tsconfig.json`: configuration data for the TypeScript compiler'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`package.json` contains scripts for compiling:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Input: directory `ts/` (TypeScript code)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Output: directory `dist/` (CommonJS modules; the directory doesn’t yet exist
+    in the repository)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is where the compilation results for the two TypeScript files are put:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 8.4 `.gitignore`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This file lists the directories that we don’t want to check into git:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`node_modules/` is set up via `npm install`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The files in `dist/` are created by the TypeScript compiler (more on that later).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.5 `.npmignore`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'When it comes to which files should and should not be uploaded to the npm registry,
+    we have different needs than we did for git. Therefore, in addition to `.gitignore`,
+    we also need the file `.npmignore`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The two differences are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We want to upload the results of compiling TypeScript to JavaScript (directory
+    `dist/`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We don’t want to upload the TypeScript source files (directory `ts/`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Note that npm ignores the directory `node_modules/` by default.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.6 `package.json`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`package.json` looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s take a look at the properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`type`: The value `"commonjs"` means that `.js` files are interpreted as CommonJS
+    modules.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`main`: If there is a so-called *bare import* that only mentions the name of
+    the current package, then this is the module that will be imported.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`types` points to a declaration file with all the type definitions for the
+    current package.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next two subsections cover the remaining properties.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.6.1 Scripts
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Property `scripts` defines various commands that can be invoked via `npm run`.
+    For example, the script `clean` is invoked via `npm run clean`. The previous `package.json`
+    contains the following scripts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`clean` uses [the cross-platform package `shx`](https://github.com/shelljs/shx)
+    to delete the compilation results via its implementation of the Unix shell command
+    `rm`. `shx` supports a variety of shell commands with the benefit of not needing
+    a separate package for each command we may want to use.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`build` and `watch` use the TypeScript compiler `tsc` to compile the TypeScript
+    files according to `tsconfig.json`. `tsc` must be installed globally or locally
+    (inside the current package), usually via the npm package `typescript`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`test` and `testall` use [the unit test framework Mocha](https://mochajs.org/)
+    to run one test or all tests.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`prepack`: This script is run run before a tarball is packed (due to `npm pack`,
+    `npm publish`, or an installation from git).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Note that when we are using an IDE, we don’t need the scripts `build` and `watch`
+    because we can let the IDE build the artifacts. But they are needed for the script
+    `prepack`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.6.2 `dependencies` vs. `devDependencies`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`dependencies` should only contain the packages that are needed when importing
+    a package. That excludes packages that are used for running tests etc.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Packages whose names start with `@types/` provide TypeScript type definitions
+    for packages that don’t have any. Without the former, we can’t use the latter.
+    Are these normal dependencies or dev dependencies? It depends:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If the type definitions of our package refer to type definitions in another
+    package, that package is a normal dependency.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, the package is only needed during development time and a dev dependency.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.6.3 More information on `package.json`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[“Awesome npm scripts”](https://github.com/RyanZim/awesome-npm-scripts) has
+    tips for writing cross-platform scripts.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[The npm docs for `package.json`](https://docs.npmjs.com/files/package.json)
+    explain various properties of that file.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[The npm docs for `scripts`](https://docs.npmjs.com/misc/scripts) explain the
+    `package.json` property `scripts`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.7 `tsconfig.json`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`rootDir`: Where are our TypeScript files located?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`outDir`: Where should the compilation results be put?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`target`: What is the targeted ECMAScript version? If the TypeScript code uses
+    a feature that is not supported by the targeted version, then it is compiled to
+    equivalent code that only uses supported features.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`lib`: What platform features should TypeScript be aware of? Possibilities
+    include the ECMAScript standard library and the DOM of browsers. The Node.js API
+    is supported differently, via the package `@types/node`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`module`: Specifies the format of the compilation output.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The remaining options are explained by [the official documentation for `tsconfig.json`](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.8 TypeScript code
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 8.8.1 `index.ts`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This file provides the actual functionality of the package:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: It uses [function `endsWith()` of the library Lodash](https://lodash.com/docs/4.17.15#endsWith).
+    That’s why Lodash is a normal dependency – it is needed at runtime.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.8.2 `index_test.ts`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This file contains a unit test for `index.ts`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can run the test like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: The npm command `t` is an abbreviation for the npm command `test`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The npm command `test` is an abbreviation for `run test` (which runs the script
+    `test` from `package.json`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As you can see, we are running the compiled version of the test (in directory
+    `dist/`), not the TypeScript code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For more information on the unit test framework Mocha, see [its homepage](https://mochajs.org/).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/tackling-ts/issues/8)'
+  prefs: []
+  type: TYPE_NORMAL

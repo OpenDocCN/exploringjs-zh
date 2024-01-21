@@ -1,0 +1,2063 @@
+- en: 10 Using web streams on Node.js
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_web-streams.html](https://exploringjs.com/nodejs-shell-scripting/ch_web-streams.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.1 [What are web streams?](ch_web-streams.html#what-are-web-streams)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.1.1 [Kinds of streams](ch_web-streams.html#kinds-of-streams)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.1.2 [Pipe chains](ch_web-streams.html#pipe-chains)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.1.3 [Backpressure](ch_web-streams.html#backpressure)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.1.4 [Support for web streams in Node.js](ch_web-streams.html#support-for-web-streams-in-node.js)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.2 [Reading from ReadableStreams](ch_web-streams.html#reading-from-readablestreams)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.2.1 [Consuming ReadableStreams via Readers](ch_web-streams.html#ReadableStream-Reader)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.2.2 [Consuming ReadableStreams via asynchronous iteration](ch_web-streams.html#ReadableStream-async-iteration)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.2.3 [Piping ReadableStreams to WritableStreams](ch_web-streams.html#piping-ReadableStream-to-WritableStream)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.3 [Turning data sources into ReadableStreams via wrapping](ch_web-streams.html#turning-data-sources-into-readablestreams-via-wrapping)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.3.1 [A first example of implementing an underlying source](ch_web-streams.html#readablestream-enqueue-strings)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.3.2 [Using a ReadableStream to wrap a push source or a pull source](ch_web-streams.html#using-a-readablestream-to-wrap-a-push-source-or-a-pull-source)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.4 [Writing to WritableStreams](ch_web-streams.html#writing-to-WritableStream)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.4.1 [Writing to WritableStreams via Writers](ch_web-streams.html#writablestream-writer)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.4.2 [Piping to WritableStreams](ch_web-streams.html#piping-to-writablestream)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.5 [Turning data sinks into WritableStreams via wrapping](ch_web-streams.html#turning-data-sinks-into-writablestreams-via-wrapping)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.5.1 [Example: tracing a ReadableStream](ch_web-streams.html#example-tracing-a-readablestream)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.5.2 [Example: collecting chunks written to a WriteStream in a string](ch_web-streams.html#StringWritableStream)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.6 [Using TransformStreams](ch_web-streams.html#transformstream)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.6.1 [Standard TransformStreams](ch_web-streams.html#standard-transformstreams)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.7 [Implementing custom TransformStreams](ch_web-streams.html#implementing-custom-transformstreams)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.7.1 [Example: transforming a stream of arbitrary chunks to a stream of lines](ch_web-streams.html#ChunksToLinesStream)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.7.2 [Tip: async generators are also great for transforming streams](ch_web-streams.html#transforming-web-streams-via-generators)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.8 [A closer look at backpressure](ch_web-streams.html#a-closer-look-at-backpressure)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.8.1 [Signalling backpressure](ch_web-streams.html#signalling-backpressure)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.8.2 [Reacting to backpressure](ch_web-streams.html#reacting-to-backpressure)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.9 [Byte streams](ch_web-streams.html#byte-streams)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.9.1 [Readable byte streams](ch_web-streams.html#readable-byte-streams)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.9.2 [Example: an infinite readable byte stream filled with random data](ch_web-streams.html#example-an-infinite-readable-byte-stream-filled-with-random-data)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.9.3 [Example: compressing a readable byte stream](ch_web-streams.html#example-compressing-a-readable-byte-stream)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.9.4 [Example: reading a web page via `fetch()`](ch_web-streams.html#example-reading-a-web-page-via-fetch)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.10 [Node.js-specific helpers](ch_web-streams.html#node.js-specific-helpers)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.11 [Further reading](ch_web-streams.html#further-reading-1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[*Web streams*](https://streams.spec.whatwg.org/) are a standard for *streams*
+    that is now supported on all major web platforms: web browsers, Node.js, and Deno.
+    (Streams are an abstraction for reading and writing data sequentially in small
+    pieces from all kinds of sources – files, data hosted on servers, etc.)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For example, [the global function `fetch()`](https://developer.mozilla.org/en-US/docs/Web/API/fetch)
+    (which downloads online resources) asynchronously returns a Response which has
+    a property `.body` with a web stream.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter covers web streams on Node.js, but most of what we learn applies
+    to all web platforms that support them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.1 What are web streams?
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Let’s start with an overview of a few fundamentals of web streams. Afterwards,
+    we’ll quickly move on to examples.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Streams are a data structure for accessing data such as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Files
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Data hosted on web servers
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Two of their benefits are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can work with large amounts of data because streams allow us to split them
+    up into smaller pieces (so-called *chunks*) which we can process one at a time.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can work with the same data structure, streams, while processing different
+    data. That makes it easier to reuse code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*Web streams*](https://streams.spec.whatwg.org/#intro) (“web” is often omitted)
+    are a relatively new standard that originated in web browsers but is now also
+    supported by Node.js and Deno (as shown in this [MDN compatibility table](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API#browser_compatibility)).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In web streams, chunks are usually either:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Text streams: Strings'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Binary streams: Uint8Arrays ([a kind of TypedArray](https://exploringjs.com/impatient-js/ch_typed-arrays.html))'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.1.1 Kinds of streams
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'There are three main kinds of web streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A ReadableStream is used to read data from a *source*. Code that does that is
+    called a *consumer*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A WritableStream is used to write data to a *sink*. Code that does that is called
+    a *producer*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A TransformStream consists of two streams:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It receives input from its *writable side*, a WritableStream.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It sends output to its *readable side*, a ReadableStream.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The idea is to transform data by “piping it through” a TransformStream. That
+    is, we write data to the writable side and read transformed data from the readable
+    side. The following TransformStreams are built into most JavaScript platforms
+    (more on them later):'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Because JavaScript strings are UTF-16 encoded, UTF-8 encoded data is treated
+    as binary in JavaScript. A `TextDecoderStream` converts such data to strings.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A `TextEncoderStream` converts JavaScript strings to UTF-8 data.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A ``CompressionStream` compresses binary data to GZIP and other compression
+    formats.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A `DecompressionStream` decompresses binary data from GZIP and other compression
+    formats.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ReadableStreams, WritableStreams and TransformStreams can be used to transport
+    text or binary data. We’ll mostly do the former in this chapter. *Byte streams*
+    for binary data are briefly mentioned at the end.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.1.2 Pipe chains
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '*Piping* is an operation that lets us *pipe* a ReadableStream to a WritableStream:
+    As long as the ReadableStream produces data, this operation reads that data and
+    writes it to the WritableStream. If we connect just two streams, we get a convenient
+    way of transferring data from one location to another (e.g. to copy a file). However,
+    we can also connect more than two streams and get *pipe chains* that can process
+    data in a variety of ways. This is an example of a pipe chain:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It starts with a ReadableStream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Next are one or more TransformStreams.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The chain ends with a WritableStream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A ReadableStream is connected to a TransformStream by piping the former to the
+    writable side of the latter. Similarly, a TransformStream is connected to another
+    TransformStream by piping the readable side of the former to the writable side
+    of the latter. And a TransformStream is connected to a WritableStream by piping
+    the readable side of the former to the latter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.1.3 Backpressure
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'One problem in pipe chains is that a member may receive more data than it can
+    handle at the moment. *Backpressure* is a technique for solving this problem:
+    It enables a receiver of data to tell its sender that it should temporarily stop
+    sending data so that the receiver doesn’t get overwhelmed.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Another way to look at backpressure is as a signal that travels backwards through
+    a pipe chain, from a member that is getting overwhelmed to the beginning of the
+    chain. As an example, consider the following pipe chain:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how backpressure travels through this chain:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Initially, the WriteableStream signals that it can’t process more data at the
+    moment.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The pipe stops reading from the TransformStream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Input accumulates inside the TransformStream (which is buffered).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The TransformStream signals that it’s full.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The pipe stops reading from the ReadableStream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We have reached the beginning of the pipe chain. Therefore, no data accumulates
+    inside the ReadableStream (which is also buffered) and the WriteableStream has
+    time to recover. Once it does, it signals that it is ready to receive data again.
+    That signal also travels back through the chain until it reaches the ReadableStream
+    and data processing resumes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this first look at backpressure, several details were omitted to make things
+    easier to understand. These will be covered later.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.1.4 Support for web streams in Node.js
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In Node.js, web streams are available from two sources:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: From [module `'node:stream/web'`](https://nodejs.org/api/webstreams.html)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Via global variables (like in web browsers)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'At the moment, only one API has direct support for web streams in Node.js –
+    [the Fetch API](https://nodejs.org/api/globals.html#fetch):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For other things, we need to use one of the following static methods in module
+    `''node:stream''` to either convert a Node.js stream to a web stream or vice versa:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Node.js Readables can be converted to and from WritableStreams:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Readable.toWeb(nodeReadable)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Readable.fromWeb(webReadableStream, options?)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Node.js Writables can be converted to and from ReadableStreams:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Writable.toWeb(nodeWritable)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Writable.fromWeb(webWritableStream, options?)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Node.js Duplexes can be converted to and from TransformStreams:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Duplex.toWeb(nodeDuplex)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Duplex.fromWeb(webTransformStream, options?)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'One other API partially supports web streams: FileHandles have the method [`.readableWebStream()`](https://nodejs.org/dist/latest-v18.x/docs/api/fs.html#filehandlereadablewebstream).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.2 Reading from ReadableStreams
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'ReadableStreams let us read chunks of data from various sources. They have
+    the following type (feel free to skim this type and the explanations of its properties;
+    they will be explained again when we encounter them in examples):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations of these properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.getReader()` returns a Reader – an object through which we can read from
+    a ReadableStream. ReadableStreams returning Readers is similar to [iterables](https://exploringjs.com/impatient-js/ch_sync-iteration.html)
+    returning iterators.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.locked`: There can only be one active Reader per ReadableStream at a time.
+    While one Reader is in use, the ReadableStream is locked and `.getReader()` cannot
+    be invoked.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`[Symbol.asyncIterator](https://exploringjs.com/impatient-js/ch_async-iteration.html)`:
+    This method makes ReadableStreams [asynchronously iterable](https://exploringjs.com/impatient-js/ch_async-iteration.html).
+    It is currently only implemented on some platforms.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.cancel(reason)` cancels the stream because the consumer isn’t interested
+    in it anymore. `reason` is passed on to the `.cancel()` method of the ReadableStream’s
+    *underlying source* (more on that later). The returned Promise fulfills when this
+    operation is done.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.pipeTo()` feeds the contents of its ReadableStream to a WritableStream. The
+    returned Promise fulfills when this operation is done. `.pipeTo()` ensures that
+    backpressure, closing, errors, etc. are all correctly propagated through a pipe
+    chain. We can specify options via its second parameter:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.signal` lets us pass an AbortSignal to this method, which enables us to abort
+    piping via an AbortController.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.preventClose`: If `true`, it prevents the WritableStream from being closed
+    when the ReadableStream is closed. That is useful when we want to pipe more than
+    one ReadableStream to the same WritableStream.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The remaining options are beyond the scope of this chapter. They are documented
+    [in the web streams specification](https://streams.spec.whatwg.org/#rs-prototype).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.pipeThrough()` connects its ReadableStream to a ReadableWritablePair (roughly:
+    a TransformStream, more on that later). It returns the resulting ReadableStream
+    (i.e., the readable side of the ReadableWritablePair).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following subsections cover three ways of consuming ReadableStreams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Reading via Readers
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Reading via asynchronous iteration
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Piping ReadableStreams to WritableStreams
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.2.1 Consuming ReadableStreams via Readers
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use *Readers* to read data from ReadableStreams. They have the following
+    type (feel free to skim this type and the explanations of its properties; they
+    will be explained again when we encounter them in examples):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations of these properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.closed`: This Promise is fulfilled after the stream is closed. It is rejected
+    if the stream errors or if a Reader’s lock is released before the stream is closed.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.cancel()`: In an active Reader, this method cancels the associated ReadableStream.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.releaseLock()` deactivates the Reader and unlocks its stream.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.read()` returns a Promise for a ReadableStreamReadResult (a wrapped chunk)
+    which has two properties:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.done` is a boolean that is `false` as long as chunks can be read and `true`
+    after the last chunk.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.value` is the chunk (or `undefined` after the last chunk).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'ReadableStreamReadResult may look familiar if you know how iteration works:
+    ReadableStreams are similar to iterables, Readers are similar to iterators, and
+    ReadableStreamReadResults are similar to the objects returned by the iterator
+    method `.next()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates the protocol for using Readers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Getting a Reader.** We can’t read directly from `readableStream`, we first
+    need to acquire a *Reader* (line A). Each ReadableStream can have at most one
+    Reader. After a Reader was acquired, `readableStream` is locked (line B). Before
+    we can call `.getReader()` again, we must call `.releaseLock()` (line D).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Reading chunks.** `.read()` returns a Promise for an object with the properties
+    `.done` and `.value` (line C). After the last chunk was read, `.done` is `true`.
+    This approach is similar to how [asynchronous iteration](https://exploringjs.com/impatient-js/ch_async-iteration.html)
+    works in JavaScript.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.2.1.1 Example: reading a file via a ReadableStream'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the following example, we read chunks (strings) from a text file `data.txt`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: We are converting a Node.js Readable to a web ReadableStream (line A). Then
+    we use the previously explained protocol to read the chunks.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.2.1.2 Example: assembling a string with the contents of a ReadableStream'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the next example, we concatenate all chunks of a ReadableStream into a string
+    and return it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Conveniently, the `finally` clause is always executed – now matter how we leave
+    the `try` clause. That is, the lock is correctly released (line B) if we return
+    a result (line A).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.2.2 Consuming ReadableStreams via asynchronous iteration
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'ReadableStreams can also be consumed via [asynchronous iteration](https://exploringjs.com/impatient-js/ch_async-iteration.html):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Thankfully, the `for-await-of` loop handles all the details of asynchronous
+    iteration for us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '10.2.2.1 Example: using asynchronous iteration to read a stream'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Let’s redo our previous attempt to read text from a file. This time, we use
+    asynchronous iteration instead of a Reader:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '10.2.2.2 Example: assembling a string with the contents of a ReadableStream'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We have previously used a Reader to assemble a string with the contents of
+    a ReadableStream. With asynchronous iteration, the code becomes simpler:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '10.2.2.3 Caveat: Browsers don’t support asynchronous iteration over ReadableStreams'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'At the moment, Node.js and Deno support asynchronous iteration over ReadableStreams
+    but web browsers don’t: There is [a GitHub issue](https://github.com/whatwg/streams/issues/778)
+    that links to bug reports.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Given that it’s not yet completely clear how async iteration will be supported
+    on browsers, wrapping is a safer choice than polyfilling. The following code is
+    based on [a suggestion in the Chromium bug report](https://bugs.chromium.org/p/chromium/issues/detail?id=929585#c10):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 10.2.3 Piping ReadableStreams to WritableStreams
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'ReadableStreams have two methods for piping:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`readableStream.pipeTo(writeableStream)` synchronously returns a Promise `p`.
+    It asynchronously reads all chunks of `readableStream` and writes them to `writableStream`.
+    When it is done, it fulfills `p`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We’ll see examples of `.pipeTo()` when we explore WritableStreams, as it provides
+    a convenient way to transfer data into them.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`readableStream.pipeThrough(transformStream)` pipes `readableStream` into `transformStream.writable`
+    and returns `transformStream.readable` (every TransformStream has these properties
+    that refer to its writable side and its readable side). Another way to view this
+    operation is that we create a new ReadableStream by connecting a `transformStream`
+    to a `readableStream`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We’ll see examples of `.pipeThrough()` when we explore TransformStreams, as
+    this method is the main way in which they are used.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 10.3 Turning data sources into ReadableStreams via wrapping
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'If we want to read an external source via a ReadableStream, we can wrap it
+    in an adapter object and pass that object to the `ReadableStream` constructor.
+    The adapter object is called the *underlying source* of the ReadableStream (queuing
+    strategies are explained later, when we take a closer look at backpressure):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is the type of underlying sources (feel free to skim this type and the
+    explanations of its properties; they will be explained again when we encounter
+    them in examples):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is when the ReadableStream calls these methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.start(controller)` is called immediately after we invoke the constructor
+    of `ReadableStream`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.pull(controller)` is called whenever there is room in the internal queue
+    of the ReadableStream. It is called repeatedly until the queue is full again.
+    This method will only be called after `.start()` is finished. If `.pull()` doesn’t
+    enqueue anything, it won’t be called again.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.cancel(reason)` is called if the consumer of a ReadableStream cancels it
+    via `readableStream.cancel()` or `reader.cancel()`. `reason` is the value that
+    was passed to these methods.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Each of these methods can return a Promise and no further steps will be taken
+    until the Promise is settled. That is useful if we want to do something asynchronous.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The parameter `controller` of `.start()` and `.pull()` lets them access the
+    stream. It has the following type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For now, chunks are strings. We’ll later get to byte streams, where Uint8Arrays
+    are common. This is what the methods do:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.enqueue(chunk)` adds `chunk` to the ReadableStream’s internal queue.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.desiredSize` indicates how much room there is in the queue into which `.enqueue()`
+    writes. It is zero if the queue is full and negative if it has exceeded its maximum
+    size. Therefore, if the desired size is zero or negative, we have to stop enqueuing.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a stream is closed, its desired size is zero.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a stream is in error mode, its desired size is `null`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.close()` closes the ReadableStream. Consumers will still be able to empty
+    the queue, but after that, the stream ends. It’s important that an underlying
+    source calls this method – otherwise, reading its stream will never finish.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.error(err)` puts the stream in an error mode: All future interactions with
+    it will fail with the error value `err`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.3.1 A first example of implementing an underlying source
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In our first example of implementing an underlying source, we only provide method
+    `.start()`. We’ll see use cases for `.pull()` in the next subsection.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: We use the controller to create a stream with two chunks (line A and line B).
+    It’s important that we close the stream (line C). Otherwise, the `for-await-of`
+    loop would never finish!
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note that this way of enqueuing isn’t completely safe: There is a risk of exceding
+    the capacity of the internal queue. We’ll see soon how we can avoid that risk.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.3.2 Using a ReadableStream to wrap a push source or a pull source
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'A common scenario is turning a push source or a pull source into a ReadableStream.
+    The source being push or pull determines how we will hook into the ReadableStream
+    with our UnderlyingSource:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Push source: Such a source notifies us when there is new data. We use `.start()`
+    to set up listeners and supporting data structures. If we receive too much data
+    and the desired size isn’t positive anymore, we must tell our source to pause.
+    If `.pull()` is called later, we can unpause it. Pausing an external source in
+    reaction to the desired size becoming non-positive is called *applying backpressure*.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Pull source: We ask such a source for new data – often asynchronously. Therefore,
+    we usually don’t do much in `.start()` and retrieve data whenever `.pull()` is
+    called.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We’ll see examples for both kinds of sources next.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.3.2.1 Example: creating a ReadableStream from a push source with backpressure
+    support'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the following example, we wrap a ReadableStream around a socket – which
+    pushes its data to us (it calls us). [This example](https://streams.spec.whatwg.org/#example-rs-push-backpressure)
+    is taken from the web stream specification:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '10.3.2.2 Example: creating a ReadableStream from a pull source'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The tool function `iterableToReadableStream()` takes an iterable over chunks
+    and turns it into a ReadableStream:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s use an async generator function to create an asynchronous iterable and
+    turn that iterable into a ReadableStream:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`iterableToReadableStream()` also works with synchronous iterables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: There may eventually by a static helper method `ReadableStream.from()` that
+    provides this functionality ([see its pull request for more information](https://github.com/whatwg/streams/pull/1083)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.4 Writing to WritableStreams
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'WritableStreams let us write chunks of data to various sinks. They have the
+    following type (feel free to skim this type and the explanations of its properties;
+    they will be explained again when we encounter them in examples):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations of these properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.getWriter()` returns a Writer – an object through which we can write to a
+    WritableStream.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.locked`: There can only be one active Writer per WritableStream at a time.
+    While one Writer is in use, the WritableStream is locked and `.getWriter()` cannot
+    be invoked.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.close()` closes the stream:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *underlying sink* (more on that later) will still receive all queued chunks
+    before it’s closed.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: From now on, all attempts to write will fail silently (without errors).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The method returns a Promise that will be fulfilled if the sink succeeds in
+    writing all queued chunks and closing. It will be rejected if any errors occur
+    during these steps.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.abort()` aborts the stream:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It puts the stream in error mode.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The returned Promise fulfills if the sink shuts down successfully and rejects
+    if errors occur.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following subsections cover two approaches to sending data to WritableStreams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Writing to WritableStreams via Writers
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Piping to WritableStreams
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.4.1 Writing to WritableStreams via Writers
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use *Writers* to write to WritableStreams. They have the following type
+    (feel free to skim this type and the explanations of its properties; they will
+    be explained again when we encounter them in examples):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations of these properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.desiredSize` indicates how much room there is in this WriteStream’s queue.
+    It is zero if the queue is full and negative if it has exceeded its maximum size.
+    Therefore, if the desired size is zero or negative, we have to stop writing.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a stream is closed, its desired size is zero.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a stream is in error mode, its desired size is `null`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.ready` returns a Promise that is fulfilled when the desired size changes
+    from non-positive to positive. That means that no backpressure is active and it’s
+    OK to write data. If the desired size later changes back to non-positive, a new
+    pending Promise is created and returned.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.write()` writes a chunk to the stream. It returns a Promise that is fulfilled
+    after writing succeeds and rejected if there is an error.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.releaseLock()` releases the Writer’s lock on its stream.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.close()` has the same effect as closing the Writer’s stream.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.closed` returns a Promise that is fulfilled when the stream is closed.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.abort()` has the same effect as aborting the Writer’s stream.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code shows the protocol for using Writers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: We can’t write directly to a `writableStream`, we first need to acquire a *Writer*
+    (line A). Each WritableStream can have at most one Writer. After a Writer was
+    acquired, `writableStream` is locked (line B). Before we can call `.getWriter()`
+    again, we must call `.releaseLock()` (line C).
+  prefs: []
+  type: TYPE_NORMAL
+- en: There are three approaches to writing chunks.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.4.1.1 Writing approach 1: awaiting `.write()` (handling backpressure inefficiently)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The first writing approach is to await each result of `.write()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: The Promise returned by `.write()` fulfills when the chunk that we passed to
+    it, was successfully written. What exactly “successfully written” means, depends
+    on how a WritableStream is implemented – e.g., with a file stream, the chunk may
+    have been sent to the operating system but still reside in a cache and therefore
+    not have actually been written to disk.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The Promise returned by `.close()` is fulfilled when the stream becomes closed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: A downside of this writing approach is that waiting until writing succeeds means
+    that the queue isn’t used. As a consequence, data throughput may be lower.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.4.1.2 Writing approach 2: ignoring `.write()` rejections (ignoring backpressure)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the second writing approach, we ignore the Promises returned by `.write()`
+    and only await the Promise returned by `.close()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: The synchronous invocations of `.write()` add chunks to the internal queue of
+    the WritableStream. By not awaiting the returned Promises, we don’t wait until
+    each chunk is written. However, awaiting `.close()` ensures that the queue is
+    empty and all writing succeeded before we continue.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Invoking `.catch()` in line A and line B is necessary to avoid warnings about
+    unhandled Promise rejections when something goes wrong during writing. Such warnings
+    are often logged to the console. We can afford to ignore the errors reported by
+    `.write()` because `.close()` will also report them to us.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The previous code can be improved by using a helper function that ignores Promise
+    rejections:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'One downside of this approach is that backpressure is ignored: We simply assume
+    that the queue is big enough to hold everything we write.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.4.1.3 Writing approach 3: awaiting `.ready` (handling backpressure efficiently)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In this writing approach, we handle backpressure efficiently by awaiting the
+    Writer getter `.ready`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: The Promise in `.ready` fulfills whenever the stream transitions from having
+    backpressure to not having backpressure.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.4.1.4 Example: writing to a file via a Writer'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In this example, we create a text file `data.txt` via a WritableStream:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, we create a Node.js stream for the file `data.txt`. In line B, we
+    convert this stream to a web stream. Then we use a Writer to write strings to
+    it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.4.2 Piping to WritableStreams
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Instead of using Writers, we can also write to WritableStreams by piping ReadableStreams
+    to them:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: The Promise returned by `.pipeTo()` fulfills when piping finishes successfully.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.4.2.1 Piping happens asynchronously
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Piping is performed after the current task completes or pauses. The following
+    code demonstrates that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A we create a ReadableStream. In line B we create a WritableStream.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can see that `.pipeTo()` (line C) returns immediately. In a new task, chunks
+    are read and written. Then `writableStream` is closed and, finally, `promise`
+    is fulfilled.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.4.2.2 Example: piping to a WritableStream for a file'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the following example, we create a WritableStream for a file and pipe a
+    ReadableStream to it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, we create a ReadableStream. In line B, we create a Node.js stream
+    for the file `data.txt`. In line C, we convert this stream to a web stream. In
+    line D, we pipe our `webReadableStream` to the WritableStream for the file.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.4.2.3 Example: writing two ReadableStreams to a WritableStream'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: In the following example, we write two ReadableStreams to a single WritableStream.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: We tell `.pipeTo()` to not close the WritableStream after the ReadableStream
+    is closed (line A and line B). Therefore, the WritableStream remains open after
+    line A and we can pipe another ReadableStream to it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.5 Turning data sinks into WritableStreams via wrapping
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'If we want to write to an external sink via a WritableStream, we can wrap it
+    in an adapter object and pass that object to the `WritableStream` constructor.
+    The adapter object is called the *underlying sink* of the WritableStream (queuing
+    strategies are explained later, when we take a closer look at backpressure):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is the type of underlying sinks (feel free to skim this type and the explanations
+    of its properties; they will be explained again when we encounter them in examples):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations of these properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.start(controller)` is called immediately after we invoke the constructor
+    of `WritableStream`. If we do something asynchronous, we can return a Promise.
+    In this method, we can prepare for writing.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.write(chunk, controller)` is called when a new chunk is ready to be written
+    to the external sink. We can exert backpressure by returning a Promise that fulfills
+    once the backpressure is gone.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.close()` is called after `writer.close()` was called and all queued writes
+    succeeded. In this method, we can clean up after writing.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.abort(reason)` is called if `writeStream.abort()` or `writer.abort()` were
+    invoked. `reason` is the value passed to these methods.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The parameter `controller` of `.start()` and `.write()` lets them error the
+    WritableStream. It has the following type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.signal` is an AbortSignal that we can listen to if we want to abort a write
+    or close operation when the stream is aborted.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.error(err)` errors the WritableStream: It is closed and all future interactions
+    with it fail with the error value `err`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.5.1 Example: tracing a ReadableStream'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the next example, we pipe a ReadableStream to a WritableStream in order
+    to check how the ReadableStream produces chunks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: '10.5.2 Example: collecting chunks written to a WriteStream in a string'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the next example, we create a subclass of `WriteStream` that collects all
+    written chunks in a string. We can access that string via method `.getString()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A downside of this approach is that we are mixing two APIs: The API of `WritableStream`
+    and our new string stream API. An alternative is to delegate to the WritableStream
+    instead of extending it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: This functionality could also be implemented via a class (instead of as a factory
+    function for objects).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.6 Using TransformStreams
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A TransformStream:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Receives input via its *writable side*, a WritableStream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It then may or may not transform this input.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The result can be read via a ReadableStream, its *readable side*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The most common way to use TransformStreams is to “pipe through” them:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.pipeThrough()` pipes `readableStream` to the writable side of `transformStream`
+    and returns its readable side. In other words: We have created a new ReadableStream
+    that is a transformed version of `readableStream`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.pipeThrough()` accepts not only TransformStreams, but any object that has
+    the following shape:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: 10.6.1 Standard TransformStreams
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Node.js supports the following standard TransformStreams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Encoding (WHATWG standard)](https://encoding.spec.whatwg.org) – `TextEncoderStream`
+    and `TextDecoderStream`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: These streams support UTF-8, but also [many “legacy encodings”](https://encoding.spec.whatwg.org/#names-and-labels).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A single Unicode code point is encoded as up to four UTF-8 code units (bytes).
+    In byte streams, encoded code points be be split across chunks. `TextDecoderStream`
+    handles these cases correctly.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Available on most JavaScript platforms ([`TextEncoderStream`](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoderStream#browser_compatibility),
+    [`TextDecoderStream`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoderStream#browser_compatibility)).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Compression Streams (W3C Draft Community Group Report)](https://wicg.github.io/compression/)
+    – [`CompressionStream`](https://developer.mozilla.org/en-US/docs/Web/API/CompressionStream),
+    [`DecompressionStream`](https://developer.mozilla.org/en-US/docs/Web/API/DecompressionStream):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Currently supported compression formats](https://wicg.github.io/compression/#supported-formats):
+    `deflate` (ZLIB Compressed Data Format), `deflate-raw` (DEFLATE algorithm), `gzip`
+    (GZIP file format).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Available on many JavaScript platforms ([`CompressionStream`](https://developer.mozilla.org/en-US/docs/Web/API/CompressionStream#browser_compatibility),
+    [`DecompressionStream`](https://developer.mozilla.org/en-US/docs/Web/API/DecompressionStream#browser_compatibility)).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '10.6.1.1 Example: decoding a stream of UTF-8-encoded bytes'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the following example, we decode a stream of UTF-8-encoded bytes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`response.body` is a ReadableByteStream whose chunks are instances of `Uint8Array`
+    ([TypedArrays](https://exploringjs.com/impatient-js/ch_typed-arrays.html)). We
+    pipe that stream through a `TextDecoderStream` to get a stream that has string
+    chunks.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that translating each byte chunk separately (e.g. via [a `TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder))
+    doesn’t work because [a single Unicode code point is encoded as up to four bytes
+    in UTF-8](https://exploringjs.com/impatient-js/ch_unicode.html#utf-8-unicode-transformation-format-8)
+    and those bytes might not all be in the same chunk.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.6.1.2 Example: creating a readable text stream for standard input'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following Node.js module logs everything that is sent to it via standard
+    input:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: We can access standard input via a stream stored in `process.stdin` (`process`
+    is a global Node.js variable). If we don’t set an encoding for this stream and
+    convert it via `Readable.toWeb()`, we get a byte stream. We pipe it through a
+    TextDecoderStream in order to get a text stream.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note that we process standard input incrementally: As soon as another chunk
+    is available, we log it. In other words, we don’t wait until standard input is
+    finished. That is useful when the data is either large or only sent intermittently.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.7 Implementing custom TransformStreams
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We can implement a custom TransformStream by passing a Transformer object to
+    the constructor of `TransformStream`. Such has object has the following type (feel
+    free to skim this type and the explanations of its properties; they will be explained
+    again when we encounter them in examples):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations of these properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.start(controller)` is called immediately after we invoke the constructor
+    of `TransformStream`. Here we can prepare things before the transformations start.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.transform(chunk, controller)` performs the actual transformations. It receives
+    an input chunk and can use its parameter `controller` to enqueue one or more transformed
+    output chunks. It can also choose not to enqueue anything at all.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.flush(controller)` is called after all input chunks were transformed successfully.
+    Here we can perform clean-ups after the transformations are done.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Each of these methods can return a Promise and no further steps will be taken
+    until the Promise is settled. That is useful if we want to do something asynchronous.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The parameter `controller` has the following type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.enqueue(chunk)` adds `chunk` to the readable side (output) of the TransformStream.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.desiredSize` returns the desired size of the internal queue of the readable
+    side (output) of the TransformStream.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.terminate()` closes the readable side (output) and errors the writable side
+    (input) of the TransformStream. It can be used if a transformer is not interested
+    in the remaining chunks of the writable side (input) and wants to skip them.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.error(err)` errors the TransformStream: All future interactions with it will
+    fail with the error value `err`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What about backpressure in a TransformStream? The class propagates the backpressure
+    from its readable side (output) to its writable side (input). The assumption is
+    that transforming doesn’t change the amount of data much. Therefore, Transforms
+    can get away with ignoring backpressure. However, it could be detected via `transformStreamDefaultController.desiredSize`
+    and propagated by returning a Promise from `transformer.transform()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.7.1 Example: transforming a stream of arbitrary chunks to a stream of lines'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following subclass of `TransformStream` converts a stream with arbitrary
+    chunks into a stream where each chunk comprises exactly one line of text. That
+    is, with the possible exception of the last chunk, each chunk ends with an end-of-line
+    (EOL) string: `''\n''` on Unix (incl. macOS) and `''\r\n''` on Windows.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that [Deno’s built-in `TextLineStream`](https://doc.deno.land/https://deno.land/std@0.141.0/streams/mod.ts/~/TextLineStream)
+    provides similar functionality.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Tip: We can also make this transformation via an async generator. It would
+    asynchronously iterate over a ReadableStream and return an asynchronous iterable
+    with lines. Its implementation is shown in [§9.4 “Transforming readable streams
+    via async generators”](ch_nodejs-streams.html#transforming-Readable-via-async-generator).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.7.2 Tip: async generators are also great for transforming streams'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Due to ReadableStreams being asynchronously iterable, we can use [asynchronous
+    generators](https://exploringjs.com/impatient-js/ch_async-iteration.html#async-generators)
+    to transform them. That leads to very elegant code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: 10.8 A closer look at backpressure
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Let’s take a closer look at backpressure. Consider the following pipe chain:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`rs` is a ReadableStream, `ts` is a TransformStream, `ws` is a WritableStream.
+    These are the connections that are created by the previous expression (`.pipeThrough`
+    uses `.pipeTo` to connect `rs` to the writable side of `ts`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Observations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The underlying source of `rs` can be viewed as a pipe chain member that comes
+    before `rs`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The underlying sink of `ws` can be viewed as a pipe chain member that comes
+    after `ws`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Each stream has an internal buffer: ReadableStreams buffers after their underlying
+    sources. WritableStreams have buffers before their underlying sinks.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let’s assume that the underlying sink of `ws` is slow and the buffer of `ws`
+    is eventually full. Then the following steps happen:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ws` signals it’s full.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`pipeTo` stops reading from `ts.readable`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ts.readable` signals it’s full.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ts` stops moving chunks from `ts.writable` to `ts.readable`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ts.writable` signals it’s full.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`pipeTo` stops reading from `rs`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`rs` signals it’s full to its underlying source.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The underlying source pauses.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This example illustrates that we need two kinds of functionality:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Entities receiving data need to be able to signal backpressure.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Entities sending data need to react to signals by exerting backpressure.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Let’s explore how these functionalities are implemented in the web streams API.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.8.1 Signalling backpressure
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Backpressure is signalled by entities that are receiving data. Web streams
+    have two such entities:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A WritableStream receives data via the Writer method `.write()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A ReadableStream receives data when its underlying source calls the ReadableStreamDefaultController
+    method `.enqueue()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In both cases, the input is buffered via queues. The signal to apply backpressure
+    is when a queue is full. Let’s see how that can be detected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'These are the locations of the queues:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The queue of a WritableStream is stored internally in the WritableStreamDefaultController
+    ([see web streams standard](https://streams.spec.whatwg.org/#ws-default-controller-internal-slots)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The queue of a ReadableStream is stored internally in the ReadableStreamDefaultController
+    ([see web streams standard](https://streams.spec.whatwg.org/#rs-default-controller-internal-slots)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The *desired size* of a queue is a number that indicates how much room is left
+    in the queue:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It is positive if there is still room in the queue.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It is zero if the queue has reached its maximum size.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It is negative if the queue has exceeded its maximum size.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Therefore, we have to apply backpressure if the desired size is zero or less.
+    It is available via the getter `.desiredSize` of the object which contains the
+    queue.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'How is the desired size computed? Via an object that specifies a so-called
+    *queuing strategy*. `ReadableStream` and `WritableStream` have default queuing
+    strategies which can be overridden via optional parameters of their constructors.
+    [The interface `QueuingStrategy`](https://streams.spec.whatwg.org/#dictdef-queuingstrategy)
+    has two properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Method `.size(chunk)` returns a size for `chunk`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The current size of a queue is the sum of the sizes of the chunks it contains.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Property `.highWaterMark` specifies the maximum size of a queue.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The desired size of a queue is the high water mark minus the current size of
+    the queue.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.8.2 Reacting to backpressure
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Entities sending data need to react to signalled backpressure by exerting backpressure.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.8.2.1 Code writing to a WritableStream via a Writer
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: We can await the Promise in `writer.ready`. While we do, we are blocked and
+    the desired backpressure is achieved. The Promise is fulfilled once there is room
+    in the queue. Fulfillment is triggered when `writer.desiredSize` has a value greater
+    than zero.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Alternatively, we can await the Promise returned by `writer.write()`. If we
+    do that, the queue won’t even be filled.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we want to, we can additionally base the size of our chunks on `writer.desiredSize`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.8.2.2 The underlying source of a ReadableStream
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The underlying source object that can be passed to a ReadableStream wraps an
+    external source. In a way, it is also a member of the pipe chain; one that comes
+    before its ReadableStream.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Underlying pull sources are only asked for new data whenever there is room in
+    the queue. While there isn’t, backpressure is exerted automatically because no
+    data is pulled.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Underlying push sources should check `controller.desiredSize` after enqueuing
+    something: If it’s zero or less, they should exert backpressure by pausing their
+    external sources.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.8.2.3 The underlying sink of a WritableStream
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The underlying sink object that can be passed to a WritableStream wraps an external
+    sink. In a way, it is also a member of the pipe chain; one that comes after its
+    WritableStream.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Each external sink signals backpressure differently (in some cases not at all).
+    The underlying sink can exert backpressure by returning a Promise from method
+    `.write()` that is fulfilled once writing is finished. There is [an example in
+    the web streams standard](https://streams.spec.whatwg.org/#example-ws-backpressure)
+    that demonstrates how that works.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.8.2.4 A transformStream (`.writable` `→` `.readable`)
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The TransformStream connects its writable side with its readable side by implementing
+    an underlying sink for the former and an underlying source for the latter. It
+    has an internal slot `.[[backpressure]]` that indicates if internal backpressure
+    is currently active or not.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Method `.write()` of the underlying sink of the writable side waits asynchronously
+    until there is no internal backpressure before it feeds another chunk to the TransformStream’s
+    transformer (web streams standard: [`TransformStreamDefaultSinkWriteAlgorithm`](https://streams.spec.whatwg.org/#transform-stream-default-sink-write-algorithm)).
+    The transformer may then enqueue something via its TransformStreamDefaultController.
+    Note that `.write()` returns a Promise that fulfills when the method is finished.
+    Until that happens, the WriteStream buffers incoming write requests via its queue.
+    Therefore, backpressure for the writable side is signalled via that queue and
+    its desired size.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The TransformStream’s backpressure is activated if a chunk is enqueued via
+    the TransformStreamDefaultController and the queue of the readable side becomes
+    full (web streams standard: [`TransformStreamDefaultControllerEnqueue`](https://streams.spec.whatwg.org/#transform-stream-default-controller-enqueue)).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The TransformStream’s backpressure may be deactivated if something is read
+    from the Reader (web streams standard: [`ReadableStreamDefaultReaderRead`](https://streams.spec.whatwg.org/#readable-stream-default-reader-read)):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If there is room in the queue now, it may be time to call `.pull()` of the
+    underlying source (web streams standard: [`.[[PullSteps]]`](https://streams.spec.whatwg.org/#rs-default-controller-private-pull)).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.pull()` of the underlying source of the readable side deactivates the backpressure
+    (web streams standard: [`TransformStreamDefaultSourcePullAlgorithm`](https://streams.spec.whatwg.org/#transform-stream-default-source-pull)).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 10.8.2.5 `.pipeTo()` (ReadableStream `→` WritableStream)
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`.pipeTo()` reads chunks from the ReadableStream via a reader and write them
+    to the WritableStream via a Writer. It pauses whenever `writer.desiredSize` is
+    zero or less (web streams standard: Step 15 of [`ReadableStreamPipeTo`](https://streams.spec.whatwg.org/#readable-stream-pipe-to)).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.9 Byte streams
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'So far, we have only worked with *text streams*, streams whose chunks were
+    strings. But the web streams API also supports *byte streams* for binary data,
+    where chunks are Uint8Arrays ([TypedArrays](https://exploringjs.com/impatient-js/ch_typed-arrays.html)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ReadableStream` has a special `''bytes''` mode.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`WritableStream` itself doesn’t care if chunks are strings or Uint8Arrays.
+    Therefore, whether an instance is a text stream or a byte stream depends on what
+    kind of chunks the underlying sink can handle.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What kind of chunks a `TransformStream` can handle also depends on its Transformer.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Next, we’ll learn how to create readable byte streams.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 10.9.1 Readable byte streams
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'What kind of stream is created by the `ReadableStream` constructor depends
+    on the optional property `.type` of its optional first parameter `underlyingSource`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `.type` is omitted or no underlying source is provided, the new instance
+    is a text stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `.type` is the string `''bytes''`, the new instance is a byte stream:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: What changes if a ReadableStream is in `'bytes'` mode?
+  prefs: []
+  type: TYPE_NORMAL
+- en: In default mode, the underlying source can return any kind of chunk. In bytes
+    mode, the chunks must be ArrayBufferViews, i.e. TypedArrays (such as Uint8Arrays)
+    or DataViews.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Additionally, a readable byte stream can create two kinds of readers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.getReader()` returns an instance of `ReadableStreamDefaultReader`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.getReader({mode: ''byob''})` returns an instance of `ReadableStreamBYOBReader`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: “BYOB“ stands for “Bring Your Own Buffer” and means that we can pass a buffer
+    (an ArrayBufferView) to `reader.read()`. Afterwards, that ArrayBufferView will
+    be detached and no longer usable. But `.read()` returns its data in a new ArrayBufferView
+    that has the same type and accesses the same region of the same ArrayBuffer.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Additionally, readable byte streams have different controllers: They are instances
+    of `ReadableByteStreamController` (vs. `ReadableStreamDefaultController`). Apart
+    from forcing underlying sources to enqueue ArrayBufferViews (TypedArrays or DataViews),
+    it also supports ReadableStreamBYOBReaders via [its property `.byobRequest`](https://streams.spec.whatwg.org/#rbs-controller-prototype).
+    An underlying source writes its data into the BYOBRequest stored in this property.
+    The web streams standard has two examples of using `.byobRequest` in [its section
+    “Examples of creating streams”](https://streams.spec.whatwg.org/#creating-examples).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.9.2 Example: an infinite readable byte stream filled with random data'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the next example, create an infinite readable byte stream that fills its
+    chunks with random data (inspiration: [`example4.mjs` in “Implementing the Web
+    Streams API in Node.js”](https://www.jasnell.me/posts/webstreams#creating-and-using-a-readablestream)).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs: []
+  type: TYPE_PRE
+- en: Due to `readableByteStream` being infinite, we can’t loop over it. That’s why
+    we only read its first chunk (line B).
+  prefs: []
+  type: TYPE_NORMAL
+- en: The buffer we create in line A is transferred and therefore unreadable after
+    line B.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '10.9.3 Example: compressing a readable byte stream'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the following example, we create a readable byte stream and pipe it through
+    a stream that compresses it to the GZIP format:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs: []
+  type: TYPE_PRE
+- en: '10.9.4 Example: reading a web page via `fetch()`'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The result of `fetch()` resolves to a response object whose property `.body`
+    is a readable byte stream. We convert that byte stream to a text stream via `TextDecoderStream`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: 10.10 Node.js-specific helpers
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Node.js is the only web platform that supports the following helper functions
+    that it calls [*utility consumers*](https://nodejs.org/api/webstreams.html#utility-consumers):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'These functions convert web ReadableStreams, Node.js Readables and AsyncIterators
+    to Promises that are fulfilled with:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ArrayBuffers (`arrayBuffer()`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Blobs (`blob()`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Node.js Buffers (`buffer()`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: JSON objects (`json()`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Strings (`text()`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Binary data is assumed to be UTF-8-encoded:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'String streams work as expected:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs: []
+  type: TYPE_PRE
+- en: 10.11 Further reading
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: All of the material mentioned in this section was a source for this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This chapter doesn’t cover every aspect of the web streams API. You can find
+    more information here:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“WHATWG Streams Standard”](https://streams.spec.whatwg.org/) by Adam Rice,
+    Domenic Denicola, Mattias Buelens, and 吉野剛史 (Takeshi Yoshino)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Web Streams API”](https://nodejs.org/api/webstreams.html) in the Node.js
+    documentation'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'More material:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Web streams API:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Implementing the Web Streams API in Node.js”](https://www.jasnell.me/posts/webstreams)
+    by James M. Snell'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Streams API”](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
+    on MDN'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Streams—The definitive guide”](https://web.dev/streams/) by Thomas Steiner'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Backpressure:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Node.js Backpressuring in Streams”](https://enlear.academy/nodejs-backpressuring-in-streams-52638f505e1b)
+    by Vladimir Topolev'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Backpressuring in Streams”](https://nodejs.org/en/docs/guides/backpressuring-in-streams/)
+    in the Node.js documentation'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Unicode (code points, UTF-8, UTF-16, etc.): [Chapter “Unicode – a brief introduction”](https://exploringjs.com/impatient-js/ch_unicode.html)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Chapter “Asynchronous iteration”](https://exploringjs.com/impatient-js/ch_async-iteration.html)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Chapter “Typed Arrays: handling binary data”](https://exploringjs.com/impatient-js/ch_typed-arrays.html)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/10)'
+  prefs: []
+  type: TYPE_NORMAL

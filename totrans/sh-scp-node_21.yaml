@@ -1,0 +1,572 @@
+- en: 16 Parsing command line arguments with util.parseArgs()
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_node-util-parseargs.html](https://exploringjs.com/nodejs-shell-scripting/ch_node-util-parseargs.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 16.1 [Imports that are implied in this chapter](ch_node-util-parseargs.html#imports-that-are-implied-in-this-chapter)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.2 [The steps involved in processing command line arguments](ch_node-util-parseargs.html#the-steps-involved-in-processing-command-line-arguments)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.3 [Parsing command line arguments](ch_node-util-parseargs.html#parsing-command-line-arguments)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.3.1 [The basics](ch_node-util-parseargs.html#the-basics)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.3.2 [Using options multiple times](ch_node-util-parseargs.html#using-options-multiple-times)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.3.3 [More ways of using long and short options](ch_node-util-parseargs.html#more-ways-of-using-long-and-short-options)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.3.4 [Quoting values](ch_node-util-parseargs.html#quoting-values)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.3.5 [Option terminators](ch_node-util-parseargs.html#option-terminators)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.3.6 [Strict `parseArgs()`](ch_node-util-parseargs.html#strict-parseargs)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.4 [`parseArgs` tokens](ch_node-util-parseargs.html#parseargs-tokens)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.4.1 [Examples of tokens](ch_node-util-parseargs.html#examples-of-tokens)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 16.4.2 [Using tokens to implement subcommands](ch_node-util-parseargs.html#using-tokens-to-implement-subcommands)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we explore how to use the Node.js function `parseArgs()` from
+    module `node:util` to parse command line arguments.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 16.1 Imports that are implied in this chapter
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following two imports are implied in every example in this chapter:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: The first import is for test assertions we use to check values. The second import
+    is for function `parseArgs()` that is the topic of this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 16.2 The steps involved in processing command line arguments
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following steps are involved in processing command line arguments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The user inputs a text string.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The shell parses the string into a sequence of words and operators.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: If a command is called, it gets zero or more words as arguments.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Our Node.js code receives the words via an Array stored in `process.argv`. [`process`](https://nodejs.org/api/globals.html#process)
+    is a global variable on Node.js.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: We use `parseArgs()` to turn that Array into something that is more convenient
+    to work with.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Let’s use the following shell script `args.mjs` with Node.js code to see what
+    `process.argv` looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We start with a simple command:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we install the command via npm on Windows, the same command produces the
+    following result on the Windows Command shell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'No matter how we invoke a shell script, `process.argv` always starts with the
+    path of the Node.js binary that is used to run our code. Next is the path of our
+    script. The Array ends with the actual arguments the were passed to the script.
+    In other words: The arguments of a script always start at index 2.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Therefore, we change our script so that it looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s try more complicated arguments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'These arguments consist of:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Option `--str` whose value is the text `abc`. Such an option is called a *string
+    option*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Option `--bool` which has no associated value – it’s a flag that’s either there
+    or not. Such an option is called a *boolean option*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Two so-called *positional arguments* which have no names: `home.html` and `main.js`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Two styles of using arguments are common:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The main arguments are positional, options provide additional – often optional
+    – information.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Only options are used.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Written as a JavaScript function call, the previous example would look like
+    this (in JavaScript, options usually come last):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.3 Parsing command line arguments
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 16.3.1 The basics
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we want `parseArgs()` to parse an Array with arguments, we first need to
+    tell it how our options work. Let’s assume our script has:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A boolean option `--verbose`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An option `--times` that receives non-negative integers. `parseArgs()` has no
+    special support for numbers, so we have to make it a string option.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A string option `--color`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We describe these options to `parseArgs()` as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: As long as a property key of `options` is a valid JavaScript identifier, it
+    is up to you if you want to quote it or not. Both have pros and cons. In this
+    chapter, they are always quoted. That way, options with non-identifier names such
+    as `my-new-option` look the same as those with identifier names.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Each entry in `options` can have the following properties (as defined via a
+    TypeScript type):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.type` specifies if an option is boolean or string.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.short` defines the short version of an option. It must be a single character.
+    We’ll see soon how to use short versions.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.multiple` indicates if an option can be used at most once or zero or more
+    times. We’ll see later what that means.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code uses `parseArgs()` and `options` to parse an Array with
+    arguments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: The prototype of the object stored in `.values` is `null`. That means that we
+    can use the `in` operator to check if a property exists, without having to worry
+    about inherited properties such as `.toString`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: As mentioned before, the number 5 that is the value of `--times`, is processed
+    as a string.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The object we pass to `parseArgs()` has the following TypeScript type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.args`: The arguments to parse. If we omit this property, `parseArgs()` uses
+    `process.argv`, starting with the element at index 2.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.strict`: If `true`, an exception is thrown if `args` isn’t correct. More
+    on that later.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.allowPositionals`: Can `args` contain positional arguments?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is the type of the result of `parseArgs()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.values` contains the optional arguments. We have already seen strings and
+    booleans as property values. We’ll see Array-valued properties when we explore
+    option definitions where `.multiple` is `true`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.positionals` contains the positional arguments.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Two hyphens are used to refer to the long version of an option. One hyphen
+    is used to refer to the short version:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that `.values` contains the long names of the options.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We conclude this subsection by parsing positional arguments that are mixed
+    with optional arguments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.3.2 Using options multiple times
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we use an option multiple times, the default is that only the last time
+    counts. It overrides all previous occurrences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If, however, we set `.multiple` to `true` in the definition of an option, `parseArgs()`
+    gives us all option values in an Array:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.3.3 More ways of using long and short options
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Consider the following options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following is a compact way of using multiple boolean options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: We can directly attach the value of a long string option via an equals sign.
+    That is called an *inline value*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: Short options can’t have inline values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 16.3.4 Quoting values
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: So far, all option values and positional values were single words. If we want
+    to use values that contain spaces, we need to quote them – with double quotes
+    or single quotes. The latter is not supported by all shells, however.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 16.3.4.1 How shells parse quoted values
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'To examine how shells parse quoted values, we again use the script `args.mjs`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Unix, these are the differences between double quotes and single quotes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Double quotes: we can escape quotes with backslashes (which are otherwise passed
+    on verbatim) and variables are interpolated:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Single quotes: all content is passed on verbatim and we can’t escape quotes:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'The following interaction demonstrates option values that are doube-quoted
+    and single-quoted:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the Windows Command shell single quotes are not special in any way:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Quoted option values in the Windows Command shell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In Windows PowerShell, we can quote with single quotes, variable names are
+    not interpolated inside quotes and single quotes can’t be escaped:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.3.4.2 How `parseArgs()` handles quoted values
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is how `parseArgs()` handles quoted values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.3.5 Option terminators
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`parseArgs()` supports so-called *option terminators*: If one of the elements
+    of `args` is a double hyphen (`--`), then the remaining arguments are all treated
+    as positional.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Where are option terminators needed? Some executables invoke other executables,
+    e.g. [the `node` executable](https://nodejs.org/api/cli.html#--). Then an option
+    terminator can be used to separate the caller’s arguments from the callee’s arguments.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is how `parseArgs()` handles option terminators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.3.6 Strict `parseArgs()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If the option `.strict` is `true` (which is the default), then `parseArgs()`
+    throws an exception if one of the following things happens:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The name of an option used in `args` is not in `options`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An option in `args` has the wrong type. Currently that only haappens if a string
+    option is missing an argument.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There are positional arguments in `args` even though `.allowPositions` is `false`
+    (which is the default).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates each of these cases:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.4 `parseArgs` tokens
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`parseArgs()` processes the `args` Array in two phases:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Phase 1: It parses `args` into an Array of tokens: These tokens are mostly
+    the elements of `args` annotated with type information: Is it an option? Is it
+    a positional? Etc. However, if an option has a value then the token stores both
+    option name and option value and therefore contains the data of two `args` elements.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Phase 2: It assembles the tokens into the object that is returned via the result
+    property `.values`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can get access to the tokens if we set `config.tokens` to `true`. Then the
+    object returned by `parseArgs()` contains a property `.tokens` with the tokens.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'These are the properties of tokens:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.4.1 Examples of tokens
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As an example, consider the following options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The tokens for boolean options look like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that there are three tokens for option `bool` because it is mentioned three
+    times in `args`. However, due to phase 2 of parsing, there is only one property
+    for `bool` in `.values`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the next example, we parse string options into tokens. `.inlineValue` has
+    boolean values now (it is always `undefined` for boolean options):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Lastly, this is an example of parsing positional arguments and an option terminator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: 16.4.2 Using tokens to implement subcommands
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: By default, `parseArgs()` does not support subcommands such as `git clone` or
+    `npm install`. However, it is relatively easy to implement this functionality
+    via tokens.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is the implementation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is `parseSubcommand()` in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/16)'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,863 @@
+- en: '11 Properties: assignment vs. definition'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_property-assignment-vs-definition.html](https://exploringjs.com/deep-js/ch_property-assignment-vs-definition.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.1 [Assignment vs. definition](ch_property-assignment-vs-definition.html#assignment-vs.-definition)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.1.1 [Assignment](ch_property-assignment-vs-definition.html#assignment)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.1.2 [Definition](ch_property-assignment-vs-definition.html#definition)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.2 [Assignment and definition in theory (optional)](ch_property-assignment-vs-definition.html#assignment-and-definition-in-theory-optional)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.2.1 [Assigning to a property](ch_property-assignment-vs-definition.html#assigning-to-a-property)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.2.2 [Defining a property](ch_property-assignment-vs-definition.html#defining-a-property)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3 [Definition and assignment in practice](ch_property-assignment-vs-definition.html#definition-and-assignment-in-practice)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3.1 [Only definition allows us to create a property with arbitrary attributes](ch_property-assignment-vs-definition.html#only-definition-allows-us-to-create-a-property-with-arbitrary-attributes)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3.2 [The assignment operator does not change properties in prototypes](ch_property-assignment-vs-definition.html#the-assignment-operator-does-not-change-properties-in-prototypes)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3.3 [Assignment calls setters, definition doesn’t](ch_property-assignment-vs-definition.html#setters-and-assignment-vs-definition)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3.4 [Inherited read-only properties prevent creating own properties via assignment](ch_property-assignment-vs-definition.html#inherited-properties-prevent-assignment)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.4 [Which language constructs use definition, which assignment?](ch_property-assignment-vs-definition.html#which-language-constructs-use-definition-which-assignment)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.4.1 [The properties of an object literal are added via definition](ch_property-assignment-vs-definition.html#the-properties-of-an-object-literal-are-added-via-definition)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.4.2 [The assignment operator `=` always uses assignment](ch_property-assignment-vs-definition.html#the-assignment-operator-always-uses-assignment)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.4.3 [Public class fields are added via definition](ch_property-assignment-vs-definition.html#public-class-fields-are-added-via-definition)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.5 [Further reading and sources of this chapter](ch_property-assignment-vs-definition.html#further-reading-and-sources-of-this-chapter-1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'There are two ways of creating or changing a property `prop` of an object `obj`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Assigning*: `obj.prop = true`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Defining*: `Object.defineProperty(obj, '''', {value: true})`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This chapter explains how they work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Required knowledge:
+    property attributes and property descriptors**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For this chapter, you should be familiar with property attributes and property
+    descriptors. If you aren’t, check out [§9 “Property attributes: an introduction”](ch_property-attributes-intro.html).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.1 Assignment vs. definition
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 11.1.1 Assignment
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We use the assignment operator `=` to assign a value `value` to a property
+    `.prop` of an object `obj`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This operator works differently depending on what `.prop` looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Changing properties: If there is an own data property `.prop`, assignment changes
+    its value to `value`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Invoking setters: If there is an own or inherited setter for `.prop`, assignment
+    invokes that setter.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Creating properties: If there is no own data property `.prop` and no own or
+    inherited setter for it, assignment creates a new own data property.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That is, the main purpose of assignment is making changes. That’s why it supports
+    setters.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.1.2 Definition
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To define a property with the key `propKey` of an object `obj`, we use an operation
+    such as the following method:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This method works differently depending on what the property looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Changing properties: If an own property with key `propKey` exists, defining
+    changes its property attributes as specified by the property descriptor `propDesc`
+    (if possible).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Creating properties: Otherwise, defining creates an own property with the attributes
+    specified by `propDesc` (if possible).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That is, the main purpose of definition is to create an own property (even if
+    there is an inherited setter, which it ignores) and to change property attributes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.2 Assignment and definition in theory (optional)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '![](../Images/c17f3239b9e1f5d335bb0adf8211d9d3.png)  **Property descriptors
+    in the ECMAScript specification**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In specification operations, property descriptors are not JavaScript objects
+    but [*Records*](https://tc39.es/ecma262/#sec-list-and-record-specification-type),
+    a spec-internal data structure that has *fields*. The keys of fields are written
+    in double brackets. For example, `Desc.[[Configurable]]` accesses the field `.[[Configurable]]`
+    of `Desc`. These records are translated to and from JavaScript objects when interacting
+    with the outside world.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.2.1 Assigning to a property
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The actual work of assigning to a property is handled via [the following operation](https://tc39.es/ecma262/#sec-ordinarysetwithowndescriptor)
+    in the ECMAScript specification:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'These are the parameters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`O` is the object that is currently being visited.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`P` is the key of the property that we are assigning to.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`V` is the value we are assigning.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Receiver` is the object where the assignment started.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ownDesc` is the descriptor of `O[P]` or `null` if that property doesn’t exist.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The return value is a boolean that indicates whether or not the operation succeeded.
+    As explained [later in this chapter](ch_property-assignment-vs-definition.html#control-flow-of-assignment),
+    strict-mode assignment throws a `TypeError` if `OrdinarySetWithOwnDescriptor()`
+    fails.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is a high-level summary of the algorithm:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It traverses the prototype chain of `Receiver` until it finds a property whose
+    key is `P`. The traversal is done by calling `OrdinarySetWithOwnDescriptor()`
+    recursively. During recursion, `O` changes and points to the object that is currently
+    being visited, but `Receiver` stays the same.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Depending on what the traversal finds, an own property is created in `Receiver`
+    (where recursion started) or something else happens.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In more detail, this algorithm works as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If `ownDesc` is `undefined`, then we haven’t yet found a property with key
+    `P`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `O` has a prototype `parent`, then we return `parent.[[Set]](P, V, Receiver)`.
+    This continues our search. The method call usually ends up invoking `OrdinarySetWithOwnDescriptor()`
+    recursively.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Otherwise, our search for `P` has failed and we set `ownDesc` as follows:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: With this `ownDesc`, the next `if` statement will create an own property in
+    `Receiver`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'If `ownDesc` specifies a data property, then we have found a property:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `ownDesc.[[Writable]]` is `false`, return `false`. This means that any non-writable
+    property `P` (own or inherited!) prevents assignment.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let `existingDescriptor` be `Receiver.[[GetOwnProperty]](P)`. That is, retrieve
+    the descriptor of the property where the assignment started. We now have:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The current object `O` and the current property descriptor `ownDesc` on one
+    hand.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The original object `Receiver` and the original property descriptor `existingDescriptor`
+    on the other hand.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `existingDescriptor` is not `undefined`:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (If we get here, then we are still at the beginning of the prototype chain –
+    we only recurse if `Receiver` does not have a property `P`.)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following two `if` conditions should never be `true` because `ownDesc`
+    and `existingDesc` should be equal:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `existingDescriptor` specifies an accessor, return `false`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `existingDescriptor.[[Writable]]` is `false`, return `false`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Return `Receiver.[[DefineOwnProperty]](P, { [[Value]]: V })`. This internal
+    method performs definition, which we use to change the value of property `Receiver[P]`.
+    The definition algorithm is described in the next subsection.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Else:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (If we get here, then `Receiver` does not have an own property with key `P`.)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Return `CreateDataProperty(Receiver, P, V)`. ([This operation](https://tc39.es/ecma262/#sec-createdataproperty)
+    creates an own data property in its first argument.)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (If we get here, then `ownDesc` describes an accessor property that is own or
+    inherited.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Let `setter` be `ownDesc.[[Set]]`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `setter` is `undefined`, return `false`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Perform `Call(setter, Receiver, «V»)`. [`Call()`](https://tc39.es/ecma262/#sec-call)
+    invokes the function object `setter` with `this` set to `Receiver` and the single
+    parameter `V` (French quotes `«»` are used for lists in the specification).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Return `true`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.2.1.1 How do we get from an assignment to `OrdinarySetWithOwnDescriptor()`?
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Evaluating an assignment without destructuring involves the following steps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the spec, evaluation starts in [the section on the runtime semantics of `AssignmentExpression`](https://tc39.es/ecma262/#sec-assignment-operators-runtime-semantics-evaluation).
+    This section handles providing names for anonymous functions, destructuring, and
+    more.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If there is no destructuring pattern, then [`PutValue()`](https://tc39.es/ecma262/#sec-putvalue)
+    is used to make the assignment.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For property assignments, `PutValue()` invokes the internal method `.[[Set]]()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For ordinary objects, [`.[[Set]]()`](https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots-set-p-v-receiver)
+    calls `OrdinarySet()` (which calls `OrdinarySetWithOwnDescriptor()`) and returns
+    the result.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Notably, `PutValue()` throws a `TypeError` in strict mode if the result of `.[[Set]]()`
+    is `false`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.2.2 Defining a property
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The actual work of defining a property is handled via [the following operation](https://tc39.es/ecma262/#sec-validateandapplypropertydescriptor)
+    in the ECMAScript specification:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The parameters are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The object `O` where we want to define a property. There is a special validation-only
+    mode where `O` is `undefined`. We are ignoring this mode here.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The property key `P` of the property we want to define.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`extensible` indicates if `O` is extensible.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Desc` is a property descriptor specifying the attributes we want the property
+    to have.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`current` contains the property descriptor of an own property `O[P]` if it
+    exists. Otherwise, `current` is `undefined`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The result of the operation is a boolean that indicates if it succeeded. Failure
+    can have different consequences. Some callers ignore the result. Others, such
+    as `Object.defineProperty()`, throw an exception if the result is `false`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is a summary of the algorithm:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `current` is `undefined`, then property `P` does not currently exist and
+    must be created.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `extensible` is `false`, return `false` indicating that the property could
+    not be added.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, check `Desc` and create either a data property or an accessor property.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Return `true`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `Desc` doesn’t have any fields, return `true` indicating that the operation
+    succeeded (because no changes had to be made).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `current.[[Configurable]]` is `false`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (`Desc` is not allowed to change attributes other than `value`.)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `Desc.[[Configurable]]` exists, it must have the same value as `current.[[Configurable]]`.
+    If not, return `false`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Same check: `Desc.[[Enumerable]]`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Next, we *validate* the property descriptor `Desc`: Can the attributes described
+    by `current` be changed to the values specified by `Desc`? If not, return `false`.
+    If yes, go on.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the descriptor is *generic* (with no attributes specific to data properties
+    or accessor properties), then validation is successful and we can move on.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Else if one descriptor specifies a data property and the other an accessor
+    property:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The current property must be configurable (otherwise its attributes can’t be
+    changed as necessary). If not, `false` is returned.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Change the current property from a data property to an accessor property or
+    vice versa. When doing so, the values of `.[[Configurable]]` and `.[[Enumerable]]`
+    are preserved, all other attributes get [default values](ch_property-attributes-intro.html#property-attributes)
+    (`undefined` for object-valued attributes, `false` for boolean-valued attributes).
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Else if both descriptors specify data properties:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If both `current.[[Configurable]]` and `current.[[Writable]]` are `false`,
+    then no changes are allowed and `Desc` and `current` must specify the same attributes:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (Due to `current.[[Configurable]]` being `false`, `Desc.[[Configurable]]` and
+    `Desc.[[Enumerable]]` were already checked previously and have the correct values.)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `Desc.[[Writable]]` exists and is `true`, then return `false`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `Desc.[[Value]]` exists and does not have the same value as `current.[[Value]]`,
+    then return `false`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There is nothing more to do. Return `true` indicating that the algorithm succeeded.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (Note that normally, we can’t change any attributes of a non-configurable property
+    other than its value. The one exception to this rule is that we can always go
+    from writable to non-writable. This algorithm handles this exception correctly.)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Else (both descriptors specify accessor properties):'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `current.[[Configurable]]` is `false`, then no changes are allowed and `Desc`
+    and `current` must specify the same attributes:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (Due to `current.[[Configurable]]` being `false`, `Desc.[[Configurable]]` and
+    `Desc.[[Enumerable]]` were already checked previously and have the correct values.)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `Desc.[[Set]]` exists, it must have the same value as `current.[[Set]]`.
+    If not, return `false`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Same check: `Desc.[[Get]]`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There is nothing more to do. Return `true` indicating that the algorithm succeeded.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Set the attributes of the property with key `P` to the values specified by `Desc`.
+    Due to validation, we can be sure that all of the changes are allowed.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Return `true`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3 Definition and assignment in practice
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This section describes some consequences of how property definition and assignment
+    work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.3.1 Only definition allows us to create a property with arbitrary attributes
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If we create an own property via assignment, it always creates properties whose
+    attributes `writable`, `enumerable`, and `configurable` are all `true`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: Therefore, if we want to specify arbitrary attributes, we must use definition.
+  prefs: []
+  type: TYPE_NORMAL
+- en: And while we can create getters and setters inside object literals, we can’t
+    add them later via assignment. Here, too, we need definition.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.3.2 The assignment operator does not change properties in prototypes
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Let us consider the following setup, where `obj` inherits the property `prop`
+    from `proto`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can’t (destructively) change `proto.prop` by assigning to `obj.prop`. Doing
+    so creates a new own property:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The rationale for this behavior is as follows: Prototypes can have properties
+    whose values are shared by all of their descendants. If we want to change such
+    a property in only one descendant, we must do so non-destructively, via overriding.
+    Then the change does not affect the other descendants.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.3.3 Assignment calls setters, definition doesn’t
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: What is the difference between defining the property `.prop` of `obj` versus
+    assigning to it?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we define, then our intention is to either create or change an own (non-inherited)
+    property of `obj`. Therefore, definition ignores the inherited setter for `.prop`
+    in the following example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If, instead, we assign to `.prop`, then our intention is often to change something
+    that already exists and that change should be handled by the setter:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 11.3.4 Inherited read-only properties prevent creating own properties via assignment
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: What happens if `.prop` is read-only in a prototype?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In any object that inherits the read-only `.prop` from `proto`, we can’t use
+    assignment to create an own property with the same key – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why can’t we assign? The rationale is that overriding an inherited property
+    by creating an own property can be seen as [non-destructively changing](ch_updating-destructively-and-nondestructively.html)
+    the inherited property. Arguably, if a property is non-writable, we shouldn’t
+    be able to do that.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'However, defining `.prop` still works and lets us override:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Accessor properties that don’t have a setter are also considered to be read-only:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **The “override mistake”:
+    pros and cons**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The fact that read-only properties prevent assignment earlier in the prototype
+    chain, has been given the name *override mistake*:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It was introduced in ECMAScript 5.1.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On one hand, this behavior is consistent with how prototypal inheritance and
+    setters work. (So, arguably, it is *not* a mistake.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On the other hand, with the behavior, deep-freezing the global object causes
+    unwanted side-effects.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There was an attempt to change the behavior, but that broke the library Lodash
+    and was abandoned ([pull request on GitHub](https://github.com/tc39/ecma262/pull/1320#issuecomment-443485524)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Background knowledge:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Pull request on GitHub](https://github.com/tc39/ecma262/pull/1307)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Wiki page on ECMAScript.org](http://wiki.ecmascript.org/doku.php?id=strawman:fixing_override_mistake)
+    ([archived](https://web.archive.org/web/20141230041441/http://wiki.ecmascript.org/doku.php?id=strawman:fixing_override_mistake))'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.4 Which language constructs use definition, which assignment?
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In this section, we examine where the language uses definition and where it
+    uses assignment. We detect which operation is used by tracking whether or not
+    inherited setters are called. See [§11.3.3 “Assignment calls setters, definition
+    doesn’t”](ch_property-assignment-vs-definition.html#setters-and-assignment-vs-definition)
+    for more information.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.4.1 The properties of an object literal are added via definition
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'When we create properties via an object literal, JavaScript always uses definition
+    (and therefore never calls inherited setters):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 11.4.2 The assignment operator `=` always uses assignment
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The assignment operator `=` always uses assignment to create or change properties.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 11.4.3 Public class fields are added via definition
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Alas, even though public class fields have the same syntax as assignment, they
+    do *not* use assignment to create properties, they use definition (like properties
+    in object literals):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 11.5 Further reading and sources of this chapter
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Section “Prototype chains”](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html#prototype-chains)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Email by Allen Wirfs-Brock to the es-discuss mailing list](https://mail.mozilla.org/pipermail/es-discuss/2012-July/024227.html):
+    “The distinction between assignment and definition […] was not very important
+    when all ES had was data properties and there was no way for ES code to manipulate
+    property attributes.” [That changed with ECMAScript 5.]'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/11)'
+  prefs: []
+  type: TYPE_NORMAL

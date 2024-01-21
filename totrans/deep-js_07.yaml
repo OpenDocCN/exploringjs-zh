@@ -1,0 +1,395 @@
+- en: 5 A detailed look at global variables
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_global-scope.html](https://exploringjs.com/deep-js/ch_global-scope.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.1 [Scopes](ch_global-scope.html#scopes)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.2 [Lexical environments](ch_global-scope.html#lexical-environments)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.3 [The global object](ch_global-scope.html#the-global-object)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.4 [In browsers, `globalThis` does not point directly to the global object](ch_global-scope.html#window-proxy)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.5 [The global environment](ch_global-scope.html#the-global-environment)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.5.1 [Script scope and module scopes](ch_global-scope.html#script-scope-and-module-scopes)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '5.5.2 [Creating variables: declarative record vs. object record](ch_global-scope.html#creating-variables-declarative-record-vs.-object-record)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.5.3 [Getting or setting variables](ch_global-scope.html#getting-or-setting-variables)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.5.4 [Global ECMAScript variables and global host variables](ch_global-scope.html#global-ecmascript-variables-and-global-host-variables)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '5.6 [Conclusion: Why does JavaScript have both normal global variables and
+    the global object?](ch_global-scope.html#conclusion-why-does-javascript-have-both-normal-global-variables-and-the-global-object)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.7 [Further reading and sources of this chapter](ch_global-scope.html#further-reading-and-sources-of-this-chapter)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In this chapter, we take a detailed look at how JavaScript’s global variables
+    work. Several interesting phenomena play a role: the scope of scripts, the so-called
+    *global object*, and more.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.1 Scopes
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The *lexical scope* (short: *scope*) of a variable is the region of a program
+    where it can be accessed. JavaScript’s scopes are *static* (they don’t change
+    at runtime) and they can be nested – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: The scope introduced by the `if` statement (line B) is nested inside the scope
+    of function `func()` (line A).
+  prefs: []
+  type: TYPE_NORMAL
+- en: The innermost surrounding scope of a scope S is called the *outer scope* of
+    S. In the example, `func` is the outer scope of `if`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.2 Lexical environments
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In the JavaScript language specification, scopes are “implemented” via *lexical
+    environments*. They consist of two components:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An *environment record* that maps variable names to variable values (think dictionary).
+    This is the actual storage space for the variables of the scope. The name-value
+    entries in the record are called *bindings*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A reference to the *outer environment* – the environment for the outer scope.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The tree of nested scopes is therefore represented by a tree of environments
+    linked by outer environment references.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.3 The global object
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The global object is an object whose properties become global variables. (We’ll
+    examine soon how exactly it fits into the tree of environments.) It can be accessed
+    via the following global variables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Available on all platforms: [`globalThis`](https://exploringjs.com/impatient-js/ch_variables-assignment.html#globalThis).
+    The name is based on the fact that it has the same value as `this` in global scope.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Other variables for the global object are not available on all platforms:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`window` is the classic way of referring to the global object. It works in
+    normal browser code, but not in *Web Workers* (processes running concurrently
+    to the normal browser process) and not on Node.js.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`self` is available everywhere in browsers (including in Web Workers). But
+    it isn’t supported by Node.js.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`global` is only available on Node.js.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.4 In browsers, `globalThis` does not point directly to the global object
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In browsers, `globalThis` does not point directly to the global, there is an
+    indirection. As an example, consider an iframe on a web page:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Whenever the `src` of the iframe changes, it gets a new global object.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: However, `globalThis` always has the same value. That value can be checked from
+    outside the iframe, as demonstrated below (inspired by [an example in the `globalThis`
+    proposal](https://github.com/tc39/proposal-global#html-and-the-windowproxy)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'File `parent.html`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'File `iframe.html`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'How do browsers ensure that `globalThis` doesn’t change in this scenario? They
+    internally distinguish two objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`Window`](https://html.spec.whatwg.org/multipage/window-object.html#the-window-object)
+    is the global object. It changes whenever the location changes.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`WindowProxy`](https://html.spec.whatwg.org/multipage/window-object.html#the-windowproxy-exotic-object)
+    is an object that forwards all accesses to the current `Window`. This object never
+    changes.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In browsers, `globalThis` refers to the `WindowProxy`; everywhere else, it directly
+    refers to the global object.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.5 The global environment
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The global scope is the “outermost” scope – it has no outer scope. Its environment
+    is the *global environment*. Every environment is connected with the global environment
+    via a chain of environments that are linked by outer environment references. The
+    outer environment reference of the global environment is `null`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The global environment record uses two environment records to manage its variables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An *object environment record* has the same interface as a normal environment
+    record, but keeps its bindings in a JavaScript object. In this case, the object
+    is the global object.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A normal (*declarative*) environment record that has its own storage for its
+    bindings.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Which of these two records is used when will be explained soon.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.5.1 Script scope and module scopes
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In JavaScript, we are only in global scope at the top levels of scripts. In
+    contrast, each module has its own scope that is a subscope of the script scope.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we ignore the relatively complicated rules for how variable bindings are
+    added to the global environment, then global scope and module scopes work as if
+    they were nested code blocks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '5.5.2 Creating variables: declarative record vs. object record'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In order to create a variable that is truly global, we must be in global scope
+    – which is only the case at the top level of scripts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Top-level `const`, `let`, and `class` create bindings in the declarative environment
+    record.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Top-level `var` and function declarations create bindings in the object environment
+    record.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 5.5.3 Getting or setting variables
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'When we get or set a variable and both environment records have a binding for
+    that variable, then the declarative record wins:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 5.5.4 Global ECMAScript variables and global host variables
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In addition to variables created via `var` and function declarations, the global
+    object contains the following properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: All built-in global variables of ECMAScript
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: All built-in global variables of the host platform (browser, Node.js, etc.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Using `const` or `let` guarantees that global variable declarations aren’t influencing
+    (or influenced by) the built-in global variables of ECMAScript and host platform.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, browsers have [the global variable `.location`](https://developer.mozilla.org/en-US/docs/Web/API/Window/location):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: If a variable already exists (such as `location` in this case), then a `var`
+    declaration with an initializer behaves like an assignment. That’s why we get
+    into trouble in this example.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that this is only an issue in global scope. In modules, we are never in
+    global scope (unless we use `eval()` or similar).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Fig. [10](#fig:global-scope) summarizes everything we have learned in this section.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/55ca076d7f5298721a42eabbf8a45ec7.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 10: The environment for the global scope manages its bindings via a
+    *global environment record* which in turn is based on two environment records:
+    an *object environment record* whose bindings are stored in the global object
+    and a *declarative environment record* that uses internal storage for its bindings.
+    Therefore, global variables can be created by adding properties to the global
+    object or via various declarations. The global object is initialized with the
+    built-in global variables of ECMAScript and the host platform. Each ECMAScript
+    module has its own environment whose outer environment is the global environment.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '5.6 Conclusion: Why does JavaScript have both normal global variables and the
+    global object?'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The global object is generally considered to be a mistake. For that reason,
+    newer constructs such as `const`, `let`, and classes create normal global variables
+    (when in script scope).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Thankfully, most of the code written in modern JavaScript, lives in [ECMAScript
+    modules and CommonJS modules](https://exploringjs.com/impatient-js/ch_modules.html).
+    Each module has its own scope, which is why the rules governing global variables
+    rarely matter for module-based code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.7 Further reading and sources of this chapter
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Environments and the global object in the ECMAScript specification:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Section “Lexical Environments”](https://tc39.es/ecma262/#sec-lexical-environments)
+    provides a general overview over environments.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Section “Global Environment Records”](https://tc39.es/ecma262/#sec-global-environment-records)
+    covers the global environment.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Section “ECMAScript Standard Built-in Objects”](https://tc39.es/ecma262/#sec-ecmascript-standard-built-in-objects)
+    describes how ECMAScript manages its built-in objects (which include the global
+    object).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`globalThis`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '2ality post [“ES feature: `globalThis`”](https://2ality.com/2019/08/global-this.html)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Various ways of accessing the global `this` value: [“A horrifying `globalThis`
+    polyfill in universal JavaScript”](https://mathiasbynens.be/notes/globalthis)
+    by Mathias Bynens'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The global object in browsers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Background on what happens in browsers: [“Defining the WindowProxy, Window,
+    and Location objects”](https://blog.whatwg.org/windowproxy-window-and-location)
+    by Anne van Kesteren'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Very technical: [section “Realms, settings objects, and global objects”](https://html.spec.whatwg.org/multipage/webappapis.html#realms-settings-objects-global-objects)
+    in the WHATWG HTML standard'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In the ECMAScript specification, we can see how web browsers customize global
+    `this`: [section “InitializeHostDefinedRealm()”](https://tc39.es/ecma262/#sec-initializehostdefinedrealm)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/4)'
+  prefs: []
+  type: TYPE_NORMAL

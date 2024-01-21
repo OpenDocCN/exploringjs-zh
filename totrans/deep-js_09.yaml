@@ -1,0 +1,433 @@
+- en: 6 Copying objects and Arrays
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_copying-objects-and-arrays.html](https://exploringjs.com/deep-js/ch_copying-objects-and-arrays.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.1 [Shallow copying vs. deep copying](ch_copying-objects-and-arrays.html#shallow-copying-vs.-deep-copying)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 6.2 [Shallow copying in JavaScript](ch_copying-objects-and-arrays.html#shallow-copying-in-javascript)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 6.2.1 [Copying plain objects and Arrays via spreading](ch_copying-objects-and-arrays.html#copying-plain-objects-and-arrays-via-spreading)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 6.2.2 [Shallow copying via `Object.assign()` (optional)](ch_copying-objects-and-arrays.html#shallow-copying-via-object.assign-optional)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 6.2.3 [Shallow copying via `Object.getOwnPropertyDescriptors()` and `Object.defineProperties()`
+    (optional)](ch_copying-objects-and-arrays.html#copying-via-property-descriptors)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 6.3 [Deep copying in JavaScript](ch_copying-objects-and-arrays.html#deep-copying-in-javascript)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 6.3.1 [Manual deep copying via nested spreading](ch_copying-objects-and-arrays.html#manual-deep-copying-via-nested-spreading)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '6.3.2 [Hack: generic deep copying via JSON](ch_copying-objects-and-arrays.html#hack-generic-deep-copying-via-json)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 6.3.3 [Implementing generic deep copying](ch_copying-objects-and-arrays.html#implementing-generic-deep-copying)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 6.4 [Further reading](ch_copying-objects-and-arrays.html#further-reading)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we will learn how to copy objects and Arrays in JavaScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.1 Shallow copying vs. deep copying
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'There are two “depths” with which data can be copied:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Shallow copying* only copies the top-level entries of objects and Arrays.
+    The entry values are still the same in original and copy.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Deep copying* also copies the entries of the values of the entries, etc. That
+    is, it traverses the complete tree whose root is the value to be copied and makes
+    copies of all nodes.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next sections cover both kinds of copying. Unfortunately, JavaScript only
+    has built-in support for shallow copying. If we need deep copying, we need to
+    implement it ourselves.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2 Shallow copying in JavaScript
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Let’s look at several ways of shallowly copying data.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2.1 Copying plain objects and Arrays via spreading
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can spread [into object literals](https://exploringjs.com/impatient-js/ch_single-objects.html#spreading-into-object-literals)
+    and [into Array literals](https://exploringjs.com/impatient-js/ch_arrays.html#spreading-into-array-literals)
+    to make copies:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: Alas, spreading has several issues. Those will be covered in the next subsections.
+    Among those, some are real limitations, others mere pecularities.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2.1.1 The prototype is not copied by object spreading
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that the following two expressions are equivalent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Therefore, we can fix this by giving the copy the same prototype as the original:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: Alternatively, we can set the prototype of the copy after its creation, via
+    `Object.setPrototypeOf()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2.1.2 Many built-in objects have special “internal slots” that aren’t copied
+    by object spreading
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Examples of such built-in objects include regular expressions and dates. If
+    we make a copy of them, we lose most of the data stored in them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2.1.3 Only own (non-inherited) properties are copied by object spreading
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Given how [prototype chains](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html#prototype-chains)
+    work, this is usually the right approach. But we still need to be aware of it.
+    In the following example, the inherited property `.inheritedProp` of `original`
+    is not available in `copy` because we only copy own properties and don’t keep
+    the prototype.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 6.2.1.4 Only enumerable properties are copied by object spreading
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'For example, the own property `.length` of Array instances is not enumerable
+    and not copied. In the following example, we are copying the Array `arr` via object
+    spreading (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is also rarely a limitation because most properties are enumerable. If
+    we need to copy non-enumerable properties, we can use `Object.getOwnPropertyDescriptors()`
+    and `Object.defineProperties()` to copy objects ([how to do that is explained
+    later](ch_copying-objects-and-arrays.html#copying-via-property-descriptors)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: They consider all attributes (not just `value`) and therefore correctly copy
+    getters, setters, read-only properties, etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.getOwnPropertyDescriptors()` retrieves both enumerable and non-enumerable
+    properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For more information on enumerability, see [§12 “Enumerability of properties”](ch_enumerability.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2.1.5 Property attributes aren’t always copied faithfully by object spreading
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Independently of [the *attributes* of a property](ch_property-attributes-intro.html),
+    its copy will always be a data property that is writable and configurable.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, here we create the property `original.prop` whose attributes `writable`
+    and `configurable` are `false`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we copy `.prop`, then `writable` and `configurable` are both `true`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'As a consequence, getters and setters are not copied faithfully, either:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: The aforementioned `Object.getOwnPropertyDescriptors()` and `Object.defineProperties()`
+    always transfer own properties with all attributes intact ([as shown later](ch_copying-objects-and-arrays.html#copying-via-property-descriptors)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2.1.6 Copying is shallow
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The copy has fresh versions of each key-value entry in the original, but the
+    values of the original are not copied themselves. For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: We’ll look at deep copying later in this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2.2 Shallow copying via `Object.assign()` (optional)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Object.assign()` works mostly like spreading into objects. That is, the following
+    two ways of copying are mostly equivalent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: Using a method instead of syntax has the benefit that it can be polyfilled on
+    older JavaScript engines via a library.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.assign()` is not completely like spreading, though. It differs in one,
+    relatively subtle point: it creates properties differently.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.assign()` uses *assignment* to create the properties of the copy.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Spreading *defines* new properties in the copy.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Among other things, assignment invokes own and inherited setters, while definition
+    doesn’t ([more information on assignment vs. definition](ch_property-assignment-vs-definition.html)).
+    This difference is rarely noticeable. The following code is an example, but it’s
+    contrived:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: By using a computed property key in line A, we create `.__proto__` as an own
+    property and don’t invoke the inherited setter. However, when `Object.assign()`
+    copies that property, it does invoke the setter. (For more information on `.__proto__`,
+    see [“JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html#proto).)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.2.3 Shallow copying via `Object.getOwnPropertyDescriptors()` and `Object.defineProperties()`
+    (optional)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'JavaScript lets us create properties via [*property descriptors*](ch_property-attributes-intro.html#property-descriptors),
+    objects that specify property attributes. For example, via the `Object.defineProperties()`,
+    which we have already seen in action. If we combine that method with `Object.getOwnPropertyDescriptors()`,
+    we can copy more faithfully:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: That eliminates two issues of copying objects via spreading.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, all attributes of own properties are copied correctly. Therefore, we
+    can now copy own getters and own setters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Second, thanks to `Object.getOwnPropertyDescriptors()`, non-enumerable properties
+    are copied, too:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 6.3 Deep copying in JavaScript
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Now it is time to tackle deep copying. First, we will deep-copy manually, then
+    we’ll examine generic approaches.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.3.1 Manual deep copying via nested spreading
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we nest spreading, we get deep copies:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '6.3.2 Hack: generic deep copying via JSON'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is a hack, but, in a pinch, it provides a quick solution: In order to
+    deep-copy an object `original`, we first convert it to a JSON string and parse
+    that JSON string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: The significant downside of this approach is that we can only copy properties
+    with keys and values that are supported by JSON.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Some unsupported keys and values are simply ignored:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Others cause exceptions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 6.3.3 Implementing generic deep copying
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following function generically deep-copies a value `original`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The function handles three cases:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `original` is an Array we create a new Array and deep-copy the elements of
+    `original` into it.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `original` is an object, we use a similar approach.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `original` is a primitive value, we don’t have to do anything.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let’s try out `deepCopy()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that `deepCopy()` only fixes one issue of spreading: shallow copying.
+    All others remain: prototypes are not copied, special objects are only partially
+    copied, non-enumerable properties are ignored, most property attributes are ignored.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Implementing copying completely generically is generally impossible: Not all
+    data is a tree, sometimes we don’t want to copy all properties, etc.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 6.3.3.1 A more concise version of `deepCopy()`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can make our previous implementation of `deepCopy()` more concise if we
+    use `.map()` and `Object.fromEntries()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 6.4 Further reading
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[§14 “Copying instances of classes: `.clone()` vs. copy constructors”](ch_copying-class-instances.html)
+    explains class-based patterns for copying.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Section “Spreading into object literals”](https://exploringjs.com/impatient-js/ch_single-objects.html#spreading-into-object-literals)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Section “Spreading into Array literals”](https://exploringjs.com/impatient-js/ch_arrays.html#spreading-into-array-literals)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Section “Prototype chains”](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html#prototype-chains)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/6)'
+  prefs: []
+  type: TYPE_NORMAL

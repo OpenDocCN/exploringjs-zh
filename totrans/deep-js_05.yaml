@@ -1,0 +1,627 @@
+- en: 3 The destructuring algorithm
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_destructuring-algorithm.html](https://exploringjs.com/deep-js/ch_destructuring-algorithm.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 3.1 [Preparing for the pattern matching algorithm](ch_destructuring-algorithm.html#preparing-for-the-pattern-matching-algorithm)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.1.1 [Using declarative rules for specifying the matching algorithm](ch_destructuring-algorithm.html#using-declarative-rules-for-specifying-the-matching-algorithm)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.1.2 [Evaluating expressions based on the declarative rules](ch_destructuring-algorithm.html#evaluating-expressions-based-on-the-declarative-rules)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.2 [The pattern matching algorithm](ch_destructuring-algorithm.html#the-pattern-matching-algorithm)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.2.1 [Patterns](ch_destructuring-algorithm.html#patterns)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.2.2 [Rules for variable](ch_destructuring-algorithm.html#rules-for-variable)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.2.3 [Rules for object patterns](ch_destructuring-algorithm.html#rules-for-object-patterns)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.2.4 [Rules for Array patterns](ch_destructuring-algorithm.html#rules-for-array-patterns)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.3 [Empty object patterns and Array patterns](ch_destructuring-algorithm.html#empty-object-patterns-and-array-patterns)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.4 [Applying the algorithm](ch_destructuring-algorithm.html#applying-the-algorithm)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '3.4.1 [Background: passing parameters via matching](ch_destructuring-algorithm.html#background-passing-parameters-via-matching)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.4.2 [Using `move2()`](ch_destructuring-algorithm.html#using-move2)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 3.4.3 [Using `move1()`](ch_destructuring-algorithm.html#using-move1)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '3.4.4 [Conclusion: Default values are a feature of pattern parts](ch_destructuring-algorithm.html#conclusion-default-values-are-a-feature-of-pattern-parts)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In this chapter, we look at destructuring from a different angle: as a recursive
+    pattern matching algorithm.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The algorithm will give us a better understanding of default values. That will
+    be useful at the end, where we’ll try to figure out how the following two functions
+    differ:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 3.1 Preparing for the pattern matching algorithm
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A destructuring assignment looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: We want to use `pattern` to extract data from `value`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We will now look at an algorithm for performing this kind of assignment. This
+    algorithm is known in functional programming as *pattern matching* (short: *matching*).
+    It specifies the operator `←` (“match against”) that matches a `pattern` against
+    a `value` and assigns to variables while doing so:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We will only explore destructuring assignment, but destructuring variable declarations
+    and destructuring parameter definitions work similarly. We won’t go into advanced
+    features, either: Computed property keys, property value shorthands, and object
+    properties and array elements as assignment targets, are beyond the scope of this
+    chapter.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The specification for the match operator consists of declarative rules that
+    descend into the structures of both operands. The declarative notation may take
+    some getting used to, but it makes the specification more concise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 3.1.1 Using declarative rules for specifying the matching algorithm
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The declarative rules used in this chapter operate on input and produce the
+    result of the algorithm via side effects. This is one such rule (which we’ll see
+    again later):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '(2c) `{key: «pattern», «properties»} ← obj`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'This rule has the following parts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (2c) is the *number* of the rule. The number is used to refer to the rule.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *head* (first line) describes what the input must look like so that this
+    rule can be applied.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *body* (remaining lines) describes what happens if the rule is applied.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In rule (2c), the head means that this rule can be applied if there is an object
+    pattern with at least one property (whose key is `key`) and zero or more remaining
+    properties. The effect of this rule is that execution continues with the property
+    value pattern being matched against `obj.key` and the remaining properties being
+    matched against `obj`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s consider one more rule from this chapter:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (2e) `{} ← obj` (no properties left)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: In rule (2e), the head means that this rule is executed if the empty object
+    pattern `{}` is matched against a value `obj`. The body means that, in this case,
+    we are done.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Together, rule (2c) and rule (2e) form a declarative loop that iterates over
+    the properties of the pattern on the left-hand side of the arrow.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 3.1.2 Evaluating expressions based on the declarative rules
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The complete algorithm is specified via a sequence of declarative rules. Let’s
+    assume we want to evaluate the following matching expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: To apply a sequence of rules, we go over them from top to bottom and execute
+    the first applicable rule. If there is a matching expression in the body of that
+    rule, the rules are applied again. And so on.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Sometimes the head includes a condition that also determines if a rule is applicable
+    – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (3a) `[«elements»] ← non_iterable`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`if (!isIterable(non_iterable))`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 3.2 The pattern matching algorithm
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 3.2.1 Patterns
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'A pattern is either:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A variable: `x`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'An object pattern: `{«properties»}`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'An Array pattern: `[«elements»]`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next three sections specify rules for handling these three cases in matching
+    expressions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 3.2.2 Rules for variable
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`x ← value` (including `undefined` and `null`)'
+  prefs:
+  - PREF_UL
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 3.2.3 Rules for object patterns
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: (2a) `{«properties»} ← undefined` (illegal value)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: (2b) `{«properties»} ← null` (illegal value)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '(2c) `{key: «pattern», «properties»} ← obj`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '(2d) `{key: «pattern» = default_value, «properties»} ← obj`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: (2e) `{} ← obj` (no properties left)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Rules 2a and 2b deal with illegal values. Rules 2c–2e loop over the properties
+    of the pattern. In rule 2d, we can see that a default value provides an alternative
+    to match against if there is no matching property in `obj`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 3.2.4 Rules for Array patterns
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '**Array pattern and iterable.** The algorithm for Array destructuring starts
+    with an Array pattern and an iterable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (3a) `[«elements»] ← non_iterable` (illegal value)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`if (!isIterable(non_iterable))`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: (3b) `[«elements»] ← iterable`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`if (isIterable(iterable))`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Helper function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Array elements and iterator.** The algorithm continues with:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The elements of the pattern (left-hand side of the arrow)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The iterator that was obtained from the iterable (right-hand side of the arrow)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'These are the rules:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (3c) `«pattern», «elements» ← iterator`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: (3d) `«pattern» = default_value, «elements» ← iterator`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: (3e) `, «elements» ← iterator` (hole, elision)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: (3f) `...«pattern» ← iterator` (always last part!)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: (3g) `← iterator` (no elements left)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Helper function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: An iterator being finished is similar to missing properties in objects.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 3.3 Empty object patterns and Array patterns
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Interesting consequence of the algorithm’s rules: We can destructure with empty
+    object patterns and empty Array patterns.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Given an empty object pattern `{}`: If the value to be destructured is neither
+    `undefined` nor `null`, then nothing happens. Otherwise, a `TypeError` is thrown.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Given an empty Array pattern `[]`: If the value to be destructured is iterable,
+    then nothing happens. Otherwise, a `TypeError` is thrown.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In other words: Empty destructuring patterns force values to have certain characteristics,
+    but have no other effects.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 3.4 Applying the algorithm
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In JavaScript, named parameters are simulated via objects: The caller uses
+    an object literal and the callee uses destructuring. This simulation is explained
+    in detail in [“JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_callables.html#named-parameters).
+    The following code shows an example: function `move1()` has two named parameters,
+    `x` and `y`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'There are three default values in line A:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The first two default values allow us to omit `x` and `y`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The third default value allows us to call `move1()` without parameters (as in
+    the last line).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: But why would we define the parameters as in the previous code snippet? Why
+    not as follows?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: To see why `move1()` is correct, we are going to use both functions in two examples.
+    Before we do that, let’s see how the passing of parameters can be explained via
+    matching.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '3.4.1 Background: passing parameters via matching'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: For function calls, *formal parameters* (inside function definitions) are matched
+    against *actual parameters* (inside function calls). As an example, take the following
+    function definition and the following function call.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: The parameters `a` and `b` are set up similarly to the following destructuring.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 3.4.2 Using `move2()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Let’s examine how destructuring works for `move2()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Example 1.** The function call `move2()` leads to this destructuring:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The single Array element on the left-hand side does not have a match on the
+    right-hand side, which is why `{x,y}` is matched against the default value and
+    not against data from the right-hand side (rules 3b, 3d):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The left-hand side contains *property value shorthands*. It is an abbreviation
+    for:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This destructuring leads to the following two assignments (rules 2c, 1):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: This is what we wanted. However, in the next example, we are not as lucky.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Example 2.** Let’s examine the function call `move2({z: 3})` which leads
+    to the following destructuring:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'There is an Array element at index 0 on the right-hand side. Therefore, the
+    default value is ignored and the next step is (rule 3d):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: That leads to both `x` and `y` being set to `undefined`, which is not what we
+    want. The problem is that `{x,y}` is not matched against the default value, anymore,
+    but against `{z:3}`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 3.4.3 Using `move1()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Let’s try `move1()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Example 1:** `move1()`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We don’t have an Array element at index 0 on the right-hand side and use the
+    default value (rule 3d):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The left-hand side contains property value shorthands, which means that this
+    destructuring is equivalent to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Neither property `x` nor property `y` have a match on the right-hand side.
+    Therefore, the default values are used and the following destructurings are performed
+    next (rule 2d):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That leads to the following assignments (rule 1):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: Here, we get what we want. Let’s see if our luck holds with the next example.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Example 2:** `move1({z: 3})`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The first element of the Array pattern has a match on the right-hand side and
+    that match is used to continue destructuring (rule 3d):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Like in example 1, there are no properties `x` and `y` on the right-hand side
+    and the default values are used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: It works as desired! This time, the pattern with `x` and `y` being matched against
+    `{z:3}` is not a problem, because they have their own local default values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '3.4.4 Conclusion: Default values are a feature of pattern parts'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The examples demonstrate that default values are a feature of pattern parts
+    (object properties or Array elements). If a part has no match or is matched against
+    `undefined` then the default value is used. That is, the pattern is matched against
+    the default value, instead.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/3)'
+  prefs: []
+  type: TYPE_NORMAL

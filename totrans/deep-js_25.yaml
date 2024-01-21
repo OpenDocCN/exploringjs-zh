@@ -1,0 +1,2458 @@
+- en: 18 Metaprogramming with Proxies
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_proxies.html](https://exploringjs.com/deep-js/ch_proxies.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.1 [Overview](ch_proxies.html#overview-proxies)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.2 [Programming versus metaprogramming](ch_proxies.html#programming-vs-metaprogramming)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.2.1 [Kinds of metaprogramming](ch_proxies.html#kinds-of-metaprogramming)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.3 [Proxies explained](ch_proxies.html#proxies-explained)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.3.1 [An example](ch_proxies.html#an-example)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.3.2 [Function-specific traps](ch_proxies.html#function-specific-traps)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.3.3 [Intercepting method calls](ch_proxies.html#intercepting-method-calls)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.3.4 [Revocable Proxies](ch_proxies.html#revocable-proxies)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.3.5 [Proxies as prototypes](ch_proxies.html#proxies-as-prototypes)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.3.6 [Forwarding intercepted operations](ch_proxies.html#forwarding-intercepted-operations)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.3.7 [Pitfall: not all objects can be wrapped transparently by Proxies](ch_proxies.html#mechanisms-ignored-by-proxies)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4 [Use cases for Proxies](ch_proxies.html#proxy-use-cases)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.1 [Tracing property accesses (`get`, `set`)](ch_proxies.html#tracing-property-accesses-get-set)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.2 [Warning about unknown properties (`get`, `set`)](ch_proxies.html#warning-about-unknown-properties-get-set)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.3 [Negative Array indices (`get`)](ch_proxies.html#negative-array-indices-via-proxies)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.4 [Data binding (`set`)](ch_proxies.html#data-binding-set)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.5 [Accessing a restful web service (method calls)](ch_proxies.html#accessing-a-restful-web-service-method-calls)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.6 [Revocable references](ch_proxies.html#revocable-references)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.7 [Implementing the DOM in JavaScript](ch_proxies.html#implementing-the-dom-in-javascript)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.8 [More use cases](ch_proxies.html#more-use-cases)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.9 [Libraries that are using Proxies](ch_proxies.html#libraries-that-are-using-proxies)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5 [The design of the Proxy API](ch_proxies.html#design-proxy-api)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.5.1 [Stratification: keeping base level and meta level separate](ch_proxies.html#stratification-keeping-base-level-and-meta-level-separate)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5.2 [Virtual objects versus wrappers](ch_proxies.html#virtual-objects-versus-wrappers)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5.3 [Transparent virtualization and handler encapsulation](ch_proxies.html#transparent-virtualization-and-handler-encapsulation)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5.4 [The meta object protocol and Proxy traps](ch_proxies.html#meta-object-protocol)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5.5 [Enforcing invariants for Proxies](ch_proxies.html#enforcing-invariants-for-proxies)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.6 [FAQ: Proxies](ch_proxies.html#faq-proxies)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.6.1 [Where is the `enumerate` trap?](ch_proxies.html#where-is-the-enumerate-trap)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.7 [Reference: the Proxy API](ch_proxies.html#reference-proxy-api)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.7.1 [Creating Proxies](ch_proxies.html#creating-proxies)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.7.2 [Handler methods](ch_proxies.html#handler-methods)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.7.3 [Invariants of handler methods](ch_proxies.html#invariants-of-handler-methods)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.7.4 [Operations that affect the prototype chain](ch_proxies.html#operations-that-affect-the-prototype-chain)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.7.5 [Reflect](ch_proxies.html#reflect)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.8 [Conclusion](ch_proxies.html#conclusion-proxies)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.9 [Further reading](ch_proxies.html#further-reading-proxies)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.1 Overview
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Proxies enable us to intercept and customize operations performed on objects
+    (such as getting properties). They are a *metaprogramming* feature.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the following example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`proxy` is an empty object.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`handler` can intercept operations that are performed on `proxy`, by implementing
+    certain methods.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the handler does not intercept an operation, it is forwarded to `target`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We are only intercepting one operation – `get` (getting properties):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'When we get the property `proxy.size`, the handler intercepts that operation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: See [the reference for the complete API](ch_proxies.html#reference-proxy-api)
+    for a list of operations that can be intercepted.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.2 Programming versus metaprogramming
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Before we can get into what Proxies are and why they are useful, we first need
+    to understand what *metaprogramming* is.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In programming, there are levels:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'At the *base level* (also called: *application level*), code processes user
+    input.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: At the *meta level*, code processes base level code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Base and meta level can be different languages. In the following meta program,
+    the metaprogramming language is JavaScript and the base programming language is
+    Java.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: Metaprogramming can take different forms. In the previous example, we have printed
+    Java code to the console. Let’s use JavaScript as both metaprogramming language
+    and base programming language. The classic example for this is the [`eval()` function](https://exploringjs.com/impatient-js/ch_callables.html#eval),
+    which lets us evaluate/compile JavaScript code on the fly. In the interaction
+    below, we use it to evaluate the expression `5 + 2`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Other JavaScript operations may not look like metaprogramming, but actually
+    are, if we look closer:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: The program is examining its own structure while running. This doesn’t look
+    like metaprogramming, because the separation between programming constructs and
+    data structures is fuzzy in JavaScript. All of the `Object.*` methods can be considered
+    metaprogramming functionality.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.2.1 Kinds of metaprogramming
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Reflective metaprogramming means that a program processes itself. [Kiczales
+    et al. [2]](ch_proxies.html#further-reading-proxies) distinguish three kinds of
+    reflective metaprogramming:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Introspection:** We have read-only access to the structure of a program.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Self-modification:** We can change that structure.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Intercession:** We can redefine the semantics of some language operations.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Let’s look at examples.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Example: introspection.** `Object.keys()` performs introspection (see previous
+    example).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Example: self-modification.** The following function `moveProperty` moves
+    a property from a source to a target. It performs self-modification via the bracket
+    operator for property access, the assignment operator and the `delete` operator.
+    (In production code, we’d probably use [property descriptors](ch_property-attributes-intro.html#property-descriptors)
+    for this task.)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how `moveProperty()` is used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: ECMAScript 5 doesn’t support intercession; Proxies were created to fill that
+    gap.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.3 Proxies explained
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Proxies bring intercession to JavaScript. They work as follows. There are many
+    operations that we can perform on an object `obj` – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Getting the property `prop` of an object `obj` (`obj.prop`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Checking whether an object `obj` has a property `prop` (`'prop' in obj`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Proxies are special objects that allow us to customize some of these operations.
+    A Proxy is created with two parameters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`handler`: For each operation, there is a corresponding handler method that
+    – if present – performs that operation. Such a method *intercepts* the operation
+    (on its way to the target) and is called a *trap* – a term borrowed from the domain
+    of operating systems.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`target`: If the handler doesn’t intercept an operation, then it is performed
+    on the target. That is, it acts as a fallback for the handler. In a way, the Proxy
+    wraps the target.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Note: The verb form of “intercession” is “to intercede”. Interceding is bidirectional
+    in nature. Intercepting is unidirectional in nature.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.3.1 An example
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In the following example, the handler intercepts the operations `get` and `has`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we get a property (line A) or use the `in` operator (line B), the handler
+    intercepts those operations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The handler doesn’t implement the trap `set` (setting properties). Therefore,
+    setting `proxy.age` is forwarded to `target` and leads to `target.age` being set:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.3.2 Function-specific traps
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If the target is a function, two additional operations can be intercepted:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`apply`: Making a function call. Triggered via:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`proxy(···)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`proxy.call(···)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`proxy.apply(···)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`construct`: Making a constructor call. Triggered via:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`new proxy(···)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The reason for only enabling these traps for function targets is simple: Otherwise,
+    we wouldn’t be able to forward the operations `apply` and `construct`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.3.3 Intercepting method calls
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we want to intercept method calls via a Proxy, we are facing a challenge:
+    There is no trap for method calls. Instead, a method call is viewed as a sequence
+    of two operations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A `get` to retrieve a function
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An `apply` to call that function
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Therefore, if we want to intercept method calls, we need to intercept two operations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: First, we intercept the `get` and return a function.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Second, we intercept the invocation of that function.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The following code demonstrates how that is done.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: We are not using a Proxy for the second interception; we are simply wrapping
+    the original method in a function.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s use the following object to try out `traceMethodCalls()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: Even the call `this.multiply()` inside `obj.squared()` is traced! That’s because
+    `this` keeps referring to the Proxy.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This is not the most efficient solution. One could, for example, cache methods.
+    Furthermore, Proxies themselves have an impact on performance.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.3.4 Revocable Proxies
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Proxies can be *revoked* (switched off):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: After we call the function `revoke` for the first time, any operation we apply
+    to `proxy` causes a `TypeError`. Subsequent calls of `revoke` have no further
+    effect.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.3.5 Proxies as prototypes
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: A Proxy `proto` can become the prototype of an object `obj`. Some operations
+    that begin in `obj` may continue in `proto`. One such operation is `get`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: The property `weight` can’t be found in `obj`, which is why the search continues
+    in `proto` and the trap `get` is triggered there. There are more operations that
+    affect prototypes; they are listed at the end of this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.3.6 Forwarding intercepted operations
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Operations whose traps the handler doesn’t implement are automatically forwarded
+    to the target. Sometimes there is some task we want to perform in addition to
+    forwarding the operation. For example, intercepting and logging all operations,
+    without preventing them from reaching the target:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '18.3.6.1 Improvement: using `Reflect.*`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: For each trap, we first log the name of the operation and then forward it by
+    performing it manually. JavaScript has the module-like object `Reflect` that helps
+    with forwarding.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For each trap:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Reflect` has a method:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: If we use `Reflect`, the previous example looks as follows.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '18.3.6.2 Improvement: implementing the handler with Proxy'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Now what each of the traps does is so similar that we can implement the handler
+    via a Proxy:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: For each trap, the Proxy asks for a handler method via the `get` operation and
+    we give it one. That is, all of the handler methods can be implemented via the
+    single meta-method `get`. It was one of the goals for the Proxy API to make this
+    kind of virtualization simple.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s use this Proxy-based handler:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: '18.3.7 Pitfall: not all objects can be wrapped transparently by Proxies'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: A Proxy object can be seen as intercepting operations performed on its target
+    object – the Proxy wraps the target. The Proxy’s handler object is like an observer
+    or listener for the Proxy. It specifies which operations should be intercepted
+    by implementing corresponding methods (`get` for reading a property, etc.). If
+    the handler method for an operation is missing then that operation is not intercepted.
+    It is simply forwarded to the target.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Therefore, if the handler is the empty object, the Proxy should transparently
+    wrap the target. Alas, that doesn’t always work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.3.7.1 Wrapping an object affects `this`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Before we dig deeper, let’s quickly review how wrapping a target affects `this`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we call `target.myMethod()` directly, `this` points to `target`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we invoke that method via the Proxy, `this` points to `proxy`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: That is, if the Proxy forwards a method call to the target, `this` is not changed.
+    As a consequence, the Proxy continues to be in the loop if the target uses `this`,
+    e.g., to make a method call.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.3.7.2 Objects that can’t be wrapped transparently
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Normally, Proxies with empty handlers wrap targets transparently: we don’t
+    notice that they are there and they don’t change the behavior of the targets.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If, however, a target associates information with `this` via a mechanism that
+    is not controlled by Proxies, we have a problem: things fail, because different
+    information is associated depending on whether the target is wrapped or not.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, the following class `Person` stores private information in the
+    WeakMap `_name` (more information on this technique is given in [*JavaScript for
+    impatient programmers*](https://exploringjs.com/impatient-js/ch_weakmaps.html#private-data-in-weakmaps)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Instances of `Person` can’t be wrapped transparently:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`jane.name` is different from the wrapped `proxy.name`. The following implementation
+    does not have this problem:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.3.7.3 Wrapping instances of built-in constructors
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Instances of most built-in constructors also use a mechanism that is not intercepted
+    by Proxies. They therefore can’t be wrapped transparently, either. We can see
+    that if we use an instance of `Date`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The mechanism that is unaffected by Proxies is called *internal slots*. These
+    slots are property-like storage associated with instances. The specification handles
+    these slots as if they were properties with names in square brackets. For example,
+    the following method is internal and can be invoked on all objects `O`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: In contrast to properties, accessing internal slots is not done via normal “get”
+    and “set” operations. If `.getFullYear()` is invoked via a Proxy, it can’t find
+    the internal slot it needs on `this` and complains via a `TypeError`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For `Date` methods, [the language specification states](https://tc39.es/ecma262/#sec-properties-of-the-date-prototype-object):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Unless explicitly defined otherwise, the methods of the Date prototype object
+    defined below are not generic and the `this` value passed to them must be an object
+    that has a `[[DateValue]]` internal slot that has been initialized to a time value.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 18.3.7.4 A work-around
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'As a work-around, we can change how the handler forwards method calls and selectively
+    set `this` to the target and not the Proxy:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: The drawback of this approach is that none of the operations that the method
+    performs on `this` go through the Proxy.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.3.7.5 Arrays can be wrapped transparently
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In contrast to other built-ins, Arrays can be wrapped transparently:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: The reason for Arrays being wrappable is that, even though property access is
+    customized to make `.length` work, Array methods don’t rely on internal slots
+    – they are generic.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.4 Use cases for Proxies
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This section demonstrates what Proxies can be used for. That will give us the
+    opportunity to see the API in action.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.4.1 Tracing property accesses (`get`, `set`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s assume we have a function `tracePropertyAccesses(obj, propKeys)` that
+    logs whenever a property of `obj`, whose key is in the Array `propKeys`, is set
+    or got. In the following code, we apply that function to an instance of the class
+    `Point`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Getting and setting properties of the traced object `p` has the following effects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Intriguingly, tracing also works whenever `Point` accesses the properties because
+    `this` now refers to the traced object, not to an instance of `Point`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.1.1 Implementing `tracePropertyAccesses()` without Proxies
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Without Proxies we’d implement `tracePropertyAccesses()` as follows. We replace
+    each property with a getter and a setter that traces accesses. The setters and
+    getters use an extra object, `propData`, to store the data of the properties.
+    Note that we are destructively changing the original implementation, which means
+    that we are metaprogramming.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The parameter `log` makes it easier to unit-test this function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.1.2 Implementing `tracePropertyAccesses()` with a Proxy
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Proxies give us a simpler solution. We intercept property getting and setting
+    and don’t have to change the implementation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.2 Warning about unknown properties (`get`, `set`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: When it comes to accessing properties, JavaScript is very forgiving. For example,
+    if we try to read a property and misspell its name, we don’t get an exception
+    – we get the result `undefined`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can use Proxies to get an exception in such a case. This works as follows.
+    We make the Proxy a prototype of an object. If a property isn’t found in the object,
+    the `get` trap of the Proxy is triggered:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If the property doesn’t even exist in the prototype chain after the Proxy, it
+    really is missing and we throw an exception.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, we return the value of the inherited property. We do so by forwarding
+    the `get` operation to the target (the Proxy gets its prototype from the target).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is an implementation of this approach:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s use `PropertyChecker` for an object:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.2.1 `PropertyChecker` as a class
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we turn `PropertyChecker` into a constructor, we can use it for classes
+    via `extends`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is the prototype chain of `point`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.2.2 Preventing the accidental creation of properties
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we are worried about accidentally *creating* properties, we have two options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can either wrap a Proxy around objects that traps `set`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Or we can make an object `obj` non-extensible via [`Object.preventExtensions(obj)`](ch_protecting-objects.html#preventing-extensions-of-objects),
+    which means that JavaScript doesn’t let us add new (own) properties to `obj`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.3 Negative Array indices (`get`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Some Array methods let us refer to the last element via `-1`, to the second-to-last
+    element via `-2`, etc. For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: Alas, that doesn’t work when accessing elements via the bracket operator (`[]`).
+    We can, however, use Proxies to add that capability. The following function `createArray()`
+    creates Arrays that support negative indices. It does so by wrapping Proxies around
+    Array instances. The Proxies intercept the `get` operation that is triggered by
+    the bracket operator.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.4 Data binding (`set`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Data binding is about syncing data between objects. One popular use case are
+    widgets based on the MVC (Model View Controler) pattern: With data binding, the
+    *view* (the widget) stays up-to-date if we change the *model* (the data visualized
+    by the widget).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: To implement data binding, we have to observe and react to changes made to an
+    object. The following code snippet is a sketch of how observing changes could
+    work for Arrays.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.5 Accessing a restful web service (method calls)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: A Proxy can be used to create an object on which arbitrary methods can be invoked.
+    In the following example, the function `createWebService()` creates one such object,
+    `service`. Invoking a method on `service` retrieves the contents of the web service
+    resource with the same name. Retrieval is handled via a Promise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: The following code is a quick and dirty implementation of `createWebService`
+    without Proxies. We need to know beforehand what methods will be invoked on `service`.
+    The parameter `propKeys` provides us with that information; it holds an Array
+    with method names.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With Proxies, `createWebService()` is simpler:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: Both implementations use the following function to make HTTP GET requests (how
+    it works is explained in [*JavaScript for impatient programmers*](https://exploringjs.com/impatient-js/ch_promises.html#promisifying-xmlhttprequest)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.6 Revocable references
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '*Revocable references* work as follows: A client is not allowed to access an
+    important resource (an object) directly, only via a reference (an intermediate
+    object, a wrapper around the resource). Normally, every operation applied to the
+    reference is forwarded to the resource. After the client is done, the resource
+    is protected by *revoking* the reference, by switching it off. Henceforth, applying
+    operations to the reference throws exceptions and nothing is forwarded, anymore.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the following example, we create a revocable reference for a resource. We
+    then read one of the resource’s properties via the reference. That works, because
+    the reference grants us access. Next, we revoke the reference. Now the reference
+    doesn’t let us read the property, anymore.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Proxies are ideally suited for implementing revocable references, because they
+    can intercept and forward operations. This is a simple Proxy-based implementation
+    of `createRevocableReference`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs: []
+  type: TYPE_PRE
+- en: The code can be simplified via the Proxy-as-handler technique from the previous
+    section. This time, the handler basically is the `Reflect` object. Thus, the `get`
+    trap normally returns the appropriate `Reflect` method. If the reference has been
+    revoked, a `TypeError` is thrown, instead.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs: []
+  type: TYPE_PRE
+- en: However, we don’t have to implement revocable references ourselves because Proxies
+    can be revoked. This time, the revoking happens in the Proxy, not in the handler.
+    All the handler has to do is forward every operation to the target. As we have
+    seen that happens automatically if the handler doesn’t implement any traps.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.4.6.1 Membranes
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '*Membranes* build on the idea of revocable references: Libraries for safely
+    running untrusted code wrap a membrane around that code to isolate it and to keep
+    the rest of the system safe. Objects pass the membrane in two directions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The untrusted code may receive objects (“dry objects”) from the outside.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Or it may hand objects (“wet objects”) to the outside.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In both cases, revocable references are wrapped around the objects. Objects
+    returned by wrapped functions or methods are also wrapped. Additionally, if a
+    wrapped wet object is passed back into a membrane, it is unwrapped.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Once the untrusted code is done, all of the revocable references are revoked.
+    As a result, none of its code on the outside can be executed anymore and outside
+    objects that it references, cease to work as well. The [Caja Compiler](https://developers.google.com/caja/)
+    is “a tool for making third party HTML, CSS and JavaScript safe to embed in your
+    website”. It uses membranes to achieve this goal.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.4.7 Implementing the DOM in JavaScript
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The browsers’ Document Object Model (DOM) is usually implemented as a mix of
+    JavaScript and C++. Implementing it in pure JavaScript is useful for:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Emulating a browser environment, e.g. to manipulate HTML in Node.js. [jsdom](https://github.com/tmpvar/jsdom)
+    is one library that does that.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Making the DOM faster (switching between JavaScript and C++ costs time).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Alas, the standard DOM can do things that are not easily replicated in JavaScript.
+    For example, most DOM collections are live views on the current state of the DOM
+    that change dynamically whenever the DOM changes. As a result, pure JavaScript
+    implementations of the DOM are not very efficient. One of the reasons for adding
+    Proxies to JavaScript was to enable more efficient DOM implementations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.4.8 More use cases
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'There are more use cases for Proxies. For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Remoting: Local placeholder objects forward method invocations to remote objects.
+    This use case is similar to the web service example.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Data access objects for databases: Reading and writing to the object reads
+    and writes to the database. This use case is similar to the web service example.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Profiling: Intercept method invocations to track how much time is spent in
+    each method. This use case is similar to the tracing example.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.4.9 Libraries that are using Proxies
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[*Immer* (by Michel Weststrate)](https://github.com/immerjs/immer) helps with
+    non-destructively updating data. The changes that should be applied are specified
+    by invoking methods, setting properties, setting Array elements, etc. of a (potentially
+    nested) *draft state*. Draft states are implemented via Proxies.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*MobX*](https://mobx.js.org/) lets you observe changes to data structures
+    such as objects, Arrays and class instances. That is implemented via Proxies.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*Alpine.js* (by Caleb Porzio)](https://github.com/alpinejs/alpine) is a frontend
+    library that implements data binding via Proxies.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*on-change* (by Sindre Sorhus)](https://github.com/sindresorhus/on-change)
+    observes changes to an object (via Proxies) and reports them.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*Env utility* (by Nicholas C. Zakas)](https://github.com/humanwhocodes/env)
+    lets you access environment variables via properties and throws exceptions if
+    they don’t exist. That is implemented via Proxies.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*LDflex* (by Ruben Verborgh and Ruben Taelman)](https://github.com/LDflex/LDflex)
+    provides a query language for Linked Data (think Semantic Web). The fluid query
+    API is implemented via Proxies.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5 The design of the Proxy API
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In this section, we go deeper into how Proxies work and why they work that way.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '18.5.1 Stratification: keeping base level and meta level separate'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Firefox used to support a limited from of interceding metaprogramming for a
+    while: If an object `O` had a method named `__noSuchMethod__`, it was notified
+    whenever a method was invoked on `O` that didn’t exist. The following code demonstrates
+    how that worked:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: Thus, `__noSuchMethod__` works similarly to a Proxy trap. In contrast to Proxies,
+    the trap is an own or inherited method of the object whose operations we want
+    to intercept. The problem with that approach is that base level (normal methods)
+    and meta level (`__noSuchMethod__`) are mixed. Base-level code may accidentally
+    invoke or see a meta level method and there is the possibility of accidentally
+    defining a meta level method.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Even in standard ECMAScript, base level and meta level are sometimes mixed.
+    For example, the following metaprogramming mechanisms can fail, because they exist
+    at the base level:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`obj.hasOwnProperty(propKey)`: This call can fail if a property in the prototype
+    chain overrides the built-in implementation. For example, in the following code,
+    `obj` causes a failure:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'These are safe ways of invoking `.hasOwnProperty()`:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`func.call(···)`, `func.apply(···)`: For both methods, problem and solution
+    are the same as with `.hasOwnProperty()`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`obj.__proto__`: In plain objects, `__proto__` is a special property that lets
+    us get and set the prototype of the receiver. Hence, when we use plain objects
+    as dictionaries, we must [avoid `__proto__` as a property key](https://exploringjs.com/impatient-js/ch_single-objects.html#the-pitfalls-of-using-an-object-as-a-dictionary).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'By now, it should be obvious that making (base level) property keys special
+    is problematic. Therefore, Proxies are *stratified*: Base level (the Proxy object)
+    and meta level (the handler object) are separate.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.5.2 Virtual objects versus wrappers
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Proxies are used in two roles:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'As *wrappers*, they *wrap* their targets, they control access to them. Examples
+    of wrappers are: revocable resources and tracing via Proxies.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As *virtual objects*, they are simply objects with special behavior and their
+    targets don’t matter. An example is a Proxy that forwards method calls to a remote
+    object.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An earlier design of the Proxy API conceived Proxies as purely virtual objects.
+    However, it turned out that even in that role, a target was useful, to enforce
+    invariants (which are explained later) and as a fallback for traps that the handler
+    doesn’t implement.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.5.3 Transparent virtualization and handler encapsulation
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Proxies are shielded in two ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It is impossible to determine whether an object is a Proxy or not (*transparent
+    virtualization*).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can’t access a handler via its Proxy (*handler encapsulation*).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Both principles give Proxies considerable power for impersonating other objects.
+    One reason for enforcing *invariants* (as explained later) is to keep that power
+    in check.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we do need a way to tell Proxies apart from non-Proxies, we have to implement
+    it ourselves. The following code is a module `lib.mjs` that exports two functions:
+    one of them creates Proxies, the other one determines whether an object is one
+    of those Proxies.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE55]'
+  prefs: []
+  type: TYPE_PRE
+- en: This module uses the data structure `WeakSet` for keeping track of Proxies.
+    `WeakSet` is ideally suited for this purpose, because it doesn’t prevent its elements
+    from being garbage-collected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The next example shows how `lib.mjs` can be used.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE56]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.5.4 The meta object protocol and Proxy traps
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In this section, we examine how JavaScript is structured internally and how
+    the set of Proxy traps was chosen.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the context of programming languages and API design, a *protocol* is a set
+    of interfaces plus rules for using them. The ECMAScript specification describes
+    how to execute JavaScript code. It includes a [protocol for handling objects](https://tc39.es/ecma262/#sec-ordinary-and-exotic-objects-behaviours).
+    This protocol operates at a meta level and is sometimes called the *meta object
+    protocol* (MOP). The JavaScript MOP consists of own internal methods that all
+    objects have. “Internal” means that they exist only in the specification (JavaScript
+    engines may or may not have them) and are not accessible from JavaScript. The
+    names of internal methods are written in double square brackets.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The internal method for getting properties is called [`.[[Get]]()`](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots-get-p-receiver).
+    If we use double underscores instead of double brackets, this method would roughly
+    be implemented as follows in JavaScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE57]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The MOP methods called in this code are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`[[GetOwnProperty]]` (trap `getOwnPropertyDescriptor`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`[[GetPrototypeOf]]` (trap `getPrototypeOf`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`[[Get]]` (trap `get`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`[[Call]]` (trap `apply`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In line A we can see why Proxies in a prototype chain find out about `get`
+    if a property isn’t found in an “earlier” object: If there is no own property
+    whose key is `propKey`, the search continues in the prototype `parent` of `this`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Fundamental versus derived operations.** We can see that `.[[Get]]()` calls
+    other MOP operations. Operations that do that are called *derived*. Operations
+    that don’t depend on other operations are called *fundamental*.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.5.4.1 The meta object protocol of Proxies
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The [meta object protocol of Proxies](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots)
+    is different from that of normal objects. For normal objects, derived operations
+    call other operations. For Proxies, each operation (regardless of whether it is
+    fundamental or derived) is either intercepted by a handler method or forwarded
+    to the target.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Which operations should be interceptable via Proxies?
+  prefs: []
+  type: TYPE_NORMAL
+- en: One possibility is to only provide traps for fundamental operations.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The alternative is to include some derived operations.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The upside of doing the latter is that it increases performance and is more
+    convenient. For example, if there weren’t a trap for `get`, we’d have to implement
+    its functionality via `getOwnPropertyDescriptor`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: A downside of including derived traps is that that can lead to Proxies behaving
+    inconsistently. For example, `get` may return a value that is different from the
+    value in the descriptor returned by `getOwnPropertyDescriptor`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '18.5.4.2 Selective interception: Which operations should be interceptable?'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Interception by Proxies is *selective*: we can’t intercept every language operation.
+    Why were some operations excluded? Let’s look at two reasons.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: First, *stable* operations are not well suited for interception. An operation
+    is *stable* if it always produces the same results for the same arguments. If
+    a Proxy can trap a stable operation, it can become unstable and thus unreliable.
+    [Strict equality](http://speakingjs.com/es5/ch09.html#_strict_equality) (`===`)
+    is one such stable operation. It can’t be trapped and its result is computed by
+    treating the Proxy itself as just another object. Another way of maintaining stability
+    is by applying an operation to the target instead of the Proxy. As explained later,
+    when we look at how invariants are enfored for Proxies, this happens when `Object.getPrototypeOf()`
+    is applied to a Proxy whose target is non-extensible.
+  prefs: []
+  type: TYPE_NORMAL
+- en: A second reason for not making more operations interceptable is that interception
+    means executing custom code in situations where that normally isn’t possible.
+    The more this interleaving of code happens, the harder it is to understand and
+    debug a program. It also affects performance negatively.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '18.5.4.3 Traps: `get` versus `invoke`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we want to create virtual methods via Proxies, we have to return functions
+    from a `get` trap. That raises the question: why not introduce an extra trap for
+    method invocations (e.g. `invoke`)? That would enable us to distinguish between:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Getting properties via `obj.prop` (trap `get`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Invoking methods via `obj.prop()` (trap `invoke`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There are two reasons for not doing so.
+  prefs: []
+  type: TYPE_NORMAL
+- en: First, not all implementations distinguish between `get` and `invoke`. For example,
+    [Apple’s JavaScriptCore doesn’t](https://mail.mozilla.org/pipermail/es-discuss/2010-May/011062.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Second, extracting a method and invoking it later via `.call()` or `.apply()`
+    should have the same effect as invoking the method via dispatch. In other words,
+    the following two variants should work equivalently. If there were an extra trap
+    `invoke`, then that equivalence would be harder to maintain.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE58]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.5.4.3.1 Use cases for `invoke`
+  prefs:
+  - PREF_H6
+  type: TYPE_NORMAL
+- en: 'Some things can only be done if we are able to distinguish between `get` and
+    `invoke`. Those things are therefore impossible with the current Proxy API. Two
+    examples are: auto-binding and intercepting missing methods. Let’s examine how
+    one would implement them if Proxies supported `invoke`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Auto-binding.** By making a Proxy the prototype of an object `obj`, we can
+    automatically bind methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Retrieving the value of a method `m` via `obj.m` returns a function whose `this`
+    is bound to `obj`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`obj.m()` performs a method call.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Auto-binding helps with using methods as callbacks. For example, variant 2
+    from the previous example becomes simpler:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE59]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Intercepting missing methods.** `invoke` lets a Proxy emulate the previously
+    mentioned `__noSuchMethod__` mechanism. The Proxy would again become the prototype
+    of an object `obj`. It would react differently depending on how an unknown property
+    `prop` is accessed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we read that property via `obj.prop`, no interception happens and `undefined`
+    is returned.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we make the method call `obj.prop()` then the Proxy intercepts and, e.g.,
+    notifies a callback.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5.5 Enforcing invariants for Proxies
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Before we look at what invariants are and how they are enforced for Proxies,
+    let’s review how objects can be protected via non-extensibility and non-configurability.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.5.5.1 Protecting objects
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'There are two ways of protecting objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Non-extensibility protects objects: If an object is non-extensible, we can’t
+    add properties and we can’t change its prototype.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Non-configurability protects properties (or rather, their attributes):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The boolean attribute `writable` controls whether a property’s value can be
+    changed.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The boolean attribute `configurable` controls whether a property’s attributes
+    can be changed.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For more information on this topic, see [§10 “Protecting objects from being
+    changed”](ch_protecting-objects.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.5.5.2 Enforcing invariants
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Traditionally, non-extensibility and non-configurability are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Universal: They work for all objects.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Monotonic: Once switched on, they can’t be switched off again.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: These and other characteristics that remain unchanged in the face of language
+    operations are called *invariants*. It is easy to violate invariants via Proxies
+    because they are not intrinsically bound by non-extensibility etc. The Proxy API
+    prevents that from happening by checking the target object and the results of
+    handler methods.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The next two subsections describe four invariants. An exhaustive list of invariants
+    is given at the end of this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.5.5.3 Two invariants that are enforced via the target object
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following two invariants involve non-extensibility and non-configurability.
+    These are enforced by using the target object for bookkeeping: results returned
+    by handler methods have to be mostly in sync with the target object.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Invariant: If `Object.preventExtensions(obj)` returns `true` then all future
+    calls must return `false` and `obj` must now be non-extensible.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Enforced for Proxies by throwing a `TypeError` if the handler returns `true`,
+    but the target object is not extensible.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Invariant: Once an object has been made non-extensible, `Object.isExtensible(obj)`
+    must always return `false`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Enforced for Proxies by throwing a `TypeError` if the result returned by the
+    handler is not the same (after coercion) as `Object.isExtensible(target)`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5.5.4 Two invariants that are enforced by checking return values
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following two invariants are enforced by checking return values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Invariant: `Object.isExtensible(obj)` must return a boolean.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Enforced for Proxies by coercing the value returned by the handler to a boolean.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Invariant: `Object.getOwnPropertyDescriptor(obj, ···)` must return an object
+    or `undefined`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Enforced for Proxies by throwing a `TypeError` if the handler doesn’t return
+    an appropriate value.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.5.5.5 Benefits of invariants
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Enforcing invariants has the following benefits:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Proxies work like all other objects with regard to extensibility and configurability.
+    Therefore, universality is maintained. This is achieved without preventing Proxies
+    from virtualizing (impersonating) protected objects.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A protected object can’t be misrepresented by wrapping a Proxy around it. Misrepresentation
+    can be caused by bugs or by malicious code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next two sections give examples of invariants being enforced.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '18.5.5.6 Example: the prototype of a non-extensible target must be represented
+    faithfully'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: In response to the `getPrototypeOf` trap, the Proxy must return the target’s
+    prototype if the target is non-extensible.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'To demonstrate this invariant, let’s create a handler that returns a prototype
+    that is different from the target’s prototype:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE60]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Faking the prototype works if the target is extensible:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE61]'
+  prefs: []
+  type: TYPE_PRE
+- en: We do, however, get an error if we fake the prototype for a non-extensible object.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE62]'
+  prefs: []
+  type: TYPE_PRE
+- en: '18.5.5.7 Example: non-writable non-configurable target properties must be represented
+    faithfully'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: If the target has a non-writable non-configurable property, then the handler
+    must return that property’s value in response to a `get` trap. To demonstrate
+    this invariant, let’s create a handler that always returns the same value for
+    properties.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE63]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Property `target.manufacturer` is not both non-writable and non-configurable,
+    which means that the handler is allowed to pretend that it has a different value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE64]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, property `target.model` is both non-writable and non-configurable.
+    Therefore, we can’t fake its value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE65]'
+  prefs: []
+  type: TYPE_PRE
+- en: '18.6 FAQ: Proxies'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 18.6.1 Where is the `enumerate` trap?
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'ECMAScript 6 originally had a trap `enumerate` that was triggered by `for-in`
+    loops. But it was recently removed, to simplify Proxies. `Reflect.enumerate()`
+    was removed, as well. ([Source: TC39 notes](https://github.com/tc39/tc39-notes/blob/master/es7/2016-01/2016-01-28.md))'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '18.7 Reference: the Proxy API'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This section is a quick reference for the Proxy API:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The global object `Proxy`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The global object `Reflect`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The reference uses the following custom type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE66]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.7.1 Creating Proxies
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'There are two ways to create Proxies:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`const proxy = new Proxy(target, handler)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Creates a new Proxy object with the given target and the given handler.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`const {proxy, revoke} = Proxy.revocable(target, handler)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Creates a Proxy that can be revoked via the function `revoke`. `revoke` can
+    be called multiple times, but only the first call has an effect and switches `proxy`
+    off. Afterwards, any operation performed on `proxy` leads to a `TypeError` being
+    thrown.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 18.7.2 Handler methods
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: This subsection explains what traps can be implemented by handlers and what
+    operations trigger them. Several traps return boolean values. For the traps `has`
+    and `isExtensible`, the boolean is the result of the operation. For all other
+    traps, the boolean indicates whether the operation succeeded or not.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Traps for all objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`defineProperty(target, propKey, propDesc): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.defineProperty(proxy, propKey, propDesc)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`deleteProperty(target, propKey): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`delete proxy[propKey]`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`delete proxy.someProp`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`get(target, propKey, receiver): any`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`receiver[propKey]`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`receiver.someProp`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`getOwnPropertyDescriptor(target, propKey): undefined|PropDesc`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.getOwnPropertyDescriptor(proxy, propKey)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`getPrototypeOf(target): null|object`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.getPrototypeOf(proxy)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`has(target, propKey): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`propKey in proxy`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`isExtensible(target): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.isExtensible(proxy)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ownKeys(target): Array<PropertyKey>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.getOwnPropertyPropertyNames(proxy)` (only uses string keys)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.getOwnPropertyPropertySymbols(proxy)` (only uses symbol keys)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.keys(proxy)` (only uses enumerable string keys; enumerability is checked
+    via `Object.getOwnPropertyDescriptor`)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`preventExtensions(target): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.preventExtensions(proxy)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`set(target, propKey, value, receiver): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`receiver[propKey] = value`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`receiver.someProp = value`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`setPrototypeOf(target, proto): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.setPrototypeOf(proxy, proto)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Traps for functions (available if target is a function):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`apply(target, thisArgument, argumentsList): any`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`proxy.apply(thisArgument, argumentsList)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`proxy.call(thisArgument, ...argumentsList)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`proxy(...argumentsList)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`construct(target, argumentsList, newTarget): object`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`new proxy(..argumentsList)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.7.2.1 Fundamental operations versus derived operations
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following operations are *fundamental*, they don’t use other operations
+    to do their work: `apply`, `defineProperty`, `deleteProperty`, `getOwnPropertyDescriptor`,
+    `getPrototypeOf`, `isExtensible`, `ownKeys`, `preventExtensions`, `setPrototypeOf`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: All other operations are *derived*, they can be implemented via fundamental
+    operations. For example, `get` can be implemented by iterating over the prototype
+    chain via `getPrototypeOf` and calling `getOwnPropertyDescriptor` for each chain
+    member until either an own property is found or the chain ends.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.7.3 Invariants of handler methods
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Invariants are safety constraints for handlers. This subsection documents what
+    invariants are enforced by the Proxy API and how. Whenever we read “the handler
+    must do X” below, it means that a `TypeError` is thrown if it doesn’t. Some invariants
+    restrict return values, others restrict parameters. The correctness of a trap’s
+    return value is ensured in two ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If a boolean is expected, coercion is used to convert non-booleans to legal
+    values.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In all other cases, an illegal value cause a `TypeError`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is the complete list of invariants that are enforced:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`apply(target, thisArgument, argumentsList): any`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: No invariants are enforced.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Only active if the target is callable.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`construct(target, argumentsList, newTarget): object`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The result returned by the handler must be an object (not `null` or any other
+    primitive value).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Only active if the target is constructible.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`defineProperty(target, propKey, propDesc): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the target is not extensible, then we can’t add new properties.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `propDesc` sets the attribute `configurable` to `false`, then the target
+    must have a non-configurable own property whose key is `propKey`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `propDesc` sets both attributes `configurable` and `writable` to `false`,
+    then the target must have an own property with the key is `propKey` that is non-configurable
+    and non-writable.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If the target has an own property with the key `propKey`, then `propDesc` must
+    be compatible with that property: If we redefine the target property with the
+    descriptor, no exception must be thrown.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`deleteProperty(target, propKey): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A property can’t be reported as deleted if:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The target has a non-configurable own property with key `propKey`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The target is non-extensible and has a own property with key `propKey`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`get(target, propKey, receiver): any`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the target has an own, non-writable, non-configurable data property whose
+    key is `propKey`, then the handler must return that property’s value.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the target has an own, non-configurable, getter-less accessor property, then
+    the handler must return `undefined`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`getOwnPropertyDescriptor(target, propKey): undefined|PropDesc`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The handler must return either `undefined` or an object.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Non-configurable own properties of the target can’t be reported as non-existent
+    by the handler.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the target is non-extensible, then exactly the target’s own properties must
+    be reported by the handler as existing.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the handler reports a property as non-configurable, then that property must
+    be a non-configurable own property of the target.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the handler reports a property as non-configurable and non-writable, then
+    that property must be a non-configurable non-writable own property of the target.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`getPrototypeOf(target): null|object`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The result must be either `null` or an object.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the target object is not extensible, then the handler must return the prototype
+    of the target object.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`has(target, propKey): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Non-configurable own properties of the target can’t be reported as non-existent.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the target is non-extensible, then no own property of the target can be reported
+    as non-existent.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`isExtensible(target): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: After coercion to boolean, the value returned by the handler must be the same
+    as `target.isExtensible()`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ownKeys(target): Array<PropertyKey>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The handler must return an object, which treated as Array-like and converted
+    into an Array.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The resulting Array must not contain duplicate entries.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Each element of the result must be either a string or a symbol.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The result must contain the keys of all non-configurable own properties of the
+    target.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the target is not extensible, then the result must contain exactly the keys
+    of the own properties of the target (and no other values).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`preventExtensions(target): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The handler must only return a truthy value (indicating a successful change)
+    if `target.isExtensible()` is `false`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`set(target, propKey, value, receiver): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The property can’t be changed if the target has a non-writable, non-configurable
+    data property whose key is `propKey`. In that case, `value` must be the value
+    of that property or a `TypeError` is thrown.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The property can’t be set in any way if the corresponding own target property
+    is a non-configurable accessor without a setter.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`setPrototypeOf(target, proto): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If the target is not extensible, the prototype can’t be changed. This is enforced
+    as follows: If the target is not extensible and the handler returns a truthy value
+    (indicating a successful change), then `proto` must be the same as the prototype
+    of the target. Otherwise, a `TypeError` is thrown.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **Invariants in the ECMAScript
+    specification**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the spec, the invariants are listed in section [“Proxy Object Internal Methods
+    and Internal Slots”](https://tc39.es/ecma262/#sec-proxy-object-internal-methods-and-internal-slots).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.7.4 Operations that affect the prototype chain
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The following operations of normal objects perform operations on objects in
+    the prototype chain. Therefore, if one of the objects in that chain is a Proxy,
+    its traps are triggered. The specification implements the operations as internal
+    own methods (that are not visible to JavaScript code). But in this section, we
+    pretend that they are normal methods that have the same names as the traps. The
+    parameter `target` becomes the receiver of the method call.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`target.get(propertyKey, receiver)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `target` has no own property with the given key, `get` is invoked on the
+    prototype of `target`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`target.has(propertyKey)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Similarly to `get`, `has` is invoked on the prototype of `target` if `target`
+    has no own property with the given key.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`target.set(propertyKey, value, receiver)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Similarly to `get`, `set` is invoked on the prototype of `target` if `target`
+    has no own property with the given key.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: All other operations only affect own properties, they have no effect on the
+    prototype chain.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **Internal operations
+    in the ECMAScript specification**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the spec, these (and other) operations are described in section “[Ordinary
+    Object Internal Methods and Internal Slots](https://tc39.es/ecma262/#sec-ordinary-object-internal-methods-and-internal-slots)”.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.7.5 Reflect
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The global object `Reflect` implements all interceptable operations of the JavaScript
+    meta object protocol as methods. The names of those methods are the same as those
+    of the handler methods, which, [as we have seen](ch_proxies.html#forwarding-intercepted-operations),
+    helps with forwarding operations from the handler to the target.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Reflect.apply(target, thisArgument, argumentsList): any`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Similar to `Function.prototype.apply()`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.construct(target, argumentsList, newTarget=target): object`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The `new` operator as a function. `target` is the constructor to invoke, the
+    optional parameter `newTarget` points to the constructor that started the current
+    chain of constructor calls.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.defineProperty(target, propertyKey, propDesc): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Similar to `Object.defineProperty()`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.deleteProperty(target, propertyKey): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The `delete` operator as a function. It works slightly differently, though:
+    It returns `true` if it successfully deleted the property or if the property never
+    existed. It returns `false` if the property could not be deleted and still exists.
+    The only way to protect properties from deletion is by making them non-configurable.
+    In sloppy mode, the `delete` operator returns the same results. But in strict
+    mode, it throws a `TypeError` instead of returning `false`.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.get(target, propertyKey, receiver=target): any`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A function that gets properties. The optional parameter `receiver` points to
+    the object where the getting started. It is needed when `get` reaches a getter
+    later in the prototype chain. Then it provides the value for `this`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.getOwnPropertyDescriptor(target, propertyKey): undefined|PropDesc`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Same as `Object.getOwnPropertyDescriptor()`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.getPrototypeOf(target): null|object`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Same as `Object.getPrototypeOf()`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.has(target, propertyKey): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The `in` operator as a function.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.isExtensible(target): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Same as `Object.isExtensible()`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.ownKeys(target): Array<PropertyKey>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Returns all own property keys in an Array: the string keys and symbol keys
+    of all own enumerable and non-enumerable properties.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.preventExtensions(target): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Similar to `Object.preventExtensions()`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.set(target, propertyKey, value, receiver=target): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A function that sets properties.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Reflect.setPrototypeOf(target, proto): boolean`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The new standard way of setting the prototype of an object. The current non-standard
+    way, that works in most engines, is to set the special property `__proto__`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Several methods have boolean results. For `.has()` and `.isExtensible()`, they
+    are the results of the operation. For the remaining methods, they indicate whether
+    the operation succeeded.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.7.5.1 Use cases for `Reflect` besides forwarding
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Apart from forwarding operations, [why is `Reflect` useful [4]](ch_proxies.html#further-reading-proxies)?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Different return values: `Reflect` duplicates the following methods of `Object`,
+    but its methods return booleans indicating whether the operation succeeded (where
+    the `Object` methods return the object that was modified).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.defineProperty(obj, propKey, propDesc): object`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.preventExtensions(obj): object`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.setPrototypeOf(obj, proto): object`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Operators as functions: The following `Reflect` methods implement functionality
+    that is otherwise only available via operators:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Reflect.construct(target, argumentsList, newTarget=target): object`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Reflect.deleteProperty(target, propertyKey): boolean`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Reflect.get(target, propertyKey, receiver=target): any`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Reflect.has(target, propertyKey): boolean`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Reflect.set(target, propertyKey, value, receiver=target): boolean`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Shorter version of `apply()`: If we want to be completely safe about invoking
+    the method `apply()` on a function, we can’t do so via dynamic dispatch, because
+    the function may have an own property with the key `''apply''`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE67]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Using `Reflect.apply()` is shorter than the safe version:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE68]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'No exceptions when deleting properties: the `delete` operator throws in strict
+    mode if we try to delete a non-configurable own property. `Reflect.deleteProperty()`
+    returns `false` in that case.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.7.5.2 `Object.*` versus `Reflect.*`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Going forward, `Object` will host operations that are of interest to normal
+    applications, while `Reflect` will host operations that are more low-level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.8 Conclusion
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This concludes our in-depth look at the Proxy API. One thing to be aware of
+    is that Proxies slow down code. That may matter if performance is critical.
+  prefs: []
+  type: TYPE_NORMAL
+- en: On the other hand, performance is often not crucial and it is nice to have the
+    metaprogramming power that Proxies give us.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Acknowledgements:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Allen Wirfs-Brock pointed out the pitfall explained in [§18.3.7 “Pitfall: not
+    all objects can be wrapped transparently by Proxies”](ch_proxies.html#mechanisms-ignored-by-proxies).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The idea for [§18.4.3 “Negative Array indices (`get`)”](ch_proxies.html#negative-array-indices-via-proxies)
+    comes from a [blog post](http://h3manth.com/new/blog/2013/negative-array-index-in-javascript/)
+    by [Hemanth.HM](https://twitter.com/gnumanth).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: André Jaenisch contributed to the list of libraries that use Proxies.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.9 Further reading
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[1] “[On the design of the ECMAScript Reflection API](http://soft.vub.ac.be/Publications/2012/vub-soft-tr-12-03.pdf)”
+    by Tom Van Cutsem and Mark Miller. Technical report, 2012\. [Important source
+    of this chapter.]'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[2] “[The Art of the Metaobject Protocol](http://mitpress.mit.edu/books/art-metaobject-protocol)”
+    by Gregor Kiczales, Jim des Rivieres and Daniel G. Bobrow. Book, 1991.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[3] “[Putting Metaclasses to Work: A New Dimension in Object-Oriented Programming](http://www.pearsonhighered.com/educator/product/Putting-Metaclasses-to-Work-A-New-Dimension-in-ObjectOriented-Programming/9780201433050.page)”
+    by Ira R. Forman and Scott H. Danforth. Book, 1999.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[4] “[Harmony-reflect: Why should I use this library?](https://github.com/tvcutsem/harmony-reflect/wiki)”
+    by Tom Van Cutsem. [Explains why `Reflect` is useful.]'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/23)'
+  prefs: []
+  type: TYPE_NORMAL

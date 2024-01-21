@@ -1,0 +1,627 @@
+- en: 17 Exploring Promises by implementing them
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_implementing-promises.html](https://exploringjs.com/deep-js/ch_implementing-promises.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '17.1 [Refresher: states of Promises](ch_implementing-promises.html#refresher-states-of-promises)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '17.2 [Version 1: Stand-alone Promise](ch_implementing-promises.html#version-1-stand-alone-promise)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 17.2.1 [Method `.then()`](ch_implementing-promises.html#method-.then)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 17.2.2 [Method `.resolve()`](ch_implementing-promises.html#method-.resolve)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '17.3 [Version 2: Chaining `.then()` calls](ch_implementing-promises.html#version-2-chaining-.then-calls)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 17.4 [Convenience method `.catch()`](ch_implementing-promises.html#convenience-method-.catch)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 17.5 [Omitting reactions](ch_implementing-promises.html#omitting-reactions)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 17.6 [The implementation](ch_implementing-promises.html#the-implementation)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '17.7 [Version 3: Flattening Promises returned from `.then()` callbacks](ch_implementing-promises.html#version-3-flattening-promises-returned-from-.then-callbacks)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 17.7.1 [Returning Promises from a callback of `.then()`](ch_implementing-promises.html#returning-promises-from-a-callback-of-.then)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 17.7.2 [Flattening makes Promise states more complicated](ch_implementing-promises.html#flattening-makes-promise-states-more-complicated)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 17.7.3 [Implementing Promise-flattening](ch_implementing-promises.html#implementing-promise-flattening)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '17.8 [Version 4: Exceptions thrown in reaction callbacks](ch_implementing-promises.html#version-4-exceptions-thrown-in-reaction-callbacks)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '17.9 [Version 5: Revealing constructor pattern](ch_implementing-promises.html#version-5-revealing-constructor-pattern)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/0c2cffc9b09a6e4a1ac19d36b7230eed.png)  **Required knowledge:
+    Promises**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For this chapter, you should be roughly familiar with Promises, but much relevant
+    knowledge is also reviewed here. If necessary, you can read [the chapter on Promises
+    in “JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_promises.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In this chapter, we will approach Promises from a different angle: Instead
+    of using this API, we will create a simple implementation of it. This different
+    angle once helped me greatly with making sense of Promises.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The Promise implementation is the class `ToyPromise`. In order to be easier
+    to understand, it doesn’t completely match the API. But it is close enough to
+    still give us much insight into how Promises work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/0c2cffc9b09a6e4a1ac19d36b7230eed.png)  **Repository with code**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ToyPromise` is available on GitHub, in the repository [`toy-promise`](https://github.com/rauschma/toy-promise).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '17.1 Refresher: states of Promises'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '![](../Images/2464420838a24a1e997c946490e804d6.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 11: The states of a Promise (simplified version): A Promise is initially
+    pending. If we resolve it, it becomes fulfilled. If we reject it, it becomes rejected.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We start with a simplified version of how Promise states work (fig. [11](#fig:promise-states-simple)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A Promise is initially *pending*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a Promise is *resolved* with a value `v`, it becomes *fulfilled* (later,
+    we’ll see that resolving can also reject). `v` is now the *fulfillment value*
+    of the Promise.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a Promise is *rejected* with an error `e`, it becomes *rejected*. `e` is
+    now the *rejection value* of the Promise.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '17.2 Version 1: Stand-alone Promise'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Our first implementation is a stand-alone Promise with minimal functionality:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can create a Promise.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can resolve or reject a Promise and we can only do it once.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can register *reactions* (callbacks) via `.then()`. Registering must do the
+    right thing independently of whether the Promise has already been settled or not.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.then()` does not support chaining, yet – it does not return anything.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToyPromise1` is a class with three prototype methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ToyPromise1.prototype.resolve(value)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToyPromise1.prototype.reject(reason)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToyPromise1.prototype.then(onFulfilled, onRejected)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That is, `resolve` and `reject` are methods (and not functions handed to a callback
+    parameter of the constructor).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is how this first implementation is used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: Fig. [12](#fig:promise-impl1-simple) illustrates how our first `ToyPromise`
+    works.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **The diagrams of the
+    data flow in Promises are optional**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The motivation for the diagrams is to have a visual explanation for how Promises
+    work. But they are optional. If you find them confusing, you can ignore them and
+    focus on the code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/e65f0282853cd39c5f190034058283ac.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 12: `ToyPromise1`: If a Promise is resolved, the provided value is passed
+    on to the *fulfillment reactions* (first arguments of `.then()`). If a Promise
+    is rejected, the provided value is passed on to the *rejection reactions* (second
+    arguments of `.then()`).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 17.2.1 Method `.then()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s examine `.then()` first. It has to handle two cases:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If the Promise is still pending, it queues invocations of `onFulfilled` and
+    `onRejected`. They are to be used later, when the Promise is settled.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the Promise is already fulfilled or rejected, `onFulfilled` or `onRejected`
+    can be invoked right away.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The previous code snippet uses the following helper function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: Promises must always settle asynchronously. That’s why we don’t directly execute
+    tasks, we add them to the task queue of the event loop (of browsers, Node.js,
+    etc.). Note that the real Promise API doesn’t use normal tasks (like `setTimeout()`),
+    it uses [*microtasks*](https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/),
+    which are tightly coupled with the current normal task and always execute directly
+    after it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 17.2.2 Method `.resolve()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`.resolve()` works as follows: If the Promise is already settled, it does nothing
+    (ensuring that a Promise can only be settled once). Otherwise, the state of the
+    Promise changes to `''fulfilled''` and the result is cached in `this.promiseResult`.
+    Next, all fulfillment reactions that have been enqueued so far, are invoked.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`reject()` is similar to `resolve()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '17.3 Version 2: Chaining `.then()` calls'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '![](../Images/b17ddb8b605b284cdb68bb5baf7692ee.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 13: `ToyPromise2` chains `.then()` calls: `.then()` now returns a Promise
+    that is resolved by whatever value is returned by the fulfillment reaction or
+    the rejection reaction.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The next feature we implement is chaining (fig. [13](#fig:promise-impl2-chaining)):
+    A value that we return from a fulfillment reaction or a rejection reaction can
+    be handled by a fulfilment reaction in a following `.then()` call. (In the next
+    version, chaining will become much more useful, due to special support for returning
+    Promises.)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the following example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First `.then()`: We return a value in a fulfillment reaction.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Second `.then()`: We receive that value via a fulfillment reaction.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the following example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First `.then()`: We return a value in a rejection reaction.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Second `.then()`: We receive that value via a fulfillment reaction.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 17.4 Convenience method `.catch()`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The new version introduces a convenience method `.catch()` that makes it easier
+    to only provide a rejection reaction. Note that only providing a fulfillment reaction
+    is already easy – we simply omit the second parameter of `.then()` (see previous
+    example).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The previous example looks nicer if we use it (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following two method invocations are equivalent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how `.catch()` is implemented:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 17.5 Omitting reactions
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The new version also forwards fulfillments if we omit a fulfillment reaction
+    and it forwards rejections if we omit a rejection reaction. Why is that useful?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following example demonstrates passing on rejections:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`rejectionReaction` can now handle the rejections of `someAsyncFunction()`,
+    `fulfillmentReaction1`, and `fulfillmentReaction2`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following example demonstrates passing on fulfillments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: If `someAsyncFunction()` rejects its Promise, `rejectionReaction` can fix whatever
+    is wrong and return a fulfillment value that is then handled by `fulfillmentReaction`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `someAsyncFunction()` fulfills its Promise, `fulfillmentReaction` can also
+    handle it because the `.catch()` is skipped.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 17.6 The implementation
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: How is all of this handled under the hood?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.then()` returns a Promise that is resolved with what either `onFulfilled`
+    or `onRejected` return.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `onFulfilled` or `onRejected` are missing, whatever they would have received
+    is passed on to the Promise returned by `.then()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Only `.then()` changes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.then()` creates and returns a new Promise (first line and last line of the
+    method). Additionally:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`fulfillmentTask` works differently. This is what now happens after fulfillment:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `onFullfilled` was provided, it is called and its result is used to resolve
+    `resultPromise`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `onFulfilled` is missing, we use the fulfillment value of the current Promise
+    to resolve `resultPromise`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`rejectionTask` works differently. This is what now happens after rejection:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `onRejected` was provided, it is called and its result is used to *resolve*
+    `resultPromise`. Note that `resultPromise` is not rejected: We are assuming that
+    `onRejected()` fixed whatever problem there was.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `onRejected` is missing, we use the rejection value of the current Promise
+    to reject `resultPromise`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '17.7 Version 3: Flattening Promises returned from `.then()` callbacks'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 17.7.1 Returning Promises from a callback of `.then()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Promise-flattening is mostly about making chaining more convenient: If we want
+    to pass on a value from one `.then()` callback to the next one, we return it in
+    the former. After that, `.then()` puts it into the Promise that it has already
+    returned.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This approach becomes inconvenient if we return a Promise from a `.then()`
+    callback. For example, the result of a Promise-based function (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This time, putting the value returned in line A into the Promise returned by
+    `.then()` forces us to unwrap that Promise in line B. It would be nice if instead,
+    the Promise returned in line A replaced the Promise returned by `.then()`. How
+    exactly that could be done is not immediately clear, but if it worked, it would
+    let us write our code like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, we returned a Promise. Thanks to Promise-flattening, `result2` is
+    the fulfillment value of that Promise, not the Promise itself.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 17.7.2 Flattening makes Promise states more complicated
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '![](../Images/290901f5575b7fa8e8b287bbaf550458.png)  **Flattening Promises
+    in the ECMAScript specification**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the ECMAScript specification, the details of flattening Promises are described
+    in [section “Promise Objects”](https://tc39.es/ecma262/#sec-promise-objects).
+  prefs: []
+  type: TYPE_NORMAL
+- en: How does the Promise API handle flattening?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If a Promise P is resolved with a Promise Q, then P does not wrap Q, P “becomes”
+    Q: State and settlement value of P are now always the same as Q’s. That helps
+    us with `.then()` because `.then()` resolves the Promise it returns with the value
+    returned by one of its callbacks.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'How does P become Q? By *locking in* on Q: P becomes externally unresolvable
+    and a settlement of Q triggers a settlement of P. Lock-in is an additional invisible
+    Promise state that makes states more complicated.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The Promise API has one additional feature: Q doesn’t have to be a Promise,
+    only a so-called *thenable*. A thenable is an object with a method `.then()`.
+    The reason for this added flexibility is to enable different Promise implementations
+    to work together (which mattered when Promises were first added to the language).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Fig. [14](#fig:promise-states-all) visualizes the new states.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/0742c20efb6f5057f0bd62c47d52311d.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 14: All states of a Promise: Promise-flattening introduces the invisible
+    pseudo-state “locked-in”. That state is reached if a Promise P is resolved with
+    a thenable Q. Afterwards, state and settlement value of P is always the same as
+    those of Q.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note that the concept of *resolving* has also become more complicated. Resolving
+    a Promise now only means that it can’t be settled directly, anymore:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Resolving may reject a Promise: We can resolve a Promise with a rejected Promise.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Resolving may not even settle a Promise: We can resolve a Promise with another
+    one that is always pending.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The ECMAScript specification puts it this way: “An unresolved Promise is always
+    in the pending state. A resolved Promise may be pending, fulfilled, or rejected.”'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 17.7.3 Implementing Promise-flattening
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Fig. [15](#fig:promise-impl3-flattening) shows how `ToyPromise3` handles flattening.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/9199e8ef16c2591c4b1c8fde86d52e89.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 15: `ToyPromise3` flattens resolved Promises: If the first Promise is
+    resolved with a thenable `x1`, it locks in on `x1` and is settled with the settlement
+    value of `x1`. If the first Promise is resolved with a non-thenable value, everything
+    works as it did before.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We detect thenables via this function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To implement lock-in, we introduce a new boolean flag `._alreadyResolved`.
+    Setting it to `true` deactivates `.resolve()` and `.reject()` – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If `value` is a thenable then we lock the current Promise in on it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `value` is fulfilled with a result, the current Promise is also fulfilled
+    with that result.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `value` is rejected with an error, the current Promise is also rejected with
+    that error.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The settling is performed via the private methods `._doFulfill()` and `._doReject()`,
+    to get around the protection via `._alreadyResolved`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`._doFulfill()` is relatively simple:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.reject()` is not shown here. Its only new functionality is that it now also
+    obeys `._alreadyResolved`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '17.8 Version 4: Exceptions thrown in reaction callbacks'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '![](../Images/6a4077d1031b0a2125df45147ca425b2.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 16: `ToyPromise4` converts exceptions in Promise reactions to rejections
+    of the Promise returned by `.then()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: As our final feature, we’d like our Promises to handle exceptions in user code
+    as rejections (fig. [16](#fig:promise-impl4-exceptions)). In this chapter, “user
+    code” means the two callback parameters of .`then()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.then()` now runs the Promise reactions `onFulfilled` and `onRejected` safely,
+    via the helper method `._runReactionSafely()` – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`._runReactionSafely()` is implemented as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '17.9 Version 5: Revealing constructor pattern'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We are skipping one last step: If we wanted to turn `ToyPromise` into an actual
+    Promise implementation, we’d still need to implement [the revealing constructor
+    pattern](https://blog.domenic.me/the-revealing-constructor-pattern/): JavaScript
+    Promises are not resolved and rejected via methods, but via functions that are
+    handed to the *executor*, the callback parameter of the constructor.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: If the executor throws an exception, then `promise` is rejected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/18)'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,581 @@
+- en: 23 An overview of computing with types
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/tackling-ts/ch_computing-with-types-overview.html](https://exploringjs.com/tackling-ts/ch_computing-with-types-overview.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 23.1 [Types as metavalues](ch_computing-with-types-overview.html#types-as-metavalues)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '23.2 [Generic types: factories for types](ch_computing-with-types-overview.html#generic-types-factories-for-types)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.3 [Union types and intersection types](ch_computing-with-types-overview.html#union-types-and-intersection-types)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.3.1 [Union types (`|`)](ch_computing-with-types-overview.html#union-types-1)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.3.2 [Intersection types (`&`)](ch_computing-with-types-overview.html#intersection-types)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.4 [Control flow](ch_computing-with-types-overview.html#control-flow)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.4.1 [Conditional types](ch_computing-with-types-overview.html#conditional-types)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.4.2 [Mapped types](ch_computing-with-types-overview.html#mapped-types-1)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.5 [Various other operators](ch_computing-with-types-overview.html#various-other-operators)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.5.1 [The index type query operator `keyof`](ch_computing-with-types-overview.html#the-index-type-query-operator-keyof)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.5.2 [The indexed access operator `T[K]`](ch_computing-with-types-overview.html#the-indexed-access-operator-tk)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 23.5.3 [The type query operator `typeof`](ch_computing-with-types-overview.html#the-type-query-operator-typeof)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we explore how we can compute with types at compile time in
+    TypeScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that the focus of this chapter is on learning how to compute with types.
+    Therefore, we’ll use literal types a lot and the examples are less practically
+    relevant.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 23.1 Types as metavalues
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider the following two levels of TypeScript code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Program level: At runtime, we can use values and functions.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Type level: At compile time, we can use specific types and generic types.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The type level is a metalevel of the program level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Level | Available at | Operands | Operations |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Program level | Runtime | Values | Functions |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Type level | Compile time | Specific types | Generic types |'
+  prefs: []
+  type: TYPE_TB
+- en: 'What does it mean that we can compute with types? The following code is an
+    example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In line A, we are taking the following steps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The input of our computation is the type `ObjectLiteralType`, an object literal
+    type.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We apply the operation `keyof` to the input. It lists the property keys of an
+    object type.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We give the output of `keyof` the name `Result`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'At the type level we can compute with the following “values”:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '23.2 Generic types: factories for types'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Generic types are functions at the metalevel – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The generic type `Wrap<>` has the parameter `T`. Its result is `T`, wrapped
+    in a tuple type. This is how we use this metafunction:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: We pass the parameter `string` to `Wrap<>` and give the result the alias `Wrapped`.
+    The result is a tuple type with a single component – the type `string`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 23.3 Union types and intersection types
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 23.3.1 Union types (`|`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The type operator `|` is used to create union types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we view type `A` and type `B` as sets, then `A | B` is the set-theoretic
+    union of these sets. Put differently: The members of the result are members of
+    at least one of the operands.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Syntactically, we can also put a `|` in front of the first component of a union
+    type. That is convenient when a type definition spans multiple lines:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.3.1.1 Unions as collections of metavalues
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'TypeScript represents collections of metavalues as unions of literal types.
+    We have already seen an example of that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: We’ll soon see type-level operations for looping over such collections.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 23.3.1.2 Unions of object types
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Due to each member of a union type being a member of *at least* one of the
+    component types, we can only safely access properties that are shared by all component
+    types (line A). To access any other property, we need a type guard (line B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.3.2 Intersection types (`&`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The type operator `&` is used to create intersection types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we view type `A` and type `B` as sets, then `A & B` is the set-theoretic
+    intersection of these sets. Put differently: The members of the result are members
+    of both operands.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 23.3.2.1 Intersections of object types
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The intersection of two object types has the properties of both types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: (The generic type `IsAssignableTo<>` is explained later.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 23.3.2.2 Using intersection types for mixins
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we are mixin in an object type `Named` into another type `Obj`, then we
+    need an intersection type (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.4 Control flow
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 23.4.1 Conditional types
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'A *conditional type* has the following syntax:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: If `Type2` is assignable to `Type1`, then the result of this type expression
+    is `ThenType`. Otherwise, it is `ElseType`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '23.4.1.1 Example: only wrapping types that have the property `.length`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the following example, `Wrap<>` only wraps types in one-element tuples if
+    they have the property `.length` whose values are numbers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '23.4.1.2 Example: checking assignability'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can use a conditional type to implement an assignability check:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on the type relationship *assignability*, see [[content
+    not included]](ch_missing-chapters-online.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 23.4.1.3 Conditional types are distributive
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Conditional types are [*distributive*](https://en.wikipedia.org/wiki/Distributive_property):
+    Applying a conditional type `C` to a union type `U` is the same as the union of
+    applying `C` to each component of `U`. This is an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: In other words, distributivity enables us to “loop” over the components of a
+    union type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is another example of distributivity:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.4.1.4 With distributive conditional types, we use type `never` to ignore
+    things
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Interpreted as a set, type `never` is empty. Therefore, if it appears in a
+    union type, it is ignored:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That means we can use `never` to ignore components of a union type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens if we swap the type expressions of the then-branch and
+    the else-branch:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '23.4.1.5 Built-in utility type: `Exclude<T, U>`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Excluding types from a union is such a common operation that TypeScript provides
+    the built-in utility type `Exclude<T, U>`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: '23.4.1.6 Built-in utility type: `Extract<T, U>`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The inverse of `Exclude<T, U>` is `Extract<T, U>`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.4.1.7 Chaining conditional types
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Similarly to JavaScript’s ternary operator, we can also chain TypeScript’s
+    conditional type operator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.4.1.8 `infer` and conditional types
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-inference-in-conditional-types
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Example:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Example:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.4.2 Mapped types
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'A *mapped type* produces an object by looping over a collection of keys – for
+    example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The operator `in` is a crucial part of a mapped type: It specifies where the
+    keys for the new object literal type come from.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '23.4.2.1 Built-in utility type: `Pick<T, K>`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following built-in utility type lets us create a new object by specifying
+    which properties of an existing object type we want to keep:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It is used as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: '23.4.2.2 Built-in utility type: `Omit<T, K>`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following built-in utility type lets us create a new object type by specifying
+    which properties of an existing object type we want to omit:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`K extends keyof any` means that `K` must be a subtype of the type of all property
+    keys:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Exclude<keyof T, K>>` means: take the keys of `T` and remove all “values”
+    mentioned in `K`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Omit<>` is used as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.5 Various other operators
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 23.5.1 The index type query operator `keyof`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We have already encountered the type operator `keyof`. It lists the property
+    keys of an object type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Applying `keyof` to a tuple type has a result that may be somewhat unexpected:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The result includes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The indices of the tuple elements, as strings: `"0" | "1" | "2"`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The type `number` of index property keys
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The name of the special instance property `.length`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The names of all `Array` methods: `"pop" | "push" | ···`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The property keys of an empty object literal type are the empty set `never`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how `keyof` handles intersection types and union types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: This makes sense if we remember that `A & B` has the properties of *both* type
+    `A` and type `B`. `A` and `B` only have property `.shared` in common, which explains
+    `Result2`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 23.5.2 The indexed access operator `T[K]`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The indexed access operator `T[K]` returns the types of all properties of `T`
+    whose keys are assignable to type `K`. `T[K]` is also called a *lookup type*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'These are examples of the operator being used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The type in brackets must be assignable to the type of all property keys (as
+    computed by `keyof`). That’s why `Obj[number]` and `Obj[string]` are not allowed.
+    However, we can use `number` and `string` as index types if the indexed type has
+    an index signature (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`KeysOfObj` includes the type `number` because number keys are a subset of
+    string keys in JavaScript (and therefore in TypeScript).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Tuple types also support indexed access:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The bracket operator is also distributive:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 23.5.3 The type query operator `typeof`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The type operator `typeof` converts a (JavaScript) value to its (TypeScript)
+    type. Its operand must be an identifier or a sequence of dot-separated identifiers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: The first `'abc'` is a value, while the second `"abc"` is its type, a string
+    literal type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is another example of using `typeof`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[§14.1.2 “Adding a symbol to a type”](ch_special-values.html#adding-symbol-to-type)
+    describes an interesting use case for `typeof`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/tackling-ts/issues/25)'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,144 @@
+- en: 15 Immutable wrappers for collections
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_immutable-collection-wrappers.html](https://exploringjs.com/deep-js/ch_immutable-collection-wrappers.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.1 [Wrapping objects](ch_immutable-collection-wrappers.html#wrapping-objects)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.1.1 [Making collections immutable via wrapping](ch_immutable-collection-wrappers.html#making-collections-immutable-via-wrapping)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.2 [An immutable wrapper for Maps](ch_immutable-collection-wrappers.html#an-immutable-wrapper-for-maps)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.3 [An immutable wrapper for Arrays](ch_immutable-collection-wrappers.html#an-immutable-wrapper-for-arrays)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An immutable wrapper for a collection makes that collection immutable by wrapping
+    it in a new object. In this chapter, we examine how that works and why it is useful.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.1 Wrapping objects
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'If there is an object whose interface we’d like to reduce, we can take the
+    following approach:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Create a new object that stores the original in a private field. The new object
+    is said to *wrap* the original object. The new object is called *wrapper*, the
+    original object *wrapped object*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The wrapper only forwards some of the method calls it receives to the wrapped
+    object.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is what wrapping looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Related software design patterns:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Wrapping is related to [the Gang of Four design pattern *Facade*](https://en.wikipedia.org/wiki/Facade_pattern).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We used [*forwarding*](https://en.wikipedia.org/wiki/Forwarding_(object-oriented_programming))
+    to implement [*delegation*](https://en.wikipedia.org/wiki/Delegation_pattern).
+    Delegation means that one object lets another object (the *delegate*) handle some
+    of its work. It is an alternative to inheritance for sharing code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.1.1 Making collections immutable via wrapping
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: To make a collection immutable, we can use wrapping and remove all destructive
+    operations from its interface.
+  prefs: []
+  type: TYPE_NORMAL
+- en: One important use case for this technique is an object that has an internal
+    mutable data structure that it wants to export safely without copying it. The
+    export being “live” may also be a goal. The object can achieve its goals by wrapping
+    the internal data structure and making it immutable.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The next two sections showcase immutable wrappers for Maps and Arrays. They
+    both have the following limitations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'They are sketches. More work is needed to make them suitable for practical
+    use: Better checks, support for more methods, etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They work shallowly: Each one makes the wrapped object immutable, but not the
+    data it returns. This could be fixed by wrapping some of the results that are
+    returned by methods.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.2 An immutable wrapper for Maps
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Class `ImmutableMapWrapper` produces wrappers for Maps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: The setup of the prototype has to be performed by a static method, because we
+    only have access to the private field `.#wrappedMap` from inside the class.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is `ImmutableMapWrapper` in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.3 An immutable wrapper for Arrays
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'For an Array `arr`, normal wrapping is not enough because we need to intercept
+    not just method calls, but also property accesses such as `arr[1] = true`. [JavaScript
+    proxies](https://exploringjs.com/es6/ch_proxies.html) enable us to do this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s wrap an Array:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/15)'
+  prefs: []
+  type: TYPE_NORMAL

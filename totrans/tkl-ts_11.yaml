@@ -1,0 +1,463 @@
+- en: 9 Creating web apps via TypeScript and webpack
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/tackling-ts/ch_webpack-typescript.html](https://exploringjs.com/tackling-ts/ch_webpack-typescript.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.1 [Required knowledge](ch_webpack-typescript.html#required-knowledge-1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.2 [Limitations](ch_webpack-typescript.html#limitations-1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.3 [The repository `ts-demo-webpack`](ch_webpack-typescript.html#the-repository-ts-demo-webpack)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.4 [`package.json`](ch_webpack-typescript.html#package.json-1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.5 [`webpack.config.js`](ch_webpack-typescript.html#webpack.config.js)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.6 [`tsconfig.json`](ch_webpack-typescript.html#tsconfig.json-2)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.7 [`index.html`](ch_webpack-typescript.html#index.html)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.8 [`main.ts`](ch_webpack-typescript.html#main.ts)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.9 [Installing, building and running the web app](ch_webpack-typescript.html#installing-building-and-running-the-web-app)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.9.1 [Building in Visual Studio Code](ch_webpack-typescript.html#building-in-visual-studio-code)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '9.10 [Using webpack without a loader: `webpack-no-loader.config.js`](ch_webpack-typescript.html#using-webpack-without-a-loader-webpack-no-loader.config.js)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter describes how to create web apps via TypeScript and webpack. We
+    will only be using the DOM API, not a particular frontend framework.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/ef04c4c2601874494d82453a9b525b87.png)  **GitHub repository: `ts-demo-webpack`**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The repository `ts-demo-webpack`](https://github.com/rauschma/ts-demo-webpack)
+    that we are working with in this chapter, can be downloaded from GitHub.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.1 Required knowledge
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'You should be roughly familiar with:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[npm](https://docs.npmjs.com/about-npm/)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[webpack](https://webpack.js.org)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.2 Limitations
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In this chapter, we stick with what is best supported by TypeScript: CommonJS
+    modules, bundled as script files.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.3 The repository `ts-demo-webpack`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is how the repository `ts-demo-webpack` is structured:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The web app is built as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Input:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The TypeScript files in `ts/`
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: All JavaScript code that is installed via npm and imported by the TypeScript
+    files
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The HTML files in `html/`
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Output – directory `build/` with the complete web app:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The TypeScript files are compiled to JavaScript code, combined with the npm-installed
+    JavaScript and written to the script file `build/main-bundle.js`. This process
+    is called *bundling* and `main-bundle.js` is a bundle file.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Each HTML file is copied to `build/`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Both output tasks are handled by webpack:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Copying the files in `html/` to `build/` is done via the webpack *plugin* `copy-webpack-plugin`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This chapter explores two different workflows for bundling:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Either webpack directly compiles TypeScript files into the bundle, with the
+    help of the *loader* `ts-loader`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Or we compile the TypeScript files ourselves, to Javascript files in the directory
+    `dist/` (like we did in [the previous chpater](ch_npm-cjs-typescript.html)). Then
+    webpack doesn’t need a loader and only bundles JavaScript files.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Most of this chapter is about using webpack with `ts-loader`. At the end, we
+    briefly look at the other workflow.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 9.4 `package.json`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`package.json` contains metadata for the project:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The properties work as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`"private": true` means that npm doesn’t complain if we don’t provide a package
+    name and a package version.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Scripts:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`tsc, tscw`: These scripts invoke the TypeScript compiler directly. We don’t
+    need them if we use webpack with `ts-loader`. However, they are useful if we use
+    webpack without `ts-loader` (as demonstrated at the end of this chapter).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`wp`: runs webpack once, compile everything.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`wpw`: runs webpack in watch mode, where it watches the input files and only
+    compiles files that change.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`serve`: runs the server `http-server` and serves the directory `build/` with
+    the fully assembled web app.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Dependencies:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Four packages related to webpack:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`webpack`: the core of webpack'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`webpack-cli`: a command line interface for the core'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ts-loader`: a *loader* for `.ts` files that compiles them to JavaScript'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`copy-webpack-plugin`: a *plugin* that copies files from one location to another
+    one'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Needed by `ts-loader`: `typescript`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Serves the web app: `http-server`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Library plus type definitions that the TypeScript code uses: `lodash`, `@types/lodash`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.5 `webpack.config.js`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is how we configure webpack:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`entry`: An *entry point* is the file where webpack starts collecting the data
+    for an output bundle. First it adds the entry point file to the bundle, then the
+    imports of the entry point, then the imports of the imports, etc. The value of
+    property `entry` is an object whose property keys specify names of entry points
+    and whose property values specify paths of entry points.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`output` specifies the path of the output bundle. `[name]` is mainly useful
+    when there are multiple entry points (and therefore multiple output bundles).
+    It is replaced with the name of the entry point when assembling the path.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`resolve` configures how webpack converts *specifiers* (IDs) of modules to
+    locations of files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`module` configures *loaders* (plugins that process files) and more.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`plugins` configures *plugins* which can change and augment webpack’s behavior
+    in a variety of ways.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For more information on configuring webpack, see [the webpack website](https://webpack.js.org/concepts/).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.6 `tsconfig.json`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This file configures the TypeScript compiler:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: The option `outDir` is not needed if we use webpack with `ts-loader`. However,
+    we’ll need it if we use webpack without a loader (as explained later in this chapter).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.7 `index.html`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is the HTML page of the web app:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `<div>` with the ID `"output"` is where the web app displays its output.
+    `main-bundle.js` contains the bundled code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.8 `main.ts`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is the TypeScript code of the web app:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Step 1: We use [Lodash’s function `template()`](https://lodash.com/docs/4.17.15#template)
+    to turn a string with custom template syntax into a function `compiled()` that
+    maps data to HTML. The string defines two blanks to be filled in via data:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`<%- heading %>`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`<%- dateTimeString %>`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Step 2: Apply `compiled()` to the data (an object with two properties) to generate
+    HTML.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.9 Installing, building and running the web app
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'First we need to install all npm packages that our web app depends on:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Then we need to run webpack (which was installed during the previous step)
+    via a script in `package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: From now on, webpack watches the files in the repository for changes and rebuilds
+    the web app whenever it detects any.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In a different command line, we can now start a web server that serves the
+    contents of `build/` on localhost:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: If we go to the URL printed out by the web server, we can see the web app in
+    action.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that simple reloading may not be enough to see the results after changes
+    – due to caching. You may have to force-reload by pressing shift when reloading.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.9.1 Building in Visual Studio Code
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Instead of building from a command line, we can also do that from within Visual
+    Studio Code, via a so-called *build task*:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Execute “Configure Default Build Task…” from the “Terminal” menu.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Choose “npm: wpw”.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A *problem matcher* handles the conversion of tool output into lists of *problems*
+    (infos, warning, and errors). The default works well in this case. If you want
+    to be explicit, you can specify a value in `.vscode/tasks.json`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: We can now start webpack via “Run Build Task…” from the “Terminal” menu.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '9.10 Using webpack without a loader: `webpack-no-loader.config.js`'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Instead of using on `ts-loader`, we can also first compile our TypeScript files
+    to JavaScript files and then bundle those via webpack. How the first of those
+    two steps works, is described in [the previous chapter](ch_npm-cjs-typescript.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We now don’t have to configure `ts-loader` and our webpack configuration file
+    is simpler:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that `entry.main` is different. In the other config file, it is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why would we want to produce intermediate files before bundling them? One benefit
+    is that we can use Node.js to run unit tests for some of the TypeScript code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/tackling-ts/issues/9)'
+  prefs: []
+  type: TYPE_NORMAL

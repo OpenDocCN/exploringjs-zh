@@ -1,0 +1,340 @@
+- en: 11 Stream recipes
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_stream-recipes.html](https://exploringjs.com/nodejs-shell-scripting/ch_stream-recipes.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.1 [Writing to standard output (stdout)](ch_stream-recipes.html#writing-to-standard-output-stdout)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.1.1 [Writing to stdout via `console.log()](ch_stream-recipes.html#writing-to-stdout-via-console.log)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.1.2 [Writing to stdout via a Node.js stream](ch_stream-recipes.html#writing-to-stdout-via-a-node.js-stream)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.1.3 [Writing to stdout via a web stream](ch_stream-recipes.html#writing-to-stdout-via-a-web-stream)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.2 [Writing to standard error (stderr)](ch_stream-recipes.html#writing-to-standard-error-stderr)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3 [Reading from standard input (stdin)](ch_stream-recipes.html#reading-from-standard-input-stdin)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3.1 [Reading from stdin via a Node.js stream](ch_stream-recipes.html#reading-from-stdin-via-a-node.js-stream)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3.2 [Reading from stdin via a web stream](ch_stream-recipes.html#reading-from-stdin-via-a-web-stream)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3.3 [Reading from stdin via module `'node:readline'`](ch_stream-recipes.html#reading-from-stdin-via-module-nodereadline)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.4 [Node.js stream recipes](ch_stream-recipes.html#nodejs-stream-recipes)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.5 [Web stream recipes](ch_stream-recipes.html#web-stream-recipes)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.1 Writing to standard output (stdout)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'These are three options for writing to stdout:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can write to it via `console.log()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can write to it via a Node.js stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can write to it via a web stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.1.1 Writing to stdout via `console.log()
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`console.log(format, ...args)`](https://nodejs.org/docs/latest/api/console.html#consolelogdata-args)
+    writes to stdout and always appends a newline `''\n''` (even on Windows). The
+    first argument can include placeholders which are interpreted in the same way
+    as they are by `util.format()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: All arguments after the first one always show up in the output, even if there
+    are not enough placeholders for them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.1.2 Writing to stdout via a Node.js stream
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`process.stdout` is an instance of `stream.Readable`. That means that we can
+    use it like any other Node.js stream – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The previous code is equivalent to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that there is no newline at the end in this case because `console.log()`
+    always adds one.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we use `.write()` with large amounts of data, we should take backpressure
+    into consideration, as explained in [§9.5.2.1 “`writable.write(chunk)`”](ch_nodejs-streams.html#Writable.prototype.write).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following recipes work with `process.stdout`: [§11.4 “Node.js stream recipes”](ch_stream-recipes.html#nodejs-stream-recipes).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.1.3 Writing to stdout via a web stream
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can convert `process.stdout` to a web stream and write to it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following recipes work with `webOut`: [§11.5 “Web stream recipes”](ch_stream-recipes.html#web-stream-recipes).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.2 Writing to standard error (stderr)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Writing to stderr works similarly to writing to stdout:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can write to it via `console.error()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can write to it via a Node.js stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can write to it via a web stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: See the previous section for more information.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.3 Reading from standard input (stdin)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'These are options for reading from stdin:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can read from it via a Node.js stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can read from it via a web stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can use module `'node:readline'`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.3.1 Reading from stdin via a Node.js stream
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`process.stdin` is an instance of `stream.Writable`. That means that we can
+    use it like any other Node.js stream:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following recipes work with `webIn`: [§11.4 “Node.js stream recipes”](ch_stream-recipes.html#nodejs-stream-recipes).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.3.2 Reading from stdin via a web stream
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We first have to convert `process.stdin` to a web stream:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following recipes work with `webIn`: [§11.5 “Web stream recipes”](ch_stream-recipes.html#web-stream-recipes).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 11.3.3 Reading from stdin via module `'node:readline'`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The built-in module `''node:readline''` lets us prompt users to enter information
+    interactively – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For more information on module `''node:readline''`, see:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[§9.3.3 “Reading lines from readable streams via module `''node:readlines''`”](ch_nodejs-streams.html#readline-async-iteration)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Its official documentation](https://nodejs.org/api/readline.html).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.4 Node.js stream recipes
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Readable streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[§9.3.1.2 “`Readable.from()`: Creating readable streams from iterables”](ch_nodejs-streams.html#Readable.from)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§9.3.2 “Reading chunks from readable streams via `for-await-of`”](ch_nodejs-streams.html#Readable-async-iteration)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§9.3.2.1 “Collecting the contents of a readable stream in a string”](ch_nodejs-streams.html#readableToString2)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§9.3.3 “Reading lines from readable streams via module `''node:readlines''`”](ch_nodejs-streams.html#readline-async-iteration)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§9.4 “Transforming readable streams via async generators”](ch_nodejs-streams.html#transforming-Readable-via-async-generator)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§9.4.1 “Going from chunks to numbered lines in async iterables”](ch_nodejs-streams.html#chunksToLines)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Writable streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[§9.5.2 “Writing to writable streams”](ch_nodejs-streams.html#writing-to-Writable)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§9.5.2.2 “Piping readable streams to writable streams via `stream.pipeline()`”](ch_nodejs-streams.html#stream.pipeline)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 11.5 Web stream recipes
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Creating a ReadableStream from:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Strings: [§10.3.1 “A first example of implementing an underlying source”](ch_web-streams.html#readablestream-enqueue-strings)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'An iterable: [§10.3.2.2 “Example: creating a ReadableStream from a pull source”](ch_web-streams.html#readablestream-from-iterable)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Reading from a ReadableStream:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[§10.2.1 “Consuming ReadableStreams via Readers”](ch_web-streams.html#ReadableStream-Reader)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§10.2.2 “Consuming ReadableStreams via asynchronous iteration”](ch_web-streams.html#ReadableStream-async-iteration)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§10.2.2.2 “Example: assembling a string with the contents of a ReadableStream”](ch_web-streams.html#readableStreamToString2)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§10.2.3 “Piping ReadableStreams to WritableStreams”](ch_web-streams.html#piping-ReadableStream-to-WritableStream)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Transforming ReadableStreams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[§10.6 “Using TransformStreams”](ch_web-streams.html#transformstream)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§10.7.2 “Tip: async generators are also great for transforming streams”](ch_web-streams.html#transforming-web-streams-via-generators)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§10.7.1 “Example: transforming a stream of arbitrary chunks to a stream of
+    lines”](ch_web-streams.html#ChunksToLinesStream)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Using WritableStreams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[§10.4 “Writing to WritableStreams”](ch_web-streams.html#writing-to-WritableStream)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[§10.5.2 “Example: collecting chunks written to a WriteStream in a string”](ch_web-streams.html#StringWritableStream)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/11)'
+  prefs: []
+  type: TYPE_NORMAL

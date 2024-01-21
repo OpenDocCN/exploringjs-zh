@@ -1,0 +1,904 @@
+- en: 15 Typing objects
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/tackling-ts/ch_typing-objects.html](https://exploringjs.com/tackling-ts/ch_typing-objects.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.1 [Roles played by objects](ch_typing-objects.html#roles-played-by-objects)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.2 [Types for objects](ch_typing-objects.html#types-for-objects)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.3 [`Object` vs. `object` in TypeScript](ch_typing-objects.html#object-vs.-object-in-typescript)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '15.3.1 [Plain JavaScript: objects vs. instances of `Object`](ch_typing-objects.html#plain-javascript-objects-vs.-instances-of-object)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '15.3.2 [`Object` (uppercase “O”) in TypeScript: instances of class `Object`](ch_typing-objects.html#object-uppercase-o-in-typescript-instances-of-class-object)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '15.3.3 [`object` (lowercase “o”) in TypeScript: non-primitive values](ch_typing-objects.html#object-lowercase-o-in-typescript-non-primitive-values)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '15.3.4 [`Object` vs. `object`: primitive values](ch_typing-objects.html#object-vs.-object-primitive-values)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '15.3.5 [`Object` vs. `object`: incompatible property types](ch_typing-objects.html#object-vs.-object-incompatible-property-types)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.4 [Object type literals and interfaces](ch_typing-objects.html#object-type-literals-and-interfaces)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.4.1 [Differences between object type literals and interfaces](ch_typing-objects.html#differences-between-object-type-literals-and-interfaces)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.4.2 [Interfaces work structurally in TypeScript](ch_typing-objects.html#interfaces-work-structurally-in-typescript)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.4.3 [Members of interfaces and object type literals](ch_typing-objects.html#members-of-interfaces)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.4.4 [Method signatures](ch_typing-objects.html#method-signatures)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '15.4.5 [Index signatures: objects as dicts](ch_typing-objects.html#index-signatures)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.4.6 [Interfaces describe instances of `Object`](ch_typing-objects.html#interfaces-describe-instances-of-object)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '15.4.7 [Excess property checks: When are extra properties allowed?](ch_typing-objects.html#excess-property-checks-when-are-extra-properties-allowed)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.5 [Type inference](ch_typing-objects.html#type-inference-1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.6 [Other features of interfaces](ch_typing-objects.html#other-features-of-interfaces)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.6.1 [Optional properties](ch_typing-objects.html#optional-properties-interfaces)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.6.2 [Read-only properties](ch_typing-objects.html#read-only-properties)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.7 [JavaScript’s prototype chains and TypeScript’s types](ch_typing-objects.html#javascripts-prototype-chains-and-typescripts-types)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.8 [Sources of this chapter](ch_typing-objects.html#sources-of-this-chapter)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we will explore how objects and properties are typed statically
+    in TypeScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.1 Roles played by objects
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In JavaScript, objects can play two roles (always at least one of them, sometimes
+    mixtures):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Records* have a fixed amount of properties that are known at development time.
+    Each property can have a different type.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Dictionaries* have an arbitrary number of properties whose names are not known
+    at development time. All property keys (strings and/or symbols) have the same
+    type, as have property values.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: First and foremost, we will explore objects as records. We will briefly encounter
+    objects as dictionaries [later in this chapter](ch_typing-objects.html#index-signatures).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.2 Types for objects
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'There are two different general types for objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object` with an uppercase “O” is the type of all instances of class `Object`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`object` with a lowercase “o” is the type of all non-primitive values:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Objects can also be typed via their properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: In the next sections, we’ll examine all these ways of typing objects in more
+    detail.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.3 `Object` vs. `object` in TypeScript
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '15.3.1 Plain JavaScript: objects vs. instances of `Object`'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In plain JavaScript, there is an important distinction.
+  prefs: []
+  type: TYPE_NORMAL
+- en: On one hand, most objects are instances of `Object`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That means:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.prototype` is in their prototype chains:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: They inherit its properties.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'On the other hand, we can also create objects that don’t have `Object.prototype`
+    in their prototype chains. For example, the following object does not have any
+    prototype at all:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`obj2` is an object that is not an instance of class `Object`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '15.3.2 `Object` (uppercase “O”) in TypeScript: instances of class `Object`'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Recall that each class `C` creates two entities:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A constructor function `C`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An interface `C` that describes instances of the constructor function.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Similarly, TypeScript has two built-in interfaces:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Interface `Object` specifies the properties of instances of `Object`, including
+    the properties inherited from `Object.prototype`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Interface `ObjectConstructor` specifies the properties of class `Object`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'These are the interfaces:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Observations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We have both a variable whose name is `Object` (line C) and a type whose name
+    is `Object` (line A).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Direct instances of `Object` have no own properties, therefore `Object.prototype`
+    also matches `Object` (line B).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '15.3.3 `object` (lowercase “o”) in TypeScript: non-primitive values'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In TypeScript, `object` is the type of all non-primitive values (primitive values
+    are `undefined`, `null`, booleans, numbers, bigints, strings). With this type,
+    we can’t access any properties of a value.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '15.3.4 `Object` vs. `object`: primitive values'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Interestingly, type `Object` also matches primitive values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Why is that? Primitive values have all the properties required by `Object`
+    because they inherit `Object.prototype`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Conversely, `object` does not match primitive values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '15.3.5 `Object` vs. `object`: incompatible property types'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'With type `Object`, TypeScript complains if an object has a property whose
+    type conflicts with the corresponding property in interface `Object`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With type `object`, TypeScript does not complain (because `object` does not
+    specify any properties and there can’t be any conflicts):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4 Object type literals and interfaces
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'TypeScript has two ways of defining object types that are very similar:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: We can use either semicolons or commas as separators. Trailing separators are
+    allowed and optional.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.4.1 Differences between object type literals and interfaces
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In this section, we take a look at the most important differences between object
+    type literals and interfaces.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.4.1.1 Inlining
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Object type literals can be inlined, while interfaces can’t be:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.1.2 Duplicate names
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Type aliases with duplicate names are illegal:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Conversely, interfaces with duplicate names are merged:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.1.3 Mapped types
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'For Mapped types (line A), we need to use object type literals:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![](../Images/8c55f45a6e023f74c4403b0374043880.png)  **More information on
+    mapped types**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Mapped types are beyond the current scope of this book. For more information,
+    see [the TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.4.1.4 Polymorphic `this` types
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Polymorphic `this` types can only be used in interfaces:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![](../Images/8c55f45a6e023f74c4403b0374043880.png)  **Source of this section**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[GitHub issue “TypeScript: types vs. interfaces”](https://github.com/peerigon/eslint-config-peerigon/issues/64)
+    by [Johannes Ewald](https://github.com/jhnns)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![](../Images/65d35c0a2478236e12cc4321e1b02db6.png)  **From now on, “interface”
+    means “interface or object type literal” (unless stated otherwise).**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.4.2 Interfaces work structurally in TypeScript
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Interfaces work structurally – they don’t have to be implemented in order to
+    match:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on this topic, see [[content not included]](ch_missing-chapters-online.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.4.3 Members of interfaces and object type literals
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The constructs inside the bodies of interfaces and object type literals are
+    called their *members*. These are the most common members:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s look at these members in more detail:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Property signatures define properties:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Method signatures define methods:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Note: The names of parameters (in this case: `str`) help with documenting how
+    things work but have no other purpose.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Index signatures are needed to describe Arrays or objects that are used as dictionaries.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Note: The name `key` is only there for documentation purposes.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Call signatures enable interfaces to describe functions:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Construct signatures enable interfaces to describe classes and constructor
+    functions:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Property signatures should be self-explanatory. [Call signatures](ch_typing-functions.html#call-signatures)
+    and [construct signatures](ch_classes-as-values.html#construct-signature) are
+    described later in this book. We’ll take a closer look at method signatures and
+    index signatures next.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.4.4 Method signatures
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As far as TypeScript’s type system is concerned, method definitions and properties
+    whose values are functions, are equivalent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: My recommendation is to use whichever syntax best expresses how a property should
+    be set up.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '15.4.5 Index signatures: objects as dicts'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'So far, we have only used interfaces for objects-as-records with fixed keys.
+    How do we express the fact that an object is to be used as a dictionary? For example:
+    What should `TranslationDict` be in the following code fragment?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We use an index signature (line A) to express that `TranslationDict` is for
+    objects that map string keys to string values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.5.1 Typing index signature keys
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Index signature keys must be either `string` or `number`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Symbols are not allowed.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`any` is not allowed.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Union types (e.g. `string|number`) are not allowed. However, multiple index
+    signatures can be used per interface.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 15.4.5.2 String keys vs. number keys
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Just like in plain JavaScript, TypeScript’s number property keys are a subset
+    of the string property keys ([see “JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_arrays.html#array-indices)).
+    Accordingly, if we have both a string index signature and a number index signature,
+    the property type of the former must be a supertype of the latter. The following
+    example works because `Object` is a supertype of `RegExp`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.5.3 Index signatures vs. property signatures and method signatures
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: If there are both an index signature and property and/or method signatures in
+    an interface, then the type of the index property value must also be a supertype
+    of the type of the property value and/or method.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In contrast, the following two interfaces produce no errors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.6 Interfaces describe instances of `Object`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: All interfaces describe objects that are instances of `Object` and inherit the
+    properties of `Object.prototype`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the following example, the parameter `x` of type `{}` is compatible with
+    the return type `Object`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Similarly, `{}` has a method `.toString()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: '15.4.7 Excess property checks: When are extra properties allowed?'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As an example, consider the following interface:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'There are two ways (among others) in which this interface could be interpreted:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Closed interpretation: It could describe all objects that have *exactly* the
+    properties `.x` and `.y` with the specified types. On other words: Those objects
+    must not have *excess properties* (more than the required properties).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Open interpretation: It could describe all objects that have *at least* the
+    properties `.x` and `.y`. In other words: Excess properties are allowed.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'TypeScript uses both interpretations. To explore how that works, we will use
+    the following function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The default is that the excess property `.z` is allowed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, if we use object literals directly, then excess properties are forbidden:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.7.1 Why are excess properties forbidden in object literals?
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Why the stricter rules for object literals? They provide protection against
+    typos in property keys. We will use the following interface to demonstrate what
+    that means.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Property `.middle` is optional and can be omitted (optional properties are
+    covered [later in this chapter](ch_typing-objects.html#optional-properties-interfaces)).
+    To TypeScript, mistyping its name looks like omitting it and providing an excess
+    property. However, it still catches the typo because excess properties are not
+    allowed in this case:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.7.2 Why are excess properties allowed if an object comes from somewhere
+    else?
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The idea is that if an object comes from somewhere else, we can assume that
+    it has already been vetted and will not have any typos. Then we can afford to
+    be less careful.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If typos are not an issue, our goal should be maximizing flexibility. Consider
+    the following function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: Without allowing excess properties for most values that are passed to `getAge()`,
+    the usefulness of this function would be quite limited.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.4.7.3 Empty interfaces allow excess properties
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If an interface is empty (or the object type literal `{}` is used), excess
+    properties are always allowed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.7.4 Matching only objects without properties
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we want to enforce that an object has no properties, we can use the following
+    trick (credit: [Geoff Goodman](https://twitter.com/filearts/status/1222502898552180737)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.4.7.5 Allowing excess properties in object literals
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'What if we want to allow excess properties in object literals? As an example,
+    consider interface `Point` and function `computeDistance1()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'One option is to assign the object literal to an intermediate variable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A second option is to use a type assertion:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A third option is to rewrite `computeDistance1()` so that it uses a type parameter:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A fourth option is to extend interface `Point` so that it allows excess properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs: []
+  type: TYPE_PRE
+- en: We’ll continue with two examples where TypeScript not allowing excess properties,
+    is an issue.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '15.4.7.5.1 Allowing excess properties: example `Incrementor`'
+  prefs:
+  - PREF_H6
+  type: TYPE_NORMAL
+- en: 'In this example, we’d like to implement an `Incrementor`, but TypeScript doesn’t
+    allow the extra property `.counter`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Alas, even with a type assertion, there is still one type error:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can either add an index signature to interface `Incrementor`. Or – especially
+    if that is not possible – we can introduce an intermediate variable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: '15.4.7.5.2 Allowing excess properties: example `.dateStr`'
+  prefs:
+  - PREF_H6
+  type: TYPE_NORMAL
+- en: 'The following comparison function can be used to sort objects that have the
+    property `.dateStr`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: For example in unit tests, we may want to invoke this function directly with
+    object literals. TypeScript doesn’t let us do this and we need to use one of the
+    workarounds.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.5 Type inference
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'These are the types that TypeScript infers for objects that are created via
+    various means:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs: []
+  type: TYPE_PRE
+- en: In principle, the return type of `Object.create()` could be `object`. However,
+    `any` allows us to add and change properties of the result.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.6 Other features of interfaces
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 15.6.1 Optional properties
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we put a question mark (`?`) after the name of a property, that property
+    is optional. The same syntax is used to mark parameters of functions, methods,
+    and constructors as optional. In the following example, property `.middle` is
+    optional:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Therefore, it’s OK to omit that property (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE55]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.6.1.1 Optional vs. `undefined|string`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: What is the difference between `.prop1` and `.prop2`?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE56]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'An optional property can do everything that `undefined|string` can. We can
+    even use the value `undefined` for the former:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE57]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, only `.prop1` can be omitted:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE58]'
+  prefs: []
+  type: TYPE_PRE
+- en: Types such as `undefined|string` and `null|string` are useful if we want to
+    make omissions explicit. When people see such an explicitly omitted property,
+    they know that it exists but was switched off.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.6.2 Read-only properties
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the following example, property `.prop` is read-only:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE59]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'As a consequence, we can read it, but we can’t change it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE60]'
+  prefs: []
+  type: TYPE_PRE
+- en: 15.7 JavaScript’s prototype chains and TypeScript’s types
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: TypeScript doesn’t distinguish own and inherited properties. They are all simply
+    considered to be properties.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE61]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`obj` inherits `.toString()` from `Object.prototype`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The downside of this approach is that some phenomena in JavaScript can’t be
+    described via TypeScript’s type system. The upside is that the type system is
+    simpler.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 15.8 Sources of this chapter
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/basic-types.html)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[TypeScript Language Specification](https://github.com/microsoft/TypeScript/blob/master/doc/spec-ARCHIVED.md)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/tackling-ts/issues/15)'
+  prefs: []
+  type: TYPE_NORMAL

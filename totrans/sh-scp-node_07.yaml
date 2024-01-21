@@ -1,0 +1,1338 @@
+- en: '5 Packages: JavaScript’s units for software distribution'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_packages.html](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.1 [What is a package?](ch_packages.html#what-is-a-package)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '5.1.1 [Publishing packages: package registries, package managers, package names](ch_packages.html#publishing-packages-package-registries-package-managers-package-names)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.2 [The file system layout of a package](ch_packages.html#the-file-system-layout-of-a-package)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.2.1 [`package.json`](ch_packages.html#package.json)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.2.2 [Property `"dependencies"` of `package.json`](ch_packages.html#property-dependencies-of-package.json)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.2.3 [Property `"bin"` of `package.json`](ch_packages.html#property-bin-of-package.json)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.2.4 [Property `"license"` of `package.json`](ch_packages.html#property-license-of-package.json)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.3 [Archiving and installing packages](ch_packages.html#archiving-and-installing-packages)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.3.1 [Installing a package from git](ch_packages.html#installing-a-package-from-git)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.3.2 [Creating a new package and installing dependencies](ch_packages.html#creating-a-new-package-and-installing-dependencies)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.4 [Referring to modules via *specifiers*](ch_packages.html#referring-to-modules-via-specifiers)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.4.1 [Filename extensions in module specifiers](ch_packages.html#filename-extensions-in-module-specifiers)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.5 [Module specifiers in Node.js](ch_packages.html#module-specifiers-in-node.js)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.5.1 [Resolving module specifiers in Node.js](ch_packages.html#resolving-module-specifiers-in-node.js)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '5.5.2 [Package exports: controlling what other packages see](ch_packages.html#package-exports-controlling-what-other-packages-see)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.5.3 [Package imports](ch_packages.html#package-imports)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.5.4 [`node:` protocol imports](ch_packages.html#node-protocol-imports)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter explains what npm packages are and how they interact with ESM modules.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Required knowledge:** I’m assuming that you are loosely familiar with the
+    syntax of ECMAScript modules. If you are not, you can read [chapter “modules”](https://exploringjs.com/impatient-js/ch_modules.html)
+    in “JavaScript for impatient programmers”.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.1 What is a package?
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In the JavaScripte ecosystem, a *package* is a way of organizing software projects:
+    It is a directory with a standardized layout. A package can contain all kinds
+    of files - for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A web application written in JavaScript, to be deployed on a server
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: JavaScript libraries (for Node.js, for browsers, for all JavaScript platforms,
+    etc.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Libraries for programming languages other than JavaScript: TypeScript, Rust,
+    etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Unit tests (e.g. for the libraries in the package)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Bin scripts* – Node.js-based shell scripts – e.g., development tools such
+    as compilers, test runners, and documentation generators'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Many other kinds of artifacts
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A package can *depend on* other packages (which are called its *dependencies*)
+    which contain:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Libraries needed by the package’s JavaScript code
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Shell scripts used during development
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The dependencies of a package are installed inside that package (we’ll see how
+    soon).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'One common distinction between packages is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Published packages* can be installed by us:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Global installation: We can install them globally so that their bin scripts
+    become available at the command line.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Local installation: We can install them as dependencies into our own packages.
+    Their bin scripts can be used locally (we’ll see how soon).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Unpublished packages* never become dependencies of other packages, but do
+    have dependencies themselves. Examples include web applications that are deployed
+    to servers.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next subsection explains how packages can be published.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '5.1.1 Publishing packages: package registries, package managers, package names'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The main way of publishing a package is to upload it to a package registry –
+    an online software repository. The de facto standard is [the *npm registry*](https://www.npmjs.com)
+    but it is not the only option. For example, companies can host their own internal
+    registries.
+  prefs: []
+  type: TYPE_NORMAL
+- en: A *package manager* is a command line tool that downloads packages from a registry
+    (or other sources) and installs them locally or globally. If a package contains
+    bin scripts, it also makes those available locally or globally.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The most popular package manager is called *npm* and comes bundled with Node.js.
+    Its name originally stood for “Node Package Manager”. Later, when npm and the
+    npm registry were used not only for Node.js packages, the definition was changed
+    to “npm is not a package manager” ([source](https://en.wikipedia.org/wiki/Npm_(software)#Acronym)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: There are other popular package managers such as yarn and pnpm. All of these
+    package managers use the npm registry by default.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Each package in the npm registry has a name. There are two kinds of names:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Global names* are unique across the whole registry. These are two examples:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '*Scoped names* consist of two parts: A scope and a name. Scopes are globally
+    unique, names are unique per scope. These are two examples:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: The scope starts with an `@` symbol and is separated from the name with a slash.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 5.2 The file system layout of a package
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Once a package `my-package` is fully installed, it almost always looks like
+    this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: What are the purposes of these file system entries?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`package.json` is a file every package must have:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It contains metadata describing the package (its name, its version, its author,
+    etc.).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'It lists the dependencies of the package: other packages that it needs, such
+    as libraries and tools. Per dependency, we record:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A range of version numbers. Not specifying a specific version allows for upgrades
+    and for code sharing between dependencies.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'By default, dependencies come from the npm registry. But we can also specify
+    other sources: a local directory, a GZIP file, a URL pointing to a GZIP file,
+    a registry other than npm’s, a git repository, etc.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`node_modules/` is a directory into which the dependencies of the package are
+    installed. Each dependency also has a `node_modules` folder with its dependencies,
+    etc. The result is a tree of dependencies.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Some packages also have the file `package-lock.json` that sits next to `package.json`:
+    It records the exact versions of the dependencies that were installed and is kept
+    up to date if we add more dependencies via npm.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.2.1 `package.json`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is a starter `package.json` that can be created via npm:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: What are the purposes of these properties?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Some properties are required for public packages (published on the npm registry):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`name` specifies the name of this package.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`version` is used for version management and follows [semantic versioning](https://semver.org)
+    with three dot-separated numbers:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *major version* is incremented when incompatible API changes are made.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *minor version* is incremented when functionality is added in a backward
+    compatible manner.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *patch version* is incremented when small changes are made that don’t really
+    change the functionality.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Other properties for public packages are optional:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`description`, `keywords`, `author` are optional and make it easier to find
+    packages.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`license` clarifies how this package can be used. It makes sense to provide
+    this value if the package is public in any way. [“Choose an open source license”](https://choosealicense.com)
+    can help with making this choice.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`main` is a property for packages with library code. It specifies the module
+    that “is” the package (explained later in this chapter).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`scripts` is a property for setting up *package scripts* – abbreviations for
+    development-time shell commands. These can be executed via `npm run`. For example,
+    the script `test` can be executed via `npm run test`. For more on this topic,
+    see [§15 “Running cross-platform tasks via npm package scripts”](ch_package-scripts.html).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Other useful properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`dependencies` lists the dependencies of a package. Its format is explained
+    soon.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`devDependencies` are dependencies that are only needed during development.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following setting means that all files with the name extension `.js` are
+    interpreted as ECMAScript modules. Unless we are dealing with legacy code, it
+    makes sense to add it:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`bin` lists *bin scripts*, Node.js modules within the package that npm installs
+    as shell scripts. Its format is explained soon.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`license` specifies a license for the package. Its format is explained soon.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Normally, the properties `name` and `version` are required and npm warns us
+    if they are missing. However, we can change that via the following setting:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: That prevents the package from accidentally being published and allows us to
+    omit name and version.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '**For more information on `package.json`**, see [the npm documentation](https://docs.npmjs.com/files/package.json).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.2.2 Property `"dependencies"` of `package.json`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is what the dependencies in a `package.json` file look like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: The properties record both the names of packages and constraints for their versions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Versions themselves follow the [semantic versioning](https://semver.org) standard.
+    They are up to three numbers (the second and third number are optional and zero
+    by default) separated by dots:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Major version*: This number changes when a packages changes in incompatible
+    ways.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '*Minor version*: This number changes when functionality is added in a backward
+    compatible manner.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '*Patch version*: This number changes when backward compatible bug fixes are
+    made.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Node’s version ranges are explained in [the `semver` repository](https://github.com/npm/node-semver#versions).
+    Examples include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A specific version without any extra characters means that the installed version
+    must match the version exactly:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`major.minor.x` or `major.x` means that the components that are numbers must
+    match, the components that are `x` or omitted can have any values:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`*` matches any version:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`>=version` means that the installed version must be `version` or higher:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`<=version` means that the installed version must be `version` or lower:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`version1-version2` is the same as `>=version1 <=version2`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`^version` (as used in the previous example) is a *caret range* and means that
+    the installed version can be `version` or higher but must not introduce breaking
+    changes. That is, the major version must be the same:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 5.2.3 Property `"bin"` of `package.json`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is how we can tell npm to install modules as shell scripts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: If we install a package with this `"bin"` value globally, Node.js ensures that
+    the commands `my-shell-script` and `another-script` become available at the command
+    line.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we install the package locally, we can use the two commands in package scripts
+    or via [the `npx` command](https://docs.npmjs.com/cli/v8/commands/npx).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A string is also allowed as the value of `"bin"`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is an abbreviation for:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 5.2.4 Property `"license"` of `package.json`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The value of property `"license"` is always a string with a SPDX license ID.
+    For example, the following value denies others the right to use a package under
+    any terms (which is useful if a package is unpublished):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[The SPDX website lists all available license IDs](https://spdx.org/licenses/).
+    If you find it difficult to pick one, [the website “Choose an open source license”](https://choosealicense.com)
+    can help – for example, this is the advice if you “want it simple and permissive”:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The MIT License is short and to the point. It lets people do almost anything
+    they want with your project, like making and distributing closed source versions.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Babel, .NET, and Rails use the MIT License.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'You can use that license like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 5.3 Archiving and installing packages
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Packages in the npm registry are often archived in two different ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For development, they are stored in a git repository.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: To make them installable via npm, they are uploaded to the npm registry.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Either way, the package is archived without its dependencies – which we have
+    to install before we can use it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If a package is stored in a git repository:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We normally want the same dependency tree to be used every time we install the
+    package.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That’s why `package-lock.json` is usually included.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can regenerate artifacts from other artifacts – for example, compile TypeScript
+    files to JavaScript files.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If a package is published to the npm registry:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It should be flexible with its dependencies so that upgrading dependencies and
+    sharing packages in a dependency tree becomes possible.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That’s why `package-lock.json` is never uploaded to the npm registry.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It often contains generated artifacts - for example, JavaScript files compiled
+    from TypeScript files are included so that people who only use JavaScript don’t
+    have to install a TypeScript compiler.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Dev dependencies (property `devDependencies` in `package.json`) are only installed
+    during development but not when we install the package from the npm registry.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that unpublished packages in git repositories are handled similarly to
+    published packages during development.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.3.1 Installing a package from git
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To install a package `pkg` from git, we clone its repository and:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Then the following steps are performed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`node_modules` is created and the dependencies are installed. Installing a
+    dependency also means downloading that dependency and installing its dependencies
+    (etc.).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sometimes additional setup steps are performed. Which ones those are can be
+    configured via `package.json`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the root package doesn’t have a `package-lock.json` file, it is created during
+    installation (as mentioned, dependencies don’t have this file).
+  prefs: []
+  type: TYPE_NORMAL
+- en: In a dependency tree, the same dependency may exist multiple times, possibly
+    in different versions. There a ways to minimize duplication, but that is beyond
+    the scope of this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.3.1.1 Reinstalling a package
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is a (slightly crude) way of fixing issues in a dependency tree:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that that may result in different, newer, packages being installed. We
+    can avoid that by not deleting `package-lock.json`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.3.2 Creating a new package and installing dependencies
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'There are many tools and technique for setting up new packages. This is one
+    simple way:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Afterward, the directory looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: This `package.json` has the starter content that we have already seen.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.3.2.1 Installing dependencies
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Right now, `my-package` doesn’t have any dependencies. Let’s say we want to
+    use the library `lodash-es`. This is how we install it into our package:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This command performs the following steps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The package is downloaded into `my-package/node_modules/lodash-es`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Its dependencies are also installed. Then the dependencies of its dependencies.
+    Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A new property is added to `package.json`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`package-lock.json` is updated with the exact version that was installed.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 5.4 Referring to modules via *specifiers*
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Code in other ECMAScript modules is accessed via `import` statements (line
+    A and line B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Both static imports and dynamic imports use *module specifiers* to refer to
+    modules:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The string after `from` in line A.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The string argument in line B.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'There are three kinds of module specifiers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Absolute specifiers* are full URLs – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Absolute specifiers are mostly used to access libraries that are directly hosted
+    on the web.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '*Relative specifiers* are relative URLs (starting with `''/''`, `''./''` or
+    `''../''`) – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Every module has a URL whose protocol depends on its location (`file:`, `https:`,
+    etc.). If it uses a relative specifier, JavaScript turns that specifier into a
+    full URL by resolving it against the module’s URL.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Relative specifiers are mostly used to access other modules within the same
+    code base.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '*Bare specifiers* are paths (without protocol and domain) that start with neither
+    slashes nor dots. They begin with the names of packages. Those names can optionally
+    be followed by *subpaths*:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Bare specifiers can also refer to packages with scoped names:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Each bare specifier refers to exactly one module inside a package; if it has
+    no subpath, it refers to the designated “main” module of its package. A bare specifier
+    is never used directly but always *resolved* – translated to an absolute specifier.
+    How resolution works depends on the platform. We’ll learn more soon.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 5.4.1 Filename extensions in module specifiers
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Absolute specifiers and relative specifiers always have filename extensions
+    – usually `.js` or `.mjs`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'There are three styles of bare specifiers:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Style 1: no subpath'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Style 2: a subpath without a filename extension. In this case, the subpath
+    works like a modifier for the package name:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Style 3: a subpath with a filename extension. In this case, the package is
+    seen as a collection of modules and the subpath points to one of them:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Caveat of style 3 bare specifiers: How the filename extension is interpreted
+    depends on the dependency and may differ from the importing package. For example,
+    the importing package may use `.mjs` for ESM modules and `.js` for CommonJS modules,
+    while the ESM modules exported by the dependency may have bare paths with the
+    filename extension `.js`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.5 Module specifiers in Node.js
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Let’s see how module specifiers work in Node.js.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.5.1 Resolving module specifiers in Node.js
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The [*Node.js resolution algorithm*](https://nodejs.org/api/esm.html#resolution-algorithm)
+    works as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Parameters:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: URL of importing module
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Module specifier
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Result: Resolved URL for module specifier'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is the algorithm:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If a specifier is absolute, resolution is already finished. Three protocols
+    are most common:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`file:` for local files'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`https:` for remote files'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`node:` for built-in modules ([discussed later](ch_packages.html#node-protocol-imports))'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a specifier is relative, it is resolved against the URL of the importing
+    module.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If a specifier is bare:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If it starts with `'#'`, it is resolved by looking it up among the *package
+    imports* (which are explained later) and resolving the result.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Otherwise, it is a bare specifier that has one of these formats (the subpath
+    is optional):'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`«package»/sub/path`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`@«scope»/«scoped-package»/sub/path`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The resolution algorithm traverses the current directory and its ancestors
+    until it finds a directory `node_modules` that has a subdirectory matching the
+    beginning of the bare specifier, i.e. either:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`node_modules/«package»/`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`node_modules/@«scope»/«scoped-package»/`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That directory is the directory of the package. By default, the (potentially
+    empty) subpath after the package ID is interpreted as relative to the package
+    directory. The default can be overridden via *package exports* which are explained
+    next.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: The result of the resolution algorithm must point to a file. That explains why
+    absolute specifiers and relative specifiers always have filename extensions. Bare
+    specifiers mostly don’t because they are abbreviations that are looked up in package
+    exports.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Module files usually have these filename extensions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If a file has the name extension `.mjs`, it is always an ES module.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A file that has the name extension `.js` is an ES module if the closest `package.json`
+    has this entry:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"type": "module"`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If Node.js executes code provided via stdin, `--eval` or `--print`, we use
+    [the following command-line option](https://nodejs.org/api/cli.html#--input-typetype)
+    so that it is interpreted as an ES module:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: '5.5.2 Package exports: controlling what other packages see'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In this subsection, we are working with a package that has the following file
+    layout:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[*Package exports*](https://nodejs.org/api/packages.html#packages_package_entry_points)
+    are specified via property `"exports"` in `package.json` and support two important
+    features:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Hiding the internals of a package:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Without property `"exports"`, every module in package `my-lib` can be accessed
+    via a relative path after the package name – e.g.:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: Once the property exists, only specifiers listed in it can be used. Everything
+    else is hidden from the outside.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Nicer module specifiers: Package export let us define bare specifier subpaths
+    for modules that are shorter and/or have better names.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Recall the three styles of bare specifiers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Style 1: bare specifiers without subpaths'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Style 2: bare specifiers with extension-less subpaths'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Style 3: bare specifiers with subpaths with extensions'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Package exports help us with all three styles
+  prefs: []
+  type: TYPE_NORMAL
+- en: '5.5.2.1 Style 1: configuring which file represents (the bare specifier for)
+    the package'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: We only provide `"main"` for backward-compatibility (with older bundlers and
+    Node.js 12 and older). Otherwise, the entry for `"."` is enough.
+  prefs: []
+  type: TYPE_NORMAL
+- en: With these package exports, we can now import from `my-lib` as follows.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This imports `someFunction()` from this file:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: '5.5.2.2 Style 2: mapping extension-less subpaths to module files'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We are mapping the specifier subpath `''util/errors''` to a module file. That
+    enables the following import:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: '5.5.2.3 Style 2: better subpaths without extensions for a subtree'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The previous subsection explained how to create a single mapping for an extension-less
+    subpath. There is also a way to create multiple such mappings via a single entry:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Any file that is a descendant of `./dist/src/` can now be imported without
+    a filename extension:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note the asterisks in this `"exports"` entry:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: These are more instructions for how to map subpaths to actual paths than wildcards
+    that match fragments of file paths.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '5.5.2.4 Style 3: mapping subpaths with extensions to module files'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We are mapping the specifier subpath `''util/errors.js''` to a module file.
+    That enables the following import:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: '5.5.2.5 Style 3: better subpaths with extensions for a subtree'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Here, we shorten the module specifiers of the whole subtree under `my-package/dist/src`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Without the exports, the import statement would be:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note the asterisks in this `"exports"` entry:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs: []
+  type: TYPE_PRE
+- en: These are not filesystem globs but instructions for how to map external module
+    specifiers to internal ones.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.5.2.6 Exposing a subtree while hiding parts of it
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: With the following trick, we expose everything in directory `my-package/dist/src/`
+    with the exception of `my-package/dist/src/internal/`
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that this trick also works when exporting subtrees *without* filename extensions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.5.2.7 Conditional package exports
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can also make exports [*conditional*](https://nodejs.org/api/packages.html#packages_conditional_exports):
+    Then a given path maps to different values depending on the context in which a
+    package is used.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Node.js vs. browsers.** For example, we could provide different implementations
+    for Node.js and for browsers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `"default"` condition matches when no other key matches and must come last.
+    Having one is recommended whenever we are distinguishing between platforms because
+    it takes care of new and/or unknown platforms.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Development vs. production.** Another use case for conditional package exports
+    is switching between “development” and “production” environments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In Node.js we can specify an environment like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: 5.5.3 Package imports
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[Package imports](https://nodejs.org/api/packages.html#imports) let a package
+    define abbreviations for module specifiers that it can use itself, internally
+    (where package exports define abbreviations for other packages). This is an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The package import `#` is *conditional* (with the same features as [conditional
+    package exports](ch_packages.html#conditional-package-exports)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If the current package is used on Node.js, the module specifier `'#some-pkg'`
+    refers to package `some-pkg-node-native`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Elsewhere, `'#some-pkg'` refers to the file `./polyfills/some-pkg-polyfill.js`
+    inside the current package.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (Only package imports can refer to external packages, package exports can’t
+    do that.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: What are the use cases for package imports?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Referring to different platform-specific implementations modules via the same
+    module specifier (as demonstrated above).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Aliases to modules inside the current package – to avoid relative specifiers
+    (which can get complicated with deeply nested directories).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Be careful when using package imports with a bundler: This feature is relatively
+    new and your bundler may not support it.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 5.5.4 `node:` protocol imports
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Node.js has many built-in modules such as `'path'` and `'fs'`. All of them are
+    available as both ES modules and CommonJS modules. One issue with them is that
+    they can be overridden by modules installed in `node_modules` which is both a
+    security risk (if it happens accidentally) and a problem if Node.js wants to introduce
+    new built-in modules in the future and their names are already taken by npm packages.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can use [the `node:` protocol](https://nodejs.org/api/esm.html#node-imports)
+    to make it clear that we want to import a built-in module. For example, the following
+    two import statements are mostly equivalent (if no npm module is installed that
+    has the name `''fs''`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs: []
+  type: TYPE_PRE
+- en: An additional benefit of using the `node:` protocol is that we immediately see
+    that an imported module is built-in. Given how many built-in modules there are,
+    that helps when reading code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Due to `node:` specifiers having a protocol, they are considered absolute. That’s
+    why they are not looked up in `node_modules`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/5)'
+  prefs: []
+  type: TYPE_NORMAL

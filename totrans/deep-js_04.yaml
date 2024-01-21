@@ -1,0 +1,1045 @@
+- en: 2 Type coercion in JavaScript
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_type-coercion.html](https://exploringjs.com/deep-js/ch_type-coercion.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 2.1 [What is type coercion?](ch_type-coercion.html#what-is-type-coercion)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.1.1 [Dealing with type coercion](ch_type-coercion.html#dealing-with-type-coercion)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.2 [Operations that help implement coercion in the ECMAScript specification](ch_type-coercion.html#operations-that-help-implement-coercion-in-the-ecmascript-specification)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.2.1 [Converting to primitive types and objects](ch_type-coercion.html#converting-to-primitive-types-and-objects)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.2.2 [Converting to numeric types](ch_type-coercion.html#converting-to-numeric-types)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.2.3 [Converting to property keys](ch_type-coercion.html#converting-to-property-keys)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.2.4 [Converting to Array indices](ch_type-coercion.html#converting-to-array-indices)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.2.5 [Converting to Typed Array elements](ch_type-coercion.html#converting-to-typed-array-elements)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '2.3 [Intermission: expressing specification algorithms in JavaScript](ch_type-coercion.html#intermission-expressing-specification-algorithms-in-javascript)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.4 [Example coercion algorithms](ch_type-coercion.html#example-coercion-algorithms)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.4.1 [`ToPrimitive()`](ch_type-coercion.html#toprimitive)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.4.2 [`ToString()` and related operations](ch_type-coercion.html#tostring-and-related-operations)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.4.3 [`ToPropertyKey()`](ch_type-coercion.html#topropertykey)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.4.4 [`ToNumeric()` and related operations](ch_type-coercion.html#tonumeric-and-related-operations)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.5 [Operations that coerce](ch_type-coercion.html#operations-that-coerce)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.5.1 [Addition operator (`+`)](ch_type-coercion.html#addition-operator)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.5.2 [Abstract Equality Comparison (`==`)](ch_type-coercion.html#abstract-equality-comparison)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '2.6 [Glossary: terms related to type conversion](ch_type-coercion.html#glossary-terms-related-to-type-conversion)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we examine the role of *type coercion* in JavaScript. We will
+    go relatively deeply into this subject and, e.g., look into how the ECMAScript
+    specification handles coercion.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 2.1 What is type coercion?
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Each operation (function, operator, etc.) expects its parameters to have certain
+    types. If a value doesn’t have the right type for a parameter, three common options
+    for, e.g., a function are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The function can throw an exception:'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'The function can return an error value:'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'The function can convert its arguments to useful values:'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: In (3), the operation performs an implicit type conversion. That is called *type
+    coercion*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'JavaScript initially didn’t have exceptions, which is why it uses coercion
+    and error values for most of its operations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, there are also cases (especially when it comes to newer features)
+    where it throws exceptions if an argument doesn’t have the right type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Accessing properties of `null` or `undefined`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Using symbols:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Mixing bigints and numbers:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'New-calling or function-calling values that don’t support that operation:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Changing read-only properties (only throws in strict mode):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 2.1.1 Dealing with type coercion
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Two common ways of dealing with coercion are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A caller can explicitly convert values so that they have the right types. For
+    example, in the following interaction, we want to multiply two numbers encoded
+    as strings:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'A caller can let the operation make the conversion for them:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'I usually prefer the former, because it clarifies my intention: I expect `x`
+    and `y` not to be numbers, but want to multiply two numbers.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 2.2 Operations that help implement coercion in the ECMAScript specification
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The following sections describe the most important internal functions used by
+    the ECMAScript specification to convert actual parameters to expected types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, in TypeScript, we would write:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the specification, this looks [as follows](https://tc39.es/ecma262/#sec-multiplicative-operators-runtime-semantics-evaluation)
+    (translated to JavaScript, so that it is easier to understand):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 2.2.1 Converting to primitive types and objects
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Whenever primitive types or objects are expected, the following conversion
+    functions are used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ToBoolean()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToNumber()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToBigInt()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToString()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToObject()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'These internal functions have analogs in JavaScript that are very similar:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: After the introduction of bigints, which exists alongside numbers, the specification
+    often uses `ToNumeric()` where it previously used `ToNumber()`. Read on for more
+    information.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 2.2.2 Converting to numeric types
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'At the moment, JavaScript has [two built-in numeric types](https://tc39.es/ecma262/#sec-numeric-types):
+    number and bigint.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ToNumeric()` returns a numeric value `num`. Its callers usually invoke a method
+    `mthd` of the specification type of `num`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Among others, the following operations use `ToNumeric`:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Prefix and postfix `++` operator
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`*` operator'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToInteger(x)` is used whenever a number without a fraction is expected. The
+    range of the result is often restricted further afterwards.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It calls `ToNumber(x)` and removes the fraction (similar to `Math.trunc()`).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Operations that use `ToInteger()`:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Number.prototype.toString(radix?)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`String.prototype.codePointAt(pos)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Array.prototype.slice(start, end)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToInt32()`, `ToUint32()` coerce numbers to 32-bit integers and are used by
+    bitwise operators (see tbl. [1](#tbl:bitwise-number-operator-coercion)).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToInt32()`: signed, range [−2^(31), 2^(31)−1] (limits are included)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToUint32()`: unsigned (hence the `U`), range [0, 2^(32)−1] (limits are included)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Table 1: Coercion of the operands of bitwise number operators (BigInt operators
+    don’t limit the number of bits).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Operator | Left operand | Right operand | result type |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `<<` | `ToInt32()` | `ToUint32()` | `Int32` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| signed `>>` | `ToInt32()` | `ToUint32()` | `Int32` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| unsigned `>>>` | `ToInt32()` | `ToUint32()` | `Uint32` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `&`, `^`, `&#124;` | `ToInt32()` | `ToUint32()` | `Int32` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `~` | — | `ToInt32()` | `Int32` |'
+  prefs: []
+  type: TYPE_TB
+- en: 2.2.3 Converting to property keys
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`ToPropertyKey()` returns a string or a symbol and is used by:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The bracket operator `[]`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Computed property keys in object literals
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The left-hand side of the `in` operator
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.defineProperty(_, P, _)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.fromEntries()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.getOwnPropertyDescriptor()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.prototype.hasOwnProperty()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.prototype.propertyIsEnumerable()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Several methods of `Reflect`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.2.4 Converting to Array indices
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`ToLength()` is used (directly) mainly for string indices.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Helper function for `ToIndex()`
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Range of result `l`: 0 ≤ `l` ≤ 2^(53)−1'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToIndex()` is used for Typed Array indices.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Main difference with `ToLength()`: throws an exception if argument is out of
+    range.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Range of result `i`: 0 ≤ `i` ≤ 2^(53)−1'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToUint32()` is used for Array indices.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Range of result `i`: 0 ≤ `i` < 2^(32)−1 (the upper limit is excluded, to leave
+    room for the `.length`)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.2.5 Converting to Typed Array elements
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'When we set the value of a Typed Array element, one of the following conversion
+    functions is used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ToInt8()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToUint8()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToUint8Clamp()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToInt16()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToUint16()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToInt32()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToUint32()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToBigInt64()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToBigUint64()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '2.3 Intermission: expressing specification algorithms in JavaScript'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In the remainder of this chapter, we’ll encounter several specification algorithms,
+    but “implemented” as JavaScript. The following list shows how some frequently
+    used patterns are translated from specification to JavaScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Spec: If Type(value) is String'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript: `if (TypeOf(value) === ''string'')`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (very loose translation; `TypeOf()` is defined below)
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Spec: If IsCallable(method) is true'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript: `if (IsCallable(method))`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (`IsCallable()` is defined below)
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Spec: Let numValue be ToNumber(value)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript: `let numValue = Number(value)`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Spec: Let isArray be IsArray(O)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript: `let isArray = Array.isArray(O)`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Spec: If O has a [[NumberData]] internal slot'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript: `if (''__NumberData__'' in O)`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Spec: Let tag be Get(O, @@toStringTag)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript: `let tag = O[Symbol.toStringTag]`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Spec: Return the string-concatenation of “[object ", tag, and "]”.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript: `return ''[object '' + tag + '']'';`'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`let` (and not `const`) is used to match the language of the specification.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Some things are omitted – for example, the [ReturnIfAbrupt shorthands](https://tc39.es/ecma262/#sec-returnifabrupt-shorthands)
+    `?` and `!`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 2.4 Example coercion algorithms
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 2.4.1 `ToPrimitive()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[The operation `ToPrimitive()`](https://tc39.es/ecma262/#sec-toprimitive) is
+    an intermediate step for many coercion algorithms (some of which we’ll see later
+    in this chapter). It converts an arbitrary values to primitive values.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ToPrimitive()` is used often in the spec because most operators can only work
+    with primitive values. For example, we can use the addition operator (`+`) to
+    add numbers and to concatenate strings, but we can’t use it to concatenate Arrays.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is what the JavaScript version of `ToPrimitive()` looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`ToPrimitive()` lets objects override the conversion to primitive via `Symbol.toPrimitive`
+    (line A). If an object doesn’t do that, it is passed on to `OrdinaryToPrimitive()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 2.4.1.1 Which hints do callers of `ToPrimitive()` use?
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The parameter `hint` can have one of three values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`''number''` means: if possible, `input` should be converted to a number.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''string''` means: if possible, `input` should be converted to a string.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''default''` means: there is no preference for either numbers or strings.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'These are a few examples of how various operations use `ToPrimitive()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`hint === ''number''`. The following operations prefer numbers:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToNumeric()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToNumber()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToBigInt()`, `BigInt()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Abstract Relational Comparison (`<`)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`hint === ''string''`. The following operations prefer strings:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToString()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ToPropertyKey()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`hint === ''default''`. The following operations are neutral w.r.t. the type
+    of the returned primitive value:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Abstract Equality Comparison (`==`)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Addition Operator (`+`)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`new Date(value)` (`value` can be either a number or a string)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As we have seen, the default behavior is for `'default'` being handled as if
+    it were `'number'`. Only instances of `Symbol` and `Date` override this behavior
+    (shown later).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 2.4.1.2 Which methods are called to convert objects to Primitives?
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If the conversion to primitive isn’t overridden via `Symbol.toPrimitive`, `OrdinaryToPrimitive()`
+    calls either or both of the following two methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`''toString''` is called first if `hint` indicates that we’d like the primitive
+    value to be a string.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''valueOf''` is called first if `hint` indicates that we’d like the primitive
+    value to be a number.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates how that works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A method with the property key `Symbol.toPrimitive` overrides the normal conversion
+    to primitive. That is only done twice in the standard library:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Symbol.prototype[Symbol.toPrimitive](hint)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the receiver is an instance of `Symbol`, this method always returns the wrapped
+    symbol.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The rationale is that instances of `Symbol` have a `.toString()` method that
+    returns strings. But even if `hint` is `'string'`, `.toString()` should not be
+    called so that we don’t accidentally convert instances of `Symbol` to strings
+    (which are a completely different kind of property key).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Date.prototype[Symbol.toPrimitive](hint)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Explained in more detail next.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.4.1.3 `Date.prototype[Symbol.toPrimitive]()`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is how Dates handle being converted to primitive values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The only difference with the default algorithm is that `''default''` becomes
+    `''string''` (and not `''number''`). This can be observed if we use operations
+    that set `hint` to `''default''`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The `==` operator](ch_type-coercion.html#abstract-equality-comparison) coerces
+    objects to primitives (with a default hint) if the other operand is a primitive
+    value other than `undefined`, `null`, and `boolean`. In the following interaction,
+    we can see that the result of coercing the date is a string:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[The `+` operator](ch_type-coercion.html#addition-operator) coerces both operands
+    to primitives (with a default hint). If one of the results is a string, it performs
+    string concatenation (otherwise it performs numeric addition). In the following
+    interaction, we can see that the result of coercing the date is a string because
+    the operator returns a string.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 2.4.2 `ToString()` and related operations
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is the JavaScript version of `ToString()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note how this function uses `ToPrimitive()` as an intermediate step for objects,
+    before converting the primitive result to a string (line A).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`ToString()` deviates in an interesting way from how `String()` works: If `argument`
+    is a symbol, the former throws a `TypeError` while the latter doesn’t. Why is
+    that? The default for symbols is that converting them to strings throws exceptions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That default is overridden in `String()` and `Symbol.prototype.toString()`
+    (both are described in the next subsections):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 2.4.2.1 `String()`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`String()` works differently, depending on whether it is invoked via a function
+    call or via `new`. It uses [`new.target`](https://exploringjs.com/es6/ch_classes.html#sec_allocating-and-initializing-instances)
+    to distinguish the two.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'These are the helper functions `StringCreate()` and `SymbolDescriptiveString()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 2.4.2.2 `Symbol.prototype.toString()`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: In addition to `String()`, we can also use method `.toString()` to convert a
+    symbol to a string. Its specification looks as follows.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 2.4.2.3 `Object.prototype.toString`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The default specification for `.toString()` looks as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This operation is used if we convert plain objects to strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'By default, it is also used if we convert instances of classes to strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Normally, we would override `.toString()` in order to configure the string
+    representation of `MyClass`, but we can also change what comes after “`object`”
+    inside the string with the square brackets:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It is interesting to compare the overriding versions of `.toString()` with
+    the original version in `Object.prototype`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 2.4.3 `ToPropertyKey()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`ToPropertyKey()` is used by, among others, the bracket operator. This is how
+    it works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: Once again, objects are converted to primitives before working with primitives.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 2.4.4 `ToNumeric()` and related operations
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`ToNumeric()` is used by, among others, by the multiplication operator (`*`).
+    This is how it works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 2.4.4.1 `ToNumber()`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`ToNumber()` works as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: The structure of `ToNumber()` is similar to the structure of `ToString()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 2.5 Operations that coerce
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 2.5.1 Addition operator (`+`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is how JavaScript’s addition operator is specified:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Steps of this algorithm:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Both operands are converted to primitive values.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If one of the results is a string, both are converted to strings and concatenated
+    (line A).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, both operands are converted to numeric values and added (line B).
+    `Type()` returns the ECMAScript specification type of `lnum`. `.add()` is a method
+    of [numeric types](https://tc39.es/ecma262/#sec-numeric-types).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 2.5.2 Abstract Equality Comparison (`==`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following operations are not shown here:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`strictEqualityComparison()`](https://tc39.es/ecma262/#sec-strict-equality-comparison)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`StringToBigInt()`](https://tc39.es/ecma262/#sec-stringtobigint)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`isSameMathematicalValue()`](https://tc39.es/ecma262/#mathematical-value)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '2.6 Glossary: terms related to type conversion'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Now that we have taken a closer look at how JavaScript’s type coercion works,
+    let’s conclude with a brief glossary of terms related to type conversion:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In *type conversion*, we want the output value to have a given type. If the
+    input value already has that type, it is simply returned unchanged. Otherwise,
+    it is converted to a value that has the desired type.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Explicit type conversion* means that the programmer uses an operation (a function,
+    an operator, etc.) to trigger a type conversion. Explicit conversions can be:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Checked*: If a value can’t be converted, an exception is thrown.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Unchecked*: If a value can’t be converted, an error value is returned.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What *type casting* is, depends on the programming language. For example, in
+    Java, it is explicit checked type conversion.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Type coercion* is implicit type conversion: An operation automatically converts
+    its arguments to the types it needs. Can be checked or unchecked or something
+    in-between.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Source: [Wikipedia](https://en.wikipedia.org/wiki/Type_conversion)]'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/2)'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,269 @@
+- en: 18 Types for classes as values
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/tackling-ts/ch_classes-as-values.html](https://exploringjs.com/tackling-ts/ch_classes-as-values.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.1 [Types for specific classes](ch_classes-as-values.html#types-for-specific-classes)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.2 [The type operator `typeof`](ch_classes-as-values.html#type-operator-typeof)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.2.1 [Constructor type literals](ch_classes-as-values.html#constructor-type-literals)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.2.2 [Object type literals with construct signatures](ch_classes-as-values.html#construct-signature)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.3 [A generic type for classes: `Class<T>`](ch_classes-as-values.html#a-generic-type-for-classes-classt)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.3.1 [Example: creating instances](ch_classes-as-values.html#example-creating-instances)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.3.2 [Example: casting with runtime checks](ch_classes-as-values.html#example-casting-with-runtime-checks)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.3.3 [Example: Maps that are type-safe at runtime](ch_classes-as-values.html#example-maps-that-are-type-safe-at-runtime)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '18.3.4 [Pitfall: `Class<T>` does not match abstract classes](ch_classes-as-values.html#pitfall-classt-does-not-match-abstract-classes)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In this chapter, we explore classes as values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: What types should we use for such values?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What are the use cases for these types?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 18.1 Types for specific classes
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider the following class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This function accepts a class and creates an instance of it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: What type should we use for the parameter `PointClass` if we want it to be `Point`
+    or a subclass?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 18.2 The type operator `typeof`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In [§7.7 “The two language levels: dynamic vs. static”](ch_typescript-essentials.html#language-levels),
+    we explored the two language levels of TypeScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Dynamic level: JavaScript (code and values)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Static level: TypeScript (static types)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The class `Point` creates two things:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The constructor function `Point`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The interface `Point` for instances of `Point`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Depending on where we mention `Point`, it means different things. That’s why
+    we can’t use the type `Point` for `PointClass`: It matches *instances* of class
+    `Point`, not class `Point` itself.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Instead, we need to use the type operator `typeof` (another bit of TypeScript
+    syntax that also exists in JavaScript). `typeof v` stands for the type of the
+    dynamic(!) value `v`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.2.1 Constructor type literals
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: A *constructor type literal* is a function type literal with a prefixed `new`
+    (line A). The prefix indicates that `PointClass` is a function that must be invoked
+    via `new`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 18.2.2 Object type literals with construct signatures
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Recall that [members of interfaces and object literal types (OLTs)](ch_typing-objects.html#members-of-interfaces)
+    include method signatures and call signatures. Call signatures enable interfaces
+    and OLTs to describe functions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Similarly, *construct signatures* enable interfaces and OLTs to describe constructor
+    functions. They look like call signatures with the added prefix `new`. In the
+    next example, `PointClass` has an object literal type with a construct signature:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '18.3 A generic type for classes: `Class<T>`'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'With the knowledge we have acquired, we can now create a generic type for classes
+    as values – by introducing a type parameter `T`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Instead of a type alias, we can also use an interface:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Class<T>` is a type for classes whose instances match type `T`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '18.3.1 Example: creating instances'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Class<T>` enables us to write a generic version of `createPoint()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`createInstance()` is used as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`createInstance()` is the `new` operator, implemented via a function.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '18.3.2 Example: casting with runtime checks'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use `Class<T>` to implement casting:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With `cast()`, we can change the type of a value to something more specific.
+    This is also safe at runtime, because we both statically change the type and perform
+    a dynamic check. The following code provides an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '18.3.3 Example: Maps that are type-safe at runtime'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'One use case for `Class<T>` and `cast()` is type-safe Maps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: The key of each entry in a `TypeSafeMap` is a class. That class determines the
+    static type of the entry’s value and is also used for checks at runtime.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is `TypeSafeMap` in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '18.3.4 Pitfall: `Class<T>` does not match abstract classes'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We cannot use abstract classes when `Class<T>` is expected:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why is that? The rationale is that constructor type literals and construct signatures
+    should only be used for values that can actually be `new`-invoked ([GitHub issue
+    with more information](https://github.com/microsoft/TypeScript/issues/5843)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is a workaround:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Downsides of this approach:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Slightly confusing.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Values that have this type can’t be used for `instanceof` checks (as right-hand-side
+    operands).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/tackling-ts/issues/18)'
+  prefs: []
+  type: TYPE_NORMAL

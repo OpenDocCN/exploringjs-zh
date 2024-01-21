@@ -1,0 +1,829 @@
+- en: 20 Typing functions
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/tackling-ts/ch_typing-functions.html](https://exploringjs.com/tackling-ts/ch_typing-functions.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 20.1 [Defining statically typed functions](ch_typing-functions.html#defining-statically-typed-functions)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.1.1 [Function declarations](ch_typing-functions.html#function-declarations)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.1.2 [Arrow functions](ch_typing-functions.html#arrow-functions)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.2 [Types for functions](ch_typing-functions.html#types-for-functions)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.2.1 [Function type signatures](ch_typing-functions.html#function-type-signatures)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.2.2 [Interfaces with call signatures](ch_typing-functions.html#call-signatures)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.2.3 [Checking if a callable value matches a function type](ch_typing-functions.html#checking-if-a-callable-value-matches-a-function-type)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.3 [Parameters](ch_typing-functions.html#parameters)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.3.1 [When do parameters have to be type-annotated?](ch_typing-functions.html#when-do-parameters-have-to-be-type-annotated)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.3.2 [Optional parameters](ch_typing-functions.html#optional-parameters-1)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.3.3 [Rest parameters](ch_typing-functions.html#rest-parameters-1)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.3.4 [Named parameters](ch_typing-functions.html#named-parameters)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.3.5 [`this` as a parameter (advanced)](ch_typing-functions.html#this-as-a-parameter-advanced)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.4 [Overloading (advanced)](ch_typing-functions.html#overloading-advanced)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.4.1 [Overloading function declarations](ch_typing-functions.html#overloading-function-declarations)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.4.2 [Overloading via interfaces](ch_typing-functions.html#overloading-via-interfaces)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.4.3 [Overloading on string parameters (event handling etc.)](ch_typing-functions.html#overloading-on-string-parameters)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.4.4 [Overloading methods](ch_typing-functions.html#overloading-methods)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.5 [Assignability (advanced)](ch_typing-functions.html#assignability)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.5.1 [The rules for assignability](ch_typing-functions.html#the-rules-for-assignability)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.5.2 [Consequences of the assignment rules for functions](ch_typing-functions.html#consequences-of-the-assignment-rules-for-functions)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.6 [Further reading and sources of this chapter](ch_typing-functions.html#further-reading-and-sources-of-this-chapter)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter explores static typing for functions in TypeScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/65d35c0a2478236e12cc4321e1b02db6.png)  **in this chapter, “function”
+    means “function or method or constructor”**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, most things that are said about functions (especially w.r.t.
+    parameter handling), also apply to methods and constructors.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 20.1 Defining statically typed functions
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 20.1.1 Function declarations
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is an example of a function declaration in TypeScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Parameters: If the compiler option `--noImplicitAny` is on (which it is if
+    `--strict` is on), then the type of each parameter must be either inferrable or
+    explicitly specified. (We’ll take a closer look at inference later.) In this case,
+    no inference is possible, which is why `str` and `times` have type annotations.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Return value: By default, the return type of functions is inferred. That is
+    usually good enough. In this case, we opted to explicitly specify that `repeat1()`
+    has the return type `string` (last type annotation in line A).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.1.2 Arrow functions
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The arrow function version of `repeat1()` looks as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In this case, we can also use an expression body:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.2 Types for functions
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 20.2.1 Function type signatures
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can define types for functions via function type signatures:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The name of this type of function is `Repeat`. Among others, it matches all
+    functions with:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Two parameters whose types are `string` and `number`. We need to name parameters
+    in function type signatures, but the names are ignored when checking if two function
+    types are compatible.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The return type `string`. Note that this time, the type is separated by an arrow
+    and can’t be omitted.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This type matches more functions. We’ll learn which ones, when we explore the
+    rules for [*assignability*](ch_typing-functions.html#assignability) later in this
+    chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 20.2.2 Interfaces with call signatures
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can also use interfaces to define function types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The interface member in line A is a *call signature*. It looks similar to a
+    method signature, but doesn’t have a name.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The type of the result is separated by a colon (not an arrow) and can’t be omitted.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'On one hand, interfaces are more verbose. On the other hand, they let us specify
+    properties of functions (which is rare, but does happen):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also specify properties via an intersection type (`&`) of a function
+    signature type and an object literal type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.2.3 Checking if a callable value matches a function type
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As an example, consider this scenario: A library exports the following function
+    type.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: We want to define a function whose type is compatible with `StringPredicate`.
+    And we want to check immediately if that’s indeed the case (vs. finding out later
+    when we use it for the first time).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 20.2.3.1 Checking arrow functions
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we declare a variable via `const`, we can perform the check via a type annotation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that we don’t need to specify the type of parameter `str` because TypeScript
+    can use `StringPredicate` to infer it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 20.2.3.2 Checking function declarations (simple)
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Checking function declarations is more complicated:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.2.3.3 Checking function declarations (extravagant)
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following solution is slightly over the top (i.e., don’t worry if you don’t
+    fully understand it), but it demonstrates several advanced features:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Parameters: We use `Parameters<>` to extract a tuple with the parameter types.
+    The three dots declare a rest parameter, which collects all parameters in a tuple/Array.
+    `[str]` destructures that tuple. (More on rest parameters later in this chapter.)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Return value: We use `ReturnType<>` to extract the return type.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.3 Parameters
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 20.3.1 When do parameters have to be type-annotated?
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Recap: If `--noImplicitAny` is switched on (`--strict` switches it on), the
+    type of each parameter must either be inferrable or explicitly specified.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the following example, TypeScript can’t infer the type of `str` and we must
+    specify it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In line A, TypeScript can use the type `StringMapFunction` to infer the type
+    of `str` and we don’t need to add a type annotation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Here, TypeScript can use the type of `.map()` to infer the type of `str`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is the type of `.map()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.3.2 Optional parameters
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In this section, we look at several ways in which we can allow parameters to
+    be omitted.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '20.3.2.1 Optional parameter: `str?: string`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we put a question mark after the name of a parameter, that parameter becomes
+    optional and can be omitted when calling the function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how `trim1()` can be invoked:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '20.3.2.2 Union type: `str: undefined|string`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Externally, parameter `str` of `trim1()` has the type `string|undefined`. Therefore,
+    `trim1()` is mostly equivalent to the following function.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The only way in which `trim2()` is different from `trim1()` is that the parameter
+    can’t be omitted in function calls (line A). In other words: We must be explicit
+    when omitting a parameter whose type is `undefined|T`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '20.3.2.3 Parameter default value: `str = ''''`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we specify a parameter default value for `str`, we don’t need to provide
+    a type annotation because TypeScript can infer the type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that the internal type of `str` is `string` because the default value ensures
+    that it is never `undefined`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s invoke `trim3()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.3.2.4 Parameter default value plus type annotation
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can also specify both a type and a default value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.3.3 Rest parameters
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 20.3.3.1 Rest parameters with Array types
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'A rest parameter collects all remaining parameters in an Array. Therefore,
+    its static type is usually an Array. In the following example, `parts` is a rest
+    parameter:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.3.3.2 Rest parameters with tuple types
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The next example demonstrates two features:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can use tuple types such as `[string, number]` for rest parameters.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can destructure rest parameters (not just normal parameters).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`repeat1()` is equivalent to the following function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.3.4 Named parameters
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[*Named parameters*](https://exploringjs.com/impatient-js/ch_callables.html#named-parameters)
+    are a popular pattern in JavaScript where an object literal is used to give each
+    parameter a name. That looks as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In plain JavaScript, functions can use destructuring to access named parameter
+    values. Alas, in TypeScript, we additionally have to specify a type for the object
+    literal and that leads to redundancies:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that the destructuring (incl. the default value for `fillStr`) all happens
+    in line A, while line B is exclusively about TypeScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: It is possible to define a separate type instead of the inlined object literal
+    type that we have used in line B. However, in most cases, I prefer not to do that
+    because it slightly goes against the nature of parameters which are local and
+    unique per function. If you prefer having less stuff in function heads, then that’s
+    OK, too.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 20.3.5 `this` as a parameter (advanced)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Each ordinary function always has the implicit parameter `this` – which enables
+    it to be used as a method in objects. Sometimes we need to specify a type for
+    `this`. There is TypeScript-only syntax for this use case: One of the parameters
+    of an ordinary function can have the name `this`. Such a parameter only exists
+    at compile time and disappears at runtime.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'As an example, consider the following interface for DOM event sources (in a
+    slightly simplified version):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `this` of the callback `listener` is always an instance of `EventSource`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The next example demonstrates that TypeScript uses the type information provided
+    by the `this` parameter to check the first argument of `.call()` (line A and line
+    B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Additionally, we can’t invoke `toIsoString()` as a method of an object `obj`
+    because then its receiver isn’t an instance of `Date`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.4 Overloading (advanced)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Sometimes a single type signature does not adequately describe how a function
+    works.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 20.4.1 Overloading function declarations
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Consider function `getFullName()` which we are calling in the following example
+    (line A and line B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'How would we implement `getFullName()`? The following implementation works
+    for the two function calls in the previous example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, with this type signature, function calls are legal at compile time
+    that produce runtime errors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following code fixes these issues:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'What is going on here? The type signature of `getFullName()` is overloaded:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The actual implementation starts in line C. It is the same as in the previous
+    example.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In line A and line B there are the two type signatures (function heads without
+    bodies) that can be used for `getFullName()`. The type signature of the actual
+    implementation cannot be used!
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'My advice is to only use overloading when it can’t be avoided. One alternative
+    is to split an overloaded function into multiple functions with different names
+    – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`getFullName()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`getFullNameViaMap()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.4.2 Overloading via interfaces
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In interfaces, we can have multiple, different call signatures. That enables
+    us to use the interface `GetFullName` for overloading in the following example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.4.3 Overloading on string parameters (event handling etc.)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the next example, we overload and use string literal types (such as `''click''`).
+    That allows us to change the type of parameter `listener` depending on the value
+    of parameter `type`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: In this case, it is relatively difficult to get the types of the implementation
+    (starting in line A) right, so that the statement in the body (line B) works.
+    As a last resort, we can always use the type `any`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 20.4.4 Overloading methods
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 20.4.4.1 Overloading concrete methods
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The next example demonstrates overloading of methods: Method `.add()` is overloaded.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.4.4.2 Overloading interface methods
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The type definition for `Array.from()` is an example of an overloaded interface
+    method:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: In the first signature, the returned Array has the same element type as the
+    parameter.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In the second signature, the elements of the returned Array have the same type
+    as the result of `mapfn`. This version of `Array.from()` is similar to `Array.prototype.map()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.5 Assignability (advanced)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In this section we look at the type compatibility rules for *assignability*:
+    Can functions of type `Src` be transferred to storage locations (variables, object
+    properties, parameters, etc.) of type `Trg`?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Understanding assignability helps us answer questions such as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Given the function type signature of a formal parameter, which functions can
+    be passed as actual parameters in function calls?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Given the function type signature of a property, which functions can be assigned
+    to it?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.5.1 The rules for assignability
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In this subsection, we examine general rules for assignability (including the
+    rules for functions). In the next subsection, we explore what those rules mean
+    for functions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A type `Src` is [assignable](https://github.com/microsoft/TypeScript/blob/master/doc/spec-ARCHIVED.md#3114-assignment-compatibility)
+    to a type `Trg` if one of the following conditions is true:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Src` and `Trg` are identical types.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Src` or `Trg` is the `any` type.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Src` is a string literal type and `Trg` is the primitive type String.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Src` is a union type and each constituent type of `Src` is assignable to `Trg`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Src` and `Trg` are function types and:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Trg` has a rest parameter or the number of required parameters of `Src` is
+    less than or equal to the total number of parameters of `Trg`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For parameters that are present in both signatures, each parameter type in `Trg`
+    is assignable to the corresponding parameter type in `Src`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The return type of `Trg` is `void` or the return type of `Src` is assignable
+    to the return type of `Trg`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (Remaining conditions omitted.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 20.5.2 Consequences of the assignment rules for functions
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In this subsection, we look at what the assignment rules mean for the following
+    two functions `targetFunc` and `sourceFunc`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.5.2.1 Types of parameters and results
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Target parameter types must be assignable to corresponding source parameter
+    types.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Why? Anything that the target accepts must also be accepted by the source.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The source return type must be assignable to target return type.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Why? Anything that the source returns must be compatible with the expectations
+    set by the target.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: The following example demonstrates that if the target return type is `void`,
+    then the source return type doesn’t matter. Why is that? `void` results are always
+    ignored in TypeScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.5.2.2 Numbers of parameters
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The source must not have more parameters than the target:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The source can have fewer parameters than the target:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Why is that? The target specifies the expectations for the source: It must
+    accept the parameter `x`. Which it does (but it ignores it). This permissiveness
+    enables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The callback for `.map()` only has one of the three parameters that are mentioned
+    in the type signature of `.map()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: 20.6 Further reading and sources of this chapter
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/basic-types.html)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[TypeScript Language Specification](https://github.com/microsoft/TypeScript/blob/master/doc/spec-ARCHIVED.md)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Chapter “Callable values”](https://exploringjs.com/impatient-js/ch_callables.html)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/tackling-ts/issues/20)'
+  prefs: []
+  type: TYPE_NORMAL

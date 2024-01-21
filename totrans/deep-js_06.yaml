@@ -1,0 +1,332 @@
+- en: '4 Environments: under the hood of variables'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_environments.html](https://exploringjs.com/deep-js/ch_environments.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '4.1 [Environment: data structure for managing variables](ch_environments.html#environment-data-structure-for-managing-variables)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2 [Recursion via environments](ch_environments.html#recursion-via-environments)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.1 [Executing the code](ch_environments.html#executing-the-code)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.3 [Nested scopes via environments](ch_environments.html#nested-scopes-via-environments)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.3.1 [Executing the code](ch_environments.html#executing-the-code-1)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.4 [Closures and environments](ch_environments.html#closures-environments)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we take a closer look at how the ECMAScript language specification
+    handles variables.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '4.1 Environment: data structure for managing variables'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'An environment is the data structure that the ECMAScript specification uses
+    to manage variables. It is a dictionary whose keys are variable names and whose
+    values are the values of those variables. Each scope has its associated environment.
+    Environments must be able to support the following phenomena related to variables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Recursion
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Nested scopes
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Closures
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We’ll use examples to illustrate how that is done for each phenomenon.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2 Recursion via environments
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We’ll tackle recursion first. Consider the following code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: For each function call, you need fresh storage space for the variables (parameters
+    and local variables) of the called function. This is managed via a stack of so-called
+    *execution contexts*, which are references to environments (for the purpose of
+    this chapter). Environments themselves are stored on the heap. That is necessary
+    because they occasionally live on after execution has left their scopes (we’ll
+    see that when exploring *closures*). Therefore, they themselves can’t be managed
+    via a stack.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2.1 Executing the code
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'While executing the code, we make the following pauses:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Pause 1 – before calling `g()` (fig. [1](#fig:env_recursion_1)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pause 2 – while executing `g()` (fig. [2](#fig:env_recursion_2)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pause 3 – while executing `f()` (fig. [3](#fig:env_recursion_3)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Remaining steps: Every time there is a `return`, one execution context is removed
+    from the stack.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![](../Images/500f606df20758e348b5eab435dca891.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 1: Recursion, pause 1 – before calling `g()`: The execution context
+    stack has one entry, which points to the top-level environment. In that environment,
+    there are two entries; one for `f()` and one for `g()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/5ee98ad9451eb4fc93477cf8fd9ae8cd.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 2: Recursion, pause 2 – while executing `g()`: The top of the execution
+    context stack points to the environment that was created for `g()`. That environment
+    contains entries for the argument `y` and for the local variable `tmp`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/a99708ba4b44d86dd29a70adbd4f1924.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 3: Recursion, pause 3 – while executing `f()`: The top execution context
+    now points to the environment for `f()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.3 Nested scopes via environments
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: We use the following code to explore how nested scopes are implemented via environments.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Here, we have three nested scopes: The top-level scope, the scope of `f()`,
+    and the scope of `square()`. Observations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The scopes are connected. An inner scope “inherits” all the variables of an
+    outer scope (minus the ones it shadows).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Nesting scopes as a mechanism is independent of recursion. The latter is best
+    managed by a stack of independent environments. The former is a relationship that
+    each environment has with the environment “in which” it is created.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Therefore, the environment of each scope points to the environment of the surrounding
+    scope via a field called `outer`. When we are looking up the value of a variable,
+    we first search for its name in the current environment, then in the outer environment,
+    then in the outer environment’s outer environment, etc. The whole chain of outer
+    environments contains all variables that can currently be accessed (minus shadowed
+    variables).
+  prefs: []
+  type: TYPE_NORMAL
+- en: When you make a function call, you create a new environment. The outer environment
+    of that environment is the environment in which the function was created. To help
+    set up the field `outer` of environments created via function calls, each function
+    has an internal property named `[[Scope]]` that points to its “birth environment”.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.3.1 Executing the code
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'These are the pauses we are making while executing the code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Pause 1 – before calling `f()` (fig. [4](#fig:env_nested_1)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pause 2 – while executing `f()` (fig. [5](#fig:env_nested_2)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pause 3 – while executing `square()` (fig. [6](#fig:env_nested_3)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: After that, `return` statements pop execution entries off the stack.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![](../Images/fc1f598c8b8a54a968403157d9bdd685.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 4: Nested scopes, pause 1 – before calling `f()`: The top-level environment
+    has a single entry, for `f()`. The birth environment of `f()` is the top-level
+    environment. Therefore, `f`’s `[[Scope]]` points to it.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/f89abfb174e1547d600b066ac16dd7ad.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 5: Nested scopes, pause 2 – while executing `f()`: There is now an environment
+    for the function call `f(6)`. The outer environment of that environment is the
+    birth environment of `f()` (the top-level environment at index 0). We can see
+    that the field `outer` was set to the value of `f`’s `[[Scope]]`. Furthermore,
+    the `[[Scope]]` of the new function `square()` is the environment that was just
+    created.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/f45a800b437ff88389f3808b333e2a3e.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 6: Nested scopes, pause 3 – while executing `square()`: The previous
+    pattern was repeated: the `outer` of the most recent environment was set up via
+    the `[[Scope]]` of the function that we just called. The chain of scopes created
+    via `outer`, contains all variables that are active right now. For example, we
+    can access `result`, `square`, and `f` if we want to. Environments reflect two
+    aspects of variables. First, the chain of outer environments reflects the nested
+    static scopes. Second, the stack of execution contexts reflects what function
+    calls were made, dynamically.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.4 Closures and environments
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'To see how environments are used to implement [closures](https://exploringjs.com/impatient-js/ch_variables-assignment.html#closures),
+    we are using the following example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: What is going on here? `add()` is a function that returns a function. When we
+    make the nested function call `add(3)(1)` in line B, the first parameter is for
+    `add()`, the second parameter is for the function it returns. This works because
+    the function created in line A does not lose the connection to its birth scope
+    when it leaves that scope. The associated environment is kept alive by that connection
+    and the function still has access to variable `x` in that environment (`x` is
+    free inside the function).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This nested way of calling `add()` has an advantage: if you only make the first
+    function call, you get a version of `add()` whose parameter `x` is already filled
+    in:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: Converting a function with two parameters into two nested functions with one
+    parameter each, is called *currying*. `add()` is a curried function.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Only filling in some of the parameters of a function is called *partial application*
+    (the function has not been fully applied yet). [Method `.bind()` of functions](https://exploringjs.com/impatient-js/ch_single-objects.html#function-prototype-bind)
+    performs partial application. In the previous example, we can see that partial
+    application is simple if a function is curried.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.4.0.1 Executing the code
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'As we are executing the following code, we are making three pauses:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Pause 1 – during the execution of `add(2)` (fig. [7](#fig:env_closure_2)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pause 2 – after the execution of `add(2)` (fig. [8](#fig:env_closure_3)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pause 3 – while executing `plus2(5)` (fig. [9](#fig:env_closure_4)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![](../Images/aed519495eaedebf4fb2c1f3a7bdb579.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 7: Closures, pause 1 – during the execution of `add(2)`: We can see
+    that the function returned by `add()` already exists (see bottom right corner)
+    and that it points to its birth environment via its internal property `[[Scope]]`.
+    Note that `plus2` is still in its temporal dead zone and uninitialized.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/797baa263d972bfe6f34680109ee7a69.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 8: Closures, pause 2 – after the execution of `add(2)`: `plus2` now
+    points to the function returned by `add(2)`. That function keeps its birth environment
+    (the environment of `add(2)`) alive via its `[[Scope]]`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/0959e9029bc37c6710bb7eb4b184d49b.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 9: Closures, pause 3 – while executing `plus2(5)`: The `[[Scope]]` of
+    `plus2` is used to set up the `outer` of the new environment. That’s how the current
+    function gets access to `x`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Next: [5 A detailed look at global variables](ch_global-scope.html)'
+  prefs: []
+  type: TYPE_NORMAL

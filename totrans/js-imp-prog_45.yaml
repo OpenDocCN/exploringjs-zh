@@ -1,0 +1,431 @@
+- en: 38 Synchronous generators (advanced)
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/impatient-js/ch_sync-generators.html](https://exploringjs.com/impatient-js/ch_sync-generators.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 38.1 [What are synchronous generators?](ch_sync-generators.html#what-are-synchronous-generators)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.1.1 [Generator functions return iterables and fill them via `yield`](ch_sync-generators.html#generator-functions-return-iterables-and-fill-them-via-yield)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.1.2 [`yield` pauses a generator function](ch_sync-generators.html#yield-pauses-a-generator-function)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.1.3 [Why does `yield` pause execution?](ch_sync-generators.html#why-does-yield-pause-execution)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '38.1.4 [Example: Mapping over iterables](ch_sync-generators.html#example-mapping-over-iterables)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.2 [Calling generators from generators (advanced)](ch_sync-generators.html#calling-generators-from-generators-advanced)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.2.1 [Calling generators via `yield*`](ch_sync-generators.html#calling-generators-via-yield)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '38.2.2 [Example: Iterating over a tree](ch_sync-generators.html#example-iterating-over-a-tree)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '38.3 [Background: external iteration vs. internal iteration](ch_sync-generators.html#external-iteration-internal-iteration)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '38.4 [Use case for generators: reusing traversals](ch_sync-generators.html#reusing-traversals)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.4.1 [The traversal to reuse](ch_sync-generators.html#the-traversal-to-reuse)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.4.2 [Internal iteration (push)](ch_sync-generators.html#internal-iteration-example)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.4.3 [External iteration (pull)](ch_sync-generators.html#external-iteration-example)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.5 [Advanced features of generators](ch_sync-generators.html#advanced-features-of-generators)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 38.1 What are synchronous generators?
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Synchronous generators are special versions of function definitions and method
+    definitions that always return synchronous iterables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Asterisks (`*`) mark functions and methods as generators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Functions: The pseudo-keyword `function*` is a combination of the keyword `function`
+    and an asterisk.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Methods: The `*` is a modifier (similar to `static` and `get`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 38.1.1 Generator functions return iterables and fill them via `yield`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we call a generator function, it returns an iterable (actually, an iterator
+    that is also iterable). The generator fills that iterable via the `yield` operator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 38.1.2 `yield` pauses a generator function
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Using a generator function involves the following steps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Function-calling it returns an iterator `iter` (that is also an iterable).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Iterating over `iter` repeatedly invokes `iter.next()`. Each time, we jump into
+    the body of the generator function until there is a `yield` that returns a value.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Therefore, `yield` does more than just add values to iterables – it also pauses
+    and exits the generator function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Like `return`, a `yield` exits the body of the function and returns a value
+    (to/via `.next()`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Unlike `return`, if we repeat the invocation (of `.next()`), execution resumes
+    directly after the `yield`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Let’s examine what that means via the following generator function.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: In order to use `genFunc2()`, we must first create the iterator/iterable `iter`.
+    `genFunc2()` is now paused “before” its body.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`iter` implements [the iteration protocol](ch_sync-iteration.html). Therefore,
+    we control the execution of `genFunc2()` via `iter.next()`. Calling that method
+    resumes the paused `genFunc2()` and executes it until there is a `yield`. Then
+    execution pauses and `.next()` returns the operand of the `yield`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that the yielded value `'a'` is wrapped in an object, which is how iterators
+    always deliver their values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We call `iter.next()` again and execution continues where we previously paused.
+    Once we encounter the second `yield`, `genFunc2()` is paused and `.next()` returns
+    the yielded value `'b'`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We call `iter.next()` one more time and execution continues until it leaves
+    the body of `genFunc2()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: This time, property `.done` of the result of `.next()` is `true`, which means
+    that the iterator is finished.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 38.1.3 Why does `yield` pause execution?
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: What are the benefits of `yield` pausing execution? Why doesn’t it simply work
+    like the Array method `.push()` and fill the iterable with values without pausing?
+  prefs: []
+  type: TYPE_NORMAL
+- en: Due to pausing, generators provide many of the features of *coroutines* (think
+    processes that are multitasked cooperatively). For example, when we ask for the
+    next value of an iterable, that value is computed *lazily* (on demand). The following
+    two generator functions demonstrate what that means.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that the `yield` in `numberLines()` appears inside a `for-of` loop. `yield`
+    can be used inside loops, but not inside callbacks (more on that later).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s combine both generators to produce the iterable `numberedLines`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The key benefit of using generators here is that everything works incrementally:
+    via `numberedLines.next()`, we ask `numberLines()` for only a single numbered
+    line. In turn, it asks `genLines()` for only a single unnumbered line.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This incrementalism continues to work if, for example, `genLines()` reads its
+    lines from a large text file: If we ask `numberLines()` for a numbered line, we
+    get one as soon as `genLines()` has read its first line from the text file.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Without generators, `genLines()` would first read all lines and return them.
+    Then `numberLines()` would number all lines and return them. We therefore have
+    to wait much longer until we get the first numbered line.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: Turning a
+    normal function into a generator**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/sync-generators/fib_seq_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '38.1.4 Example: Mapping over iterables'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The following function `mapIter()` is similar to the Array method `.map()`,
+    but it returns an iterable, not an Array, and produces its results on demand.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: Filtering
+    iterables**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/sync-generators/filter_iter_gen_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 38.2 Calling generators from generators (advanced)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 38.2.1 Calling generators via `yield*`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`yield` only works directly inside generators – so far we haven’t seen a way
+    of delegating yielding to another function or method.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s first examine what does *not* work: in the following example, we’d like
+    `foo()` to call `bar()`, so that the latter yields two values for the former.
+    Alas, a naive approach fails:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why doesn’t this work? The function call `bar()` returns an iterable, which
+    we ignore.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'What we want is for `foo()` to yield everything that is yielded by `bar()`.
+    That’s what the `yield*` operator does:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In other words, the previous `foo()` is roughly equivalent to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that `yield*` works with any iterable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '38.2.2 Example: Iterating over a tree'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`yield*` lets us make recursive calls in generators, which is useful when iterating
+    over recursive data structures such as trees. Take, for example, the following
+    data structure for binary trees.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Method `[Symbol.iterator]()` adds support for the iteration protocol, which
+    means that we can use a `for-of` loop to iterate over an instance of `BinaryTree`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: Iterating
+    over a nested Array**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/sync-generators/iter_nested_arrays_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '38.3 Background: external iteration vs. internal iteration'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In preparation for the next section, we need to learn about two different styles
+    of iterating over the values “inside” an object:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'External iteration (pull): Your code asks the object for the values via an
+    iteration protocol. For example, the `for-of` loop is based on JavaScript’s iteration
+    protocol:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Internal iteration (push): We pass a callback function to a method of the object
+    and the method feeds the values to the callback. For example, Arrays have the
+    method `.forEach()`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: The next section has examples for both styles of iteration.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '38.4 Use case for generators: reusing traversals'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: One important use case for generators is extracting and reusing traversals.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 38.4.1 The traversal to reuse
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As an example, consider the following function that traverses a tree of files
+    and logs their paths (it uses [the Node.js API](https://nodejs.org/en/docs/) for
+    doing so):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Consider the following directory:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s log the paths inside `mydir/`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: How can we reuse this traversal and do something other than logging the paths?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 38.4.2 Internal iteration (push)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'One way of reusing traversal code is via *internal iteration*: Each traversed
+    value is passed to a callback (line A).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 38.4.3 External iteration (pull)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Another way of reusing traversal code is via *external iteration*: We can write
+    a generator that yields all traversed values (line A).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 38.5 Advanced features of generators
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[The chapter on generators](https://exploringjs.com/es6/ch_generators.html)
+    in *Exploring ES6* covers two features that are beyond the scope of this book:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`yield` can also *receive* data, via an argument of `.next()`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Generators can also `return` values (not just `yield` them). Such values do
+    not become iteration values, but can be retrieved via `yield*`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/impatient-js/issues/43)'
+  prefs: []
+  type: TYPE_NORMAL

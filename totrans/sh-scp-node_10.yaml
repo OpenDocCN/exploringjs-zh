@@ -1,0 +1,1655 @@
+- en: 7 Working with file system paths and file URLs on Node.js
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-path.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-path.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 7.1 [Path-related functionality on Node.js](ch_nodejs-path.html#path-related-functionality-on-node.js)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.1.1 [The three ways of accessing the `'node:path'` API](ch_nodejs-path.html#the-three-ways-of-accessing-the-nodepath-api)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.2 [Foundational path concepts and their API support](ch_nodejs-path.html#foundational-path-concepts-and-their-api-support)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.2.1 [Path segments, path separators, path delimiters](ch_nodejs-path.html#path-syntax)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.2.2 [The current working directory](ch_nodejs-path.html#the-current-working-directory)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.2.3 [Fully vs. partially qualified paths, resolving paths](ch_nodejs-path.html#fully-vs.-partially-qualified-paths-resolving-paths)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.3 [Getting the paths of standard directories via module `'node:os'`](ch_nodejs-path.html#standard-directory-paths)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.4 [Concatenating paths](ch_nodejs-path.html#concatenating-paths)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.4.1 [`path.resolve()`: concatenating paths to create fully qualified paths](ch_nodejs-path.html#path.resolve)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.4.2 [`path.join()`: concatenating paths while preserving relative paths](ch_nodejs-path.html#path.join-concatenating-paths-while-preserving-relative-paths)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.5 [Ensuring paths are normalized, fully qualified, or relative](ch_nodejs-path.html#ensuring-paths-are-normalized-fully-qualified-or-relative)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.5.1 [`path.normalize()`: ensuring paths are normalized](ch_nodejs-path.html#path.normalize-ensuring-paths-are-normalized)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.5.2 [`path.resolve()` (one argument): ensuring paths are normalized and fully
+    qualified](ch_nodejs-path.html#path.resolve-one-argument-ensuring-paths-are-normalized-and-fully-qualified)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.5.3 [`path.relative()`: creating relative paths](ch_nodejs-path.html#path.relative-creating-relative-paths)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.6 [Parsing paths: extracting various parts of a path (filename extension
+    etc.)](ch_nodejs-path.html#parsing-paths-extracting-various-parts-of-a-path-filename-extension-etc.)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.6.1 [`path.parse()`: creating an object with path parts](ch_nodejs-path.html#path.parse-creating-an-object-with-path-parts)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.6.2 [`path.basename()`: extracting the base of a path](ch_nodejs-path.html#path.basename-extracting-the-base-of-a-path)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.6.3 [`path.dirname()`: extracting the parent directory of a path](ch_nodejs-path.html#path.dirname-extracting-the-parent-directory-of-a-path)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.6.4 [`path.extname()`: extracting the extension of a path](ch_nodejs-path.html#path.extname-extracting-the-extension-of-a-path)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.7 [Categorizing paths](ch_nodejs-path.html#categorizing-paths)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.7.1 [`path.isAbsolute()`: Is a given path absolute?](ch_nodejs-path.html#path.isabsolute-is-a-given-path-absolute)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.8 [`path.format()`: creating paths out of parts](ch_nodejs-path.html#path.format)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.8.1 [Example: changing the filename extension](ch_nodejs-path.html#example-changing-the-filename-extension)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.9 [Using the same paths on different platforms](ch_nodejs-path.html#cross-platform-paths)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.9.1 [Relative platform-independent paths](ch_nodejs-path.html#relative-platform-independent-paths)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.10 [Using a library to match paths via *globs*](ch_nodejs-path.html#using-a-library-to-match-paths-via-globs)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.10.1 [The minimatch API](ch_nodejs-path.html#the-minimatch-api)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.10.2 [Syntax of glob expressions](ch_nodejs-path.html#syntax-of-glob-expressions)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.11 [Using `file:` URLs to refer to files](ch_nodejs-path.html#using-file-urls-to-refer-to-files)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.11.1 [Class `URL`](ch_nodejs-path.html#class-url)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.11.2 [Converting between URLs and file paths](ch_nodejs-path.html#converting-between-urls-and-file-paths)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.11.3 [Use case for URLs: accessing files relative to the current module](ch_nodejs-path.html#accessing-sibling-files)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.11.4 [Use case for URLs: detecting if the current module is “main” (the app
+    entry point)](ch_nodejs-path.html#detecting-if-module-is-main)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.11.5 [Paths vs. `file:` URLs](ch_nodejs-path.html#paths-vs.-file-urls)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we learn how to work with file system paths and file URLs on
+    Node.js.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 7.1 Path-related functionality on Node.js
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In this chapter, we explore path-related functionality on Node.js:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Most path-related functionality is in module `'node:path'`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The global variable `process` has methods for changing the *current working
+    directory* (what that is, is explained soon).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Module `'node:os'` has functions that return the paths of important directories.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.1.1 The three ways of accessing the `'node:path'` API
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Module `''node:path''` is often imported as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In this chapter, this import statement is occasionally omitted. We also omit
+    the following import:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can access Node’s path API in three ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can access platform-specific versions of the API:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`path.posix` supports Unixes including macOS.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`path.win32` supports Windows.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`path` itself always supports the current platform. For example, this is a
+    REPL interaction on macOS:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Let’s see how function `path.parse()`, which parses file system paths, differs
+    for the two platforms:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: We parse a Windows path – first correctly via the `path.win32` API, then via
+    the `path.posix` API. We can see that in the latter case, the path isn’t correctly
+    split into its parts – for example, the basename of the file should be `file.txt`
+    (more on what the other properties mean later).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 7.2 Foundational path concepts and their API support
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 7.2.1 Path segments, path separators, path delimiters
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Terminology:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A non-empty path consists of one or more *path segments* – most often names
+    of directories or files.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A *path separator* is used to separate two adjacent path segments in a path.
+    `path.sep` contains the path separator of the current platform:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'A *path delimiter* separates elements in lists of paths. `path.delimiter` contains
+    the path delimiter of the current platform:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: We can see path separators and path delimitors if we examine the PATH shell
+    variable – which contains the paths where the operating system looks for executables
+    when a command is entered in a shell.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is an example of a macOS PATH (shell variable `$PATH`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: The split separator has a length of zero because [the lookbehind assertion](https://exploringjs.com/impatient-js/ch_regexps.html#regexp-lookbehind-assertions)
+    `(?<=:)` matches if a given location is preceded by a colon but it does not capture
+    anything. Therefore, the path delimiter `':'` is included in the preceding path.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is an example of a Windows PATH (shell variable `%Path%`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.2.2 The current working directory
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Many shells have the concept of the *current working directory* (CWD) – “the
+    directory I’m currently in”:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we use a command with a partially qualified path, that path is resolved against
+    the CWD.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we omit a path when a command expects a path, the CWD is used.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On both Unixes and Windows, the command to change the CWD is `cd`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`process` is a global Node.js variable. It provides us with methods for getting
+    and setting the CWD:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`process.cwd()`](https://nodejs.org/api/process.html#processcwd) returns the
+    CWD.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`process.chdir(dirPath)`](https://nodejs.org/api/process.html#processchdirdirectory)
+    changes the CWD to `dirPath`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There must be a directory at `dirPath`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That change does not affect the shell, only the currently running Node.js process.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Node.js uses the CWD to fill in missing pieces whenever a path isn’t *fully
+    qualified* (complete). That enables us to use partially qualified paths with various
+    functions – e.g. `fs.readFileSync()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 7.2.2.1 The current working directory on Unix
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates `process.chdir()` and `process.cwd()` on Unix:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.2.2.2 The current working directory on Windows
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'So far, we have used the current working directory on Unix. Windows works differently:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Each drive has a *current directory*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There is a *current drive*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We can use `path.chdir()` to set both at the same time:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'When we revisit a drive, Node.js remembers the previous current directory of
+    that drive:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.2.3 Fully vs. partially qualified paths, resolving paths
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: A *fully qualified path* does not rely on any other information and can be used
+    as is.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A *partially qualified path* is missing information: We need to turn it into
+    a fully qualified path before we can use it. That is done by *resolving* it against
+    a fully qualified path.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.2.3.1 Fully and partially qualified paths on Unix
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Unix only knows two kinds of paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Absolute paths* are fully qualified and start with a slash:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '*Relative paths* are partially qualified and start with a filename or a dot:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Let’s use `path.resolve()` (which is explained in more detail [later](ch_nodejs-path.html#path.resolve))
+    to resolve relative paths against absolute paths. The results are absolute paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.2.3.2 Fully and partially qualified paths on Windows
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Windows distinguishes four kinds of paths (for more information, see [Microsoft’s
+    documentation](https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file#fully-qualified-vs-relative-paths)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: There are absolute paths and relative paths.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Each of those two kinds of paths can have a drive letter (“volume designator”)
+    or not.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Absolute paths with drive letters are fully qualified. All other paths are partially
+    qualified.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Resolving an absolute path without a drive letter** against a fully qualified
+    path `full`, picks up the drive letter of `full`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Resolving a relative path without a drive letter** against a fully qualified
+    path, can be viewed as updating the latter:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Resolving a relative path `rel` with a drive letter** against a fully qualified
+    path `full` depends on the drive letter of `rel`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Same drive letter as `full`? Resolve `rel` against `full`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Different drive letter than `full`? Resolve `rel` against the current directory
+    of `rel`’s drive.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'That looks as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.3 Getting the paths of standard directories via module `'node:os'`
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The module `''node:os''` provides us with the paths of two important directories:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`os.homedir()`](https://nodejs.org/api/os.html#oshomedir) returns the path
+    to the home directory of the current user – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[`os.tmpdir()`](https://nodejs.org/api/os.html#ostmpdir) returns the path of
+    the operating system’s directory for temporary files – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 7.4 Concatenating paths
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'There are two functions for concatenating paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`path.resolve()` always returns fully qualified paths'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`path.join()` preserves relative paths'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '7.4.1 `path.resolve()`: concatenating paths to create fully qualified paths'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Concatenates the `paths` and return a fully qualified path. It uses the following
+    algorithm:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Start with the current working directory.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Resolve `path[0]` against the previous result.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Resolve `path[1]` against the previous result.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Do the same for all remaining paths.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Return the final result.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Without arguments, `path.resolve()` returns the path of the current working
+    directory:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'One or more relative paths are used for resolution, starting with the current
+    working directory:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Any fully qualified path replaces the previous result:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That enables us to resolve partially qualified paths against fully qualified
+    paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.4.2 `path.join()`: concatenating paths while preserving relative paths'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Starts with `paths[0]` and interprets the remaining paths as instructions for
+    ascending or descending. In contrast to `path.resolve()`, this function preserves
+    partially qualified paths: If `paths[0]` is partially qualified, the result is
+    partially qualified. If it is fully qualified, the result is fully qualified.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Examples of descending:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Double dots ascend:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Single dots do nothing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If arguments after the first one are fully qualified paths, they are interpreted
+    as relative paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Using more than two arguments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.5 Ensuring paths are normalized, fully qualified, or relative
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '7.5.1 `path.normalize()`: ensuring paths are normalized'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Unix, `path.normalize()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Removes path segments that are single dots (`.`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Resolves path segments that are double dots (`..`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Turns multiple path separators into a single path separator.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Windows, `path.normalize()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Removes path segments that are single dots (`.`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Resolves path segments that are double dots (`..`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Converts each path separator slash (`/`) – which is legal – into a the preferred
+    path separator (`\`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Converts sequences of more than one path separator to single backslashes.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that `path.join()` with a single argument also normalizes and works the
+    same as `path.normalize()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.5.2 `path.resolve()` (one argument): ensuring paths are normalized and fully
+    qualified'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: We have already encountered [`path.resolve()`](ch_nodejs-path.html#path.resolve).
+    Called with a single argument, it both normalizes paths and ensures that they
+    are fully qualified.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Using `path.resolve()` on Unix:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Using `path.resolve()` on Windows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.5.3 `path.relative()`: creating relative paths'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Returns a relative path that gets us from `sourcePath` to `destinationPath`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Windows, we get a fully qualified path if `sourcePath` and `destinationPath`
+    are on different drives:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This function also works with relative paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.6 Parsing paths: extracting various parts of a path (filename extension etc.)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '7.6.1 `path.parse()`: creating an object with path parts'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Extracts various parts of `path` and returns them in an object with the following
+    properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.base`: last segment of a path'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.ext`: the filename extension of the base'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.name`: the base without the extension. This part is also called the *stem*
+    of a path.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.root`: the beginning of a path (before the first segment)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.dir`: the directory in which the base is located – the path without the base'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Later, we’ll see [function `path.format()`](ch_nodejs-path.html#path.format)
+    which is the inverse of `path.parse()`: It converts an object with path parts
+    into a path.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '7.6.1.1 Example: `path.parse()` on Unix'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is what using `path.parse()` on Unix looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following diagram visualizes the extent of the parts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: For example, we can see that `.dir` is the path without the base. And that `.base`
+    is `.name` plus `.ext`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '7.6.1.2 Example: `path.parse()` on Windows'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is how `path.parse()` works on Windows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is a diagram for the result:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.6.2 `path.basename()`: extracting the base of a path'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Returns the base of `path`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Optionally, this function can also remove a suffix:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: Removing the extension is case sensitive – even on Windows!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.6.3 `path.dirname()`: extracting the parent directory of a path'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Returns the parent directory of the file or directory at `path`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.6.4 `path.extname()`: extracting the extension of a path'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Returns the extension of `path`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.7 Categorizing paths
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '7.7.1 `path.isAbsolute()`: Is a given path absolute?'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs: []
+  type: TYPE_PRE
+- en: Returns `true` if `path` is absolute and `false` otherwise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The results on Unix are straightforward:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Windows, “absolute” does not necessarily mean “fully qualified” (only the
+    first path is fully qualified):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE55]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.8 `path.format()`: creating paths out of parts'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[PRE56]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Creates a path out of a path object:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE57]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.8.1 Example: changing the filename extension'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use `path.format()` to change the extension of a path:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE58]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we know the original filename extension, we can also use a regular expression
+    to change the filename extension:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE59]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.9 Using the same paths on different platforms
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Sometimes we’d like to use the same paths on different platforms. Then there
+    are two issues that we are facing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The path separator may be different.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The file structure may be different: home directories and directories for temporary
+    files may be in different locations, etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'As an example, consider a Node.js app that operates on a directory with data.
+    Let’s assume that the app can be configured with two kinds of paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Fully qualified paths anywhere on the system
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Paths inside the data directory
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Due to the aforementioned issues:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can’t reuse fully qualified paths between platforms.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sometimes we need absolute paths. These have to be configured per “instance”
+    of the data directory and stored externally (or inside it and ignored by version
+    control). These paths stay put and are not moved with the data directory.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We can reuse paths that point into the data directory. Such paths may be stored
+    in configuration files (inside the data directory or not) and in constants in
+    the app’s code. To do that:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We have to store them as relative paths.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We have to ensure that the path separator is correct on each platform.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next subsection explains how both can be achieved.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 7.9.1 Relative platform-independent paths
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Relative platform-independent paths can be stored as Arrays of path segments
+    and turned into fully qualified platform-specific paths as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE60]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To create relative platform-specific paths, we can use:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE61]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following function converts relative platform-specific paths into platform-independent
+    paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE62]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Using `splitRelativePathIntoSegments()` on Unix:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE63]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Using `splitRelativePathIntoSegments()` on Windows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE64]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.10 Using a library to match paths via *globs*
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The [npm module `''minimatch''`](https://github.com/isaacs/minimatch) lets
+    us match paths against patterns that are called *glob expressions*, *glob patterns*,
+    or *globs*:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE65]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Use cases for globs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Specifying which files in a directory should be processed by a script.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Specifying which files to ignore.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'More glob libraries:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[multimatch](https://github.com/sindresorhus/multimatch) extends minimatch
+    with support for multiple patterns.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[micromatch](https://github.com/micromatch/micromatch) is an alternative to
+    minimatch and multimatch that has a similar API.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[globby](https://github.com/sindresorhus/globby) is a library based on [fast-glob](https://github.com/mrmlnc/fast-glob)
+    that adds convenience features.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.10.1 The minimatch API
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The whole API of minimatch is documented in [the project’s readme file](https://github.com/isaacs/minimatch).
+    In this subsection, we look at the most important functionality.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Minimatch compiles globs to JavaScript `RegExp` objects and uses those to match.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '7.10.1.1 `minimatch()`: compiling and matching once'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[PRE66]'
+  prefs: []
+  type: TYPE_PRE
+- en: Returns `true` if `glob` matches `path` and `false` otherwise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Two interesting options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.dot: boolean` (default: `false`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `true`, wildcard symbols such as `*` and `**` match “invisible” path segments
+    (whose names begin with dots):'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE67]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`.matchBase: boolean` (default: `false`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `true`, a pattern without slashes is matched against the basename of a path:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE68]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '7.10.1.2 `new minimatch.Minimatch()`: compiling once, matching multiple times'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Class `minimatch.Minimatch` enables us to only compile the glob to a regular
+    expression once and match multiple times:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE69]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how this class is used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE70]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.10.2 Syntax of glob expressions
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This subsection covers the essentials of the syntax. But there are more features.
+    These are documented here:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Minimatch’s unit tests](https://github.com/isaacs/minimatch/tree/main/test)
+    have many examples of globs.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The Bash Reference manual has [a section on filename expansion](https://www.gnu.org/software/bash/manual/bash.html#Filename-Expansion).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.10.2.1 Matching Windows paths
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Even on Windows, glob segments are separated by slashes – but they match both
+    backslashes and slashes (which are legal path separators on Windows):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE71]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.10.2.2 Minimatch does not normalize paths
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Minimatch does not normalize paths for us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE72]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Therefore, we have to normalize paths if we don’t create them ourselves:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE73]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.10.2.3 Patterns without wildcard symbols: path separators must line up'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Patterns without *wildcard symbols* (that match more flexibly) must match exactly.
+    Especially the path separators must line up:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE74]'
+  prefs: []
+  type: TYPE_PRE
+- en: That is, we must decide on either absolute or relative paths.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'With option `.matchBase`, we can match patterns without slashes against the
+    basenames of paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE75]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.10.2.4 The asterisk (`*`) matches any (part of a) single segment
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The *wildcard symbol* asterisk (`*`) matches any path segment or any part of
+    a segment:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE76]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The asterisk does not match “invisible files“ whose names start with dots.
+    If we want to match those, we have to prefix the asterisk with a dot:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE77]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Option `.dot` lets us switch off this behavior:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE78]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.10.2.5 The double asterisk (`**`) matches zero or more segments
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '´`**/` matches zero or more segments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE79]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we want to match relative paths, the pattern still must not start with a
+    path separator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE80]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The double asterisk does not match “invisible” path segments whose names start
+    with dots:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE81]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can switch off that behavior via option `.dot`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE82]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.10.2.6 Negating globs
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we start a glob with an exclamation mark, it matches if the pattern after
+    the exclamation mark does not match:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE83]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.10.2.7 Alternative patterns
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Comma-separate patterns inside braces match if one of the patterns matches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE84]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.10.2.8 Ranges of integers
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'A pair of integers separated by double dots defines a range of integers and
+    matches if any of its elements matches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE85]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Padding with zeros is supported, too:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE86]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11 Using `file:` URLs to refer to files
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'There are two common ways to refer to files in Node.js:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Paths in strings
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Instances of `URL` with the protocol `file:`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE87]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11.1 Class `URL`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In this section, we take a closer look at class `URL`. More information on
+    this class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Node.js documentation: section [“The WHATWG URL API”](https://nodejs.org/api/url.html#the-whatwg-url-api)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Section “API“](https://url.spec.whatwg.org/#api) of the WHATWG URL standard'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In this chapter, we access class `URL` via a global variable because that’s
+    how it’s used on other web platforms. But it can also be imported:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE88]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11.1.1 URIs vs. relative references
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'URLs are a subset of URIs. RFC 3986, the standard for URIs, distinguishes [two
+    kinds of *URI-references*](https://datatracker.ietf.org/doc/html/rfc3986#section-4.1):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A *URI* starts with [a scheme](https://datatracker.ietf.org/doc/html/rfc3986#section-3.1)
+    followed by a colon separator.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: All other URI references are *relative references*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 7.11.1.2 Constructor of `URL`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Class `URL` can be instantiated in two ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`new URL(uri: string)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`uri` must be a URI. It specifies the URI of the new instance.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`new URL(uriRef: string, baseUri: string)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`baseUri` must be a URI. If `uriRef` is a relative reference, it is resolved
+    against `baseUri` and the result becomes the URI of the new instance.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: If `uriRef` is a URI, it completely replaces `baseUri` as the data on which
+    the instance is based.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Here we can see the class in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE89]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11.1.3 Resolving relative references against instances of `URL`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Let’s revisit this variant of the `URL` constructor:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE90]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The argument `baseUri` is coerced to string. Therefore, any object can be used
+    – as long as it becomes a valid URL when coereced to string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE91]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That enables us to resolve relative references against `URL` instances:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE92]'
+  prefs: []
+  type: TYPE_PRE
+- en: Used this way, the constructor is loosely similar to `path.resolve()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 7.11.1.4 Properties of `URL` instances
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Instances of `URL` have the following properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE93]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11.1.5 Converting URLs to strings
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'There are three common ways in which we can convert URLs to strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE94]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Method `.toJSON()` enables us to use URLs in JSON data:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE95]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11.1.6 Getting `URL` properties
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The properties of `URL` instances are not own data properties, they are implemented
+    via getters and setters. In the next example, we use the utility function `pickProps()`
+    (whose code is shown at the end), to copy the values returned by those getters
+    into a plain object:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE96]'
+  prefs: []
+  type: TYPE_PRE
+- en: Alas, the pathname is a single atomic unit. That is, we can’t use class `URL`
+    to access its parts (base, extension, etc.).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 7.11.1.7 Setting parts of a URL
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can also change parts of a URL by setting properties such as `.hostname`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE97]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can use the setters to create URLs from parts ([idea by Haroen Viaene](https://twitter.com/haroenv/status/1545357986046017539)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE98]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11.1.8 Managing search parameters via `.searchParams`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: We can use property `.searchParams` to manage the search parameters of URLs.
+    Its value is an instance of [`URLSearchParams`](https://nodejs.org/api/url.html#class-urlsearchparams).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can use it to read search parameters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE99]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also change search parameters via it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE100]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11.2 Converting between URLs and file paths
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'It’s tempting to convert between file paths and URLs manually. For example,
+    we can try to convert an `URL` instance `myUrl` to a file path via `myUrl.pathname`.
+    However that doesn’t always work – it’s better to use [this function](https://nodejs.org/api/url.html#urlfileurltopathurl):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE101]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following code compares the results of that function with the values of
+    `.pathname`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE102]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[This function](https://nodejs.org/api/url.html#url_url_pathtofileurl_path)
+    is the inverse of `url.fileURLToPath()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE103]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It converts `path` to a file URL:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE104]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.11.3 Use case for URLs: accessing files relative to the current module'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'One important use case for URLs is accessing a file that is a sibling of the
+    current module:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE105]'
+  prefs: []
+  type: TYPE_PRE
+- en: This function uses [`import.meta.url`](https://exploringjs.com/impatient-js/ch_modules.html#import.meta.url-on-node.js)
+    which contains the URL of the current module (which is usually a `file:` URL on
+    Node.js).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Using `fetch()` would have made the previous code even more cross-platform.
+    However, as of Node.js 18.9.0, `fetch()` doesn’t work for `file:` URLs yet:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE106]'
+  prefs: []
+  type: TYPE_PRE
+- en: '7.11.4 Use case for URLs: detecting if the current module is “main” (the app
+    entry point)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'An ESM module can be used in two ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It can be used as a library from which other modules can import values.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: It can be used as script that we run via Node.js – e.g., from a command line.
+    In that case, it is called the *main module*.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: If we want a module to be used in both ways, we need a way to check if the current
+    module is the main module because only then do we execute the script functionality.
+    In this chapter, we learn how to perform that check.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 7.11.4.1 Determining if a CommonJS module is main
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'With CommonJS, we can use the following pattern to detect if the current module
+    was the entry point (source: [Node.js documentation](https://nodejs.org/api/modules.html#accessing-the-main-module)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE107]'
+  prefs: []
+  type: TYPE_PRE
+- en: 7.11.4.2 Determining if an ESM module is main
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'As of now, ESM modules have no simple built-in way to check if a module is
+    main. Instead, we have to use the following workaround (based on [a tweet by Rich
+    Harris](https://twitter.com/Rich_Harris/status/1355289863130673153)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE108]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`import.meta.url`](https://exploringjs.com/impatient-js/ch_modules.html#import.meta.url)
+    contains the URL of the currently executed ESM module.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we are sure our code always runs locally (which may become less common in
+    the future), we can omit the check in line A. If we do and the code does not run
+    locally, at least we get an exception (and not a silent failure) – thanks to `url.fileURLToPath()`
+    (see next item).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We use `url.fileURLToPath()` to convert the URL to a local path. This function
+    throws an exception if the protocol isn’t `file:`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`process.argv[1]` contains the path of the initial module. The comparison in
+    line B works because this value is always an absolute path – Node.js sets it up
+    as follows ([source code](https://github.com/nodejs/node/blob/36fbbe0b86131fa2dcca558872b02335586e0089/lib/internal/bootstrap/pre_execution.js#L100-L107)):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE109]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 7.11.5 Paths vs. `file:` URLs
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'When shell scripts receive references to files or export references to files
+    (e.g. by logging them on screen), they are virtually always paths. However, there
+    are two cases where we need URLs (as discussed in previous subsections):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: To access files relative to the current module
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: To detect if the current module is running as a script
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/7)'
+  prefs: []
+  type: TYPE_NORMAL

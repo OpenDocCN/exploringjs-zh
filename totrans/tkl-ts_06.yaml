@@ -1,0 +1,301 @@
+- en: 4 How does TypeScript work? The bird’s eye view
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/tackling-ts/ch_typescript-workflows.html](https://exploringjs.com/tackling-ts/ch_typescript-workflows.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.1 [The structure of TypeScript projects](ch_typescript-workflows.html#the-structure-of-typescript-projects)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.1.1 [`tsconfig.json`](ch_typescript-workflows.html#tsconfig.json)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2 [Programming TypeScript via an integrated development environment (IDE)](ch_typescript-workflows.html#programming-typescript-via-an-integrated-development-environment-ide)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.3 [Other files produced by the TypeScript compiler](ch_typescript-workflows.html#other-files-produced-by-the-typescript-compiler)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.3.1 [In order to use npm packages from TypeScript, we need type information](ch_typescript-workflows.html#in-order-to-use-npm-packages-from-typescript-we-need-type-information)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.4 [Using the TypeScript compiler for plain JavaScript files](ch_typescript-workflows.html#check-js)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This chapter gives the bird’s eye view of how TypeScript works: What is the
+    structure of a typical TypeScript project? What is compiled and how? How can we
+    use IDEs to write TypeScript?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.1 The structure of TypeScript projects
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is one possible file structure for TypeScript projects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Directory `ts/` contains the TypeScript files:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Subdirectory `ts/src/` contains the actual code.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Subdirectory `ts/test/` contains tests for the code.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Directory `dist/` is where the output of the compiler is stored.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The TypeScript compiler compiles TypeScript files in `ts/` to JavaScript files
+    in `dist/`. For example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ts/src/main.ts` is compiled to `dist/src/main.js` (and possibly other files)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`tsconfig.json` is used to configure the TypeScript compiler.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.1.1 `tsconfig.json`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The contents of `tsconfig.json` look as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We have specified that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The root directory of the TypeScript code is `ts/`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The directory where the TypeScript compiler saves its output is `dist/`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The module format of the output files is CommonJS.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2 Programming TypeScript via an integrated development environment (IDE)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Two popular IDEs for JavaScript are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[*Visual Studio Code*](https://code.visualstudio.com/) (free)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*WebStorm*](https://www.jetbrains.com/webstorm/) (for purchase)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The observations in this section are about Visual Studio Code, but may apply
+    to other IDEs, too.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'One important fact to be aware of is that Visual Studio Code processes TypeScript
+    source code in two independent ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Checking open files for errors: This is done via a so-called [*language server*](https://langserver.org/).
+    Language servers exist independently of particular editors and provide Visual
+    Studio Code with language-related services: detecting errors, refactorings, auto-completions,
+    etc. Communication with servers happens via a protocol that is based on JSON-RPC
+    (*RPC* stands for *remote procedure calls*). The independence provided by that
+    protocol means that servers can be written in almost any programming language.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Important fact to remember: The language server only lists errors for currently
+    open files and doesn’t compile TypeScript, it only analyzes it statically.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Building* (compiling TypeScript files to JavaScript files): Here, we have
+    two choices.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can run a build tool via an external command line. For example, the TypeScript
+    compiler `tsc` has a `--watch` mode that watches input files and compiles them
+    to output files whenever they change. As a consequence, whenever we save a TypeScript
+    file in the IDE, we immediately get the corresponding output file(s).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can run `tsc` from within Visual Studio Code. In order to do so, it must
+    be installed either inside project that we are currently working on or globally
+    (via the Node.js package manager npm).With building, we get a complete list of
+    errors. For more information on compiling TypeScript from within Visual Studio
+    Code, see [the official documentation for that IDE](https://code.visualstudio.com/docs/typescript/typescript-compiling).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.3 Other files produced by the TypeScript compiler
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Given a TypeScript file `main.ts`, the TypeScript compiler can produce several
+    kinds of artifacts. The most common ones are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'JavaScript file: `main.js`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Declaration file: `main.d.ts` (contains type information; think `.ts` file
+    minus the JavaScript code)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Source map file: `main.js.map`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'TypeScript is often not delivered via `.ts` files, but via `.js` files and
+    `.d.ts` files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The JavaScript code contains the actual functionality and can be consumed via
+    plain JavaScript.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The declaration files help programming editors with auto-completion and similar
+    services. This information enables plain JavaScript to be consumed via TypeScript.
+    However, we even profit from it if we work with plain JavaScript because it gives
+    us better auto-completion and more.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A source map specifies for each part of the output code in `main.js`, which
+    part of the input code in `main.ts` produced it. Among other things, this information
+    enables runtime environments to execute JavaScript code, while showing the line
+    numbers of the TypeScript code in error messages.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.3.1 In order to use npm packages from TypeScript, we need type information
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The npm registry is a huge repository of JavaScript code. If we want to use
+    a JavaScript package from TypeScript, we need type information for it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The package itself may include `.d.ts` files or even the complete TypeScript
+    code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If it doesn’t, we may still be able to use it: [DefinitelyTyped](https://definitelytyped.org/)
+    is a repository of declaration files that people have written for plain JavaScript
+    packages.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The declaration files of DefinitelyTyped reside in the `@types` namespace. Therefore,
+    if we need a declaration file for a package such as `lodash`, we have to install
+    the package `@types/lodash`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.4 Using the TypeScript compiler for plain JavaScript files
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The TypeScript compiler can also process plain JavaScript files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'With the option `--allowJs`, the TypeScript compiler copies JavaScript files
+    in the input directory over to the output directory. Benefit: When [migrating
+    from JavaScript to TypeScript](ch_migrating-to-typescript.html), we can start
+    with a mix of JavaScript and TypeScript files and slowly convert more JavaScript
+    files to TypeScript.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'With the option `--checkJs`, the compiler additionally type-checks JavaScript
+    files (`--allowJs` must be on for this option to work). It does so as well as
+    it can, given the limited information that is available. Which files are checked
+    can be configured via comments inside them:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Explicit excluding: If a JavaScript file contains the comment `// @ts-nocheck`,
+    it will not be type-checked.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Explicit including: Without `--checkJs`, the comment `// @ts-check` can be
+    used to type-check individual JavaScript files.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The TypeScript compiler uses static type information that is specified via JSDoc
+    comments (see below for an example). If we are thorough, we can fully statically
+    type plain JavaScript files and even derive declaration files from them.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: With the option `--noEmit`, the compiler does not produce any output, it only
+    type-checks files.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is an example of a JSDoc comment that provides static type information
+    for a function `add()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [Type-Checking JavaScript Files](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html)
+    in the TypeScript Handbook.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/tackling-ts/issues/4)'
+  prefs: []
+  type: TYPE_NORMAL

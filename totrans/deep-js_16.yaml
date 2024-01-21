@@ -1,0 +1,696 @@
+- en: 12 Enumerability of properties
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_enumerability.html](https://exploringjs.com/deep-js/ch_enumerability.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 12.1 [How enumerability affects property-iterating constructs](ch_enumerability.html#how-enumerability-affects-property-iterating-constructs)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.1.1 [Operations that only consider enumerable properties](ch_enumerability.html#operations-that-only-consider-enumerable-properties)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.1.2 [Operations that consider both enumerable and non-enumerable properties](ch_enumerability.html#operations-that-consider-both-enumerable-and-non-enumerable-properties)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.1.3 [Naming rules for introspective operations](ch_enumerability.html#naming-rules-for-introspective-operations)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.2 [The enumerability of pre-defined and created properties](ch_enumerability.html#the-enumerability-of-pre-defined-and-created-properties)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.3 [Use cases for enumerability](ch_enumerability.html#use-cases-for-enumerability)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '12.3.1 [Use case: Hiding properties from the `for-in` loop](ch_enumerability.html#for-in-loop)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '12.3.2 [Use case: Marking properties as not to be copied](ch_enumerability.html#use-case-marking-properties-as-not-to-be-copied)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.3.3 [Marking properties as private](ch_enumerability.html#marking-properties-as-private)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.3.4 [Hiding own properties from `JSON.stringify()`](ch_enumerability.html#hiding-own-properties-from-json.stringify)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.4 [Conclusion](ch_enumerability.html#conclusion)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Enumerability is an *attribute* of object properties. In this chapter, we take
+    a closer look at how it is used and how it influences operations such as `Object.keys()`
+    and `Object.assign()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Required knowledge:
+    property attributes**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For this chapter, you should be familiar with property attributes. If you aren’t,
+    check out [§9 “Property attributes: an introduction”](ch_property-attributes-intro.html).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 12.1 How enumerability affects property-iterating constructs
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: To demonstrate how various operations are affected by enumerability, we use
+    the following object `obj` whose prototype is `proto`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 12.1.1 Operations that only consider enumerable properties
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Table 2: Operations that ignore non-enumerable properties.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Operation |  | String keys | Symbol keys | Inherited |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `Object.keys()` | ES5 | `✔` | `✘` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `Object.values()` | ES2017 | `✔` | `✘` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `Object.entries()` | ES2017 | `✔` | `✘` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Spreading `{...x}` | ES2018 | `✔` | `✔` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `Object.assign()` | ES6 | `✔` | `✔` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `JSON.stringify()` | ES5 | `✔` | `✘` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `for-in` | ES1 | `✔` | `✘` | `✔` |'
+  prefs: []
+  type: TYPE_TB
+- en: 'The following operations (summarized in tbl. [2](#tbl:operations-ignoring-non-enumerable-properties))
+    only consider enumerable properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.keys()` ^([ES5]) returns the keys of enumerable own string-keyed properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Object.values()` ^([ES2017]) returns the values of enumerable own string-keyed
+    properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Object.entries()` ^([ES2017]) returns key-value pairs for enumerable own string-keyed
+    properties. (Note that `Object.fromEntries()` does accept symbols as keys, but
+    only creates enumerable properties.)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Spreading into object literals ^([ES2018]) only considers own enumerable properties
+    (with string keys or symbol keys).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Object.assign()` ^([ES6]) only copies enumerable own properties (with either
+    string keys or symbol keys).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`JSON.stringify()` ^([ES5]) only stringifies enumerable own properties with
+    string keys.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`for-in` loop ^([ES1]) traverses the keys of own and inherited enumerable string-keyed
+    properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`for-in` is the only built-in operation where enumerability matters for inherited
+    properties. All other operations only work with own properties.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 12.1.2 Operations that consider both enumerable and non-enumerable properties
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Table 3: Operations that consider both enumerable and non-enumerable properties.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Operation |  | Str. keys | Sym. keys | Inherited |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `Object.getOwnPropertyNames()` | ES5 | `✔` | `✘` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `Object.getOwnPropertySymbols()` | ES6 | `✘` | `✔` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `Reflect.ownKeys()` | ES6 | `✔` | `✔` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `Object.getOwnPropertyDescriptors()` | ES2017 | `✔` | `✔` | `✘` |'
+  prefs: []
+  type: TYPE_TB
+- en: 'The following operations (summarized in tbl. [3](#tbl:operations-considering-enumerable-and-nonenumerable-properties))
+    consider both enumerable and non-enumerable properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.getOwnPropertyNames()` ^([ES5]) lists the keys of all own string-keyed
+    properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Object.getOwnPropertySymbols()` ^([ES6]) lists the keys of all own symbol-keyed
+    properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Reflect.ownKeys()` ^([ES6]) lists the keys of all own properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Object.getOwnPropertyDescriptors()` ^([ES2017]) lists the property descriptors
+    of all own properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 12.1.3 Naming rules for introspective operations
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '*Introspection* enables a program to examine the structure of values at runtime.
+    It is *metaprogramming*: Normal programming is about writing programs; metaprogramming
+    is about examining and/or changing programs.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In JavaScript, common introspective operations have short names, while rarely
+    used operations have long names. Ignoring non-enumerable properties is the norm,
+    which is why operations that do that have short names and operations that don’t,
+    long names:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.keys()` ignores non-enumerable properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.getOwnPropertyNames()` lists the string keys of all own properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: However, `Reflect` methods (such as `Reflect.ownKeys()`) deviate from this rule
+    because `Reflect` provides operations that are more “meta” and related to Proxies.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Additionally, the following distinction is made (since ES6, which introduced
+    symbols):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Property keys* are either strings or symbols.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Property names* are property keys that are strings.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Property symbols* are property keys that are symbols.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Therefore, a better name for `Object.keys()` would now be `Object.names()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 12.2 The enumerability of pre-defined and created properties
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In this section, we’ll abbreviate `Object.getOwnPropertyDescriptor()` like
+    this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Most data properties are created with the following attributes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That includes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Assignment
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Object literals
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Public class fields
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.fromEntries()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The most important non-enumerable properties are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Prototype properties of built-in classes
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Prototype properties created via user-defined classes
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Property `.length` of Arrays:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Property `.length` of strings (note that all properties of primitive values
+    are read-only):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: We’ll look at the use cases for enumerability next, which will tell us why some
+    properties are enumerable and others aren’t.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 12.3 Use cases for enumerability
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Enumerability is an inconsistent feature. It does have use cases, but there
+    is always some kind of caveat. In this section, we look at the use cases and the
+    caveats.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '12.3.1 Use case: Hiding properties from the `for-in` loop'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The `for-in` loop traverses *all* enumerable string-keyed properties of an object,
+    own and inherited ones. Therefore, the attribute `enumerable` is used to hide
+    properties that should not be traversed. That was the reason for introducing enumerability
+    in ECMAScript 1.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In general, it is best to avoid `for-in`. The next two subsections explain why.
+    The following function will help us demonstrate how `for-in` works.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 12.3.1.1 The caveats of using `for-in` for objects
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`for-in` iterates over all properties, including inherited ones:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With normal plain objects, `for-in` doesn’t see inherited methods such as `Object.prototype.toString()`
+    because they are all non-enumerable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In user-defined classes, all inherited properties are also non-enumerable and
+    therefore ignored:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Conclusion:** In objects, `for-in` considers inherited properties and we
+    usually want to ignore those. Then it is better to combine a `for-of` loop with
+    `Object.keys()`, `Object.entries()`, etc.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 12.3.1.2 The caveats of using `for-in` for Arrays
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The own property `.length` is non-enumerable in Arrays and strings and therefore
+    ignored by `for-in`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, it is generally not safe to use `for-in` to iterate over the indices
+    of an Array because it considers both inherited and own properties that are not
+    indices. The following example demonstrate what happens if an Array has an own
+    non-index property:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Conclusion:** `for-in` should not be used for iterating over the indices
+    of an Array because it considers both index properties and non-index properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If you are interested in the keys of an Array, use the Array method `.keys()`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: If you want to iterate over the elements of an Array, use a `for-of` loop, which
+    has the added benefit of also working with other iterable data structures.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '12.3.2 Use case: Marking properties as not to be copied'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: By making properties non-enumerable, we can hide them from some copying operations.
+    Let us first examine two historical copying operations before moving on to more
+    modern copying operations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '12.3.2.1 Historical copying operation: Prototype’s `Object.extend()`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[Prototype](https://en.wikipedia.org/wiki/Prototype_JavaScript_Framework) is
+    a JavaScript framework that was created by Sam Stephenson in February 2005 as
+    part of the foundation for Ajax support in Ruby on Rails.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Prototype’s `Object.extend(destination, source)`](http://api.prototypejs.org/language/Object/extend/)
+    copies all enumerable own and inherited properties of `source` into own properties
+    of `destination`. [It is implemented](https://github.com/prototypejs/prototype/blob/5fddd3e/src/prototype/lang/object.js#L88)
+    as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: If we use `Object.extend()` with an object, we can see that it copies inherited
+    properties into own properties and ignores non-enumerable properties (it also
+    ignores symbol-keyed properties). All of this is due to how `for-in` works.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: '12.3.2.2 Historical copying operation: jQuery’s `$.extend()`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[jQuery’s `$.extend(target, source1, source2, ···)`](https://api.jquery.com/jquery.extend/)
+    works similar to `Object.extend()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It copies all enumerable own and inherited properties of `source1` into own
+    properties of `target`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then it does the same with `source2`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.3.2.3 The downsides of enumerability-driven copying
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Basing copying on enumerability has several downsides:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: While enumerability is useful for hiding inherited properties, it is mainly
+    used in this manner because we usually only want to copy own properties into own
+    properties. The same effect can be better achieved by ignoring inherited properties.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Which properties to copy often depends on the task at hand; it rarely makes
+    sense to have a single flag for all use cases. A better choice is to provide a
+    copying operation with a *predicate* (a callback that returns a boolean) that
+    tells it when to ignore properties.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Enumerability conveniently hides the own property `.length` of Arrays when
+    copying. But that is an incredibly rare exceptional case: a magic property that
+    both influences sibling properties and is influenced by them. If we implement
+    this kind of magic ourselves, we will use (inherited) getters and/or setters,
+    not (own) data properties.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.3.2.4 `Object.assign()` ^([ES5])
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: In ES6, [`Object.assign(target, source_1, source_2, ···)`](https://exploringjs.com/impatient-js/ch_single-objects.html#object.assign)
+    can be used to merge the sources into the target. All own enumerable properties
+    of the sources are considered (with either string keys or symbol keys). `Object.assign()`
+    uses a “get” operation to read a value from a source and a “set” operation to
+    write a value to the target.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'With regard to enumerability, `Object.assign()` continues the tradition of
+    `Object.extend()` and `$.extend()`. [Quoting Yehuda Katz](https://mail.mozilla.org/pipermail/es-discuss/2012-October/025934.html):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.assign` would pave the cowpath of all of the `extend()` APIs already
+    in circulation. We thought the precedent of not copying enumerable methods in
+    those cases was enough reason for `Object.assign` to have this behavior.'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'In other words: `Object.assign()` was created with an upgrade path from `$.extend()`
+    (and similar) in mind. Its approach is cleaner than `$.extend`’s because it ignores
+    inherited properties.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 12.3.2.5 A rare example of non-enumerability being useful when copying
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Cases where non-enumerability helps are few. One rare example is [a recent
+    issue that the library `fs-extra` had](https://github.com/jprichardson/node-fs-extra/issues/577):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The built-in Node.js module `fs` has a property `.promises` that contains an
+    object with a Promise-based version of the `fs` API. At the time of the issue,
+    reading `.promise` led to the following warning being logged to the console:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: In addition to providing its own functionality, `fs-extra` also re-exports everything
+    that’s in `fs`. For CommonJS modules, that means copying all properties of `fs`
+    into the `module.exports` of `fs-extra` ([via `Object.assign()`](https://github.com/jprichardson/node-fs-extra/blob/master/lib/index.js)).
+    And when `fs-extra` did that, it triggered the warning. That was confusing because
+    it happened every time `fs-extra` was loaded.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[A quick fix](https://github.com/nodejs/node/pull/20504) was to make property
+    `fs.promises` non-enumerable. Afterwards, `fs-extra` ignored it.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.3.3 Marking properties as private
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If we make a property non-enumerable, it can’t by seen by `Object.keys()`, the
+    `for-in` loop, etc., anymore. With regard to those mechanisms, the property is
+    private.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'However, there are several problems with this approach:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: When copying an object, we normally want to copy private properties. That clashes
+    with making properties non-enumerable that shouldn’t be copied (see previous section).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The property isn’t really private. Getting, setting and several other mechanisms
+    make no distinction between enumerable and non-enumerable properties.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: When working with code either as source or interactively, we can’t immediately
+    see whether a property is enumerable or not. A naming convention (such as prefixing
+    property names with an underscore) is easier to discover.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can’t use enumerability to distinguish between public and private methods
+    because methods in prototypes are non-enumerable by default.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 12.3.4 Hiding own properties from `JSON.stringify()`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`JSON.stringify()` does not include properties in its output that are non-enumerable.
+    We can therefore use enumerability to determine which own properties should be
+    exported to JSON. This use case is similar to the previous one, marking properties
+    as private. But it is also different because this is more about exporting and
+    slightly different considerations apply. For example: Can an object be completely
+    reconstructed from JSON?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: As an alternative to enumerability, an object can implement the method `.toJSON()`
+    and `JSON.stringify()` stringifies whatever that method returns, instead of the
+    object itself. The next example demonstrates how that works.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: I find `toJSON()` cleaner than enumerability. It also gives us more freedom
+    w.r.t. what the storage format should look like.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 12.4 Conclusion
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: We have seen that almost all applications for non-enumerability are work-arounds
+    that now have other and better solutions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For our own code, we can usually pretend that enumerability doesn’t exist:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Creating properties via object literals and assignment always creates enumerable
+    properties.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Prototype properties created via classes are always non-enumerable.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That is, we automatically follow best practices.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/12)'
+  prefs: []
+  type: TYPE_NORMAL

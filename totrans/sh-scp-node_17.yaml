@@ -1,0 +1,760 @@
+- en: 13 Installing npm packages and running bin scripts
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_installing-packages.html](https://exploringjs.com/nodejs-shell-scripting/ch_installing-packages.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 13.1 [Installing npm registry packages globally](ch_installing-packages.html#installing-npm-registry-packages-globally)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.1.1 [Which packages are installed globally? `npm ls -g`](ch_installing-packages.html#which-packages-are-installed-globally-npm-ls--g)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.1.2 [Where are packages installed globally? `npm root -g`](ch_installing-packages.html#where-are-packages-installed-globally-npm-root--g)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.1.3 [Where are shell scripts installed globally? `npm bin -g`](ch_installing-packages.html#where-are-shell-scripts-installed-globally-npm-bin--g)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.1.4 [Where are packages installed globally? The npm installation prefix](ch_installing-packages.html#where-are-packages-installed-globally-the-npm-installation-prefix)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.1.5 [Changing where packages are installed globally](ch_installing-packages.html#changing-where-packages-are-installed-globally)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.2 [Installing npm registry packages locally](ch_installing-packages.html#installing-npm-registry-packages-locally)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.2.1 [Running locally installed bin scripts](ch_installing-packages.html#running-locally-installed-bin-scripts)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.3 [Installing unpublished packages](ch_installing-packages.html#installing-unpublished-packages)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '13.3.1 [`npm link`: installing an unpublished package globally](ch_installing-packages.html#npm-link-installing-an-unpublished-package-globally)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '13.3.2 [`npm link`: installing a globally linked package locally](ch_installing-packages.html#npm-link-installing-a-globally-linked-package-locally)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '13.3.3 [`npm link`: undoing linking](ch_installing-packages.html#npm-link-undoing-linking)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.3.4 [Installing unpublished packages via local paths](ch_installing-packages.html#installing-unpublished-packages-via-local-paths)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.3.5 [Other ways of installing unpublished packages](ch_installing-packages.html#other-ways-of-installing-unpublished-packages)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '13.4 [`npx`: running bin scripts in npm packages without installing them](ch_installing-packages.html#npx)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.4.1 [The npx cache](ch_installing-packages.html#the-npx-cache)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The `package.json` property `"bin"` lets an npm package specify which shell
+    scripts it provides (for more information, see [§14 “Creating cross-platform shell
+    scripts”](ch_creating-shell-scripts.html)). If we install such a package, Node.js
+    ensures that we can access these shell scripts (so-called *bin scripts*) from
+    a command line. In this chapter, we explore two ways of installing packages with
+    bin scripts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Locally installing a package with bin scripts means installing it as a dependency
+    inside a package. The scripts are only accessible within that package.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Globally installing a package with bin scripts means installing it in a “global
+    location” so that the scripts are accessible everywhere – for either the current
+    user or all users of a system (depending on how npm is set up).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We explore what all of that means and how we can run bin scripts after installing
+    them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 13.1 Installing npm registry packages globally
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Package `cowsay`](https://github.com/piuccio/cowsay) has the following `package.json`
+    property:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To install this package globally, we use `npm install -g`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Caveat: On Unix, we may have to use `sudo` (we’ll learn soon how to avoid that):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: After that, we can use the commands `cowsay` and `cowthink` in our command lines.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that only the bin scripts are available globally. The packages are ignored
+    when Node.js looks up bare module specifiers in `node_modules` directories.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 13.1.1 Which packages are installed globally? `npm ls -g`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can check which packages are installed globally and where:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Windows, the installation path is `%AppData%\npm`, e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 13.1.2 Where are packages installed globally? `npm root -g`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Result on macOS:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Result on Windows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 13.1.3 Where are shell scripts installed globally? `npm bin -g`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`npm bin -g` tells us where npm installs shell scripts globally. It also ensures
+    that that directory is available in the shell PATH.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Result on macOS:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Result on the Windows Command shell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: The executable `cowsay` without a filename extension is for Unix-based Windows
+    environments such as Cygwin, MinGW, and MSYS.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Windows PowerShell returns this path for `gcm cowsay`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 13.1.4 Where are packages installed globally? The npm installation prefix
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: npm’s *installation prefix* determines where packages and bin scripts are installed
+    globally.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is the installation prefix on macOS:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Accordingly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Packages are installed in `/usr/local/lib/node_modules`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Bin scripts are installed in `/usr/local/bin`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is the installation prefix on Windows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Accordingly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Packages are installed in `C:\Users\jane\AppData\Roaming\npm\node_modules`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Bin scripts are installed in `C:\Users\jane\AppData\Roaming\npm`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.1.5 Changing where packages are installed globally
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In this section, we examine two ways of changing where packages are installed
+    globally:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Changing the npm installation prefix
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Using a Node.js version manager
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.1.5.1 Changing the npm installation prefix
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: One way of changing where packages are installed globally is to change the npm
+    installation prefix.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Unix:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Windows Command shell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Windows PowerShell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: The configuration data is saved to a file `.npmrc` in the home directory.
+  prefs: []
+  type: TYPE_NORMAL
+- en: From now on, global installs will be added to the directory we have just specified.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Afterward, we still have to add the `npm bin -g` directory to our shell PATH
+    so that our shell finds bin scripts we install globally.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**A downside of changing the npm prefix:** npm will now also be installed at
+    the new location if we tell it to upgrade itself.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 13.1.5.2 Using a Node.js version manager
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Node.js version managers let us install multiple versions of Node.js at the
+    same time and switch between them. Popular ones include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Unix: [nvm](https://github.com/nvm-sh/nvm)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Cross-platform: [Volta](https://volta.sh)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 13.2 Installing npm registry packages locally
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'To install an npm registry package such as `cowsay` *locally* (into a package),
+    we do the following:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This adds the following data to `package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Additionally, the package is downloaded into the following directory:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Unix, npm adds these symbolic links for the bin scripts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Windows, npm adds these files to `my-package\node_modules\.bin\`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: The files without extensions are scripts for Unix-based Windows environments
+    such as Cygwin, MinGW, and MSYS.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`npm bin` tells us where locally installed bin scripts are located – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note: Locally, packages are always installed in a directory `node_modules`
+    next to a `package.json` file. If the latter doesn’t exist in the current directory,
+    npm searches for it in an ancestor directory and installs the package there. To
+    check where npm would install packages locally, we can use the command `npm root`
+    – for example (Unix):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: There is no `package.json` in John’s home directory, but npm can’t install anything
+    in an ancestor directory, which is why `npm root` shows this directory. Installing
+    a package locally at the current location will lead to `package.json` being created
+    and installation progressing as usual.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 13.2.1 Running locally installed bin scripts
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: (All commands in this subsection are executed inside directory `my-package`.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 13.2.1.1 Running bin scripts directly
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can run `cowsay` as follows from a shell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Unix, we can set up a helper:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Then the following command works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 13.2.1.2 Running bin scripts via package scripts
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can also add a package script to `package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now we can execute this command in a shell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That works because npm temporarily adds the following entries to `$PATH` on
+    Unix:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Windows, similar entries are added to `%Path%` or `$env:Path`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following command lists the environment variables and their values that
+    exist while a package script runs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 13.2.1.3 Running bin scripts via npx
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Inside a package, npx can be used to access bin scripts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: More on npx later.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 13.3 Installing unpublished packages
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Sometimes, we have a package that we either haven’t published yet or won’t ever
+    publish and would like to install it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '13.3.1 `npm link`: installing an unpublished package globally'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s assume we have an unpublished package whose name is `@my-scope/unpublished-package`
+    that is stored in a directory `/tmp/unpublished-package/`. We can make it available
+    globally as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we do that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'npm adds a symbolic link to the global `node_modules` (as returned by `npm
+    root -g`) – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'On Unix, npm also adds one symbol link from the global bin directory (as returned
+    by `npm bin -g`) to each bin script. That link is not direct, it goes through
+    the global `node_modules` directory:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'On Windows, it adds the usual 3 scripts (which refer to the linked package
+    via relative paths into the global `node_modules`):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Due to how the linked package is referred to, any changes in it will take effect
+    immediately. There is no need to re-link it when it changes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: To check if the global installation worked, we can use `npm ls -g` to list all
+    globally installed packages.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '13.3.2 `npm link`: installing a globally linked package locally'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'After we have installed our upublished package globally (see previous subsection),
+    we have the option to install it locally in one of our packages (which can be
+    published or unpublished):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That creates the following link:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: By default, the unpublished package is not added as a dependency to `package.json`.
+    The rationale behind that is that `npm link` is often used to temporarily work
+    with an unpublished version of a registry package – which shouldn’t show up in
+    the dependencies.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '13.3.3 `npm link`: undoing linking'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Undoing the local link:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Undoing the global link:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 13.3.4 Installing unpublished packages via local paths
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Another way of installing an unpublished package locally, is to use `npm install`
+    and refer to it via a local path (and not via its package name):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: That has two effects.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, the following symbolic link is created:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Second, a dependency is added to `package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This way of installing unpublished packages also works globally:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: 13.3.5 Other ways of installing unpublished packages
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[Yalc](https://github.com/wclr/yalc) lets us publish packages to a local “Yalc
+    repository” (think local registry). From that repository, we can install packages
+    as dependencies for, e.g., a package `my-package/`. They are copied into the directory
+    `my-package/.yalc` and `file:` or `link:` dependencies are added to `package.json`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`relative-deps`](https://github.com/mweststrate/relative-deps) supports `"relativeDependencies"`
+    in `package.json` which (if they exist) override normal dependencies. In contrast
+    to `npm link` and local path installations:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Normal dependencies don’t have to be changed.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Relative dependencies are installed as if they came from the npm registry (not
+    via symbolic links).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`relative-deps` also helps with keeping locally installed relative dependencies
+    and their originals in sync.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[`npx link`](https://hirok.io/posts/avoid-npm-link) is a safer version of `npm
+    link` which doesn’t require a global install, among other benefits.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '13.4 `npx`: running bin scripts in npm packages without installing them'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[npx](https://docs.npmjs.com/cli/v8/commands/npx) is a shell command for running
+    bin scripts that is bundled with npm.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Its most common usage is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This command installs the package whose name is `package-name` in the npx cache
+    and runs the bin script that has the same name as the package – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: That means we can run bin scripts without installing them first. npx is most
+    useful for one-off invocations of bin scripts – for example, many frameworks provide
+    bin scripts for setting up new projects and these are often run via npx.
+  prefs: []
+  type: TYPE_NORMAL
+- en: After npx has used a package for the first time, it is available in its cache
+    and subsequent invocations are much faster. However, we can’t be sure how long
+    a package stays in the cache. Therefore, npx isn’t a substitute for installing
+    bin scripts globally or locally.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If a package comes with bin scripts whose names are different from its package
+    name, we can access them like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: 13.4.1 The npx cache
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Where is npx’s cache located?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'On Unix, we can find that out via the following command:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That returns a path similar to this one:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On Windows, we can use (one line broken up into two):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That returns a path similar to this one (single path broken up into two lines):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that npx’s cache is different from the cache that npm uses for the modules
+    it installs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Unix:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'npm cache: `$HOME/.npm/_cacache/`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'npx cache: `$HOME/.npm/_npx/`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Windows (PowerShell):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'npm cache: `$env:UserProfile\AppData\Local\npm-cache\_npx\`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'npx cache: `$env:UserProfile\AppData\Local\npm-cache\_cacache\`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The parent directory of both caches can be determined via:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on the npm cache, see [the npm documentation](https://docs.npmjs.com/cli/v8/commands/npm-cache).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In contrast to the npx cache, data is never removed from the npm cache, only
+    added. We can check its size as follows on Unix:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'And on Windows PowerShell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/13)'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,1395 @@
+- en: 8 Working with the file system on Node.js
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-file-system.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-file-system.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.1 [Concepts, patterns and conventions of Node’s file system APIs](ch_nodejs-file-system.html#concepts-patterns-and-conventions-of-nodes-file-system-apis)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.1.1 [Ways of accessing files](ch_nodejs-file-system.html#ways-of-accessing-files)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.1.2 [Function name prefixes](ch_nodejs-file-system.html#function-name-prefixes)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.1.3 [Important classes](ch_nodejs-file-system.html#important-classes)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2 [Reading and writing files](ch_nodejs-file-system.html#reading-and-writing-files)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '8.2.1 [Reading a file synchronously into a single string (optional: splitting
+    into lines)](ch_nodejs-file-system.html#reading-a-file-synchronously-into-a-single-string-optional-splitting-into-lines)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2.2 [Reading a file via a stream, line by line](ch_nodejs-file-system.html#reading-a-file-via-a-stream-line-by-line)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2.3 [Writing a single string to a file synchronously](ch_nodejs-file-system.html#writing-a-single-string-to-a-file-synchronously)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2.4 [Appending a single string to a file (synchronously)](ch_nodejs-file-system.html#appending-a-single-string-to-a-file-synchronously)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2.5 [Writing multiple strings to a file via stream](ch_nodejs-file-system.html#writing-multiple-strings-to-a-file-via-stream)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2.6 [Appending multiple strings to a file via a stream (asynchronously)](ch_nodejs-file-system.html#appending-multiple-strings-to-a-file-via-a-stream-asynchronously)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.3 [Handling line terminators across platforms](ch_nodejs-file-system.html#handling-line-terminators-across-platforms)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.3.1 [Reading line terminators](ch_nodejs-file-system.html#reading-line-terminators)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.3.2 [Writing line terminators](ch_nodejs-file-system.html#writing-line-terminators)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.4 [Traversing and creating directories](ch_nodejs-file-system.html#traversing-and-creating-directories)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.4.1 [Traversing a directory](ch_nodejs-file-system.html#traversing-a-directory)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.4.2 [Creating a directory (`mkdir`, `mkdir -p`)](ch_nodejs-file-system.html#creating-a-directory-mkdir-mkdir--p)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.4.3 [Ensuring that a parent directory exists](ch_nodejs-file-system.html#ensuring-that-a-parent-directory-exists)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.4.4 [Creating a temporary directory](ch_nodejs-file-system.html#creating-a-temporary-directory)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.5 [Copying, renaming, moving files or directories](ch_nodejs-file-system.html#copying-renaming-moving-files-or-directories)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.5.1 [Copying files or directories](ch_nodejs-file-system.html#copying-files-or-directories)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.5.2 [Renaming or moving files or directories](ch_nodejs-file-system.html#renaming-or-moving-files-or-directories)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.6 [Removing files or directories](ch_nodejs-file-system.html#removing-files-or-directories)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '8.6.1 [Removing files and arbitrary directories (shell: `rm`, `rm -r`)](ch_nodejs-file-system.html#fs.rmSync)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '8.6.2 [Removing an empty directory (shell: `rmdir`)](ch_nodejs-file-system.html#removing-an-empty-directory-shell-rmdir)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.6.3 [Clearing directories](ch_nodejs-file-system.html#clearing-directories)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.6.4 [Trashing files or directories](ch_nodejs-file-system.html#trashing-files-or-directories)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.7 [Reading and changing file system entries](ch_nodejs-file-system.html#reading-and-changing-file-system-entries)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.7.1 [Checking if a file or directory exists](ch_nodejs-file-system.html#checking-if-a-file-or-directory-exists)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '8.7.2 [Checking the stats of a file: Is it a directory? When was it created?
+    Etc.](ch_nodejs-file-system.html#checking-the-stats-of-a-file-is-it-a-directory-when-was-it-created-etc.)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '8.7.3 [Changing file attributes: permissions, owner, group, timestamps](ch_nodejs-file-system.html#changing-file-attributes-permissions-owner-group-timestamps)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.8 [Working with links](ch_nodejs-file-system.html#working-with-links)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.9 [Further reading](ch_nodejs-file-system.html#further-reading)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This chapter contains:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An overview of the different parts of Node’s file system APIs.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Recipes* (code snippets) for performing various tasks via those APIs.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Given that the focus of this book is on shell scripting, we only work with textual
+    data.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.1 Concepts, patterns and conventions of Node’s file system APIs
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 8.1.1 Ways of accessing files
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: We can read or write the whole content of a file via a string.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: We can open a stream for reading or a stream for writing and process a file
+    in smaller pieces, one at a time. Streams only allow sequential access.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: We can use file descriptors or FileHandles and get both sequential and random
+    access, via an API that is loosely similar to streams.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[*File descriptors*](https://nodejs.org/api/fs.html#file-descriptors_1) are
+    integer numbers that represent files. They are managed via these functions (only
+    the synchronous names are shown, there are also callback-based versions – `fs.open()`
+    etc.):'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.openSync(path, flags?, mode?)` opens a new file descriptor for a file at
+    a given path and returns it.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.closeSync(fd)` closes a file descriptor.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.fchmodSync(fd, mode)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.fchownSync(fd, uid, gid)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.fdatasyncSync(fd)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.fstatSync(fd, options?)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.fsyncSync(fd)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.ftruncateSync(fd, len?)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.futimesSync(fd, atime, mtime)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Only the synchronous API and the callback-based API use file descriptors. The
+    Promise-based API has a better abstraction, [class `FileHandle`](https://nodejs.org/api/fs.html#class-filehandle),
+    which is based on file descriptors. Instances are created via `fsPromises.open()`.
+    Various operations are provided via methods (not via functions):'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fileHandle.close()`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fileHandle.chmod(mode)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fileHandle.chown(uid, gid)`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Note that we don’t use (3) in this chapter – (1) and (2) are enough for our
+    purposes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.1.2 Function name prefixes
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '8.1.2.1 Prefix “l”: symbolic links'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Functions whose names start with an “l” usually operate on symbolic links:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`fs.lchmodSync()`, `fs.lchmod()`, `fsPromises.lchmod()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.lchownSync()`, `fs.lchown()`, `fsPromises.lchown()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.lutimesSync()`, `fs.lutimes()`, `fsPromises.lutimes()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '8.1.2.2 Prefix “f”: file descriptors'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Functions whose names start with an “f” usually manage file descriptors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`fs.fchmodSync()`, `fs.fchmod()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.fchownSync()`, `fs.fchown()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.fstatSync()`, `fs.fstat()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.1.3 Important classes
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Several classes play important roles in Node’s file system APIs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '8.1.3.1 URLs: an alternative to file system paths in strings'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Whenever a Node.js function accepts a file system path in a string (line A),
+    it usually also accepts an instance of `URL` (line B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Manually converting between paths and `file:` URLs seems easy but has surprisingly
+    many pitfalls: percent encoding or decoding, Windows drive letters, etc. Instead,
+    it’s better to use the following two functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`url.pathToFileURL()`](https://nodejs.org/api/url.html#urlpathtofileurlpath)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`url.fileURLToPath()`](https://nodejs.org/api/url.html#urlfileurltopathurl)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We don’t use file URLs in this chapter. Use cases for them are described in
+    [§7.11.1 “Class `URL`”](ch_nodejs-path.html#class-url).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.1.3.2 Buffers
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Class [`Buffer`](https://nodejs.org/api/buffer.html) represents fixed-length
+    byte sequences on Node.js. It is a subclass of `Uint8Array` (a [TypedArray](https://exploringjs.com/impatient-js/ch_typed-arrays.html)).
+    Buffers are mostly used when working with binary files and therefore of less interest
+    in this book.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Whenever Node.js accepts a Buffer, it also accepts a Uint8Array. Thus, given
+    that Uint8Arrays are cross-platform and Buffers aren’t, the former is preferable.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Buffers can do one thing that Uint8Arrays can’t: encoding and decoding text
+    in various encodings. If we need to encode or decode UTF-8 in Uint8Arrays, we
+    can use class [`TextEncoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder)
+    or class [`TextDecoder`](https://developer.mozilla.org/en-US/docs/Web/API/TextDecoder).
+    These classes are available on most JavaScript platforms:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 8.1.3.3 Node.js streams
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Some functions accept or return native Node.js streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`stream.Readable` is Node’s class for readable streams. Module `node:fs` uses
+    `fs.ReadStream` which is a subclass.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stream.Writable` is Node’s class for writable streams. Module `node:fs` uses
+    `fs.WriteStream` which is a subclass.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Instead of native streams, we can now use cross-platform *web streams* on Node.js.
+    How is explained in [§10 “Using web streams on Node.js”](ch_web-streams.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.2 Reading and writing files
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '8.2.1 Reading a file synchronously into a single string (optional: splitting
+    into lines)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.readFileSync(filePath, options?)`](https://nodejs.org/api/fs.html#fsreadfilesyncpath-options)
+    reads the file at `filePath` into a single string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Pros and cons of this approach (vs. using a stream):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pro: Easy to use and synchronous. Good enough for many use cases.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Con: Not a good choice for large files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Before we can process the data, we have to read it in its entirety.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Next, we’ll look into spliting the string we have read into lines.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.2.1.1 Splitting lines without including line terminators
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following code splits a string into lines while removing line terminators.
+    It works with Unix and Windows line terminators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: “EOL” stands for “end of line”. We accept both Unix line terminators (`'\n'`)
+    and Windows line terminators (`'\r\n'`, like the first one in the previous example).
+    For more information, see [§8.3 “Handling line terminators across platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.2.1.2 Splitting lines while including line terminators
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following code splits a string into lines while including line terminators.
+    It works with Unix and Windows line terminators (“EOL” stands for “end of line”):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: Line A contains a regular expression with [a lookbehind assertion](https://exploringjs.com/impatient-js/ch_regexps.html#regexp-lookbehind-assertions).
+    It matches at locations that are preceded by a match for the pattern `\r?\n` but
+    it doesn’t capture anything. Therefore, it doesn’t remove anything between the
+    string fragments that the input string is split into.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'On engines that don’t support lookbehind assertions ([see this table](https://caniuse.com/js-regexp-lookbehind)),
+    we can use the following solution:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: This solution is simple, but more verbose.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In both versions of `splitLinesWithEols()`, we again accept both Unix line terminators
+    (`'\n'`) and Windows line terminators (`'\r\n'`). For more information, see [§8.3
+    “Handling line terminators across platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.2.2 Reading a file via a stream, line by line
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can also read text files via streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We used the following external functionality:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.createReadStream(filePath, options?)`](https://nodejs.org/api/fs.html#fscreatereadstreampath-options)
+    creates a Node.js stream (an instance of `stream.Readable`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`stream.Readable.toWeb(streamReadable)`](https://nodejs.org/api/stream.html#streamreadabletowebstreamreadable)
+    converts a readable Node.js stream to a web stream (an instance of `ReadableStream`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The TransformStream class `ChunksToLinesStream` is explained in [§10.7.1 “Example:
+    transforming a stream of arbitrary chunks to a stream of lines”](ch_web-streams.html#ChunksToLinesStream).
+    *Chunks* are the pieces of data produced by streams. If we have a stream whose
+    chunks are strings with arbitrary lengths and pipe it through a ChunksToLinesStream,
+    then we get a stream whose chunks are lines.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Web streams are [asynchronously iterable](https://exploringjs.com/impatient-js/ch_async-iteration.html),
+    which is why we can use a `for-await-of` loop to iterate over lines.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we are not interested in text lines, then we don’t need `ChunksToLinesStream`,
+    can iterate over `webReadableStream` and get chunks with arbitrary lengths.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'More information:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Web streams are covered in [§10 “Using web streams on Node.js”](ch_web-streams.html).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Line terminators are covered in [§8.3 “Handling line terminators across platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Pros and cons of this approach (vs. reading a single string):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pro: Works well with large files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can process the data incrementally, in smaller pieces and don’t have to wait
+    for everything to be read.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Con: More complicated to use and not synchronous.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2.3 Writing a single string to a file synchronously
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.writeFileSync(filePath, str, options?)`](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options)
+    writes `str` to a file at `filePath`. If a file already exists at that path, it
+    is overwritten.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following code shows how to use this function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: For information on line terminators, see [§8.3 “Handling line terminators across
+    platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pros and cons (vs. using a stream):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pro: Easy to use and synchronous. Works for many use cases.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Con: Not suited for large files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2.4 Appending a single string to a file (synchronously)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code appends a line of text to an existing file:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also use `fs.writeFileSync()` to perform this task:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This code is almost the same as the one we used to overwrite existing content
+    (see the previous section for more information). The only difference is that we
+    added the option `.flag`: The value `''a''` means that we append data. Other possible
+    values (e.g. to throw an error if a file doesn’t exist yet) are explained in [the
+    Node.js documentation](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Watch out: In some functions, this option is named `.flag`, in others `.flags`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.2.5 Writing multiple strings to a file via stream
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code uses a stream to write multiple strings to a file:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We used the following functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.createWriteStream(path, options?)`](https://nodejs.org/api/fs.html#fscreatewritestreampath-options)
+    creates a Node.js stream (an instance of `stream.Writable`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`stream.Writable.toWeb(streamWritable)`](https://nodejs.org/api/stream.html#streamwritabletowebstreamwritable)
+    converts a writable Node.js stream to a web stream (an instance of `WritableStream`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'More information:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: WritableStreams and Writers are covered in [§10 “Using web streams on Node.js”](ch_web-streams.html).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Line terminators are covered in [§8.3 “Handling line terminators across platforms”](ch_nodejs-file-system.html#handling-line-terminators-across-platforms).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Pros and cons (vs. writing a single string):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pro: Works well with large files because we can write the data incrementally,
+    in smaller pieces.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Con: More complicated to use and not synchronous.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.2.6 Appending multiple strings to a file via a stream (asynchronously)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code uses a stream to append text to an existing file:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This code is almost the same as the one we used to overwrite existing content
+    (see the previous section for more information). The only difference is that we
+    added the option `.flags`: The value `''a''` means that we append data. Other
+    possible values (e.g. to throw an error if a file doesn’t exist yet) are explained
+    in [the Node.js documentation](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Watch out: In some functions, this option is named `.flag`, in others `.flags`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.3 Handling line terminators across platforms
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Alas, not all platform have the same *line terminator* characters that mark
+    the *end of line* (EOL):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: On Windows, EOL is `'\r\n'`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On Unix (incl. macOS), EOL is `'\n'`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: To handle EOL in a manner that works on all platforms, we can use several strategies.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.3.1 Reading line terminators
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: When reading text, it’s best to recognize both EOLs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: What might that look like when splitting a text into lines? We can include the
+    EOLs (in either format) at the ends. That enables us to change as little as possible
+    if we modify those lines and write them to a file.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'When processing lines with EOLs, it’s sometimes useful to remove them – e.g. via
+    the following function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 8.3.2 Writing line terminators
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'When it comes to writing line terminators, we have two options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Constant `EOL` in module `''node:os''`](https://nodejs.org/api/os.html#oseol)
+    contains the EOL of the current platform.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can detect the EOL format of an input file and use that when we change that
+    file.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.4 Traversing and creating directories
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 8.4.1 Traversing a directory
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following function traverses a directory and lists all of its descendants
+    (its children, the children of its children, etc.):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We used this functionality:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.readdirSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsreaddirsyncpath-options)
+    returns the children of the directory at `thePath`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If option `.withFileTypes` is `true`, the function returns *directory entries*,
+    instances of [`fs.Dirent`](https://nodejs.org/api/fs.html#class-fsdirent). These
+    have properties such as:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`dirent.name`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`dirent.isDirectory()`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`dirent.isFile()`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`dirent.isSymbolicLink()`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If option `.withFileTypes` is `false` or missing, the function returns strings
+    with file names.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code shows `traverseDirectory()` in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 8.4.2 Creating a directory (`mkdir`, `mkdir -p`)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use [the following function](https://nodejs.org/api/fs.html#fsmkdirsyncpath-options)
+    to create directories:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`options.recursive` determines how the function creates the directory at `thePath`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If `.recursive` is missing or `false`, `mkdirSync()` returns `undefined` and
+    an exception is thrown if:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A directory (or file) already exists at `thePath`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The parent directory of `thePath` does not exist.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `.recursive` is `true`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It’s OK if there is already a directory at `thePath`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The ancestor directories of `thePath` are created as needed.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`mkdirSync()` returns the path of the first newly created directory.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is `mkdirSync()` in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
+    lists all descendants of the directory at `dirPath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.4.3 Ensuring that a parent directory exists
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we want to set up a nested file structure on demand, we can’t always be
+    sure that the ancestor directories exist when we create a new file. Then the following
+    function helps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Here we can see `ensureParentDirectory()` in action (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 8.4.4 Creating a temporary directory
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.mkdtempSync(pathPrefix, options?)`](https://nodejs.org/api/fs.html#fsmkdtempsyncprefix-options)
+    creates a temporary directory: It appends 6 random characters to `pathPrefix`,
+    creates a directory at the new path and returns that path.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`pathPrefix` shouldn’t end with a capital “X” because some platforms replace
+    trailing Xs with random characters.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we want to create our temporary directory inside an operating-system-specific
+    global temporary directory, we can use [function `os.tmpdir()`](https://nodejs.org/api/os.html#ostmpdir):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: It’s important to note that temporary directories are not automatically removed
+    when a Node.js script terminates. We either have to delete it ourselves or rely
+    on the operating system to periodically clean up its global temporary directory
+    (which it may or may not do).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.5 Copying, renaming, moving files or directories
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 8.5.1 Copying files or directories
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.cpSync(srcPath, destPath, options?)`](https://nodejs.org/api/fs.html#fscpsyncsrc-dest-options):
+    copies a file or directory from `srcPath` to `destPath`. Interesting options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.recursive` (default: `false`): Directories (including empty ones) are only
+    copied if this option is `true`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.force` (default: `true`): If `true`, existing files are overwritten. If `false`,
+    existing files are preserved.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In the latter case, setting `.errorOnExist` to `true` leads to errors being
+    thrown if file paths clash.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.filter` is a function that lets us control which files are copied.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.preserveTimestamps` (default: `false`): If `true`, the copies in `destPath`
+    get the same timestamps as the originals in `srcPath`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is the function in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
+    lists all descendants of the directory at `dirPath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.5.2 Renaming or moving files or directories
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.renameSync(oldPath, newPath)`](https://nodejs.org/api/fs.html#fsrenamesyncoldpath-newpath)
+    renames or moves a file or a directory from `oldPath` to `newPath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s use this function to rename a directory:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Here we use the function to move a file:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
+    lists all descendants of the directory at `dirPath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.6 Removing files or directories
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '8.6.1 Removing files and arbitrary directories (shell: `rm`, `rm -r`)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.rmSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsrmsyncpath-options)
+    removes a file or directory at `thePath`. Interesting options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.recursive` (default: `false`): Directories (including empty ones) are only
+    removed if this option is `true`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.force` (default: `false`): If `false`, an exception will be thrown if there
+    is no file or directory at `thePath`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let’s use `fs.rmSync()` to remove a file:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: Here we use `fs.rmSync()` to recursively remove a non-empty directory.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
+    lists all descendants of the directory at `dirPath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '8.6.2 Removing an empty directory (shell: `rmdir`)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.rmdirSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsrmdirsyncpath-options)
+    removes an empty directory (an exception is thrown if a directory isn’t empty).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following code shows how this function works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
+    lists all descendants of the directory at `dirPath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.6.3 Clearing directories
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'A script that saves its output to a directory `dir`, often needs to *clear*
+    `dir` before it starts: Remove every file in `dir` so that it is empty. The following
+    function does that.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We used two file system functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`fs.readdirSync(dirPath)` returns the names of all children of the directory
+    at `dirPath`. It is explained in [§8.4.1 “Traversing a directory”](ch_nodejs-file-system.html#traversing-a-directory).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fs.rmSync(pathName, options?)` removes files and directories (including non-empty
+    ones). It is explained in [§8.6.1 “Removing files and arbitrary directories (shell:
+    `rm`, `rm -r`)”](ch_nodejs-file-system.html#fs.rmSync).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is an example of using `clearDirectory()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 8.6.4 Trashing files or directories
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[The library `trash`](https://github.com/sindresorhus/trash) moves files and
+    folders to the trash. It works on macOS, Windows, and Linux (where support is
+    limited and help is wanted). This is an example from its readme file:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`trash()` accepts either an Array of strings or a string as its first parameter.
+    Any string can be a glob pattern (with asterisks and other meta-characters).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 8.7 Reading and changing file system entries
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 8.7.1 Checking if a file or directory exists
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.existsSync(thePath)`](https://nodejs.org/api/fs.html#fsexistssyncpath)
+    returns `true` if a file or directory exists at `thePath`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
+    lists all descendants of the directory at `dirPath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '8.7.2 Checking the stats of a file: Is it a directory? When was it created?
+    Etc.'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`fs.statSync(thePath, options?)`](https://nodejs.org/api/fs.html#fsstatsyncpath-options)
+    returns an instance of `fs.Stats` with information on the file or directory at
+    `thePath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Interesting `options`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.throwIfNoEntry` (default: `true`): What happens if there is no entity at
+    `path`?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If this option is `true`, an exception is thrown.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If it is `false`, `undefined` is returned.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.bigint` (default: `false`): If `true`, this function uses bigints for numeric
+    values (such as timestamps, see below).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Properties of instances of [`fs.Stats`](https://nodejs.org/api/fs.html#class-fsstats):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: What kind of file system entry is it?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.isFile()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.isDirectory()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.isSymbolicLink()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.size` is the size in bytes'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Timestamps:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'There are three kinds of timestamps:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.atime`: time of last access'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.mtime`: time of last modification'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.birthtime`: time of creation'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Each of these timestamps can be specified with three different units – for
+    example, `atime`:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.atime`: instance of `Date`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.atimeMS`: milliseconds since the POSIX Epoch'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`stats.atimeNs`: nanoseconds since the POSIX Epoch (requires option `.bigint`)'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In the following example, we use `fs.statSync()` to implement a function `isDirectory()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Function `traverseDirectory(dirPath)`](ch_nodejs-file-system.html#traversing-a-directory)
+    lists all descendants of the directory at `dirPath`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '8.7.3 Changing file attributes: permissions, owner, group, timestamps'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s briefly look at functions for changing file attributes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.chmodSync(path, mode)`](https://nodejs.org/api/fs.html#fschmodsyncpath-mode)
+    changes the permission of a file.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.chownSync(path, uid, gid)`](https://nodejs.org/api/fs.html#fschownsyncpath-uid-gid)
+    changes the owner and group of a file.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.utimesSync(path, atime, mtime)`](https://nodejs.org/api/fs.html#fsutimessyncpath-atime-mtime)
+    changes the timestamps of a file:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`atime`: time of last access'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`mtime`: time of last modification'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.8 Working with links
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Functions for working with hard links:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.linkSync(existingPath, newPath)`](https://nodejs.org/api/fs.html#fslinksyncexistingpath-newpath)
+    create a hard link.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.unlinkSync(path)`](https://nodejs.org/api/fs.html#fsunlinksyncpath) removes
+    a hard link and possibly the file it points to (if it is the last hard link to
+    that file).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Functions for working with symbolic links:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.symlinkSync(target, path, type?)`](https://nodejs.org/api/fs.html#fssymlinksynctarget-path-type)
+    creates a symbolic link from `path` to `target`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.readlinkSync(path, options?)`](https://nodejs.org/api/fs.html#fsreadlinksyncpath-options)
+    returns the target of the symbolic link at `path`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following functions operate on symbolic links without dereferencing them
+    (note the name prefix “l”):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.lchmodSync(path, mode)`](https://nodejs.org/api/fs.html#fslchmodsyncpath-mode)
+    changes the permissions of the symbolic link at `path`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.lchownSync(path, uid, gid)`](https://nodejs.org/api/fs.html#fslchownsyncpath-uid-gid)
+    changes user and group of the symbolic link at `path`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.lutimesSync(path, atime, mtime)`](https://nodejs.org/api/fs.html#fslutimessyncpath-atime-mtime)
+    changes the timestamps of the symbolic link at `path`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.lstatSync(path, options?)`](https://nodejs.org/api/fs.html#fslstatsyncpath-options)
+    returns the stats (timestamps etc.) of the symbolic link at `path`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Other useful functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.realpathSync(path, options?)`](https://nodejs.org/api/fs.html#fsrealpathsyncpath-options)
+    computes the canonical pathname by resolving dots (`.`), double dots (`..`), and
+    symbolic links.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Options of functions that affect how symbolic links are handled:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`fs.cpSync(src, dest, options?)`](https://nodejs.org/api/fs.html#fscpsyncsrc-dest-options):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.dereference` (default: `false`): If `true`, copy the files that symbolic
+    links points to, not the symbolic links themselves.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.verbatimSymlinks` (default: `false`): If `false`, the target of a copied
+    symbolic link will be updated so that it still points to the same location. If
+    `true`, the target won’t be changed.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 8.9 Further reading
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '“JavaScript for impatient programmers” has several chapters on writing asynchronous
+    code:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Foundations of asynchronous programming in JavaScript”](https://exploringjs.com/impatient-js/ch_async-js.html)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Promises for asynchronous programming”](https://exploringjs.com/impatient-js/ch_promises.html)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Async functions”](https://exploringjs.com/impatient-js/ch_async-functions.html)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Asynchronous iteration”](https://exploringjs.com/impatient-js/ch_async-iteration.html)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/8)'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,1280 @@
+- en: '4 An overview of Node.js: architecture, APIs, event loop, concurrency'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-overview.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-overview.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.1 [The Node.js platform](ch_nodejs-overview.html#the-node.js-platform)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.1.1 [Global Node.js variables](ch_nodejs-overview.html#global-node.js-variables)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.1.2 [The built-in Node.js modules](ch_nodejs-overview.html#the-built-in-node.js-modules)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.1.3 [The different styles of Node.js functions](ch_nodejs-overview.html#the-different-styles-of-node.js-functions)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2 [The Node.js event loop](ch_nodejs-overview.html#the-node.js-event-loop)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.1 [Running to completion makes code simpler](ch_nodejs-overview.html#running-to-completion-makes-code-simpler)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.2 [Why does Node.js code run in a single thread?](ch_nodejs-overview.html#why-does-node.js-code-run-in-a-single-thread)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.3 [The real event loop has multiple phases](ch_nodejs-overview.html#the-real-event-loop-has-multiple-phases)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.4 [Next-tick tasks and microtasks](ch_nodejs-overview.html#next-tick-tasks-and-microtasks)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.5 [Comparing different ways of directly scheduling tasks](ch_nodejs-overview.html#comparing-different-ways-of-directly-scheduling-tasks)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.6 [When does a Node.js app exit?](ch_nodejs-overview.html#when-does-a-node.js-app-exit)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '4.3 [libuv: the cross-platform library that handles asynchronous I/O (and more)
+    for Node.js](ch_nodejs-overview.html#libuv-the-cross-platform-library-that-handles-asynchronous-io-and-more-for-node.js)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.3.1 [How libuv handles asynchronous I/O](ch_nodejs-overview.html#how-libuv-handles-asynchronous-io)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.3.2 [How libuv handles blocking I/O](ch_nodejs-overview.html#how-libuv-handles-blocking-io)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.3.3 [libuv functionality beyond I/O](ch_nodejs-overview.html#libuv-functionality-beyond-io)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.4 [Escaping the main thread with user code](ch_nodejs-overview.html#escaping-the-main-thread-with-user-code)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.4.1 [Worker threads](ch_nodejs-overview.html#worker-threads)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.4.2 [Clusters](ch_nodejs-overview.html#clusters)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.4.3 [Child processes](ch_nodejs-overview.html#child-processes)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.5 [Sources of this chapter](ch_nodejs-overview.html#sources-of-this-chapter)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.5.1 [Acknowledgement](ch_nodejs-overview.html#acknowledgement)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This chapter gives an overview of how Node.js works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: What its architecture looks like.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How its APIs are structured.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A few highlights of its global variables and built-in modules.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How it runs JavaScript in a single thread via an *event loop*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Options for concurrent JavaScript on this platform.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.1 The Node.js platform
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following diagram provides an overview of how Node.js is structured:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/a4e5a698987cc980760cc6874988c161.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'The APIs available to a Node.js app consist of:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The ECMAScript standard library (which is part of the language)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Node.js APIs (which are not part of the language proper):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Some of the APIs are provided via global variables:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Especially cross-platform web APIs such as `fetch` and `CompressionStream` fall
+    into this category.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: But a few Node.js-only APIs are global, too – for example, `process`.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The remaining Node.js APIs are provided via built-in modules – for example,
+    `'node:path'` (functions and constants for handling file system paths) and `'node:fs'`
+    (functionality related to the file system).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The Node.js APIs are partially implemented in JavaScript, partially in C++.
+    The latter is needed to interface with the operating system.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Node.js runs JavaScript via an embedded V8 JavaScript engine (the same engine
+    used by Google’s Chrome browser).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.1.1 Global Node.js variables
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'These are a few highlights of [Node’s global variables](https://nodejs.org/api/globals.html):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`crypto` gives us access to a web-compatible [crypto API](https://developer.mozilla.org/en-US/docs/Web/API/crypto_property).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`console` has much overlap with the same global variable in browsers (`console.log()`
+    etc.).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`fetch()` lets us use [the Fetch browser API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`process` contains an instance of [class `Process`](https://nodejs.org/api/process.html)
+    and gives us access to command line arguments, standard input, standard out, and
+    more.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`structuredClone()` is a browser-compatible function for cloning objects.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`URL` is a browser-compatible class for handling URLs.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: More global variables are mentioned throughout this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.1.1.1 Using modules instead of global variables
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following built-in modules provide alternatives to global variables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`''node:console''` is an alternative to the global variable `console`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`''node:process''` is an alternative to the global variable `process`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: In principle, using modules is cleaner than using global variables. However,
+    using the global variables `console` and `process` are such established patterns
+    that deviating from them also has downsides.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.1.2 The built-in Node.js modules
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Most of Node’s APIs are provided via modules. These are a few frequently used
+    ones (in alphabetical order):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`''node:assert/strict''`](https://nodejs.org/api/assert.html): Assertions
+    are functions that check if a condition is met and report an error if not. They
+    can be used in application code and for unit testing. This is an example of using
+    this API:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[`''node:child_process''`](https://nodejs.org/api/child_process.html) is for
+    running native commands synchronously or in separate processes. This module is
+    described in [§12 “Running shell commands in child processes”](ch_nodejs-child-process.html).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`''node:fs''`](https://nodejs.org/api/fs.html) provides file system operations
+    such as reading, writing, copying and deleting files and directories. For more
+    information, see [§8 “Working with the file system on Node.js”](ch_nodejs-file-system.html).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`''node:os''`](https://nodejs.org/api/os.html) contains operating-system-specific
+    constants and utility functions. Some of them are explained in [§7 “Working with
+    file system paths and file URLs on Node.js”](ch_nodejs-path.html).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`''node:path''`](https://nodejs.org/api/path.html) is a cross-platform API
+    for working with file system paths. It is described in [§7 “Working with file
+    system paths and file URLs on Node.js”](ch_nodejs-path.html).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`''node:stream''`](https://nodejs.org/api/stream.html) contains a Node.js-specific
+    streams API which are explained in [§9 “Native Node.js streams”](ch_nodejs-streams.html).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Node.js also supports [the cross-platform web streams API](https://nodejs.org/api/webstreams.html)
+    which is the subject of [§10 “Using web streams on Node.js”](ch_web-streams.html).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`''node:util''`](https://nodejs.org/api/util.html) contains various utility
+    functions.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Function `util.parseArgs()`](https://nodejs.org/api/util.html#utilparseargsconfig)
+    is described in [§16 “Parsing command line arguments with `util.parseArgs()`”](ch_node-util-parseargs.html).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Module `''node:module''` contains function `builtinModules()` which returns
+    an Array with the specifiers of all built-in modules:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 4.1.3 The different styles of Node.js functions
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In this section, we use the following import:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Node’s functions come in three different styles. Let’s look at the built-in
+    module `''node:fs''` as an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A synchronous style with normal functions – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.readFileSync(path, options?): string|Buffer`](https://nodejs.org/api/fs.html#fsreadfilesyncpath-options)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Two asynchronous styles:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'An asynchronous style with callback-based functions – for example:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fs.readFile(path, options?, callback): void`](https://nodejs.org/api/fs.html#fsreadfilepath-options-callback)'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'An asynchronous style with Promise-based functions – for example:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`fsPromises.readFile(path, options?): Promise<string|Buffer>`](https://nodejs.org/api/fs.html#fspromisesreadfilepath-options)'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The three examples we have just seen, demonstrate the naming convention for
+    functions with similar functionality:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A callback-based function has a base name: `fs.readFile()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Its Promise-based version has the same name, but in a different module: `fsPromises.readFile()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The name of its synchronous version is the base name plus the suffix “Sync”:
+    `fs.readFileSync()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Let’s take a closer look at how these three styles work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.1.3.1 Synchronous functions
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Synchronous functions are simplest – they immediately return values and throw
+    errors as exceptions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 4.1.3.2 Promise-based functions
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Promise-based functions return Promises that are fulfilled with results and
+    rejected with errors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note the module specifier in line A: The Promise-based API is located in a
+    different module.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Promises are explained in more detail in [“JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_promises.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.1.3.3 Callback-based functions
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Callback-based functions pass results and errors to callbacks which are their
+    last parameters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: This style is explained in more detail in [the Node.js documentation](https://nodejs.org/en/knowledge/getting-started/control-flow/what-are-callbacks/).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2 The Node.js event loop
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'By default, Node.js executes all JavaScript in a single thread, the *main thread*.
+    The main thread continuously runs the *event loop* – a loop that executes chunks
+    of JavaScript. Each chunk is a callback and can be considered a cooperatively
+    scheduled task. The first task contains the code (coming from a module or standard
+    input) that we start Node.js with. Other tasks are usually added later, due to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Code manually adding tasks
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: I/O (input or output) with the file system, with network sockets, etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A first approximation of the event loop looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/51a4aa1ae3b84e71c9266661c852658e.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'That is, the main thread runs code similar to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: The event loop takes callbacks out of a *task queue* and executes them in the
+    main thread. Dequeuing *blocks* (pauses the main thread) if the task queue is
+    empty.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We’ll explore two topics later:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: How to exit from the event loop.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How to get around the limitation of JavaScript running in a single thread.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Why is this loop called *event loop*? Many tasks are added in response to events,
+    e.g. ones sent by the operating system when input data is ready to be processed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'How are callbacks added to the task queue? These are common possibilities:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: JavaScript code can add tasks to the queue so that they are executed later.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: When an *event emitter* (a source of events) fires an event, the invocations
+    of the event listeners are added to the task queue.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Callback-based asynchronous operations in the Node.js API follow this pattern:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We ask for something and give Node.js a callback function with which it can
+    report the result to us.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Eventually, the operation runs either in the main thread or in an external thread
+    (more on that later).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: When it is done, an invocation of the callback is added to the task queue.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code shows an asynchronous callback-based operation in action.
+    It reads a text file from the file system:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is the ouput:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`fs.readFile()` executes the code that reads the file in another thread. In
+    this case, the code succeeds and adds this callback to the task queue:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 4.2.1 Running to completion makes code simpler
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'An important rule for how Node.js runs JavaScript code is: Each task finishes
+    (“runs to completion”) before other tasks run. We can see that in the previous
+    example: `''AFTER''` in line B is logged before the result is logged in line A
+    because the initial task finishes before the task with the invocation of `handleResult()`
+    runs.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Running to completion means that task lifetimes don’t overlap and we don’t
+    have to worry about shared data being changed in the background. That simplifies
+    Node.js code. The next example demonstrates that. It implements a simple HTTP
+    server:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: We run this code via `node server.mjs`. After that, the code starts and waits
+    for HTTP requests. We can send them by using a web browser to go to `http://localhost:8080`.
+    Each time we reload that HTTP resource, Node.js invokes the callback that starts
+    in line A. It serves a message with the current value of variable `requestCount`
+    (line B) and increments it (line C).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Each invocation of the callback is a new task and variable `requestCount` is
+    shared between tasks. Due to running to completion, it is easy to read and update.
+    There is no need to synchronize with other concurrently running tasks because
+    there aren’t any.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2.2 Why does Node.js code run in a single thread?
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Why does Node.js code run in a single thread (with an event loop) by default?
+    That has two benefits:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: As we have already seen, sharing data between tasks is simpler if there is only
+    a single thread.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In traditional multi-threaded code, an operation that takes longer to complete
+    blocks the current thread until the operation is finished. Examples of such operations
+    are reading a file or processing HTTP requests. Performing many of these operations
+    is expensive because we have to create a new thread each time. With an event loop,
+    the per-operation cost is lower, especially if each operation doesn’t do much.
+    That’s why event-loop-based web servers can handle higher loads than thread-based
+    ones.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Given that some of Node’s asynchronous operations run in threads other than
+    the main thread (more on that soon) and report back to JavaScript via the task
+    queue, Node.js is not really single-threaded. Instead, we use a single thread
+    to coordinate operations that run concurrently and asynchronously (in the main
+    thread).
+  prefs: []
+  type: TYPE_NORMAL
+- en: This concludes our first look at the event loop. **Feel free to skip the remainder
+    of this section** if a superficial explanation is enough for you. Read on to learn
+    more details.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2.3 The real event loop has multiple phases
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The real event loop has multiple task queues from which it reads in multiple
+    phases ([you can check out some of the JavaScript code in the GitHub repository
+    `nodejs/node`](https://github.com/nodejs/node/blob/main/lib/internal/process/task_queues.js)).
+    The following diagram shows the most important ones of those phases:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/5d5cabb99a6fc7037b402c23a71f36e1.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: What do the event loop phases do that are shown in the diagram?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Phase “timers” invokes *timed tasks* that were added to its queue by:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`setTimeout(task, delay=1)`](https://nodejs.org/api/timers.html#settimeoutcallback-delay-args)
+    runs the callback `task` after `delay` milliseconds.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`setInterval(task, delay=1)`](https://nodejs.org/api/timers.html#setintervalcallback-delay-args)
+    runs the callback `task` repeatedly, with pauses lasting `delay` milliseconds.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Phase “poll” retrieves and processes I/O events and runs I/O-related tasks from
+    its queue.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Phase “check” (the “immediate phase”) executes tasks scheduled via:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`setImmediate(task)`](https://nodejs.org/api/timers.html#setimmediatecallback-args)
+    runs the callback `task` as soon as possible (“immediately” after phase “poll”).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Each phase runs until its queue is empty or until a maximum number of tasks
+    was processed. Except for “poll”, each phase waits until its next turn before
+    it processes tasks that were added during its run.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2.3.1 Phase “poll”
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: If the poll queue is not empty, the poll phase will go through it and run its
+    tasks.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Once the poll queue is empty:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If there are `setImmediate()` tasks, processing advances to the “check” phase.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If there are timer tasks that are ready, processing advances to the “timers”
+    phase.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, this phase blocks the whole main thread and waits until new tasks
+    are added to the poll queue (or until this phase ends, see below). These are processed
+    immediately.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If this phase takes longer than a system-dependent time limit, it ends and the
+    next phase runs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2.4 Next-tick tasks and microtasks
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'After each invoked task, a “sub-loop” runs that consists of two phases:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/433fc416f821b72a5dd9a3168a34f704.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'The sub-phases handle:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Next-tick tasks, as enqueued via `process.nextTick()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Microtasks, as enqueued via `queueMicrotask()`, Promise reactions, etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Next-tick tasks are Node.js-specific, Microtasks are a cross-platform web standard
+    (see [MDN’s support table](https://developer.mozilla.org/en-US/docs/Web/API/queueMicrotask#browser_compatibility)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: This sub-loop runs until both queues are empty. Tasks added during its run,
+    are processed immediately – the sub-loop does not wait until its next turn.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2.5 Comparing different ways of directly scheduling tasks
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use the following functions and methods to add callbacks to one of the
+    task queues:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Timed tasks (phase “timers”)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`setTimeout()` (web standard)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`setInterval()` (web standard)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Untimed tasks (phase “check”)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`setImmediate()` (Node.js-specific)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Tasks that run immediately after the current task:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`process.nextTick()` (Node.js-specific)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`queueMicrotask()`: (web standard)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It’s important to note that when timing a task via a delay, we are specifying
+    the earliest possible time that the task will run. Node.js cannot always run them
+    at exactly the scheduled time because it can only check between tasks if any timed
+    tasks are due. Therefore, a long-running task can cause timed tasks to be late.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2.5.1 Next-tick tasks and microtasks vs. normal tasks
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Consider the following code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We use `setImmediate()` to avoid a pecularity of ESM modules: They are executed
+    in microtasks, which means that if we enqueue microtasks at the top level of an
+    ESM module, they run before next-tick tasks. As we’ll see next, that’s different
+    in most other contexts.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is the output of the previous code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Observations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: All next-tick tasks are executed immediately after `enqueueTasks()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: They are followed by all microtasks, including Promise reactions.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Phase “timers” comes after the immediate phase. That’s when the timed tasks
+    are executed.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We have added immediate tasks during the immediate (“check”) phase (line A and
+    line B). They show up last in the output, which means that they were not executed
+    during the current phase, but during the next immediate phase.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.5.2 Enqueuing next-tick tasks and microtasks during their phases
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The next code examines what happens if we enqueue a next-tick task during the
+    next-tick phase and a microtask during the microtask phase:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is the output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Observations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Next-tick tasks are executed first.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: “nextTick 2” in enqueued during the next-tick phase and immediately executed.
+    Execution only continues once the next-tick queue is empty.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The same is true for microtasks.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We enqueue “nextTick 3” during the microtask phase and execution loops back
+    to the next-tick phase. These subphases are repeated until both their queues are
+    empty. Only then does execution move on to the next global phases: First the “timers”
+    phase (“setTimeout 1”). Then the immediate phase (“setImmediate 1”).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.2.5.3 Starving out event loop phases
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following code explores which kinds of tasks can *starve out* event loop
+    phases (prevent them from running via infinite recursion):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: The “timers” phase and the immediate phase don’t execute tasks that are enqueued
+    during their phases. That’s why `timers()` and `immediate()` don’t starve out
+    `fs.readFile()` which reports back during the “poll” phase (there is also a Promise
+    reaction, but let’s ignore that here).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Due to how next-tick tasks and microtasks are scheduled, both `nextTick()` and
+    `microtasks()` prevent the output in the last line.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.2.6 When does a Node.js app exit?
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'At the end of each iteration of the event loop, Node.js checks if it’s time
+    to exit. It keeps a reference count of pending *timeouts* (for timed tasks):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Scheduling a timed task via `setImmediate()`, `setInterval()`, or `setTimeout()`
+    increases the reference count.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Running a timed task decreases the reference count.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the reference count is zero at the end of an event loop iteration, Node.js
+    exits.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can see that in the following example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: Node.js waits until the Promise returned by `timeout()` is fulfilled. Why? Because
+    the task we schedule in line A keeps the event loop alive.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In contrast, creating Promises does not increase the reference count:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: In this case, execution temporarily leaves this (main) task during `await` in
+    line A. At the end of the event loop, the reference count is zero and Node.js
+    exits. However, the exit is not successful. That is, the exit code is not 0, it
+    is 13 ([“Unfinished Top-Level Await”](https://nodejs.org/api/process.html#exit-codes)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can manually control whether a timeout keeps the event loop alive: By default,
+    tasks scheduled via `setImmediate()`, `setInterval()`, and `setTimeout()` keep
+    the event loop alive as long as they are pending. These functions return instances
+    of [class `Timeout`](https://nodejs.org/api/timers.html#class-timeout) whose method
+    `.unref()` changes that default so that the timeout being active won’t prevent
+    Node.js from exiting. Method `.ref()` restores the default.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Tim Perry mentions a use case for `.unref()`](https://httptoolkit.tech/blog/unblocking-node-with-unref/):
+    His library used `setInterval()` to repeatedly run a background task. That task
+    prevented applications from exiting. He fixed the issue via `.unref()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '4.3 libuv: the cross-platform library that handles asynchronous I/O (and more)
+    for Node.js'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: libuv is a library written in C that supports many platforms (Windows, macOS,
+    Linux, etc.). Node.js uses it to handle I/O and more.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.3.1 How libuv handles asynchronous I/O
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Network I/O is asynchronous and doesn’t block the current thread. Such I/O
+    includes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: TCP
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: UDP
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Terminal I/O
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pipes (Unix domain sockets, Windows named pipes, etc.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: To handle asynchronous I/O, libuv uses native kernel APIs and subscribes to
+    I/O events (epoll on Linux; kqueue on BSD Unix incl. macOS; event ports on SunOS;
+    IOCP on Windows). It then gets notifications when they occur. All of these activities,
+    including the I/O itself, happen on the main thread.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.3.2 How libuv handles blocking I/O
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Some native I/O APIs are blocking (not asynchronous) – for example, file I/O
+    and some DNS services. libuv invokes these APIs from threads in a thread pool
+    (the so-called “worker pool”). That enables the main thread to use these APIs
+    asynchronously.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.3.3 libuv functionality beyond I/O
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'libuv helps Node.js with more than just with I/O. Other functionality includes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Running tasks in the thread pool
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Signal handling
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: High resolution clock
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Threading and synchronization primitives
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As an aside, libuv has its own event loop whose source code you can check out
+    in the GitHub repository `libuv/libuv` ([function `uv_run()`](https://github.com/libuv/libuv/blob/v1.x/src/unix/core.c)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.4 Escaping the main thread with user code
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'If we want to keep Node.js responsive to I/O, we should avoid performing long-running
+    computations in main-thread tasks. There are two options for doing so:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Partitioning: We can split up the computation into smaller pieces and run each
+    piece via `setImmediate()`. That enables the event loop to perform I/O between
+    the pieces.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An upside is that we can perform I/O in each piece.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A downside is that we still slow down the event loop.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Offloading: We can perform our computation in a different thread or process.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Downsides are that we can’t perform I/O from threads other than the main thread
+    and that communicating with outside code becomes more complicated.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Upsides are that we don’t slow down the event loop, that we can make better
+    use of multiple processor cores, and that errors in other threads don’t affect
+    the main thread.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next subsections cover a few options for offloading.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.4.1 Worker threads
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[Worker Threads](https://nodejs.org/api/worker_threads.html) implement [the
+    cross-platform Web Workers API](https://developer.mozilla.org/en-US/docs/Web/API/Worker#browser_compatibility)
+    with a few differences – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Worker Threads have to be imported from a module, Web Workers are accessed via
+    a global variable.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Inside a worker, listening to messages and posting messages is done via methods
+    of the global object in browsers. On Node.js, we import `parentPort` instead.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can use most Node.js APIs from workers. In browsers, our choice is more limited
+    (we can’t use the DOM, etc.).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On Node.js, more objects are transferable ([all objects whose classes extend
+    the internal class `JSTransferable`](https://github.com/nodejs/node/issues/37080))
+    than in browsers.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'On one hand, Worker Threads really are threads: They are more lightweight than
+    processes and run in the same process as the main thread.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'On the other hand:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Each worker runs its own event loop.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Each worker has its own JavaScript engine instance and its own Node.js instance
+    – including separate global variables.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (Specifically, each worker is an [*V8 isolate*](https://chromium.googlesource.com/chromium/src/+/master/third_party/blink/renderer/bindings/core/v8/V8BindingDesign.md)
+    that has its own JavaScript heap but shares its operating system heap with other
+    threads.)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Sharing data between threads is limited:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can share binary data/numbers via SharedArrayBuffers.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`Atomics`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics)
+    offers atomic operations and synchronization primitives that help when using SharedArrayBuffers.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[The Channel Messaging API](https://developer.mozilla.org/en-US/docs/Web/API/Channel_Messaging_API)
+    lets us send data (“messages”) over two-way channels. The data is either *cloned*
+    (copied) or *transferred* (moved). The latter is more efficient and only supported
+    by [a few data structures](https://developer.mozilla.org/en-US/docs/Glossary/Transferable_objects#supported_objects).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For more information, see [the Node.js documentation on worker threads](https://nodejs.org/api/worker_threads.html).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.4.2 Clusters
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[Cluster](https://nodejs.org/api/cluster.html) is a Node.js-specific API. It
+    lets us run *clusters* of Node.js processes that we can use to distribute workloads.
+    The processes are fully isolated but share server ports. They can communicate
+    by passing JSON data over channels.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we don’t need process isolation, we can use Worker Threads which are more
+    lightweight.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.4.3 Child processes
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[Child process](https://nodejs.org/api/child_process.html) is another Node.js-specific
+    API. It lets us spawn new processes that run native commands (often via native
+    shells). This API is covered in [§12 “Running shell commands in child processes”](ch_nodejs-child-process.html).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 4.5 Sources of this chapter
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Node.js event loop:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Node.js documentation: [“The Node.js Event Loop, Timers, and `process.nextTick()`”](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick/)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“What you should know to really understand the Node.js Event Loop”](https://medium.com/the-node-js-collection/what-you-should-know-to-really-understand-the-node-js-event-loop-and-its-metrics-c4907b19da4c)
+    by Daniel Khan'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“How does Node.js decide whether to exit the event loop or go around again?”](https://stackoverflow.com/questions/46914025/node-exits-without-error-and-doesnt-await-promise-event-callback/46916601#46916601)
+    by Mark Meyer'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Videos on the event loop (which refresh some of the background knowledge needed
+    for this chapter):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“Node’s Event Loop From the Inside Out”](https://www.youtube.com/watch?v=P9csgxBgaZ8)
+    (by Sam Roberts) explains why operating systems added support for asynchronous
+    I/O; which operations are asynchronous and which aren’t (and have to run in the
+    thread pool); etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“The Node.js Event Loop: Not So Single Threaded”](https://www.youtube.com/watch?v=zphcsoSJMvM)
+    (by Bryan Hughes) contains a brief history of multitasking (cooperative multitasking,
+    preemptive multitasking, symmteric multi-threading, asynchronous multitasking);
+    processes vs. threads; running I/O synchronously vs. in the thread pool; etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'libuv:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'libuv documentation:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Design overview”](http://docs.libuv.org/en/latest/design.html)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Basics of libuv”](http://docs.libuv.org/en/latest/guide/basics.html)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“A deep dive into libuv”](https://www.youtube.com/watch?v=sGTRmPiXD4Y) by
+    Saúl Ibarra Corretgé'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“I/O multiplexing (select vs. poll vs. epoll/kqueue) - problems and algorithms”](https://nima101.github.io/io_multiplexing)
+    by Nima Aghdaii'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Developer Initiates I/O Operation. You Won’t Believe What Happens Next.”](https://cjihrig.com/node_libuv_io)
+    by Colin J. Ihrig'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Traces a JavaScript function call as it goes from JavaScript to Node’s core
+    to libuv and back.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript concurrency:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Section “Complex calculations without blocking the Event Loop”](https://nodejs.org/en/docs/guides/dont-block-the-event-loop/#complex-calculations-without-blocking-the-event-loop)
+    in “Don’t Block the Event Loop (or the Worker Pool)” in the Node.js documentation'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Understanding Worker Threads in Node.js”](https://nodesource.com/blog/worker-threads-nodejs/)
+    by Liz Parody'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“The State Of Web Workers In 2021”](https://www.smashingmagazine.com/2021/06/web-workers-2021/)
+    by Surma'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Video [“Node.js: The Road to Workers”](https://www.youtube.com/watch?v=-ssCzHoUI7M)
+    by Anna Henningsen'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 4.5.1 Acknowledgement
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: I’m much obliged to [Dominic Elm](https://twitter.com/elmd_) for reviewing this
+    chapter and providing important feedback.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/4)'
+  prefs: []
+  type: TYPE_NORMAL

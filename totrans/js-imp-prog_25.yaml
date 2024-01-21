@@ -1,0 +1,509 @@
+- en: 21 Using template literals and tagged templates
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/impatient-js/ch_template-literals.html](https://exploringjs.com/impatient-js/ch_template-literals.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '21.1 [Disambiguation: “template”](ch_template-literals.html#disambiguation-template)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.2 [Template literals](ch_template-literals.html#template-literals)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.3 [Tagged templates](ch_template-literals.html#tagged-templates)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.3.1 [Cooked vs. raw template strings (advanced)](ch_template-literals.html#template-strings-cooked-vs-raw)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.4 [Examples of tagged templates (as provided via libraries)](ch_template-literals.html#examples-of-tagged-templates-as-provided-via-libraries)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '21.4.1 [Tag function library: lit-html](ch_template-literals.html#tag-function-library-lit-html)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '21.4.2 [Tag function library: re-template-tag](ch_template-literals.html#tag-function-library-re-template-tag)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '21.4.3 [Tag function library: graphql-tag](ch_template-literals.html#tag-function-library-graphql-tag)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.5 [Raw string literals](ch_template-literals.html#raw-string-literals)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.6 [(Advanced)](ch_template-literals.html#advanced-3)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.7 [Multiline template literals and indentation](ch_template-literals.html#multiline-template-literals-and-indentation)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '21.7.1 [Fix: template tag for dedenting](ch_template-literals.html#fix-template-tag-for-dedenting)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '21.7.2 [Fix: `.trim()`](ch_template-literals.html#fix-.trim)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.8 [Simple templating via template literals](ch_template-literals.html#simple-templating-via-template-literals)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.8.1 [A more complex example](ch_template-literals.html#a-more-complex-example)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 21.8.2 [Simple HTML-escaping](ch_template-literals.html#simple-html-escaping)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Before we dig into the two features *template literal* and *tagged template*,
+    let’s first examine the multiple meanings of the term *template*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '21.1 Disambiguation: “template”'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following three things are significantly different despite all having *template*
+    in their names and despite all of them looking similar:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A *text template* is a function from data to text. It is frequently used in
+    web development and often defined via text files. For example, the following text
+    defines a template for the library [Handlebars](https://handlebarsjs.com):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'This template has two blanks to be filled in: `title` and `body`. It is used
+    like this:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'A *template literal* is similar to a string literal, but has additional features
+    – for example, interpolation. It is delimited by backticks:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Syntactically, a *tagged template* is a template literal that follows a function
+    (or rather, an expression that evaluates to a function). That leads to the function
+    being called. Its arguments are derived from the contents of the template literal.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Note that `getArgs()` receives both the text of the literal and the data interpolated
+    via `${}`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 21.2 Template literals
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A template literal has two new features compared to a normal string literal.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, it supports *string interpolation*: if we put a dynamically computed
+    value inside a `${}`, it is converted to a string and inserted into the string
+    returned by the literal.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Second, template literals can span multiple lines:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: Template literals always produce strings.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 21.3 Tagged templates
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The expression in line A is a *tagged template*. It is equivalent to invoking
+    `tagFunc()` with the arguments listed in the Array in line B.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The function `tagFunc` before the first backtick is called a *tag function*.
+    Its arguments are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Template strings* (first argument): an Array with the text fragments surrounding
+    the interpolations `${}`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In the example: `[''Setting '', '' is '', ''!'']`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Substitutions* (remaining arguments): the interpolated values.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In the example: `''dark mode''` and `true`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The static (fixed) parts of the literal (the template strings) are kept separate
+    from the dynamic parts (the substitutions).
+  prefs: []
+  type: TYPE_NORMAL
+- en: A tag function can return arbitrary values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 21.3.1 Cooked vs. raw template strings (advanced)
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'So far, we have only seen the *cooked interpretation* of template strings.
+    But tag functions actually get two interpretations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A *cooked interpretation* where backslashes have special meaning. For example,
+    `\t` produces a tab character. This interpretation of the template strings is
+    stored as an Array in the first argument.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A *raw interpretation* where backslashes do not have special meaning. For example,
+    `\t` produces two characters – a backslash and a `t`. This interpretation of the
+    template strings is stored in property `.raw` of the first argument (an Array).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The raw interpretation enables raw string literals via `String.raw` [(described
+    later)](ch_template-literals.html#raw-string-literals) and similar applications.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following tag function `cookedRaw` uses both interpretations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also use Unicode code point escapes (`\u{1F642}`), Unicode code unit
+    escapes (`\u03A9`), and ASCII escapes (`\x52`) in tagged templates:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If the syntax of one of these escapes isn’t correct, the corresponding cooked
+    template string is `undefined`, while the raw version is still verbatim:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Incorrect escapes produce syntax errors in template literals and string literals.
+    Before ES2018, they even produced errors in tagged templates. Why was that changed?
+    We can now use tagged templates for text that was previously illegal – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 21.4 Examples of tagged templates (as provided via libraries)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Tagged templates are great for supporting small embedded languages (so-called
+    *domain-specific languages*). We’ll continue with a few examples.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '21.4.1 Tag function library: lit-html'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[lit-html](https://github.com/Polymer/lit-html) is a templating library that
+    is based on tagged templates and used by [the frontend framework Polymer](https://www.polymer-project.org/):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`repeat()` is a custom function for looping. Its 2nd parameter produces unique
+    keys for the values returned by the 3rd parameter. Note the nested tagged template
+    used by that parameter.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '21.4.2 Tag function library: re-template-tag'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[re-template-tag](https://github.com/rauschma/re-template-tag) is a simple
+    library for composing regular expressions. Templates tagged with `re` produce
+    regular expressions. The main benefit is that we can interpolate regular expressions
+    and plain text via `${}` (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '21.4.3 Tag function library: graphql-tag'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[The library graphql-tag](https://github.com/apollographql/graphql-tag) lets
+    us create GraphQL queries via tagged templates:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: Additionally, there are plugins for pre-compiling such queries in Babel, TypeScript,
+    etc.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 21.5 Raw string literals
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Raw string literals are implemented via the tag function `String.raw`. They
+    are string literals where backslashes don’t do anything special (such as escaping
+    characters, etc.):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This helps whenever data contains backslashes – for example, strings with regular
+    expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: All three regular expressions are equivalent. With a normal string literal,
+    we have to write the backslash twice, to escape it for that literal. With a raw
+    string literal, we don’t have to do that.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Raw string literals are also useful for specifying Windows filename paths:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 21.6 (Advanced)
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: All remaining sections are advanced
+  prefs: []
+  type: TYPE_NORMAL
+- en: 21.7 Multiline template literals and indentation
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'If we put multiline text in template literals, two goals are in conflict: On
+    one hand, the template literal should be indented to fit inside the source code.
+    On the other hand, the lines of its content should start in the leftmost column.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: Due to the indentation, the template literal fits well into the source code.
+    Alas, the output is also indented. And we don’t want the return at the beginning
+    and the return plus two spaces at the end.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'There are two ways to fix this: via a tagged template or by trimming the result
+    of the template literal.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '21.7.1 Fix: template tag for dedenting'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The first fix is to use a custom template tag that removes the unwanted whitespace.
+    It uses the first line after the initial line break to determine in which column
+    the text starts and shortens the indentation everywhere. It also removes the line
+    break at the very beginning and the indentation at the very end. One such template
+    tag is [`dedent` by Desmond Brand](https://github.com/dmnd/dedent):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This time, the output is not indented:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: '21.7.2 Fix: `.trim()`'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The second fix is quicker, but also dirtier:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: The string method `.trim()` removes the superfluous whitespace at the beginning
+    and at the end, but the content itself must start in the leftmost column. The
+    advantage of this solution is that we don’t need a custom tag function. The downside
+    is that it looks ugly.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The output is the same as with `dedent`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 21.8 Simple templating via template literals
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'While template literals look like text templates, it is not immediately obvious
+    how to use them for (text) templating: A text template gets its data from an object,
+    while a template literal gets its data from variables. The solution is to use
+    a template literal in the body of a function whose parameter receives the templating
+    data – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 21.8.1 A more complex example
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As a more complex example, we’d like to take an Array of addresses and produce
+    an HTML table. This is the Array:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The function `tmpl()` that produces the HTML table looks as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This code contains two templating functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The first one (line 1) takes `addrs`, an Array with addresses, and returns a
+    string with a table.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The second one (line 4) takes `addr`, an object containing an address, and returns
+    a string with a table row. Note the `.trim()` at the end, which removes unnecessary
+    whitespace.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The first templating function produces its result by wrapping a table element
+    around an Array that it joins into a string (line 10). That Array is produced
+    by mapping the second templating function to each element of `addrs` (line 3).
+    It therefore contains strings with table rows.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The helper function `escapeHtml()` is used to escape special HTML characters
+    (line 6 and line 7). Its implementation is shown in the next subsection.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let us call `tmpl()` with the addresses and log the result:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The output is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 21.8.2 Simple HTML-escaping
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following function escapes plain text so that it is displayed verbatim
+    in HTML:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: HTML templating**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Exercise with bonus challenge: `exercises/template-literals/templating_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/4ca05ad97a693bee61e4fd6459232e60.png)  **Quiz**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: See [quiz app](ch_quizzes-exercises.html#quizzes).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/impatient-js/issues/14)'
+  prefs: []
+  type: TYPE_NORMAL

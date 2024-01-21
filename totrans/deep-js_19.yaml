@@ -1,0 +1,112 @@
+- en: '14 Copying instances of classes: .clone() vs. copy constructors'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/deep-js/ch_copying-class-instances.html](https://exploringjs.com/deep-js/ch_copying-class-instances.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 14.1 [`.clone()` methods](ch_copying-class-instances.html#clone-methods)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 14.2 [Static factory methods](ch_copying-class-instances.html#static-factory-methods)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 14.3 [Acknowledgements](ch_copying-class-instances.html#acknowledgements-1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In this chapter, we look at two techniques for implementing copying for class
+    instances:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.clone()` methods'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: So-called *copy constructors*, constructors that receive another instance of
+    the current class and use it to initialize the current instance.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 14.1 `.clone()` methods
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This technique introduces one method `.clone()` per class whose instances are
+    to be copied. It returns a deep copy of `this`. The following example shows three
+    classes that can be cloned.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Line A demonstrates an important aspect of this technique: compound instance
+    property values must also be cloned, recursively.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 14.2 Static factory methods
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A *copy constructor* is a constructor that uses another instance of the current
+    class to set up the current instance. Copy constructors are popular in static
+    languages such as C++ and Java, where you can provide multiple versions of a constructor
+    via *static overloading*. Here, *static* means that the choice which version to
+    use, is made at compile time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In JavaScript, we must make that decision at runtime and that leads to inelegant
+    code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how you’d use this class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '*Static factory methods* are an alternative to constructors and work better
+    in this case because we can directly invoke the desired functionality. (Here,
+    *static* means that these factory methods are class methods.)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the following example, the three classes `Point`, `Color` and `ColorPoint`
+    each have a static factory method `.from()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, we once again copy recursively.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is how `ColorPoint.from()` works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 14.3 Acknowledgements
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Ron Korvig](https://github.com/ronkorving) reminded me to use static factory
+    methods and not overloaded constructors for deep-copying in JavaScript.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/deep-js/issues/14)'
+  prefs: []
+  type: TYPE_NORMAL

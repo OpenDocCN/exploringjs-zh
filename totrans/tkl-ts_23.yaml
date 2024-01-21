@@ -1,0 +1,334 @@
+- en: 19 Typing Arrays
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/tackling-ts/ch_typing-arrays.html](https://exploringjs.com/tackling-ts/ch_typing-arrays.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 19.1 [Roles of Arrays](ch_typing-arrays.html#roles-of-arrays)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 19.2 [Ways of typing Arrays](ch_typing-arrays.html#ways-of-typing-arrays)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '19.2.1 [Array role “list”: Array type literals vs. interface type `Array`](ch_typing-arrays.html#array-role-list-array-type-literals-vs.-interface-type-array)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '19.2.2 [Array role “tuple”: tuple type literals](ch_typing-arrays.html#array-role-tuple-tuple-type-literals)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '19.2.3 [Objects that are also Array-ish: interfaces with index signatures](ch_typing-arrays.html#objects-that-are-also-array-ish-interfaces-with-index-signatures)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '19.3 [Pitfall: type inference doesn’t always get Array types right](ch_typing-arrays.html#pitfall-type-inference-doesnt-always-get-array-types-right)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 19.3.1 [Inferring types of Arrays is difficult](ch_typing-arrays.html#inferring-types-of-arrays-is-difficult)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 19.3.2 [Type inference for non-empty Array literals](ch_typing-arrays.html#type-inference-for-non-empty-array-literals)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 19.3.3 [Type inference for empty Array literals](ch_typing-arrays.html#type-inference-for-empty-array-literals)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 19.3.4 [`const` assertions for Arrays and type inference](ch_typing-arrays.html#const-assertions-for-arrays-and-type-inference)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '19.4 [Pitfall: TypeScript assumes indices are never out of bounds](ch_typing-arrays.html#pitfall-typescript-assumes-indices-are-never-out-of-bounds)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we examine how Arrays can be typed in TypeScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 19.1 Roles of Arrays
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Arrays can play the following roles in JavaScript (either one or a mix of them):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Lists: All elements have the same type. The length of the Array varies.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Tuple: The length of the Array is fixed. The elements do not necessarily have
+    the same type.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: TypeScript accommodates these two roles by offering various ways of typing arrays.
+    We will look at those next.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 19.2 Ways of typing Arrays
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '19.2.1 Array role “list”: Array type literals vs. interface type `Array`'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'An Array type literal consists of the element type followed by `[]`. In the
+    following code, the Array type literal is `string[]`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'An Array type literal is a shorthand for using the global generic interface
+    type `Array`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If the element type is more complicated, we need parentheses for Array type
+    literals:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The generic type `Array` works better in this case:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '19.2.2 Array role “tuple”: tuple type literals'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If the Array has a fixed length and each element has a different, fixed type
+    that depends on its position, then we can use tuple type literals such as `[string,
+    string, boolean]`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '19.2.3 Objects that are also Array-ish: interfaces with index signatures'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If an interface has only an index signature, we can use it for Arrays:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'An interface that has both an index signature and property signatures, only
+    works for objects (because indexed elements and properties need to be defined
+    at the same time):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '19.3 Pitfall: type inference doesn’t always get Array types right'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 19.3.1 Inferring types of Arrays is difficult
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Due to the two roles of Arrays, it is impossible for TypeScript to always guess
+    the right type. As an example, consider the following Array literal that is assigned
+    to the variable `fields`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'What is the best type for `fields`? The following are all reasonable choices:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 19.3.2 Type inference for non-empty Array literals
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'When we use non-empty Array literals, TypeScript’s default is to infer list
+    types (not tuple types):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Alas, that’s not always what we want:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can fix this by adding a type annotation to the `const` declaration, which
+    avoids type inference:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 19.3.3 Type inference for empty Array literals
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we initialize a variable with an empty Array literal, then TypeScript initially
+    infers the type `any[]` and incrementally updates that type as we make changes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that the initial inferred type isn’t influenced by what happens later.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we use assignment instead of `.push()`, things work the same:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In contrast, if the Array literal has at least one element, then the element
+    type is fixed and doesn’t change later:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 19.3.4 `const` assertions for Arrays and type inference
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can suffix an Array literal with [a `const` assertion](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We are declaring that `rockCategories` won’t change. That has the following
+    effects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The Array becomes `readonly` – we can’t use operations that change it:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'TypeScript infers a tuple. Compare:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: TypeScript infers literal types (`"igneous"` etc.) instead of more general types.
+    That is, the inferred tuple type is not `[string, string, string]`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Here are more examples of Array literals with and without `const` assertions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 19.3.4.1 Potential pitfalls of `const` assertions
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: There are two potential pitfalls with `const` assertions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, the inferred type is as narrow as possible. That causes an issue for
+    `let`-declared variables: We cannot assign any tuple other than the one that we
+    used for intialization:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Second, tuples declared via `as const` can’t be mutated:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: That is neither an upside nor a downside, but we need to be aware that it happens.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '19.4 Pitfall: TypeScript assumes indices are never out of bounds'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Whenever we access an Array element via an index, TypeScript always assumes
+    that the index is within range (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: Due to this assumption, the type of `message` is `string`. And not `undefined`
+    or `undefined|string`, as we may have expected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We do get an error if we use a tuple type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`as const` would have had the same effect because it leads to a tuple type
+    being inferred.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/tackling-ts/issues/19)'
+  prefs: []
+  type: TYPE_NORMAL

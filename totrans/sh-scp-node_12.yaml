@@ -1,0 +1,751 @@
+- en: 9 Native Node.js streams
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-streams.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-streams.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '9.1 [Recap: asynchronous iteration and asynchronous generators](ch_nodejs-streams.html#recap-asynchronous-iteration-and-asynchronous-generators)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.2 [Streams](ch_nodejs-streams.html#streams)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.2.1 [Pipelining](ch_nodejs-streams.html#pipelining)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.2.2 [Text encodings](ch_nodejs-streams.html#text-encodings)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '9.2.3 [Helper function: `readableToString()`](ch_nodejs-streams.html#helper-function-readabletostring)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.2.4 [A few preliminary remarks](ch_nodejs-streams.html#a-few-preliminary-remarks)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.3 [Readable streams](ch_nodejs-streams.html#readable-streams)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.3.1 [Creating readable streams](ch_nodejs-streams.html#creating-readable-streams)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.3.2 [Reading chunks from readable streams via `for-await-of`](ch_nodejs-streams.html#Readable-async-iteration)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.3.3 [Reading lines from readable streams via module `'node:readlines'`](ch_nodejs-streams.html#readline-async-iteration)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.4 [Transforming readable streams via async generators](ch_nodejs-streams.html#transforming-Readable-via-async-generator)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.4.1 [Going from chunks to numbered lines in async iterables](ch_nodejs-streams.html#chunksToLines)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.5 [Writable streams](ch_nodejs-streams.html#writable-streams)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.5.1 [Creating writable streams for files](ch_nodejs-streams.html#creating-writable-streams-for-files)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.5.2 [Writing to writable streams](ch_nodejs-streams.html#writing-to-Writable)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '9.6 [Quick reference: stream-related functionality](ch_nodejs-streams.html#quick-reference-stream-related-functionality)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.7 [Further reading and sources of this chapter](ch_nodejs-streams.html#further-reading-and-sources-of-this-chapter)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '* * *'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter is an introduction to Node’s native streams. They support [asynchronous
+    iteration](https://exploringjs.com/impatient-js/ch_async-iteration.html) which
+    makes them easier to work with and which is what we will mostly use in this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that cross-platform *web streams* are covered in [§10 “Using web streams
+    on Node.js”](ch_web-streams.html). We will mostly use those in this book. Therefore,
+    you can skip the current chapter if you want to.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '9.1 Recap: asynchronous iteration and asynchronous generators'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Asynchronous iteration](https://exploringjs.com/impatient-js/ch_async-iteration.html)
+    is a protocol for retrieving the contents of a data container asynchronously (meaning
+    the current “task” may be paused before retrieving an item).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Asynchronous generators](https://exploringjs.com/impatient-js/ch_async-iteration.html#async-generators)
+    help with async iteration. For example, this is an asynchronous generator function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `for-await-of` loop iterates over the input `asyncIterable`. This loop is
+    also available in normal asynchronous functions.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The `yield` feeds values into the asynchronous iterable that is returned by
+    this generator.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In the remainder of the chapter, pay close attention to whether a function
+    is an async function or an async generator function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 9.2 Streams
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A stream is a pattern whose core idea is to “divide and conquer” a large amount
+    of data: We can handle it if we split it into smaller pieces and handle one portion
+    at a time.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Node.js supports several kinds of streams – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Readable streams* are streams from which we can read data. In other words,
+    they are sources of data. An example is a *readable file stream*, which lets us
+    read the contents of a file.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Writable streams* are streams to which we can write data. In other words,
+    they are sinks for data. An example is a *writable file stream*, which lets us
+    write data to a file.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A *transform stream* is both readable and writable. As a writable stream, it
+    receives pieces of data, *transforms* (changes or discards) them and then outputs
+    them as a readable stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.2.1 Pipelining
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To process streamed data in multiple steps, we can *pipeline* (connect) streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Input is received via a readable stream.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Each processing step is performed via a transform stream.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'For the last processing step, we have two options:'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: We can write the data in the most recent readable stream into a writable stream.
+    That is, the writable stream is the last element of our pipeline.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can process the data in the most recent readable stream in some other manner.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Part (2) is optional.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.2.2 Text encodings
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'When creating text streams, it is best to always specify an encoding:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The Node.js docs have [a list of supported encodings and their default spellings](https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings)
+    – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''utf8''`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''utf16le''`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''base64''`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A few different spellings are also allowed. You can use [`Buffer.isEncoding()`](https://nodejs.org/api/buffer.html#buffer_class_method_buffer_isencoding_encoding)
+    to check which ones are:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: The default value for encodings is `null`, which is equivalent to `'utf8'`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '9.2.3 Helper function: `readableToString()`'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: We will occasionally use the following helper function. You don’t need to understand
+    how it works, only (roughly) what it does.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: This function is implemented via the event-based API. We’ll later see a simpler
+    way of doing this – via async iteration.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.2.4 A few preliminary remarks
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: We’ll only use text streams in this chapter.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In the examples, we’ll occasionally encounter `await` being used at the top
+    level. In that case, we imagine that we are [inside a module](https://github.com/tc39/proposal-top-level-await)
+    or inside the body of an async function.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Whenever there are newlines, we support both:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Unix: `''\n''` (LF)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Windows: `''\r\n''` (CR LF)The newline characters of the current platform can
+    be accessed via [the constant `EOL`](https://nodejs.org/api/os.html#os_os_eol)
+    in module `os`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.3 Readable streams
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 9.3.1 Creating readable streams
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 9.3.1.1 Creating readable streams from files
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can use [`fs.createReadStream()`](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options)
+    to create readable streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '9.3.1.2 `Readable.from()`: Creating readable streams from iterables'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The static method [`Readable.from(iterable, options?)`](https://nodejs.org/api/stream.html#stream_stream_readable_from_iterable_options)
+    creates a readable stream which holds the data contained in `iterable`. `iterable`
+    can be a synchronous iterable or an asynchronous iterable. The parameter `options`
+    is optional and can, among other things, be used to specify a text encoding.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 9.3.1.2.1 Creating readable streams from strings
+  prefs:
+  - PREF_H6
+  type: TYPE_NORMAL
+- en: '`Readable.from()` accepts any iterable and can therefore also be used to convert
+    strings to streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[At the moment](https://github.com/nodejs/node/blob/master/lib/internal/streams/from.js),
+    `Readable.from()` treats a string like any other iterable and therefore iterates
+    over its code points. That isn’t ideal, performance-wise, but should be OK for
+    most use cases. I expect `Readable.from()` to be often used with strings, so maybe
+    there will be optimizations in the future.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.3.2 Reading chunks from readable streams via `for-await-of`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Every readable stream is asynchronously iterable, which means that we can use
+    a `for-await-of` loop to read its contents:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 9.3.2.1 Collecting the contents of a readable stream in a string
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The following function is a simpler reimplementation of the function that we
+    have seen at the beginning of this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that, in this case, we had to use an async function because we wanted to
+    return a Promise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.3.3 Reading lines from readable streams via module `'node:readlines'`
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The built-in module `''node:readline''` lets us read lines from readable streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 9.4 Transforming readable streams via async generators
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Async iteration provides an elegant alternative to transform streams for processing
+    streamed data in multiple steps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The input is a readable stream.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The first transformation is performed by an async generator that iterates over
+    the readable streams and yields as it sees fit.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Optionally, we can transform further, by using more async generators.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'At the end, we have several options for handling the async iterable returned
+    by the last generator:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can convert it to a readable stream via `Readable.from()` (which can later
+    be piped into a writable stream).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can use an async function to process it.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'To summarize, these are the pieces of such processing pipelines:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: readable
+  prefs: []
+  type: TYPE_NORMAL
+- en: → first async generator [→ … → last async generator]
+  prefs: []
+  type: TYPE_NORMAL
+- en: → readable or async function
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.4.1 Going from chunks to numbered lines in async iterables
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In the next example, we’ll see an example of a processing pipeline as it was
+    just explained.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The processing pipeline is set up in line A. The steps are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`chunksToLines()`: Go from an async iterable with chunks to an async iterable
+    with lines.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`numberLines()`: Go from an async iterable with lines to an async iterable
+    with numbered lines.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`logLines()`: Log the items in an async iterable.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Observation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Both input and output of `chunksToLines()` and `numberLines()` are async iterables.
+    That’s why they are async generators (as indicated by `async` and `*`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Only the input of `logLines()` is an async iterable. That’s why it is an async
+    function (as indicated by `async`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 9.5 Writable streams
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 9.5.1 Creating writable streams for files
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use [`fs.createWriteStream()`](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)
+    to create writable streams:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 9.5.2 Writing to writable streams
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In this section, we look at approaches to writing to a writable stream:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Writing directly to the writable stream via its method `.write()`.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Using function `pipeline()` from module `stream` to pipe a readable stream to
+    the writable stream.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: To demonstrate these approaches, we use them to implement the same function
+    `writeIterableToFile()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Method `.pipe()` of readable streams also supports piping but it has a downside
+    and it’s better to avoid it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.5.2.1 `writable.write(chunk)`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'When it comes to writing data to streams, there are two callback-based mechanisms
+    that help us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Event `'drain'` signals that backpressure is over.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Function `finished()` invokes a callback when a stream:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Is no longer readable or writable
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Has experienced an error or a premature close event
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In the following example, we promisify these mechanisms so that we can use
+    them via an async function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: The default version of `stream.finished()` is callback-based but can be turned
+    into a Promise-based version via `util.promisify()` (line A).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We used the following two patterns:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Writing to a writable stream while handling backpressure (line B):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Closing a writable stream and waiting until writing is done (line C):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 9.5.2.2 Piping readable streams to writable streams via `stream.pipeline()`
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In line A, we use a promisified version of `stream.pipeline()` to pipe a readable
+    stream `readable` to a writable stream `writable`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '9.5.2.3 Not recommended: `readable.pipe(destination)`'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Method `readable.pipe()` also supports piping, but has [a caveat](https://nodejs.org/api/stream.html#stream_readable_pipe_destination_options):
+    If the readable emits an error, then the writable is not closed automatically.
+    `pipeline()` does not have that caveat.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '9.6 Quick reference: stream-related functionality'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Module `os`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`const EOL: string` [(since 0.7.8)](https://nodejs.org/api/os.html#os_os_eol)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Contains the end-of-line character sequence used by the current platform.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Module `buffer`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Buffer.isEncoding(encoding: string): boolean` [(since 0.9.1)](https://nodejs.org/api/buffer.html#buffer_class_method_buffer_isencoding_encoding)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Returns `true` if `encoding` correctly names one of the supported Node.js encodings
+    for text. [Supported encodings](https://nodejs.org/api/buffer.html#buffer_buffers_and_character_encodings)
+    include:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`''utf8''`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''utf16le''`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''ascii''`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''latin1`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''base64''`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`''hex''` (each byte as two hexadecimal characters)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Module `stream`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Readable.prototype[Symbol.asyncIterator](): AsyncIterableIterator<any>` [(since
+    10.0.0)](https://nodejs.org/api/stream.html#stream_readable_symbol_asynciterator)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Readable streams are asynchronously iterable. For example, you can use `for-await-of`
+    loops in asyc functions or async generators to iterate over them.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`finished(stream: ReadableStream | WritableStream | ReadWriteStream, callback:
+    (err?: ErrnoException | null) => void): () => Promise<void>` [(since 10.0.0)](https://nodejs.org/api/stream.html#stream_stream_finished_stream_options_callback)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The returned Promise is settled when reading/writing is done or there was an
+    error.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'This promisified version is created as follows:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`pipeline(...streams: Array<ReadableStream|ReadWriteStream|WritableStream>):
+    Promise<void>` [(since 10.0.0)](https://nodejs.org/api/stream.html#stream_stream_pipeline_streams_callback)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pipes between streams. The returned Promise is settled when the pipeline is
+    complete or when there was an error.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'This promisified version is created as follows:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Readable.from(iterable: Iterable<any> | AsyncIterable<any>, options?: ReadableOptions):
+    Readable` [(since 12.3.0)](https://nodejs.org/api/stream.html#stream_stream_readable_from_iterable_options)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Converts an iterable into a readable stream.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: These options are the same as the options for the `Readable` constructor and
+    [documented](https://nodejs.org/api/stream.html#stream_new_stream_readable_options)
+    there.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Module `fs`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`createReadStream(path: string | Buffer | URL, options?: string | {encoding?:
+    string; start?: number}): ReadStream` [(since 2.3.0)](https://nodejs.org/api/fs.html#fs_fs_createreadstream_path_options)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Creates a readable stream. More options are available.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`createWriteStream(path: PathLike, options?: string | {encoding?: string; flags?:
+    string; mode?: number; start?: number}): WriteStream` [(since 2.3.0)](https://nodejs.org/api/fs.html#fs_fs_createwritestream_path_options)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: With option `.flags` you can specify if you want to write or append and what
+    happens if a file does or does not exist. More options are available.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: The static type information in this section is based on [Definitely Typed](https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 9.7 Further reading and sources of this chapter
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Section “Streams Compatibility with Async Generators and Async Iterators”](https://nodejs.org/api/stream.html#stream_streams_compatibility_with_async_generators_and_async_iterators)
+    in the Node.js docs'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Chapter “Async functions”](https://exploringjs.com/impatient-js/ch_async-functions.html)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Chapter “Asynchronous iteration”](https://exploringjs.com/impatient-js/ch_async-iteration.html)
+    in “JavaScript for impatient programmers”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/9)'
+  prefs: []
+  type: TYPE_NORMAL
