@@ -1,1303 +1,1946 @@
 - en: 14 Creating cross-platform shell scripts
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 14 [创建跨平台shell脚本]
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_creating-shell-scripts.html](https://exploringjs.com/nodejs-shell-scripting/ch_creating-shell-scripts.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_creating-shell-scripts.html](https://exploringjs.com/nodejs-shell-scripting/ch_creating-shell-scripts.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 14.1 [Required knowledge](ch_creating-shell-scripts.html#required-knowledge)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.1 [所需的知识](ch_creating-shell-scripts.html#required-knowledge)
 - en: 14.1.1 [What’s next in this chapter](ch_creating-shell-scripts.html#whats-next-in-this-chapter)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.1.1 [本章的下一步是什么](ch_creating-shell-scripts.html#whats-next-in-this-chapter)
 - en: 14.2 [Node.js ESM modules as standalone shell scripts on Unix](ch_creating-shell-scripts.html#node.js-esm-modules-as-standalone-shell-scripts-on-unix)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.2 [Node.js ESM模块作为Unix上独立的shell脚本](ch_creating-shell-scripts.html#node.js-esm-modules-as-standalone-shell-scripts-on-unix)
 - en: 14.2.1 [Node.js shell scripts on Unix](ch_creating-shell-scripts.html#node.js-shell-scripts-on-unix)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.2.1 [Unix上的Node.js shell脚本](ch_creating-shell-scripts.html#node.js-shell-scripts-on-unix)
 - en: 14.2.2 [Hashbangs on Unix](ch_creating-shell-scripts.html#hashbangs-on-unix)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.2.2 [Unix上的Hashbangs](ch_creating-shell-scripts.html#hashbangs-on-unix)
 - en: 14.2.3 [Making files executable on Unix](ch_creating-shell-scripts.html#making-files-executable-on-unix)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.2.3 [在Unix上使文件可执行](ch_creating-shell-scripts.html#making-files-executable-on-unix)
 - en: 14.2.4 [Running `hello.mjs` directly](ch_creating-shell-scripts.html#running-hello.mjs-directly)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.2.4 [直接运行`hello.mjs`](ch_creating-shell-scripts.html#running-hello.mjs-directly)
 - en: 14.3 [Creating an npm package with shell scripts](ch_creating-shell-scripts.html#creating-an-npm-package-with-shell-scripts)
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.3 [使用shell脚本创建一个npm包](ch_creating-shell-scripts.html#creating-an-npm-package-with-shell-scripts)
 - en: 14.3.1 [Setting up the package’s directory](ch_creating-shell-scripts.html#npm-init)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.3.1 [设置包的目录](ch_creating-shell-scripts.html#npm-init)
 - en: 14.3.2 [Adding dependencies](ch_creating-shell-scripts.html#adding-dependencies)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.3.2 [添加依赖项](ch_creating-shell-scripts.html#adding-dependencies)
 - en: 14.3.3 [Adding content to the package](ch_creating-shell-scripts.html#adding-content-to-the-package)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.3.3 [向包添加内容](ch_creating-shell-scripts.html#adding-content-to-the-package)
 - en: 14.3.4 [Running the shell scripts without installing them](ch_creating-shell-scripts.html#running-the-shell-scripts-without-installing-them)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.3.4 [在不安装的情况下运行shell脚本](ch_creating-shell-scripts.html#running-the-shell-scripts-without-installing-them)
 - en: 14.4 [How npm installs shell scripts](ch_creating-shell-scripts.html#how-npm-installs-shell-scripts)
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.4 [npm如何安装shell脚本](ch_creating-shell-scripts.html#how-npm-installs-shell-scripts)
 - en: 14.4.1 [Installation on Unix](ch_creating-shell-scripts.html#installation-on-unix)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.4.1 [在Unix上安装](ch_creating-shell-scripts.html#installation-on-unix)
 - en: 14.4.2 [Installation on Windows](ch_creating-shell-scripts.html#installation-on-windows)
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.4.2 [在Windows上安装](ch_creating-shell-scripts.html#installation-on-windows)
 - en: 14.5 [Publishing the example package to the npm registry](ch_creating-shell-scripts.html#publishing-the-example-package-to-the-npm-registry)
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.5 [将示例包发布到npm注册表](ch_creating-shell-scripts.html#publishing-the-example-package-to-the-npm-registry)
 - en: 14.5.1 [Which files are published? Which files are ignored?](ch_creating-shell-scripts.html#which-files-are-published-which-files-are-ignored)
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.5.1 [哪些文件被发布？哪些文件被忽略？](ch_creating-shell-scripts.html#which-files-are-published-which-files-are-ignored)
 - en: 14.5.2 [Checking if a package is properly configured](ch_creating-shell-scripts.html#checking-if-a-package-is-properly-configured)
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.5.2 [检查包是否正确配置](ch_creating-shell-scripts.html#checking-if-a-package-is-properly-configured)
 - en: '14.5.3 [`npm publish`: uploading packages to the npm registry](ch_creating-shell-scripts.html#npm-publish)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '14.5.3 [`npm publish`: 将包上传到npm注册表](ch_creating-shell-scripts.html#npm-publish)'
 - en: 14.5.4 [Automatically performing tasks every time before publishing](ch_creating-shell-scripts.html#automatically-performing-tasks-every-time-before-publishing)
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.5.4 [在发布之前自动执行任务](ch_creating-shell-scripts.html#automatically-performing-tasks-every-time-before-publishing)
 - en: 14.6 [Standalone Node.js shell scripts with arbitrary extensions on Unix](ch_creating-shell-scripts.html#standalone-node.js-shell-scripts-with-arbitrary-extensions-on-unix)
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.6 [Unix上任意扩展名的独立Node.js shell脚本](ch_creating-shell-scripts.html#standalone-node.js-shell-scripts-with-arbitrary-extensions-on-unix)
 - en: '14.6.1 [Unix: arbitrary filename extension via a custom executable](ch_creating-shell-scripts.html#unix-arbitrary-filename-extension-via-a-custom-executable)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.6.1 [Unix：通过自定义可执行文件设置任意文件扩展名](ch_creating-shell-scripts.html#unix-arbitrary-filename-extension-via-a-custom-executable)
 - en: '14.6.2 [Unix: arbitrary filename extension via a shell prolog](ch_creating-shell-scripts.html#unix-arbitrary-filename-extension-via-a-shell-prolog)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.6.2 [Unix：通过shell prolog设置任意文件扩展名](ch_creating-shell-scripts.html#unix-arbitrary-filename-extension-via-a-shell-prolog)
 - en: 14.7 [Standalone Node.js shell scripts on Windows](ch_creating-shell-scripts.html#standalone-node.js-shell-scripts-on-windows)
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.7 [Windows上独立的Node.js shell脚本](ch_creating-shell-scripts.html#standalone-node.js-shell-scripts-on-windows)
 - en: '14.7.1 [Windows: configuring the filename extension `.mjs`](ch_creating-shell-scripts.html#windows-configuring-the-filename-extension-.mjs)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.7.1 [Windows：配置文件扩展名`.mjs`](ch_creating-shell-scripts.html#windows-configuring-the-filename-extension-.mjs)
 - en: '14.7.2 [Windows Command shell: Node.js scripts via a shell prolog](ch_creating-shell-scripts.html#windows-command-shell-node.js-scripts-via-a-shell-prolog)'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.7.2 [Windows命令shell：通过shell prolog运行Node.js脚本](ch_creating-shell-scripts.html#windows-command-shell-node.js-scripts-via-a-shell-prolog)
 - en: '14.7.3 [Windows PowerShell: Node.js scripts via a shell prolog](ch_creating-shell-scripts.html#windows-powershell-node.js-scripts-via-a-shell-prolog)'
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '14.7.3 [Windows PowerShell: 通过shell prolog运行Node.js脚本](ch_creating-shell-scripts.html#windows-powershell-node.js-scripts-via-a-shell-prolog)'
 - en: 14.8 [Creating native binaries for Linux, macOS, and Windows](ch_creating-shell-scripts.html#creating-native-binaries-for-linux-macos-and-windows)
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.8 [为Linux、macOS和Windows创建本机二进制文件](ch_creating-shell-scripts.html#creating-native-binaries-for-linux-macos-and-windows)
 - en: '14.9 [Shell paths: making sure shells find scripts](ch_creating-shell-scripts.html#shell-paths-making-sure-shells-find-scripts)'
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.9 [Shell路径：确保shell找到脚本](ch_creating-shell-scripts.html#shell-paths-making-sure-shells-find-scripts)
 - en: '14.9.1 [Unix: `$PATH`](ch_creating-shell-scripts.html#unix-path)'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '14.9.1 [Unix: `$PATH`](ch_creating-shell-scripts.html#unix-path)'
 - en: 14.9.2 [Changing the PATH variable on Windows (Command shell, PowerShell)](ch_creating-shell-scripts.html#changing-the-path-variable-on-windows-command-shell-powershell)
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.9.2 [在Windows上更改PATH变量（命令shell、PowerShell）](ch_creating-shell-scripts.html#changing-the-path-variable-on-windows-command-shell-powershell)
 - en: '* * *'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'In this chapter, we learn how to implement shell scripts via Node.js ESM modules.
     There are two common ways of doing so:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将学习如何通过Node.js ESM模块实现shell脚本。有两种常见的方法可以这样做：
 - en: We can write a stand-alone script and install it ourselves.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以编写一个独立的脚本并自己安装它。
 - en: We can put our script in an npm package and use a package manager to install
     it. That also gives us the option to publish the package to the npm registry so
     that others can install it, too.
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以把我们的脚本放在一个npm包中，并使用包管理器来安装它。这也给了我们选择将包发布到npm注册表的选项，这样其他人也可以安装它。
 - en: 14.1 Required knowledge
+  id: totrans-38
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.1 所需知识
 - en: 'You should be loosely familiar with the following two topics:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 你应该对以下两个主题有一定的了解：
 - en: ECMAScript Modules, as explained in [chapter “modules”](https://exploringjs.com/impatient-js/ch_modules.html)
     in “JavaScript for impatient programmers”.
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ECMAScript模块，如“JavaScript for impatient programmers”中的[章节“模块”](https://exploringjs.com/impatient-js/ch_modules.html)中所解释的。
 - en: 'npm packages, as explained in [§5 “Packages: JavaScript’s units for software
     distribution”](ch_packages.html).'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npm软件包，如[§5“软件包：JavaScript的软件分发单元”](ch_packages.html)中所解释的。
 - en: 14.1.1 What’s next in this chapter
+  id: totrans-42
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.1.1 本章的下一步
 - en: 'Windows doesn’t really support standalone shell scripts written in JavaScript.
     Therefore, we’ll first look into how to write standalone scripts *with* filename
     extensions for Unix. That knowledge will help us with creating packages that contain
     shell scripts. Later, we’ll learn:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: Windows实际上不支持用JavaScript编写的独立的shell脚本。因此，我们首先要了解如何为Unix编写带有文件扩展名的独立脚本。这些知识将帮助我们创建包含shell脚本的软件包。后来，我们会学到：
 - en: A trick for writing standalone shell scripts on Windows.
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Windows上编写独立的shell脚本的技巧。
 - en: A trick for writing standalone shell scripts *without* filename extensions on
     Unix.
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Unix上编写独立的shell脚本*不带*文件扩展名的技巧。
 - en: Installing shell scripts via packages is the topic of [§13 “Installing npm packages
     and running bin scripts”](ch_installing-packages.html).
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过软件包安装shell脚本是[§13“安装npm软件包和运行bin脚本”](ch_installing-packages.html)的主题。
 - en: 14.2 Node.js ESM modules as standalone shell scripts on Unix
+  id: totrans-47
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.2 Node.js ESM模块作为Unix上独立的shell脚本
 - en: 'Let’s turn an ESM module into a Unix shell script that we can run without it
     being inside a package. In principle, we can choose between two filename extensions
     for ESM modules:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们将一个ESM模块转换为Unix shell脚本，这样我们就可以在不在软件包中的情况下运行它。原则上，我们可以选择ESM模块的两个文件扩展名：
 - en: '`.mjs` files are always interpreted as ESM modules.'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.mjs`文件总是被解释为ESM模块。'
 - en: '`.js` files are only interpreted as ESM modules if the closest `package.json`
     has the following entry:'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只有在最接近的`package.json`中有以下条目时，`.js`文件才会被解释为ESM模块：
 - en: '[PRE0]'
+  id: totrans-51
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: However, since we want to create a standalone script, we can’t rely on `package.json`
     being there. Therefore, we have to use the filename extension `.mjs` (we’ll get
     to workarounds later).
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，由于我们想创建一个独立的脚本，我们不能依赖于`package.json`是否存在。因此，我们必须使用文件扩展名`.mjs`（我们稍后会介绍解决方法）。
 - en: 'The following file has the name `hello.mjs`:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下文件名为`hello.mjs`：
 - en: '[PRE1]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'We can already run this file:'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经可以运行这个文件：
 - en: '[PRE2]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 14.2.1 Node.js shell scripts on Unix
+  id: totrans-57
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.2.1 Unix上的Node.js shell脚本
 - en: 'We need to do two things so that we can run `hello.mjs` like this:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们需要做两件事，这样我们才能像这样运行`hello.mjs`：
 - en: '[PRE3]'
+  id: totrans-59
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'These things are:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些事情是：
 - en: Adding a *hashbang* line at the beginning of `hello.mjs`
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`hello.mjs`开头添加*哈希标记*行
 - en: Making `hello.mjs` executable
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使`hello.mjs`可执行
 - en: 14.2.2 Hashbangs on Unix
+  id: totrans-63
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.2.2 Unix上的哈希标记
 - en: 'In a Unix shell script, the first line is a *hashbang* – metadata that tells
     the shell how to execute the file. For example, this is the most common hashbang
     for Node.js scripts:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix shell脚本中，第一行是*哈希标记* - 元数据，告诉shell如何执行文件。例如，这是Node.js脚本最常见的哈希标记：
 - en: '[PRE4]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: This line has the name “hashbang” because it starts with a hash symbol and an
     exclamation mark. It is also often called “shebang”.
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 这一行被称为“哈希标记”，因为它以井号和感叹号开头。它也经常被称为“shebang”。
 - en: If a line starts with a hash, it is a comment in most Unix shells (sh, bash,
     zsh, etc.). Therefore, the hashbang is ignored by those shells. Node.js also ignores
     it, but only if it is the first line.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一行以井号开头，在大多数Unix shell（sh、bash、zsh等）中它是一个注释。因此，这些shell会忽略哈希标记。Node.js也会忽略它，但只有当它是第一行时。
 - en: Why don’t we use this hashbang?
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么我们不使用这个哈希标记呢？
 - en: '[PRE5]'
+  id: totrans-69
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Not all Unixes install the Node.js binary at that path. How about this path
     then?
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 并非所有的Unix都将Node.js二进制文件安装在那个路径。那么这个路径呢？
 - en: '[PRE6]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Alas, not all Unixes allow relative paths. That’s why we refer to `env` via
     an absolute path and use it to run `node` for us.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，并非所有的Unix都允许相对路径。这就是为什么我们通过绝对路径引用`env`并用它来为我们运行`node`。
 - en: For more information on Unix hashbangs, see [“Node.js shebang”](https://alexewerlof.medium.com/node-shebang-e1d4b02f731d)
     by Alex Ewerlöf.
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关Unix哈希标记的更多信息，请参见Alex Ewerlöf的[“Node.js shebang”](https://alexewerlof.medium.com/node-shebang-e1d4b02f731d)。
 - en: 14.2.2.1 Passing arguments to the Node.js binary
+  id: totrans-74
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.2.2.1 将参数传递给Node.js二进制文件
 - en: What if we want to pass arguments such as command line options to the Node.js
     binary?
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要传递参数，比如命令行选项给Node.js二进制文件怎么办？
 - en: 'One solution that works on many Unixes is to use option `-S` for `env` which
     prevents it from interpreting all of its arguments as a single name of a binary:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 在许多Unix上使用`env`的一个解决方案是使用选项`-S`，这样可以防止它将其所有参数解释为一个二进制文件的名称：
 - en: '[PRE7]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: On macOS, the previous command works even without `-S`; on Linux it usually
     doesn’t.
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 在macOS上，即使没有`-S`，上一个命令也可以工作；在Linux上通常不行。
 - en: '14.2.2.2 Hashbang pitfall: creating hashbangs on Windows'
+  id: totrans-79
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.2.2.2 哈希标记陷阱：在Windows上创建哈希标记
 - en: 'If we use a text editor on Windows to create an ESM module that should run
     as a script on either Unix or Windows, we have to add a hashbang. If we do that,
     the first line will end with the Windows line terminator `\r\n`:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在Windows上使用文本编辑器创建一个ESM模块，该模块应该在Unix或Windows上作为脚本运行，我们必须添加一个哈希标记。如果我们这样做，第一行将以Windows行终止符`\r\n`结束：
 - en: '[PRE8]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Running a file with such a hashbang on Unix produces the following error:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上运行带有这样一个哈希标记的文件会产生以下错误：
 - en: '[PRE9]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: That is, `env` thinks the name of the executable is `node\r`. There are two
     ways to fix this.
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说，`env`认为可执行文件的名称是`node\r`。有两种方法可以解决这个问题。
 - en: 'First, some editors automatically check which line terminators are already
     used in a file and keep using them. For example, Visual Studio Code, shows the
     current line terminator (it calls it “end of line sequence”) in the status bar
     at the bottom right:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，一些编辑器会自动检查文件中已经使用的行终止符，并继续使用它们。例如，Visual Studio Code在右下角的状态栏中显示当前的行终止符（它称之为“行尾序列”）：
 - en: '`LF` (line feed) for the Unix line terminator `\n`'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`LF`（换行）用于Unix行终止符`\n`'
 - en: '`CRLF` (carriage return, line feed) for the Windows line terminator `\r\n`'
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`CRLF`（回车换行）用于Windows行终止符`\r\n`'
 - en: We can switch pick a line terminator by clicking on that status information.
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过点击状态信息来切换选择行终止符。
 - en: 'Second, we can create a minimal file `my-script.mjs` with only Unix line terminators
     that we never edit on Windows:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，我们可以创建一个最小的文件`my-script.mjs`，其中只有Unix行终止符，我们在Windows上从不编辑它：
 - en: '[PRE10]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 14.2.3 Making files executable on Unix
+  id: totrans-91
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.2.3 在Unix上使文件可执行
 - en: 'In order to become a shell script, `hello.mjs` must also be executable (a permission
     of files), in addition to having a hashbang:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了成为一个shell脚本，`hello.mjs`还必须是可执行的（文件的权限），除了具有哈希标记：
 - en: '[PRE11]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: Note that we made the file executable (`x`) for the user who created it (`u`),
     not for everyone.
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，我们使文件对于创建它的用户（`u`）是可执行的（`x`），而不是对于所有人。
 - en: 14.2.4 Running `hello.mjs` directly
+  id: totrans-95
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.2.4 直接运行`hello.mjs`
 - en: '`hello.mjs` is now executable and looks like this:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: '`hello.mjs`现在是可执行的，看起来像这样：'
 - en: '[PRE12]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'We can therefore run it like this:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们可以这样运行它：
 - en: '[PRE13]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: Alas, there is no way to tell `node` to interpret a file with an arbitrary extension
     as an ESM module. That’s why we have to use the extension `.mjs`. Workarounds
     are possible but complicated, as we’ll see later.
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 遗憾的是，没有办法告诉`node`将任意扩展名的文件解释为ESM模块。这就是为什么我们必须使用扩展名`.mjs`。解决方法是可能的，但复杂，我们稍后会看到。
 - en: 14.3 Creating an npm package with shell scripts
+  id: totrans-101
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.3 创建一个带有shell脚本的npm包
 - en: In this section we create an npm package with shell scripts. We then examine
     how we can install such a package so that its scripts become available at the
     command line of your system (Unix or Windows).
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们将使用shell脚本创建一个npm包。然后我们将研究如何安装这样一个包，以便它的脚本可以在您系统的命令行上使用（Unix或Windows）。
 - en: 'The finished package is available here:'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 完成的包可以在这里找到：
 - en: On GitHub as [`rauschma/demo-shell-scripts`](https://github.com/rauschma/demo-shell-scripts)
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在GitHub上为[`rauschma/demo-shell-scripts`](https://github.com/rauschma/demo-shell-scripts)
 - en: On npm as [`@rauschma/demo-shell-scripts`](https://www.npmjs.com/package/@rauschma/demo-shell-scripts)
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在npm上为[`@rauschma/demo-shell-scripts`](https://www.npmjs.com/package/@rauschma/demo-shell-scripts)
 - en: 14.3.1 Setting up the package’s directory
+  id: totrans-106
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.3.1 设置包的目录
 - en: 'These commands work on both Unix and Windows:'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些命令在Unix和Windows上都适用：
 - en: '[PRE14]'
+  id: totrans-108
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Now there are the following files:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在有以下文件：
 - en: '[PRE15]'
+  id: totrans-110
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 14.3.1.1 `package.json` for unpublished packages
+  id: totrans-111
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.3.1.1 未发布包的`package.json`
 - en: 'One option is to create a package and not publish it to the npm registry. We
     can still install such a package on our system (as explained later). In that case,
     our `package.json` looks as follows:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个选项是创建一个包并不将其发布到npm注册表。我们仍然可以在我们的系统上安装这样一个包（如后面所述）。在这种情况下，我们的`package.json`如下所示：
 - en: '[PRE16]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Explanations:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 解释：
 - en: Making the package private means that no name or version is needed and that
     it can’t be accidentally published.
+  id: totrans-115
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将包设为私有意味着不需要名称或版本，并且不能意外发布。
 - en: '`"UNLICENSED"` denies others the right to use the package under any terms.'
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"UNLICENSED"`拒绝他人以任何条件使用该包。'
 - en: 14.3.1.2 `package.json` for published packages
+  id: totrans-117
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.3.1.2 发布包的`package.json`
 - en: 'If we want to publish our package to the npm registry, our `package.json` looks
     like this:'
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想将我们的包发布到npm注册表，我们的`package.json`如下所示：
 - en: '[PRE17]'
+  id: totrans-119
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'For your own packages, you need to replace the value of `"name"` with a package
     name that works for you:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于您自己的包，您需要用适合您的包名替换`"name"`的值：
 - en: Either a globally unique name. Such a name should only be used for important
     packages because we don’t want to prevent others from using the name otherwise.
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 或者一个全局唯一的名称。这样的名称应该只用于重要的包，因为我们不希望阻止其他人使用该名称。
 - en: 'Or a *scoped name*: To publish a package, you need an npm account (how to get
     one is explained later). The name of your account can be used as a *scope* for
     package names. For example, if your account name is `jane`, you can use the following
     package name:'
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 或者*作用域名称*：要发布一个包，你需要一个npm账户（如何获得一个账户将在后面解释）。你的账户名可以作为包名的*作用域*。例如，如果你的账户名是`jane`，你可以使用以下包名：
 - en: '[PRE18]'
+  id: totrans-123
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 14.3.2 Adding dependencies
+  id: totrans-124
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.3.2 添加依赖项
 - en: 'Next, we install a dependency that we want to use in one of our scripts – package
     `lodash-es` (the ESM version of [Lodash](https://lodash.com)):'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来，我们安装一个我们想在其中一个脚本中使用的依赖项 - 包`lodash-es`（[Lodash](https://lodash.com)的ESM版本）：
 - en: '[PRE19]'
+  id: totrans-126
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'This command:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个命令：
 - en: Creates the directory `node_modules`.
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建目录`node_modules`。
 - en: Installs package `lodash-es` into it.
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将包`lodash-es`安装到其中。
 - en: 'Adds the following property to `package.json`:'
+  id: totrans-130
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`package.json`中添加以下属性：
 - en: '[PRE20]'
+  id: totrans-131
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: Creates the file `package-lock.json`.
+  id: totrans-132
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建文件`package-lock.json`。
 - en: If we only use a package during development, we can add it to `"devDependencies"`
     instead of to `"dependencies"` and npm will only install it if we run `npm install`
     inside our package’s directory, but not if we install it as a dependency. A unit
     testing library is a typical dev dependency.
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们只在开发过程中使用一个包，我们可以将其添加到`"devDependencies"`而不是`"dependencies"`，npm只有在我们在包的目录中运行`npm
+    install`时才会安装它，而不是如果我们将它安装为一个依赖项。单元测试库是一个典型的开发依赖。
 - en: 'These are two ways in which we can install a dev dependency:'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们可以安装开发依赖的两种方式：
 - en: Via `npm install some-package`.
+  id: totrans-135
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过`npm install some-package`。
 - en: We can use `npm install some-package --save-dev` and then manually move the
     entry for `some-package` from `"dependencies"` to `"devDependencies"`.
+  id: totrans-136
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以使用`npm install some-package --save-dev`，然后手动将`some-package`的条目从`"dependencies"`移动到`"devDependencies"`。
 - en: The second way means that we can easily postpone the decision whether a package
     is a dependency or a dev dependency.
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 第二种方法意味着我们可以很容易地推迟决定一个包是一个依赖还是一个开发依赖。
 - en: 14.3.3 Adding content to the package
+  id: totrans-138
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.3.3 向包添加内容
 - en: 'Let’s add a readme file and two modules `homedir.mjs` and `versions.mjs` that
     are shell scripts:'
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们添加一个readme文件和两个shell脚本`homedir.mjs`和`versions.mjs`：
 - en: '[PRE21]'
+  id: totrans-140
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'We have to tell npm about the two shell scripts so that it can install them
     for us. That’s what property `"bin"` in `package.json` is for:'
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们必须告诉npm关于这两个shell脚本，这样它才能为我们安装它们。这就是`package.json`中的`"bin"`属性的作用：
 - en: '[PRE22]'
+  id: totrans-142
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: If we install this package, two shell scripts with the names `homedir` and `versions`
     will become available.
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们安装这个包，两个名为`homedir`和`versions`的shell脚本将变得可用。
 - en: 'You may prefer the filename extension `.js` for the shell scripts. Then, instead
     of the previous property, you have to add the following two properties to `package.json`:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可能更喜欢使用`.js`作为shell脚本的文件扩展名。然后，你需要在`package.json`中添加以下两个属性，而不是之前的属性：
 - en: '[PRE23]'
+  id: totrans-145
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: The first property tells Node.js that it should interpret `.js` files as ESM
     modules (and not as CommonJS modules – which is the default).
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一个属性告诉Node.js应该将`.js`文件解释为ESM模块（而不是CommonJS模块 - 这是默认值）。
 - en: 'This is what `homedir.mjs` looks like:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: '`homedir.mjs`的样子如下：'
 - en: '[PRE24]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: This module starts with the aforementioned hashbang which is required if we
     want to use it on Unix. It imports function `homedir()` from the built-in module
     `node:os`, calls it and logs the result to the console (i.e., standard output).
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个模块以前面提到的hashbang开始，这是在Unix上使用它时所必需的。它从内置模块`node:os`中导入函数`homedir()`，调用它并将结果记录到控制台（即标准输出）。
 - en: Note that `homedir.mjs` does not have to be executable; npm ensure executability
     of `"bin"` scripts when it installs them (we’ll see how soon).
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，`homedir.mjs`不需要可执行；npm在安装时确保`"bin"`脚本的可执行性（我们很快就会看到如何做到这一点）。
 - en: '`versions.mjs` has the following content:'
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: '`versions.mjs`的内容如下：'
 - en: '[PRE25]'
+  id: totrans-152
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: We import function `pick()` from Lodash and use it to display three properties
     of the object `process.versions`.
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们从Lodash中导入`pick()`函数，并用它来显示`process.versions`对象的三个属性。
 - en: 14.3.4 Running the shell scripts without installing them
+  id: totrans-154
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.3.4 在不安装的情况下运行shell脚本
 - en: 'We can run, e.g., `homedir.mjs` like this:'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以这样运行，例如，`homedir.mjs`：
 - en: '[PRE26]'
+  id: totrans-156
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 14.4 How npm installs shell scripts
+  id: totrans-157
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.4 npm如何安装shell脚本
 - en: 14.4.1 Installation on Unix
+  id: totrans-158
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.4.1 在Unix上安装
 - en: 'A script such as `homedir.mjs` does not need to be executable on Unix because
     npm installs it via an executable symbolic link:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，`homedir.mjs`这样的脚本在Unix上不需要可执行，因为npm通过可执行符号链接来安装它：
 - en: If we install the package globally, the link is added to a directory that’s
     listed in `$PATH`.
+  id: totrans-160
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们全局安装包，链接将被添加到`$PATH`中列出的目录中。
 - en: If we install the package locally (as a dependency), the link is added to `node_modules/.bin/`
+  id: totrans-161
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们将包作为依赖项本地安装，链接将被添加到`node_modules/.bin/`中
 - en: 14.4.2 Installation on Windows
+  id: totrans-162
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.4.2 在Windows上安装
 - en: 'To install `homedir.mjs` on Windows, npm creates three files:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 要在Windows上安装`homedir.mjs`，npm会创建三个文件：
 - en: '`homedir.bat` is a Command shell script that uses `node` to execute `homedir.mjs`.'
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`homedir.bat`是一个使用`node`来执行`homedir.mjs`的命令shell脚本。'
 - en: '`homedir.ps1` does the same for PowerShell.'
+  id: totrans-165
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`homedir.ps1`对PowerShell也是一样的。'
 - en: '`homedir` does the same for Cygwin, MinGW, and MSYS.'
+  id: totrans-166
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`homedir`对Cygwin、MinGW和MSYS也是一样的。'
 - en: 'npm adds these files to a directory:'
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
+  zh: npm会将这些文件添加到一个目录中：
 - en: If we install the package globally, the files are added to a directory that’s
     listed in `%Path%`.
+  id: totrans-168
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们全局安装包，文件将被添加到列在`%Path%`中的目录中。
 - en: If we install the package locally (as a dependency), the files are added to
     `node_modules/.bin/`
+  id: totrans-169
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们将包作为依赖项本地安装，文件将被添加到`node_modules/.bin/`中
 - en: 14.5 Publishing the example package to the npm registry
+  id: totrans-170
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.5 将示例包发布到npm注册表
 - en: Let’s publish package `@rauschma/demo-shell-scripts` (which we have created
     previously) to npm. Before we use `npm publish` to upload the package, we should
     check that everything is configured properly.
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们将包`@rauschma/demo-shell-scripts`（之前创建的）发布到npm。在使用`npm publish`上传包之前，我们应该检查一切是否配置正确。
 - en: 14.5.1 Which files are published? Which files are ignored?
+  id: totrans-172
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.5.1 发布了哪些文件？哪些文件被忽略了？
 - en: 'The following mechanisms are used to exclude and include files when publishing:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 在发布时排除和包含文件时使用以下机制：
 - en: The files listed in the top-level file `.gitignore` are excluded.
+  id: totrans-174
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 顶层文件`.gitignore`中列出的文件会被排除。
 - en: We can override `.gitignore` with the file `.npmignore`, which has the same
     format.
+  id: totrans-175
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以用与`.gitignore`相同的格式覆盖`.npmignore`。
 - en: The `package.json` property `"files"` contains an Array with the names of files
     that are included. That means we have a choice of listing either the files we
     want to exclude (in `.npmignore`) or the files we want to include.
+  id: totrans-176
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`package.json`属性`"files"`包含一个数组，其中包含要包括的文件的名称。这意味着我们可以选择列出要排除的文件（在`.npmignore`中）或要包括的文件。'
 - en: 'Some files and directories are excluded by default – e.g.:'
+  id: totrans-177
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一些文件和目录默认被排除在外 - 例如：
 - en: '`node_modules`'
+  id: totrans-178
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules`'
 - en: '`.*.swp`'
+  id: totrans-179
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.*.swp`'
 - en: '`._*`'
+  id: totrans-180
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`._*`'
 - en: '`.DS_Store`'
+  id: totrans-181
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.DS_Store`'
 - en: '`.git`'
+  id: totrans-182
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.git`'
 - en: '`.gitignore`'
+  id: totrans-183
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.gitignore`'
 - en: '`.npmignore`'
+  id: totrans-184
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.npmignore`'
 - en: '`.npmrc`'
+  id: totrans-185
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.npmrc`'
 - en: '`npm-debug.log`'
+  id: totrans-186
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`npm-debug.log`'
 - en: Except for these defaults, dot files (files whose names start with dots) are
     included.
+  id: totrans-187
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 除了这些默认值，点文件（文件名以点开头的文件）也会被包括进来。
 - en: 'The following files are never excluded:'
+  id: totrans-188
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 以下文件永远不会被排除：
 - en: '`package.json`'
+  id: totrans-189
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`package.json`'
 - en: '`README.md` and its variants'
+  id: totrans-190
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`README.md`及其变体'
 - en: '`CHANGELOG` and its variants'
+  id: totrans-191
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`CHANGELOG`及其变体'
 - en: '`LICENSE`, `LICENCE`'
+  id: totrans-192
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`LICENSE`，`LICENCE`'
 - en: The npm documentation has [more details](https://docs.npmjs.com/cli/v8/using-npm/developers#keeping-files-out-of-your-package)
     on what’s included and whats excluded when publishing.
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: npm文档中有关于发布时包含和排除的[更多细节](https://docs.npmjs.com/cli/v8/using-npm/developers#keeping-files-out-of-your-package)。
 - en: 14.5.2 Checking if a package is properly configured
+  id: totrans-194
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.5.2 检查包是否正确配置
 - en: There are several things we can check before we upload a package.
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上传包之前，我们可以检查几件事情。
 - en: 14.5.2.1 Checking which files will be uploaded
+  id: totrans-196
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.5.2.1 检查将要上传的文件
 - en: 'A *dry run* of `npm install` runs the command without uploading anything:'
+  id: totrans-197
   prefs: []
   type: TYPE_NORMAL
+  zh: '`npm install`的*dry run*会在不上传任何内容的情况下运行该命令：'
 - en: '[PRE27]'
+  id: totrans-198
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: This displays which files would be uploaded and several statistics about the
     package.
+  id: totrans-199
   prefs: []
   type: TYPE_NORMAL
+  zh: 这会显示将要上传的文件以及有关包的几项统计数据。
 - en: 'We can also create an archive of the package as it would exist on the npm registry:'
+  id: totrans-200
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以创建一个包的存档，就像它在npm注册表上存在一样：
 - en: '[PRE28]'
+  id: totrans-201
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: This command creates the file `rauschma-demo-shell-scripts-1.0.0.tgz` in the
     current directory.
+  id: totrans-202
   prefs: []
   type: TYPE_NORMAL
+  zh: 此命令在当前目录中创建文件`rauschma-demo-shell-scripts-1.0.0.tgz`。
 - en: 14.5.2.2 Installing the package globally – without uploading it
+  id: totrans-203
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.5.2.2 全局安装软件包-而不上传
 - en: 'We can use either of the following two commands to install our package globally
     without publishing it to the npm registry:'
+  id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用以下两个命令之一在全局安装我们的软件包而不将其发布到npm注册表：
 - en: '[PRE29]'
+  id: totrans-205
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'To see if that worked, we can open a new shell and check if the two commands
     are available. We can also list all globally installed packages:'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 要查看是否有效，我们可以打开一个新的shell并检查这两个命令是否可用。我们还可以列出所有全局安装的软件包：
 - en: '[PRE30]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 14.5.2.3 Installing the package locally (as a depencency) – without uploading
     it
+  id: totrans-208
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.5.2.3 本地安装软件包（作为依赖项）-而不上传
 - en: 'To install our package as a dependency, we have to execute the following commands
     (while we are in directory `demo-shell-scripts`):'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 要将我们的包安装为依赖项，我们必须执行以下命令（当我们在目录`demo-shell-scripts`中时）：
 - en: '[PRE31]'
+  id: totrans-210
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'We can now run, e.g., `homedir` with either one of the following two commands:'
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们可以运行，例如，`homedir`，使用以下两个命令之一：
 - en: '[PRE32]'
+  id: totrans-212
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: '14.5.3 `npm publish`: uploading packages to the npm registry'
+  id: totrans-213
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.5.3 `npm publish`：将软件包上传到npm注册表
 - en: Before we can upload our package, we need to create an npm user account. The
     npm documentation [describes how to do that](https://docs.npmjs.com/creating-a-new-npm-user-account).
+  id: totrans-214
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们上传软件包之前，我们需要创建一个npm用户帐户。 npm文档[描述了如何做到这一点](https://docs.npmjs.com/creating-a-new-npm-user-account)。
 - en: 'Then we can finally publish our package:'
+  id: totrans-215
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后我们最终可以发布我们的软件包：
 - en: '[PRE33]'
+  id: totrans-216
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'We have to specify public access because the defaults are:'
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们必须指定公共访问权限，因为默认值是：
 - en: '`public` for unscoped packages'
+  id: totrans-218
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于未经范围限定的软件包，使用`public`
 - en: '`restricted` for scoped packages. This setting makes a package [*private*](https://docs.npmjs.com/about-private-packages)
     – which is a paid npm feature used mostly by companies and different from `"private":true`
     in `package.json`. Quoting npm: “With npm private packages, you can use the npm
     registry to host code that is only visible to you and chosen collaborators, allowing
     you to manage and use private code alongside public code in your projects.”'
+  id: totrans-219
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于受范围限制的软件包使用`restricted`。此设置使软件包[*private*](https://docs.npmjs.com/about-private-packages)-这是一个付费的npm功能，主要由公司使用，并且与`package.json`中的`"private":true`不同。引用npm：“使用npm私有软件包，您可以使用npm注册表来托管仅对您和选择的协作者可见的代码，允许您在项目中管理和使用私有代码以及公共代码。”
 - en: Option `--access` only has an effect the first time we publish. Afterward, we
     can omit it and need to use [`npm access`](https://docs.npmjs.com/cli/v8/commands/npm-access)
     to change the access level.
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: 选项`--access`只在第一次发布时有效。之后，我们可以省略它，并且需要使用[`npm access`](https://docs.npmjs.com/cli/v8/commands/npm-access)来更改访问级别。
 - en: 'We can change the default for the initial `npm publish` via [`publishConfig.access`](https://docs.npmjs.com/cli/v8/using-npm/config#access)
     in `package.json`:'
+  id: totrans-221
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过[`publishConfig.access`](https://docs.npmjs.com/cli/v8/using-npm/config#access)在`package.json`中更改初始`npm
+    publish`的默认值：
 - en: '[PRE34]'
+  id: totrans-222
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 14.5.3.1 A new version is required for every upload
+  id: totrans-223
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.5.3.1 每次上传都需要一个新版本
 - en: 'Once we have uploaded a package with a specific version, we can’t use that
     version again, we have to increase either of the three components of the version:'
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦我们使用特定版本上传了软件包，我们就不能再使用该版本，我们必须增加版本的三个组件中的任何一个：
 - en: '[PRE35]'
+  id: totrans-225
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: We increase `major` if we made breaking changes.
+  id: totrans-226
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们进行了重大更改，则增加`major`。
 - en: We increase `minor` if we made backward-compatible changes.
+  id: totrans-227
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们进行了向后兼容的更改，则增加`minor`。
 - en: We increase `patch` if we made small fixes that don’t really change the API.
+  id: totrans-228
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们进行了不会真正改变API的小修复，则增加`patch`。
 - en: 14.5.4 Automatically performing tasks every time before publishing
+  id: totrans-229
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.5.4 每次发布前自动执行任务
 - en: 'There may be steps that we want to perform every time before we upload a package
     – e.g.:'
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: 可能有一些步骤我们想要在上传软件包之前每次执行-例如：
 - en: Running unit tests
+  id: totrans-231
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 运行单元测试
 - en: Compiling TypeScript code to JavaScript code
+  id: totrans-232
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将TypeScript代码编译为JavaScript代码
 - en: 'That can be done automatically via the `package.json` property `“scripts”.
     That property can look like this:'
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: 这可以通过`package.json`属性`“scripts”`自动完成。该属性可以如下所示：
 - en: '[PRE36]'
+  id: totrans-234
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '`mocha` is a unit testing library. `tsc` is the TypeScript compiler.'
+  id: totrans-235
   prefs: []
   type: TYPE_NORMAL
+  zh: '`mocha`是一个单元测试库。`tsc`是TypeScript编译器。'
 - en: 'The following package scripts are run before `npm publish`:'
+  id: totrans-236
   prefs: []
   type: TYPE_NORMAL
+  zh: 在`npm publish`之前运行以下软件包脚本：
 - en: '`"prepare"` is run:'
+  id: totrans-237
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"prepare"`被运行：'
 - en: Before `npm pack`
+  id: totrans-238
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`npm pack`之前
 - en: Before `npm publish`
+  id: totrans-239
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`npm publish`之前
 - en: After a local `npm install` without arguments
+  id: totrans-240
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在本地`npm install`没有参数的情况下
 - en: '`"prepublishOnly"` is run only before `npm publish`.'
+  id: totrans-241
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"prepublishOnly"`仅在`npm publish`之前运行。'
 - en: For more information on this topic, see [§15 “Running cross-platform tasks via
     npm package scripts”](ch_package-scripts.html).
+  id: totrans-242
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关此主题的更多信息，请参见[§15“通过npm软件包脚本运行跨平台任务”](ch_package-scripts.html)。
 - en: 14.6 Standalone Node.js shell scripts with arbitrary extensions on Unix
+  id: totrans-243
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.6 在Unix上使用任意扩展名的独立Node.js shell脚本
 - en: '14.6.1 Unix: arbitrary filename extension via a custom executable'
+  id: totrans-244
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.6.1 Unix：通过自定义可执行文件使用任意文件名扩展名
 - en: The Node.js binary `node` uses the filename extension to detect which kind of
     module a file is. There currently is no command line option to override that.
     And the default is CommonJS, which is not what we want.
+  id: totrans-245
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js二进制文件`node`使用文件扩展名来检测文件是哪种类型的模块。目前没有命令行选项来覆盖它。默认值是CommonJS，这不是我们想要的。
 - en: 'However, we can create our own executable for running Node.js and, e.g., call
     it `node-esm`. Then we can rename our previous standalone script `hello.mjs` to
     `hello` (without any extension) if we change the first line to:'
+  id: totrans-246
   prefs: []
   type: TYPE_NORMAL
+  zh: 但是，我们可以创建我们自己的可执行文件来运行Node.js，并将其命名为`node-esm`，然后我们可以将我们以前的独立脚本`hello.mjs`重命名为`hello`（没有任何扩展名），如果我们将第一行更改为：
 - en: '[PRE37]'
+  id: totrans-247
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: Previously, the argument of `env` was `node`.
+  id: totrans-248
   prefs: []
   type: TYPE_NORMAL
+  zh: 以前，`env`的参数是`node`。
 - en: 'This is [an implementation of `node-esm`](https://gist.github.com/WebReflection/8840ec29d296f2fa98d8be0102f08590)
     proposed by Andrea Giammarchi:'
+  id: totrans-249
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是Andrea Giammarchi提出的[node-esm的实现](https://gist.github.com/WebReflection/8840ec29d296f2fa98d8be0102f08590)：
 - en: '[PRE38]'
+  id: totrans-250
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: This executable sends the content of a script to `node` via standard input.
     The command line option `--input-type=module` tells Node.js that the text it receives
     is an ESM module.
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: 此可执行文件通过标准输入将脚本内容发送到`node`。命令行选项`--input-type=module`告诉Node.js它接收的文本是一个ESM模块。
 - en: 'We also use the following Unix shell features:'
+  id: totrans-252
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还使用以下Unix shell功能：
 - en: '`$1` contains the the first argument passed to `node-esm` – the path of the
     script.'
+  id: totrans-253
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`$1`包含传递给`node-esm`的第一个参数-脚本的路径。'
 - en: We delete argument `$0` (the path of `node-esm`) via `shift` and pass on the
     remaining arguments to `node` via `$@`.
+  id: totrans-254
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们通过`shift`删除参数`$0`（`node-esm`的路径）并将剩余的参数传递给`node`。
 - en: '`exec` replaces the current process with the one in which `node` runs. That
     ensures that the script exits with the same code as `node`.'
+  id: totrans-255
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`exec`用`node`运行替换当前进程。这确保脚本以与`node`相同的代码退出。'
 - en: The hyphen (`-`) separates Node’s arguments from the script’s arguments.
+  id: totrans-256
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 连字符（`-`）将Node的参数与脚本的参数分开。
 - en: Before we can use `node-esm`, we have to make sure that it is executable and
     can be found via the `$PATH`. How to do that is explained later.
+  id: totrans-257
   prefs: []
   type: TYPE_NORMAL
+  zh: 在使用`node-esm`之前，我们必须确保它是可执行的，并且可以通过`$PATH`找到。如何做到这一点将在后面解释。
 - en: '14.6.2 Unix: arbitrary filename extension via a shell prolog'
+  id: totrans-258
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.6.2 Unix：通过shell prolog任意文件扩展名
 - en: 'We have seen that we can’t specify the module type for a file, only for standard
     input. Therefore, we can write a Unix shell script `hello` that uses Node.js to
     run itself as an ESM module (based on [work by sambal.org](https://sambal.org/2014/02/passing-options-node-shebang-line/)):'
+  id: totrans-259
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到，我们无法为文件指定模块类型，只能为标准输入指定。因此，我们可以编写一个Unix shell脚本`hello`，使用Node.js将自身作为ESM模块运行（基于[sambal.org的工作](https://sambal.org/2014/02/passing-options-node-shebang-line/)）：
 - en: '[PRE39]'
+  id: totrans-260
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: Most of the shell features that we are using here are described at the beginning
     of this chapter. `$?` contains the exit code of the last shell command that was
     executed. That enables `hello` to exit with the same code as `node`.
+  id: totrans-261
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在这里使用的大多数shell功能在本章的开头都有描述。`$?`包含上次执行的shell命令的退出代码。这使`hello`能够以与`node`相同的代码退出。
 - en: 'The key trick used by this script is that the second line is both Unix shell
     script code and JavaScript code:'
+  id: totrans-262
   prefs: []
   type: TYPE_NORMAL
+  zh: 此脚本使用的关键技巧是第二行既是Unix shell脚本代码又是JavaScript代码：
 - en: As shell script code, it runs [the quoted command `':'`](https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html#Bourne-Shell-Builtins)
     which does nothing beyond expanding its arguments and performing redirections.
     Its only argument is the path `//`. Then it pipes the contents of the current
     file to the `node` binary.
+  id: totrans-263
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作为shell脚本代码，它运行[引用命令`':'`](https://www.gnu.org/software/bash/manual/html_node/Bourne-Shell-Builtins.html#Bourne-Shell-Builtins)，除了扩展其参数和执行重定向外，什么也不做。它的唯一参数是路径`//`。然后将当前文件的内容传递给`node`二进制文件。
 - en: As JavaScript code, it is the string `':'` (which is interpreted as an expression
     statement and does nothing), followed by a comment.
+  id: totrans-264
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作为JavaScript代码，它是字符串`':'`（被解释为表达式语句并且什么也不做），然后是一个注释。
 - en: An additional benefit of hiding the shell code from JavaScript is that JavaScript
     editors won’t be confused when it comes to processing and displaying the syntax.
+  id: totrans-265
   prefs: []
   type: TYPE_NORMAL
+  zh: 将shell代码从JavaScript中隐藏的另一个好处是，当处理和显示语法时，JavaScript编辑器不会感到困惑。
 - en: 14.7 Standalone Node.js shell scripts on Windows
+  id: totrans-266
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.7 在Windows上独立的Node.js shell脚本
 - en: '14.7.1 Windows: configuring the filename extension `.mjs`'
+  id: totrans-267
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.7.1 Windows：配置文件扩展名`.mjs`
 - en: One option for creating standalone Node.js shell scripts on Windows is to the
     filename extension `.mjs` and configure it so that files that have it are run
     via `node`. Alas that only works for the Command shell, not for PowerShell.
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上创建独立的Node.js shell脚本的一个选项是使用文件扩展名`.mjs`并配置文件以便通过`node`运行。遗憾的是，这仅适用于命令shell，而不适用于PowerShell。
 - en: 'Another downside is that we can’t pass arguments to a script that way:'
+  id: totrans-269
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个缺点是我们无法以这种方式传递参数给脚本：
 - en: '[PRE40]'
+  id: totrans-270
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: How do we configure Windows so that the Command shell directly runs files such
     as `args.mjs`?
+  id: totrans-271
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们如何配置Windows，使命令shell直接运行诸如`args.mjs`之类的文件？
 - en: '*File associations* specify which app a file is opened with when we enter its
     name in a shell. If we associate the filename extension `.mjs` with the Node.js
     binary, we can run ESM modules in shells. One way to do that is via the Settings
     app, as explained in [“How to Change File Associations in Windows”](https://www.lifewire.com/how-to-change-file-associations-in-windows-2624477)
     by Tim Fisher.'
+  id: totrans-272
   prefs: []
   type: TYPE_NORMAL
+  zh: '*文件关联*指定在shell中输入其名称时打开文件的应用程序。如果我们将文件扩展名`.mjs`与Node.js二进制文件关联，我们可以在shell中运行ESM模块。其中一种方法是通过设置应用程序，如Tim
+    Fisher在[“如何更改Windows中的文件关联”](https://www.lifewire.com/how-to-change-file-associations-in-windows-2624477)中所解释的那样。'
 - en: If we additionally add `.MJS` to the variable `%PATHEXT%`, we can even omit
     the filename extension when referring to an ESM module. This environment variable
     can be changed permanently via the Settings app – search for “variables”.
+  id: totrans-273
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们还将`.MJS`添加到变量`%PATHEXT%`中，甚至在引用ESM模块时可以省略文件扩展名。此环境变量可以通过设置应用程序永久更改-搜索“variables”。
 - en: '14.7.2 Windows Command shell: Node.js scripts via a shell prolog'
+  id: totrans-274
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.7.2 Windows命令shell：通过shell prolog运行Node.js脚本
 - en: 'On Windows, we are facing the challenge that there is no mechanism like hashbangs.
     Therefore, we have to use a workaround that is similar to the one we used for
     extensionless files on Unix: We create a script that runs the JavaScript code
     inside itself via Node.js.'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上，我们面临的挑战是没有像hashbangs这样的机制。因此，我们必须使用类似于我们在Unix上用于无扩展名文件的解决方法：创建一个通过Node.js在自身内部运行JavaScript代码的脚本。
 - en: Command shell scripts have the filename extension `.bat`. We can run a script
     named `script.bat` via either `script.bat` or `script`.
+  id: totrans-276
   prefs: []
   type: TYPE_NORMAL
+  zh: 命令shell脚本的文件扩展名是`.bat`。我们可以通过`script.bat`或`script`运行名为`script.bat`的脚本。
 - en: 'This is what `hello.mjs` looks like if we turn it into a Command shell script
     `hello.bat`:'
+  id: totrans-277
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将其转换为命令shell脚本`hello.bat`，则`hello.mjs`看起来是这样的：
 - en: '[PRE41]'
+  id: totrans-278
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'Running this code as a file via `node` would require two features that don’t
     exist:'
+  id: totrans-279
   prefs: []
   type: TYPE_NORMAL
+  zh: 将此代码作为文件通过`node`运行需要两个不存在的功能：
 - en: Using a command line option to override extension-less files being interpreted
     as ESM modules by default.
+  id: totrans-280
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用命令行选项来覆盖默认情况下将无扩展名的文件解释为ESM模块。
 - en: Skipping lines at the beginning of a file.
+  id: totrans-281
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 跳过文件开头的行。
 - en: 'Therefore, we have no choice but to pipe the file’s content into `node`. We
     also use the following command shell features:'
+  id: totrans-282
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们别无选择，只能将文件的内容传递给`node`。我们还使用以下命令shell功能：
 - en: '`%~f0` contains the full path of the current script, including its filename
     extension. In contrast, `%0` contains the command that was used to invoke the
     script. Therefore, the former shell variable enables us to invoke the script via
     either `hello` or `hello.bat`.'
+  id: totrans-283
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`%~f0`包含当前脚本的完整路径，包括其文件扩展名。相比之下，`%0`包含用于调用脚本的命令。因此，前者的shell变量使我们能够通过`hello`或`hello.bat`调用脚本。'
 - en: '`%*` contains the command’s arguments – which we pass on to `node`.'
+  id: totrans-284
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`%*`包含命令的参数-我们将其传递给`node`。'
 - en: '`%errorlevel%` contains the exit code of the last command that was executed.
     We use that value to exit with the same code that was specified by `node`.'
+  id: totrans-285
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`%errorlevel%`包含上次执行的命令的退出代码。我们使用该值以与`node`指定的相同代码退出。'
 - en: '14.7.3 Windows PowerShell: Node.js scripts via a shell prolog'
+  id: totrans-286
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.7.3 Windows PowerShell：通过shell prolog运行Node.js脚本
 - en: 'We can use a trick similar to the one used in the previous section and turn
     `hello.mjs` into a PowerShell script `hello.ps1` as follows:'
+  id: totrans-287
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用与上一节中使用的类似的技巧，将`hello.mjs`转换为PowerShell脚本`hello.ps1`，如下所示：
 - en: '[PRE42]'
+  id: totrans-288
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: 'We can run this script via either:'
+  id: totrans-289
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过以下方式运行此脚本：
 - en: '[PRE43]'
+  id: totrans-290
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'However, before we can do that, we need to set an execution policy that allows
     us to run PowerShell scripts ([more information on execution policies](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies)):'
+  id: totrans-291
   prefs: []
   type: TYPE_NORMAL
+  zh: 但是，在我们这样做之前，我们需要设置一个允许我们运行PowerShell脚本的执行策略（[有关执行策略的更多信息](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies)）：
 - en: The default policies on Windows clients is `Restricted` and doesn’t let us run
     any scripts.
+  id: totrans-292
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Windows客户端上的默认策略是“受限”，不允许我们运行任何脚本。
 - en: The policy `RemoteSigned` lets us run unsigned local scripts. Downloaded scripts
     must be signed. This is the default on Windows servers.
+  id: totrans-293
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 策略`RemoteSigned`允许我们运行未签名的本地脚本。下载的脚本必须经过签名。这是Windows服务器上的默认设置。
 - en: 'The following command lets us run local scripts:'
+  id: totrans-294
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下命令让我们运行本地脚本：
 - en: '[PRE44]'
+  id: totrans-295
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: 14.8 Creating native binaries for Linux, macOS, and Windows
+  id: totrans-296
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.8 为Linux、macOS和Windows创建本机二进制文件
 - en: '[The npm package `pkg`](https://github.com/vercel/pkg) turns a Node.js package
     into a native binary that even runs on systems where Node.js isn’t installed.
     It supports the following platforms: Linux, macOS, and Windows.'
+  id: totrans-297
   prefs: []
   type: TYPE_NORMAL
+  zh: '[npm包`pkg`](https://github.com/vercel/pkg)将Node.js包转换为本机二进制文件，即使在未安装Node.js的系统上也可以运行。它支持以下平台：Linux、macOS和Windows。'
 - en: '14.9 Shell paths: making sure shells find scripts'
+  id: totrans-298
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.9 Shell路径：确保shell找到脚本
 - en: 'In most shells, we can type in a filename without directly referring to a file
     and they search several directories for a file with that name and run it. Those
     directories are usually listed in a special shell variable:'
+  id: totrans-299
   prefs: []
   type: TYPE_NORMAL
+  zh: 在大多数shell中，我们可以输入文件名而不直接引用文件，它们会在几个目录中搜索具有该名称的文件并运行它。这些目录通常在一个特殊的shell变量中列出：
 - en: In most Unix shells, we access it via `$PATH`.
+  id: totrans-300
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在大多数Unix shell中，我们通过`$PATH`访问它。
 - en: In the Windows Command shell, we access it via `%Path%`.
+  id: totrans-301
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Windows命令shell中，我们通过`%Path%`访问它。
 - en: In PowerShell, we access it via `$Env:PATH`.
+  id: totrans-302
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在PowerShell中，我们通过`$Env:PATH`访问它。
 - en: 'We need the PATH variable for two purposes:'
+  id: totrans-303
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们需要PATH变量有两个目的：
 - en: If we want to install our custom Node.js executable `node-esm`.
+  id: totrans-304
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们想要安装我们自定义的Node.js可执行文件`node-esm`。
 - en: If we want to run a standalone shell script without directly referring to its
     file.
+  id: totrans-305
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们想要运行一个独立的shell脚本而不直接引用其文件。
 - en: '14.9.1 Unix: `$PATH`'
+  id: totrans-306
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.9.1 Unix：`$PATH`
 - en: 'Most Unix shells have the variable `$PATH` that lists all paths where a shell
     looks for executables when we type in a command. Its value may look like this:'
+  id: totrans-307
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数Unix shell都有一个名为`$PATH`的变量，列出了当我们输入命令时shell查找可执行文件的所有路径。它的值可能如下所示：
 - en: '[PRE45]'
+  id: totrans-308
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'The following command works on most shells ([source](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path/26059#26059))
     and changes the `$PATH` until we leave the current shell:'
+  id: totrans-309
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下命令适用于大多数shell（[来源](https://unix.stackexchange.com/questions/26047/how-to-correctly-add-a-path-to-path/26059#26059)），并且在我们离开当前shell之前更改`$PATH`：
 - en: '[PRE46]'
+  id: totrans-310
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: The quotes are needed in case one of the two shell variables contains spaces.
+  id: totrans-311
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果两个shell变量中有一个包含空格，则需要引号。
 - en: 14.9.1.1 Permanently changing the `$PATH`
+  id: totrans-312
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.9.1.1 永久更改`$PATH`
 - en: 'On Unix, how the `$PATH` is configured depends on the shell. You can find out
     which shell you are running via:'
+  id: totrans-313
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上，`$PATH`的配置取决于shell。您可以通过以下方式找出自己正在运行的shell：
 - en: '[PRE47]'
+  id: totrans-314
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 'MacOS uses Zsh where the best place to permanently configure `$PATH` is the
     startup script `$HOME/.zprofile` – [like this](https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh):'
+  id: totrans-315
   prefs: []
   type: TYPE_NORMAL
+  zh: MacOS使用Zsh，永久配置`$PATH`的最佳位置是启动脚本`$HOME/.zprofile`- [像这样](https://stackoverflow.com/questions/11530090/adding-a-new-entry-to-the-path-variable-in-zsh)：
 - en: '[PRE48]'
+  id: totrans-316
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: 14.9.2 Changing the PATH variable on Windows (Command shell, PowerShell)
+  id: totrans-317
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.9.2 更改Windows上的PATH变量（命令shell，PowerShell）
 - en: On Windows, the default environment variables of the Command shell and PowerShell
     can be configured (permanently) via the Settings app – search for “variables”.
+  id: totrans-318
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上，可以通过“设置”应用程序永久配置命令shell和PowerShell的默认环境变量-搜索“variables”。
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/14)'
+  id: totrans-319
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/nodejs-shell-scripting/issues/14)'
