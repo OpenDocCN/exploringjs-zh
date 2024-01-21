@@ -1,340 +1,518 @@
 - en: 11 Stream recipes
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 11 流配方
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_stream-recipes.html](https://exploringjs.com/nodejs-shell-scripting/ch_stream-recipes.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '[https://exploringjs.com/nodejs-shell-scripting/ch_stream-recipes.html](https://exploringjs.com/nodejs-shell-scripting/ch_stream-recipes.html)'
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 11.1 [Writing to standard output (stdout)](ch_stream-recipes.html#writing-to-standard-output-stdout)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.1 [写入标准输出(stdout)](ch_stream-recipes.html#writing-to-standard-output-stdout)
 - en: 11.1.1 [Writing to stdout via `console.log()](ch_stream-recipes.html#writing-to-stdout-via-console.log)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.1.1 通过`console.log()`写入stdout
 - en: 11.1.2 [Writing to stdout via a Node.js stream](ch_stream-recipes.html#writing-to-stdout-via-a-node.js-stream)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.1.2 [通过Node.js流写入stdout](ch_stream-recipes.html#writing-to-stdout-via-a-node.js-stream)
 - en: 11.1.3 [Writing to stdout via a web stream](ch_stream-recipes.html#writing-to-stdout-via-a-web-stream)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.1.3 通过Web流写入stdout
 - en: 11.2 [Writing to standard error (stderr)](ch_stream-recipes.html#writing-to-standard-error-stderr)
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.2 [写入标准错误(stderr)](ch_stream-recipes.html#writing-to-standard-error-stderr)
 - en: 11.3 [Reading from standard input (stdin)](ch_stream-recipes.html#reading-from-standard-input-stdin)
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.3 从标准输入(stdin)读取
 - en: 11.3.1 [Reading from stdin via a Node.js stream](ch_stream-recipes.html#reading-from-stdin-via-a-node.js-stream)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.3.1 [通过Node.js流从stdin读取](ch_stream-recipes.html#reading-from-stdin-via-a-node.js-stream)
 - en: 11.3.2 [Reading from stdin via a web stream](ch_stream-recipes.html#reading-from-stdin-via-a-web-stream)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.3.2 通过Web流从stdin读取
 - en: 11.3.3 [Reading from stdin via module `'node:readline'`](ch_stream-recipes.html#reading-from-stdin-via-module-nodereadline)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.3.3 [通过模块`'node:readline'`从stdin读取](ch_stream-recipes.html#reading-from-stdin-via-module-nodereadline)
 - en: 11.4 [Node.js stream recipes](ch_stream-recipes.html#nodejs-stream-recipes)
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.4 [Node.js流配方](ch_stream-recipes.html#nodejs-stream-recipes)
 - en: 11.5 [Web stream recipes](ch_stream-recipes.html#web-stream-recipes)
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 11.5 [Web流配方](ch_stream-recipes.html#web-stream-recipes)
 - en: '* * *'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 11.1 Writing to standard output (stdout)
+  id: totrans-15
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 11.1 写入标准输出(stdout)
 - en: 'These are three options for writing to stdout:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是写入stdout的三个选项：
 - en: We can write to it via `console.log()`.
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过`console.log()`写入它。
 - en: We can write to it via a Node.js stream.
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过Node.js流写入它。
 - en: We can write to it via a web stream.
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过Web流写入它。
 - en: 11.1.1 Writing to stdout via `console.log()
+  id: totrans-20
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.1.1 通过`console.log()`写入stdout
 - en: '[`console.log(format, ...args)`](https://nodejs.org/docs/latest/api/console.html#consolelogdata-args)
     writes to stdout and always appends a newline `''\n''` (even on Windows). The
     first argument can include placeholders which are interpreted in the same way
     as they are by `util.format()`:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`console.log(format, ...args)`](https://nodejs.org/docs/latest/api/console.html#consolelogdata-args)写入stdout并始终附加换行符`''\n''`（即使在Windows上也是如此）。第一个参数可以包含占位符，这些占位符的解释方式与`util.format()`相同：'
 - en: '[PRE0]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: All arguments after the first one always show up in the output, even if there
     are not enough placeholders for them.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一个参数之后的所有参数始终显示在输出中，即使没有足够的占位符。
 - en: 11.1.2 Writing to stdout via a Node.js stream
+  id: totrans-24
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.1.2 通过Node.js流写入stdout
 - en: '`process.stdout` is an instance of `stream.Readable`. That means that we can
     use it like any other Node.js stream – for example:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '`process.stdout`是`stream.Readable`的一个实例。这意味着我们可以像使用其他Node.js流一样使用它-例如：'
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'The previous code is equivalent to:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 前面的代码等同于：
 - en: '[PRE2]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Note that there is no newline at the end in this case because `console.log()`
     always adds one.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，这种情况下末尾没有换行符，因为`console.log()`总是会添加一个。
 - en: If we use `.write()` with large amounts of data, we should take backpressure
     into consideration, as explained in [§9.5.2.1 “`writable.write(chunk)`”](ch_nodejs-streams.html#Writable.prototype.write).
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用`.write()`来处理大量数据，我们应该考虑回压，如[§9.5.2.1“`writable.write(chunk)`”](ch_nodejs-streams.html#Writable.prototype.write)中所解释的那样。
 - en: 'The following recipes work with `process.stdout`: [§11.4 “Node.js stream recipes”](ch_stream-recipes.html#nodejs-stream-recipes).'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下配方适用于`process.stdout`：[§11.4“Node.js流配方”](ch_stream-recipes.html#nodejs-stream-recipes)。
 - en: 11.1.3 Writing to stdout via a web stream
+  id: totrans-32
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.1.3 通过Web流写入stdout
 - en: 'We can convert `process.stdout` to a web stream and write to it:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以将`process.stdout`转换为Web流并写入其中：
 - en: '[PRE3]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The following recipes work with `webOut`: [§11.5 “Web stream recipes”](ch_stream-recipes.html#web-stream-recipes).'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下配方适用于`webOut`：[§11.5“Web流配方”](ch_stream-recipes.html#web-stream-recipes)。
 - en: 11.2 Writing to standard error (stderr)
+  id: totrans-36
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 11.2 写入标准错误(stderr)
 - en: 'Writing to stderr works similarly to writing to stdout:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 写入stderr的工作方式与写入stdout类似：
 - en: We can write to it via `console.error()`.
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过`console.error()`写入它。
 - en: We can write to it via a Node.js stream.
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过Node.js流写入它。
 - en: We can write to it via a web stream.
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过Web流写入它。
 - en: See the previous section for more information.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关更多信息，请参阅前一节。
 - en: 11.3 Reading from standard input (stdin)
+  id: totrans-42
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 11.3 从标准输入(stdin)读取
 - en: 'These are options for reading from stdin:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是从stdin读取的选项：
 - en: We can read from it via a Node.js stream.
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过Node.js流从中读取。
 - en: We can read from it via a web stream.
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过Web流从中读取。
 - en: We can use module `'node:readline'`.
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以使用模块`'node:readline'`。
 - en: 11.3.1 Reading from stdin via a Node.js stream
+  id: totrans-47
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.3.1 通过Node.js流从stdin读取
 - en: '`process.stdin` is an instance of `stream.Writable`. That means that we can
     use it like any other Node.js stream:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: '`process.stdin`是`stream.Writable`的一个实例。这意味着我们可以像使用其他Node.js流一样使用它：'
 - en: '[PRE4]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'The following recipes work with `webIn`: [§11.4 “Node.js stream recipes”](ch_stream-recipes.html#nodejs-stream-recipes).'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下配方适用于`webIn`：[§11.4“Node.js流配方”](ch_stream-recipes.html#nodejs-stream-recipes)。
 - en: 11.3.2 Reading from stdin via a web stream
+  id: totrans-51
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.3.2 通过Web流从stdin读取
 - en: 'We first have to convert `process.stdin` to a web stream:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们首先必须将`process.stdin`转换为Web流：
 - en: '[PRE5]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'The following recipes work with `webIn`: [§11.5 “Web stream recipes”](ch_stream-recipes.html#web-stream-recipes).'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下配方适用于`webIn`：[§11.5“Web流配方”](ch_stream-recipes.html#web-stream-recipes)。
 - en: 11.3.3 Reading from stdin via module `'node:readline'`
+  id: totrans-55
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 11.3.3 通过模块`'node:readline'`从stdin读取
 - en: 'The built-in module `''node:readline''` lets us prompt users to enter information
     interactively – for example:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 内置模块`'node:readline'`允许我们提示用户以交互方式输入信息-例如：
 - en: '[PRE6]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'For more information on module `''node:readline''`, see:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关模块`'node:readline'`的更多信息，请参见：
 - en: '[§9.3.3 “Reading lines from readable streams via module `''node:readlines''`”](ch_nodejs-streams.html#readline-async-iteration)'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.3.3“通过模块''node:readlines''从可读流中读取行”](ch_nodejs-streams.html#readline-async-iteration)'
 - en: '[Its official documentation](https://nodejs.org/api/readline.html).'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[官方文档](https://nodejs.org/api/readline.html)。'
 - en: 11.4 Node.js stream recipes
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 11.4 Node.js流配方
 - en: 'Readable streams:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 可读流：
 - en: '[§9.3.1.2 “`Readable.from()`: Creating readable streams from iterables”](ch_nodejs-streams.html#Readable.from)'
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.3.1.2“`Readable.from()`: 从可迭代对象创建可读流”](ch_nodejs-streams.html#Readable.from)'
 - en: '[§9.3.2 “Reading chunks from readable streams via `for-await-of`”](ch_nodejs-streams.html#Readable-async-iteration)'
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.3.2“通过`for-await-of`从可读流中读取块”](ch_nodejs-streams.html#Readable-async-iteration)'
 - en: '[§9.3.2.1 “Collecting the contents of a readable stream in a string”](ch_nodejs-streams.html#readableToString2)'
+  id: totrans-65
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.3.2.1“在字符串中收集可读流的内容”](ch_nodejs-streams.html#readableToString2)'
 - en: '[§9.3.3 “Reading lines from readable streams via module `''node:readlines''`”](ch_nodejs-streams.html#readline-async-iteration)'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.3.3“通过模块''node:readlines''从可读流中读取行”](ch_nodejs-streams.html#readline-async-iteration)'
 - en: '[§9.4 “Transforming readable streams via async generators”](ch_nodejs-streams.html#transforming-Readable-via-async-generator)'
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.4“通过异步生成器转换可读流”](ch_nodejs-streams.html#transforming-Readable-via-async-generator)'
 - en: '[§9.4.1 “Going from chunks to numbered lines in async iterables”](ch_nodejs-streams.html#chunksToLines)'
+  id: totrans-68
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.4.1“在异步可迭代对象中从块转换为编号行”](ch_nodejs-streams.html#chunksToLines)'
 - en: 'Writable streams:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 可写流：
 - en: '[§9.5.2 “Writing to writable streams”](ch_nodejs-streams.html#writing-to-Writable)'
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.5.2“写入可写流”](ch_nodejs-streams.html#writing-to-Writable)'
 - en: '[§9.5.2.2 “Piping readable streams to writable streams via `stream.pipeline()`”](ch_nodejs-streams.html#stream.pipeline)'
+  id: totrans-71
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§9.5.2.2“通过`stream.pipeline()`将可读流传输到可写流”](ch_nodejs-streams.html#stream.pipeline)'
 - en: 11.5 Web stream recipes
+  id: totrans-72
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 11.5网络流配方
 - en: 'Creating a ReadableStream from:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 从中创建一个ReadableStream：
 - en: 'Strings: [§10.3.1 “A first example of implementing an underlying source”](ch_web-streams.html#readablestream-enqueue-strings)'
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串：[§10.3.1“实现基础源的第一个示例”](ch_web-streams.html#readablestream-enqueue-strings)
 - en: 'An iterable: [§10.3.2.2 “Example: creating a ReadableStream from a pull source”](ch_web-streams.html#readablestream-from-iterable)'
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可迭代对象：[§10.3.2.2“示例：从拉取源创建一个ReadableStream”](ch_web-streams.html#readablestream-from-iterable)
 - en: 'Reading from a ReadableStream:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 从ReadableStream中读取：
 - en: '[§10.2.1 “Consuming ReadableStreams via Readers”](ch_web-streams.html#ReadableStream-Reader)'
+  id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.2.1“通过读取器消耗ReadableStreams”](ch_web-streams.html#ReadableStream-Reader)'
 - en: '[§10.2.2 “Consuming ReadableStreams via asynchronous iteration”](ch_web-streams.html#ReadableStream-async-iteration)'
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.2.2“通过异步迭代消耗ReadableStreams”](ch_web-streams.html#ReadableStream-async-iteration)'
 - en: '[§10.2.2.2 “Example: assembling a string with the contents of a ReadableStream”](ch_web-streams.html#readableStreamToString2)'
+  id: totrans-79
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.2.2.2“示例：组装包含ReadableStream内容的字符串”](ch_web-streams.html#readableStreamToString2)'
 - en: '[§10.2.3 “Piping ReadableStreams to WritableStreams”](ch_web-streams.html#piping-ReadableStream-to-WritableStream)'
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.2.3“将ReadableStreams传输到WritableStreams”](ch_web-streams.html#piping-ReadableStream-to-WritableStream)'
 - en: 'Transforming ReadableStreams:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 转换ReadableStreams：
 - en: '[§10.6 “Using TransformStreams”](ch_web-streams.html#transformstream)'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.6“使用TransformStreams”](ch_web-streams.html#transformstream)'
 - en: '[§10.7.2 “Tip: async generators are also great for transforming streams”](ch_web-streams.html#transforming-web-streams-via-generators)'
+  id: totrans-83
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.7.2“提示：异步生成器也非常适合转换流”](ch_web-streams.html#transforming-web-streams-via-generators)'
 - en: '[§10.7.1 “Example: transforming a stream of arbitrary chunks to a stream of
     lines”](ch_web-streams.html#ChunksToLinesStream)'
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.7.1“示例：将任意块的流转换为行流”](ch_web-streams.html#ChunksToLinesStream)'
 - en: 'Using WritableStreams:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用WritableStreams：
 - en: '[§10.4 “Writing to WritableStreams”](ch_web-streams.html#writing-to-WritableStream)'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.4“写入可写流”](ch_web-streams.html#writing-to-WritableStream)'
 - en: '[§10.5.2 “Example: collecting chunks written to a WriteStream in a string”](ch_web-streams.html#StringWritableStream)'
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10.5.2“示例：在字符串中收集写入到WriteStream的块”](ch_web-streams.html#StringWritableStream)'
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/11)'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/nodejs-shell-scripting/issues/11)'

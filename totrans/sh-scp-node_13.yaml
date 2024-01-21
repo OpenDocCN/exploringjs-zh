@@ -268,104 +268,124 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 10.1 什么是网络流？
 - en: Let’s start with an overview of a few fundamentals of web streams. Afterwards,
     we’ll quickly move on to examples.
   id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们首先概述一下网络流的一些基本知识。之后，我们将快速转移到示例。
 - en: 'Streams are a data structure for accessing data such as:'
   id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 流是一种用于访问数据的数据结构，例如：
 - en: Files
   id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 文件
 - en: Data hosted on web servers
   id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 托管在Web服务器上的数据
 - en: Etc.
   id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: 'Two of their benefits are:'
   id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们的两个好处是：
 - en: We can work with large amounts of data because streams allow us to split them
     up into smaller pieces (so-called *chunks*) which we can process one at a time.
   id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以处理大量数据，因为流允许我们将它们分割成较小的片段（所谓的*chunks*），我们可以一次处理一个。
 - en: We can work with the same data structure, streams, while processing different
     data. That makes it easier to reuse code.
   id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以在处理不同数据时使用相同的数据结构，流。这样可以更容易地重用代码。
 - en: '[*Web streams*](https://streams.spec.whatwg.org/#intro) (“web” is often omitted)
     are a relatively new standard that originated in web browsers but is now also
     supported by Node.js and Deno (as shown in this [MDN compatibility table](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API#browser_compatibility)).'
   id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: '[*Web streams*](https://streams.spec.whatwg.org/#intro)（“web”通常被省略）是一个相对较新的标准，起源于Web浏览器，但现在也受到Node.js和Deno的支持（如此[MDN兼容性表](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API#browser_compatibility)所示）。'
 - en: 'In web streams, chunks are usually either:'
   id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 在网络流中，chunks通常是：
 - en: 'Text streams: Strings'
   id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 文本流：字符串
 - en: 'Binary streams: Uint8Arrays ([a kind of TypedArray](https://exploringjs.com/impatient-js/ch_typed-arrays.html))'
   id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 二进制流：Uint8Arrays（[一种TypedArray](https://exploringjs.com/impatient-js/ch_typed-arrays.html)）
 - en: 10.1.1 Kinds of streams
   id: totrans-53
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.1.1 流的种类
 - en: 'There are three main kinds of web streams:'
   id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 有三种主要类型的网络流：
 - en: A ReadableStream is used to read data from a *source*. Code that does that is
     called a *consumer*.
   id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个ReadableStream用于从*source*读取数据。执行此操作的代码称为*consumer*。
 - en: A WritableStream is used to write data to a *sink*. Code that does that is called
     a *producer*.
   id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个WritableStream用于向*sink*写入数据。执行此操作的代码称为*producer*。
 - en: 'A TransformStream consists of two streams:'
   id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TransformStream由两个流组成：
 - en: It receives input from its *writable side*, a WritableStream.
   id: totrans-58
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它从其*writable side*接收输入，即WritableStream。
 - en: It sends output to its *readable side*, a ReadableStream.
   id: totrans-59
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它将输出发送到其*readable side*，即ReadableStream。
 - en: 'The idea is to transform data by “piping it through” a TransformStream. That
     is, we write data to the writable side and read transformed data from the readable
     side. The following TransformStreams are built into most JavaScript platforms
@@ -374,6 +394,7 @@
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 这个想法是通过“管道传输”TransformStream来转换数据。也就是说，我们将数据写入可写端，并从可读端读取转换后的数据。以下TransformStreams内置在大多数JavaScript平台中（稍后会详细介绍）：
 - en: Because JavaScript strings are UTF-16 encoded, UTF-8 encoded data is treated
     as binary in JavaScript. A `TextDecoderStream` converts such data to strings.
   id: totrans-61
@@ -381,12 +402,14 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 因为JavaScript字符串是UTF-16编码的，所以在JavaScript中，UTF-8编码的数据被视为二进制数据。`TextDecoderStream`将这样的数据转换为字符串。
 - en: A `TextEncoderStream` converts JavaScript strings to UTF-8 data.
   id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TextEncoderStream`将JavaScript字符串转换为UTF-8数据。'
 - en: A ``CompressionStream` compresses binary data to GZIP and other compression
     formats.
   id: totrans-63
@@ -394,6 +417,7 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`CompressionStream`将二进制数据压缩为GZIP和其他压缩格式。'
 - en: A `DecompressionStream` decompresses binary data from GZIP and other compression
     formats.
   id: totrans-64
@@ -401,17 +425,21 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`DecompressionStream`从GZIP和其他压缩格式中解压缩二进制数据。'
 - en: ReadableStreams, WritableStreams and TransformStreams can be used to transport
     text or binary data. We’ll mostly do the former in this chapter. *Byte streams*
     for binary data are briefly mentioned at the end.
   id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: ReadableStreams，WritableStreams和TransformStreams可用于传输文本或二进制数据。在本章中，我们将主要进行前者。
+    *字节流*用于二进制数据，在最后简要提到。
 - en: 10.1.2 Pipe chains
   id: totrans-66
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.1.2 管道链路
 - en: '*Piping* is an operation that lets us *pipe* a ReadableStream to a WritableStream:
     As long as the ReadableStream produces data, this operation reads that data and
     writes it to the WritableStream. If we connect just two streams, we get a convenient
@@ -421,21 +449,25 @@
   id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: '*Piping*是一种操作，它让我们将一个ReadableStream连接到一个WritableStream：只要ReadableStream产生数据，此操作就会读取该数据并将其写入WritableStream。如果我们连接了两个流，我们就可以方便地将数据从一个位置传输到另一个位置（例如复制文件）。但是，我们也可以连接多于两个流，并获得可以以各种方式处理数据的*管道链路*。这是一个管道链路的例子：'
 - en: It starts with a ReadableStream.
   id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它以一个ReadableStream开始。
 - en: Next are one or more TransformStreams.
   id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 接下来是一个或多个TransformStreams。
 - en: The chain ends with a WritableStream.
   id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 链路以WritableStream结束。
 - en: A ReadableStream is connected to a TransformStream by piping the former to the
     writable side of the latter. Similarly, a TransformStream is connected to another
     TransformStream by piping the readable side of the former to the writable side
@@ -444,11 +476,13 @@
   id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过将前者连接到后者的可写端，将一个ReadableStream连接到TransformStream。类似地，通过将前者的可读端连接到后者的可写端，将一个TransformStream连接到另一个TransformStream。并且通过将前者的可读端连接到后者的可写端，将一个TransformStream连接到一个WritableStream。
 - en: 10.1.3 Backpressure
   id: totrans-72
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.1.3 背压
 - en: 'One problem in pipe chains is that a member may receive more data than it can
     handle at the moment. *Backpressure* is a technique for solving this problem:
     It enables a receiver of data to tell its sender that it should temporarily stop
@@ -456,12 +490,14 @@
   id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 管道链路中的一个问题是，成员可能会收到比它目前能处理的更多数据。 *背压*是解决这个问题的一种技术：它使数据的接收者能够告诉发送者应该暂时停止发送数据，以便接收者不会被压倒。
 - en: 'Another way to look at backpressure is as a signal that travels backwards through
     a pipe chain, from a member that is getting overwhelmed to the beginning of the
     chain. As an example, consider the following pipe chain:'
   id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一种看待背压的方式是作为一个信号，通过管道链路向后传播，从被压倒的成员到链路的开始。例如，考虑以下管道链路：
 - en: '[PRE0]'
   id: totrans-75
   prefs: []
@@ -471,12 +507,14 @@
   id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是背压通过这个链路传播的方式：
 - en: Initially, the WriteableStream signals that it can’t process more data at the
     moment.
   id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最初，WriteableStream发出信号，表明它暂时无法处理更多数据。
 - en: The pipe stops reading from the TransformStream.
   id: totrans-78
   prefs:
@@ -2359,48 +2397,57 @@
   id: totrans-375
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这两种情况下，输入都通过队列进行缓冲。施加背压的信号是队列已满。让我们看看如何检测到这一点。
 - en: 'These are the locations of the queues:'
   id: totrans-376
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是队列的位置：
 - en: The queue of a WritableStream is stored internally in the WritableStreamDefaultController
     ([see web streams standard](https://streams.spec.whatwg.org/#ws-default-controller-internal-slots)).
   id: totrans-377
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个WritableStream的队列在WritableStreamDefaultController中内部存储（[参见web流标准](https://streams.spec.whatwg.org/#ws-default-controller-internal-slots)）。
 - en: The queue of a ReadableStream is stored internally in the ReadableStreamDefaultController
     ([see web streams standard](https://streams.spec.whatwg.org/#rs-default-controller-internal-slots)).
   id: totrans-378
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个ReadableStream的队列在ReadableStreamDefaultController中内部存储（[参见web流标准](https://streams.spec.whatwg.org/#rs-default-controller-internal-slots)）。
 - en: 'The *desired size* of a queue is a number that indicates how much room is left
     in the queue:'
   id: totrans-379
   prefs: []
   type: TYPE_NORMAL
+  zh: 队列的*期望大小*是一个数字，表示队列中还有多少空间：
 - en: It is positive if there is still room in the queue.
   id: totrans-380
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果队列中仍有空间，则为正。
 - en: It is zero if the queue has reached its maximum size.
   id: totrans-381
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果队列已达到其最大大小，则为零。
 - en: It is negative if the queue has exceeded its maximum size.
   id: totrans-382
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果队列已超过其最大大小，则为负。
 - en: Therefore, we have to apply backpressure if the desired size is zero or less.
     It is available via the getter `.desiredSize` of the object which contains the
     queue.
   id: totrans-383
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，如果期望的大小为零或更少，我们必须施加背压。它可以通过包含队列的对象的getter`.desiredSize`获得。
 - en: 'How is the desired size computed? Via an object that specifies a so-called
     *queuing strategy*. `ReadableStream` and `WritableStream` have default queuing
     strategies which can be overridden via optional parameters of their constructors.
@@ -2409,41 +2456,49 @@
   id: totrans-384
   prefs: []
   type: TYPE_NORMAL
+  zh: 期望的大小是如何计算的？通过指定所谓的*排队策略*的对象。`ReadableStream`和`WritableStream`具有默认的排队策略，可以通过它们的构造函数的可选参数进行覆盖。[接口`QueuingStrategy`](https://streams.spec.whatwg.org/#dictdef-queuingstrategy)有两个属性：
 - en: Method `.size(chunk)` returns a size for `chunk`.
   id: totrans-385
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法`.size(chunk)`返回`chunk`的大小。
 - en: The current size of a queue is the sum of the sizes of the chunks it contains.
   id: totrans-386
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 队列的当前大小是它包含的块的大小之和。
 - en: Property `.highWaterMark` specifies the maximum size of a queue.
   id: totrans-387
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 属性`.highWaterMark`指定队列的最大大小。
 - en: The desired size of a queue is the high water mark minus the current size of
     the queue.
   id: totrans-388
   prefs: []
   type: TYPE_NORMAL
+  zh: 队列的期望大小是高水位标记减去队列的当前大小。
 - en: 10.8.2 Reacting to backpressure
   id: totrans-389
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 10.8.2 对背压的反应
 - en: Entities sending data need to react to signalled backpressure by exerting backpressure.
   id: totrans-390
   prefs: []
   type: TYPE_NORMAL
+  zh: 发送数据的实体需要对信号背压做出反应，通过施加背压。
 - en: 10.8.2.1 Code writing to a WritableStream via a Writer
   id: totrans-391
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 10.8.2.1 通过Writer写入WritableStream的代码
 - en: We can await the Promise in `writer.ready`. While we do, we are blocked and
     the desired backpressure is achieved. The Promise is fulfilled once there is room
     in the queue. Fulfillment is triggered when `writer.desiredSize` has a value greater
@@ -2452,27 +2507,32 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以在`writer.ready`中等待Promise。在等待期间，我们被阻塞，期望的背压得到了实现。一旦队列中有空间，Promise就会被实现。当`writer.desiredSize`的值大于零时，实现会被触发。
 - en: Alternatively, we can await the Promise returned by `writer.write()`. If we
     do that, the queue won’t even be filled.
   id: totrans-393
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 或者，我们可以等待`writer.write()`返回的Promise。如果我们这样做，队列甚至不会被填满。
 - en: If we want to, we can additionally base the size of our chunks on `writer.desiredSize`.
   id: totrans-394
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们愿意，我们还可以根据`writer.desiredSize`来确定我们的块的大小。
 - en: 10.8.2.2 The underlying source of a ReadableStream
   id: totrans-395
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 10.8.2.2 ReadableStream的底层源
 - en: The underlying source object that can be passed to a ReadableStream wraps an
     external source. In a way, it is also a member of the pipe chain; one that comes
     before its ReadableStream.
   id: totrans-396
   prefs: []
   type: TYPE_NORMAL
+  zh: 可以传递给ReadableStream的底层源对象包装了外部源。在某种程度上，它也是管道链的成员；在其ReadableStream之前的成员。
 - en: Underlying pull sources are only asked for new data whenever there is room in
     the queue. While there isn’t, backpressure is exerted automatically because no
     data is pulled.
@@ -2480,6 +2540,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只有在队列中有空间时，才会要求底层拉取源提供新数据。在没有空间时，会自动施加背压，因为没有数据被拉取。
 - en: 'Underlying push sources should check `controller.desiredSize` after enqueuing
     something: If it’s zero or less, they should exert backpressure by pausing their
     external sources.'
@@ -2487,17 +2548,20 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在入队后，底层推送源应检查`controller.desiredSize`：如果为零或更少，则应通过暂停其外部源来施加背压。
 - en: 10.8.2.3 The underlying sink of a WritableStream
   id: totrans-399
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 10.8.2.3 WritableStream的底层接收端
 - en: The underlying sink object that can be passed to a WritableStream wraps an external
     sink. In a way, it is also a member of the pipe chain; one that comes after its
     WritableStream.
   id: totrans-400
   prefs: []
   type: TYPE_NORMAL
+  zh: 可以传递给WritableStream的底层接收端对象包装了外部接收端。在某种程度上，它也是管道链的成员；在其WritableStream之后的成员。
 - en: Each external sink signals backpressure differently (in some cases not at all).
     The underlying sink can exert backpressure by returning a Promise from method
     `.write()` that is fulfilled once writing is finished. There is [an example in
@@ -2506,11 +2570,13 @@
   id: totrans-401
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个外部接收端以不同的方式（在某些情况下根本不）信号背压。底层接收端可以通过从方法`.write()`返回一个被实现的Promise来施加背压，一旦写入完成。在[web流标准中有一个例子](https://streams.spec.whatwg.org/#example-ws-backpressure)，演示了这是如何工作的。
 - en: 10.8.2.4 A transformStream (`.writable` `→` `.readable`)
   id: totrans-402
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 10.8.2.4 一个transformStream（`.writable` `→` `.readable`）
 - en: The TransformStream connects its writable side with its readable side by implementing
     an underlying sink for the former and an underlying source for the latter. It
     has an internal slot `.[[backpressure]]` that indicates if internal backpressure
@@ -2518,6 +2584,7 @@
   id: totrans-403
   prefs: []
   type: TYPE_NORMAL
+  zh: TransformStream通过为前者实现底层接收端和为后者实现底层源，将其可写端连接到其可读端。它具有一个内部插槽`.[[backpressure]]`，指示内部背压当前是否处于活动状态。
 - en: 'Method `.write()` of the underlying sink of the writable side waits asynchronously
     until there is no internal backpressure before it feeds another chunk to the TransformStream’s
     transformer (web streams standard: [`TransformStreamDefaultSinkWriteAlgorithm`](https://streams.spec.whatwg.org/#transform-stream-default-sink-write-algorithm)).
