@@ -3,141 +3,169 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 23 类型计算概述
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_computing-with-types-overview.html](https://exploringjs.com/tackling-ts/ch_computing-with-types-overview.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/tackling-ts/ch_computing-with-types-overview.html](https://exploringjs.com/tackling-ts/ch_computing-with-types-overview.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 23.1 [Types as metavalues](ch_computing-with-types-overview.html#types-as-metavalues)
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.1 [类型作为元值](ch_computing-with-types-overview.html#types-as-metavalues)
 - en: '23.2 [Generic types: factories for types](ch_computing-with-types-overview.html#generic-types-factories-for-types)'
   id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.2 [泛型类型：类型的工厂](ch_computing-with-types-overview.html#generic-types-factories-for-types)
 - en: 23.3 [Union types and intersection types](ch_computing-with-types-overview.html#union-types-and-intersection-types)
   id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.3 [联合类型和交集类型](ch_computing-with-types-overview.html#union-types-and-intersection-types)
 - en: 23.3.1 [Union types (`|`)](ch_computing-with-types-overview.html#union-types-1)
   id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.3.1 [联合类型（`|`)](ch_computing-with-types-overview.html#union-types-1)
 - en: 23.3.2 [Intersection types (`&`)](ch_computing-with-types-overview.html#intersection-types)
   id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.3.2 [交集类型（`&`)](ch_computing-with-types-overview.html#intersection-types)
 - en: 23.4 [Control flow](ch_computing-with-types-overview.html#control-flow)
   id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.4 [控制流](ch_computing-with-types-overview.html#control-flow)
 - en: 23.4.1 [Conditional types](ch_computing-with-types-overview.html#conditional-types)
   id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.4.1 [条件类型](ch_computing-with-types-overview.html#conditional-types)
 - en: 23.4.2 [Mapped types](ch_computing-with-types-overview.html#mapped-types-1)
   id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.4.2 [映射类型](ch_computing-with-types-overview.html#mapped-types-1)
 - en: 23.5 [Various other operators](ch_computing-with-types-overview.html#various-other-operators)
   id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.5 [其他各种运算符](ch_computing-with-types-overview.html#various-other-operators)
 - en: 23.5.1 [The index type query operator `keyof`](ch_computing-with-types-overview.html#the-index-type-query-operator-keyof)
   id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.5.1 [索引类型查询运算符 `keyof`](ch_computing-with-types-overview.html#the-index-type-query-operator-keyof)
 - en: 23.5.2 [The indexed access operator `T[K]`](ch_computing-with-types-overview.html#the-indexed-access-operator-tk)
   id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.5.2 [索引访问运算符 `T[K]`](ch_computing-with-types-overview.html#the-indexed-access-operator-tk)
 - en: 23.5.3 [The type query operator `typeof`](ch_computing-with-types-overview.html#the-type-query-operator-typeof)
   id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 23.5.3 [类型查询运算符 `typeof`](ch_computing-with-types-overview.html#the-type-query-operator-typeof)
 - en: '* * *'
   id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: In this chapter, we explore how we can compute with types at compile time in
     TypeScript.
   id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将探讨如何在 TypeScript 的编译时计算类型。
 - en: Note that the focus of this chapter is on learning how to compute with types.
     Therefore, we’ll use literal types a lot and the examples are less practically
     relevant.
   id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，本章的重点是学习如何计算类型。因此，我们会经常使用文字类型，示例的实际相关性较小。
 - en: 23.1 Types as metavalues
   id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 23.1 类型作为元值
 - en: 'Consider the following two levels of TypeScript code:'
   id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下两个级别的 TypeScript 代码：
 - en: 'Program level: At runtime, we can use values and functions.'
   id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 程序级别：在运行时，我们可以使用值和函数。
 - en: 'Type level: At compile time, we can use specific types and generic types.'
   id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型级别：在编译时，我们可以使用特定类型和泛型类型。
 - en: The type level is a metalevel of the program level.
   id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型级别是程序级别的元级别。
 - en: '| Level | Available at | Operands | Operations |'
   id: totrans-23
   prefs: []
   type: TYPE_TB
+  zh: '| 级别 | 可用于 | 操作数 | 操作 |'
 - en: '| --- | --- | --- | --- |'
   id: totrans-24
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- |'
 - en: '| Program level | Runtime | Values | Functions |'
   id: totrans-25
   prefs: []
   type: TYPE_TB
+  zh: '| 程序级别 | 运行时 | 值 | 函数 |'
 - en: '| Type level | Compile time | Specific types | Generic types |'
   id: totrans-26
   prefs: []
   type: TYPE_TB
+  zh: '| 类型级别 | 编译时 | 特定类型 | 泛型类型 |'
 - en: 'What does it mean that we can compute with types? The following code is an
     example:'
   id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以计算类型是什么意思？以下代码是一个例子：
 - en: '[PRE0]'
   id: totrans-28
   prefs: []
@@ -147,27 +175,32 @@
   id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 A 行，我们正在采取以下步骤：
 - en: The input of our computation is the type `ObjectLiteralType`, an object literal
     type.
   id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们计算的输入是类型 `ObjectLiteralType`，即对象字面类型。
 - en: We apply the operation `keyof` to the input. It lists the property keys of an
     object type.
   id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们对输入应用操作 `keyof`。它列出对象类型的属性键。
 - en: We give the output of `keyof` the name `Result`.
   id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们将 `keyof` 的输出命名为 `Result`。
 - en: 'At the type level we can compute with the following “values”:'
   id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 在类型级别上，我们可以计算以下“值”：
 - en: '[PRE1]'
   id: totrans-34
   prefs: []
@@ -178,10 +211,12 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 23.2 泛型类型：类型的工厂
 - en: 'Generic types are functions at the metalevel – for example:'
   id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 泛型类型是元级别的函数 - 例如：
 - en: '[PRE2]'
   id: totrans-37
   prefs: []
@@ -192,6 +227,7 @@
   id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 泛型类型 `Wrap<>` 具有参数 `T`。其结果是 `T`，包装在一个元组类型中。这是我们如何使用这个元函数的方式：
 - en: '[PRE3]'
   id: totrans-39
   prefs: []
@@ -202,20 +238,24 @@
   id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将参数 `string` 传递给 `Wrap<>` 并将结果命名为 `Wrapped`。结果是一个具有单个组件的元组类型 - 类型 `string`。
 - en: 23.3 Union types and intersection types
   id: totrans-41
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 23.3 联合类型和交集类型
 - en: 23.3.1 Union types (`|`)
   id: totrans-42
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 23.3.1 联合类型（`|`）
 - en: 'The type operator `|` is used to create union types:'
   id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型运算符 `|` 用于创建联合类型：
 - en: '[PRE4]'
   id: totrans-44
   prefs: []
@@ -227,11 +267,13 @@
   id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将类型 `A` 和类型 `B` 视为集合，那么 `A | B` 就是这些集合的集合论并集。换句话说：结果的成员是至少是操作数之一的成员。
 - en: 'Syntactically, we can also put a `|` in front of the first component of a union
     type. That is convenient when a type definition spans multiple lines:'
   id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 从语法上讲，我们也可以在联合类型的第一个组件前面加上 `|`。当类型定义跨越多行时，这是很方便的：
 - en: '[PRE5]'
   id: totrans-47
   prefs: []
@@ -242,11 +284,13 @@
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 23.3.1.1 联合作为元值的集合
 - en: 'TypeScript represents collections of metavalues as unions of literal types.
     We have already seen an example of that:'
   id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 将元值的集合表示为文字类型的联合。我们已经看到了一个例子：
 - en: '[PRE6]'
   id: totrans-50
   prefs: []
@@ -256,17 +300,20 @@
   id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们很快将看到类型级别的操作，用于循环遍历这样的集合。
 - en: 23.3.1.2 Unions of object types
   id: totrans-52
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 23.3.1.2 对象类型的联合
 - en: 'Due to each member of a union type being a member of *at least* one of the
     component types, we can only safely access properties that are shared by all component
     types (line A). To access any other property, we need a type guard (line B):'
   id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于联合类型的每个成员都是组件类型中至少一个成员，我们只能安全地访问所有组件类型共享的属性（行 A）。要访问任何其他属性，我们需要一个类型保护（行 B）：
 - en: '[PRE7]'
   id: totrans-54
   prefs: []
@@ -277,10 +324,12 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 23.3.2 交集类型（`&`）
 - en: 'The type operator `&` is used to create intersection types:'
   id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型运算符 `&` 用于创建交集类型：
 - en: '[PRE8]'
   id: totrans-57
   prefs: []
