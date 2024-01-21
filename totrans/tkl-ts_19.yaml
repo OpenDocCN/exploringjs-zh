@@ -1,904 +1,1384 @@
 - en: 15 Typing objects
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 15 对象类型
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_typing-objects.html](https://exploringjs.com/tackling-ts/ch_typing-objects.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/tackling-ts/ch_typing-objects.html](https://exploringjs.com/tackling-ts/ch_typing-objects.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 15.1 [Roles played by objects](ch_typing-objects.html#roles-played-by-objects)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.1 对象扮演的角色
 - en: 15.2 [Types for objects](ch_typing-objects.html#types-for-objects)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.2 对象的类型
 - en: 15.3 [`Object` vs. `object` in TypeScript](ch_typing-objects.html#object-vs.-object-in-typescript)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.3 TypeScript中的`Object` vs. `object`
 - en: '15.3.1 [Plain JavaScript: objects vs. instances of `Object`](ch_typing-objects.html#plain-javascript-objects-vs.-instances-of-object)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.3.1 纯JavaScript：对象 vs. `Object`的实例
 - en: '15.3.2 [`Object` (uppercase “O”) in TypeScript: instances of class `Object`](ch_typing-objects.html#object-uppercase-o-in-typescript-instances-of-class-object)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.3.2 [`Object`（大写“O”）在TypeScript中：类`Object`的实例](ch_typing-objects.html#object-uppercase-o-in-typescript-instances-of-class-object)
 - en: '15.3.3 [`object` (lowercase “o”) in TypeScript: non-primitive values](ch_typing-objects.html#object-lowercase-o-in-typescript-non-primitive-values)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.3.3 TypeScript中的`object`（小写“o”）：非原始值
 - en: '15.3.4 [`Object` vs. `object`: primitive values](ch_typing-objects.html#object-vs.-object-primitive-values)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.3.4 `Object` vs. `object`：原始值
 - en: '15.3.5 [`Object` vs. `object`: incompatible property types](ch_typing-objects.html#object-vs.-object-incompatible-property-types)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.3.5 `Object` vs. `object`：不兼容的属性类型
 - en: 15.4 [Object type literals and interfaces](ch_typing-objects.html#object-type-literals-and-interfaces)
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.4 对象类型文字和接口
 - en: 15.4.1 [Differences between object type literals and interfaces](ch_typing-objects.html#differences-between-object-type-literals-and-interfaces)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.4.1 对象类型文字和接口之间的区别
 - en: 15.4.2 [Interfaces work structurally in TypeScript](ch_typing-objects.html#interfaces-work-structurally-in-typescript)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.4.2 接口在TypeScript中的结构工作
 - en: 15.4.3 [Members of interfaces and object type literals](ch_typing-objects.html#members-of-interfaces)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.4.3 [接口和对象类型文字的成员](ch_typing-objects.html#members-of-interfaces)
 - en: 15.4.4 [Method signatures](ch_typing-objects.html#method-signatures)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.4.4 方法签名
 - en: '15.4.5 [Index signatures: objects as dicts](ch_typing-objects.html#index-signatures)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.4.5 [索引签名：对象作为字典](ch_typing-objects.html#index-signatures)
 - en: 15.4.6 [Interfaces describe instances of `Object`](ch_typing-objects.html#interfaces-describe-instances-of-object)
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.4.6 接口描述`Object`的实例
 - en: '15.4.7 [Excess property checks: When are extra properties allowed?](ch_typing-objects.html#excess-property-checks-when-are-extra-properties-allowed)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.4.7 多余属性检查：何时允许额外属性？
 - en: 15.5 [Type inference](ch_typing-objects.html#type-inference-1)
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.5 [类型推断](ch_typing-objects.html#type-inference-1)
 - en: 15.6 [Other features of interfaces](ch_typing-objects.html#other-features-of-interfaces)
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.6 接口的其他特性
 - en: 15.6.1 [Optional properties](ch_typing-objects.html#optional-properties-interfaces)
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.6.1 可选属性
 - en: 15.6.2 [Read-only properties](ch_typing-objects.html#read-only-properties)
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.6.2 只读属性
 - en: 15.7 [JavaScript’s prototype chains and TypeScript’s types](ch_typing-objects.html#javascripts-prototype-chains-and-typescripts-types)
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.7 JavaScript的原型链和TypeScript的类型
 - en: 15.8 [Sources of this chapter](ch_typing-objects.html#sources-of-this-chapter)
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.8 本章的来源
 - en: '* * *'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: In this chapter, we will explore how objects and properties are typed statically
     in TypeScript.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将探讨在TypeScript中如何静态地为对象和属性进行类型化。
 - en: 15.1 Roles played by objects
+  id: totrans-27
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.1 对象扮演的角色
 - en: 'In JavaScript, objects can play two roles (always at least one of them, sometimes
     mixtures):'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript中，对象可以扮演两种角色（总是至少其中一种，有时混合）：
 - en: '*Records* have a fixed amount of properties that are known at development time.
     Each property can have a different type.'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*记录*具有在开发时已知的固定数量的属性。每个属性可以具有不同的类型。'
 - en: '*Dictionaries* have an arbitrary number of properties whose names are not known
     at development time. All property keys (strings and/or symbols) have the same
     type, as have property values.'
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*字典*具有任意数量的属性，其名称在开发时未知。所有属性键（字符串和/或符号）具有相同的类型，属性值也是如此。'
 - en: First and foremost, we will explore objects as records. We will briefly encounter
     objects as dictionaries [later in this chapter](ch_typing-objects.html#index-signatures).
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们将探索对象作为记录。我们将在本章的后面简要地遇到对象作为字典。
 - en: 15.2 Types for objects
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.2 对象类型
 - en: 'There are two different general types for objects:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 对象有两种不同的一般类型：
 - en: '`Object` with an uppercase “O” is the type of all instances of class `Object`:'
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object`大写“O”是类`Object`的所有实例的类型：'
 - en: '[PRE0]'
+  id: totrans-35
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`object` with a lowercase “o” is the type of all non-primitive values:'
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 小写“o”的`object`是所有非原始值的类型：
 - en: '[PRE1]'
+  id: totrans-37
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Objects can also be typed via their properties:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 对象也可以通过它们的属性进行类型化：
 - en: '[PRE2]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: In the next sections, we’ll examine all these ways of typing objects in more
     detail.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 在接下来的章节中，我们将更详细地研究所有这些对象类型的方式。
 - en: 15.3 `Object` vs. `object` in TypeScript
+  id: totrans-41
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.3 TypeScript中的`Object` vs. `object`
 - en: '15.3.1 Plain JavaScript: objects vs. instances of `Object`'
+  id: totrans-42
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.3.1 纯JavaScript：对象 vs. `Object`的实例
 - en: In plain JavaScript, there is an important distinction.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 在纯JavaScript中，有一个重要的区别。
 - en: On one hand, most objects are instances of `Object`.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 一方面，大多数对象都是`Object`的实例。
 - en: '[PRE3]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'That means:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 这意味着：
 - en: '`Object.prototype` is in their prototype chains:'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.prototype`在它们的原型链中：'
 - en: '[PRE4]'
+  id: totrans-48
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: They inherit its properties.
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们继承了它的属性。
 - en: '[PRE5]'
+  id: totrans-50
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'On the other hand, we can also create objects that don’t have `Object.prototype`
     in their prototype chains. For example, the following object does not have any
     prototype at all:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，我们也可以创建没有`Object.prototype`的原型链的对象。例如，以下对象根本没有原型：
 - en: '[PRE6]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '`obj2` is an object that is not an instance of class `Object`:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: '`obj2`是一个不是类`Object`实例的对象：'
 - en: '[PRE7]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '15.3.2 `Object` (uppercase “O”) in TypeScript: instances of class `Object`'
+  id: totrans-55
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.3.2 TypeScript中的`Object`（大写“O”）：类`Object`的实例
 - en: 'Recall that each class `C` creates two entities:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 请记住，每个类`C`都创建两个实体：
 - en: A constructor function `C`.
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个构造函数`C`。
 - en: An interface `C` that describes instances of the constructor function.
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 描述构造函数实例的接口`C`。
 - en: 'Similarly, TypeScript has two built-in interfaces:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 同样，TypeScript有两个内置接口：
 - en: Interface `Object` specifies the properties of instances of `Object`, including
     the properties inherited from `Object.prototype`.
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 接口`Object`指定了`Object`实例的属性，包括从`Object.prototype`继承的属性。
 - en: Interface `ObjectConstructor` specifies the properties of class `Object`.
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 接口`ObjectConstructor`指定了类`Object`的属性。
 - en: 'These are the interfaces:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是接口：
 - en: '[PRE8]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Observations:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 观察：
 - en: We have both a variable whose name is `Object` (line C) and a type whose name
     is `Object` (line A).
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们既有一个名为`Object`的变量（行C），又有一个名为`Object`的类型（行A）。
 - en: Direct instances of `Object` have no own properties, therefore `Object.prototype`
     also matches `Object` (line B).
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object`的直接实例没有自己的属性，因此`Object.prototype`也匹配`Object`（行B）。'
 - en: '15.3.3 `object` (lowercase “o”) in TypeScript: non-primitive values'
+  id: totrans-67
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.3.3 TypeScript中的`object`（小写“o”）：非原始值
 - en: In TypeScript, `object` is the type of all non-primitive values (primitive values
     are `undefined`, `null`, booleans, numbers, bigints, strings). With this type,
     we can’t access any properties of a value.
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 在TypeScript中，`object`是所有非原始值的类型（原始值是`undefined`，`null`，布尔值，数字，大整数，字符串）。使用此类型，我们无法访问值的任何属性。
 - en: '15.3.4 `Object` vs. `object`: primitive values'
+  id: totrans-69
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.3.4 TypeScript中的`Object` vs. `object`：原始值
 - en: 'Interestingly, type `Object` also matches primitive values:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，类型`Object`也匹配原始值：
 - en: '[PRE9]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Why is that? Primitive values have all the properties required by `Object`
     because they inherit `Object.prototype`:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么？原始值具有`Object`所需的所有属性，因为它们继承了`Object.prototype`：
 - en: '[PRE10]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Conversely, `object` does not match primitive values:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，`object`不匹配原始值：
 - en: '[PRE11]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '15.3.5 `Object` vs. `object`: incompatible property types'
+  id: totrans-76
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.3.5 TypeScript中的`Object` vs. `object`：不兼容的属性类型
 - en: 'With type `Object`, TypeScript complains if an object has a property whose
     type conflicts with the corresponding property in interface `Object`:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用类型`Object`时，如果对象具有与接口`Object`中相应属性冲突的类型，则TypeScript会发出警告：
 - en: '[PRE12]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'With type `object`, TypeScript does not complain (because `object` does not
     specify any properties and there can’t be any conflicts):'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用类型`object`时，TypeScript不会发出警告（因为`object`不指定任何属性，也不会有任何冲突）：
 - en: '[PRE13]'
+  id: totrans-80
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 15.4 Object type literals and interfaces
+  id: totrans-81
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.4 对象类型文字和接口
 - en: 'TypeScript has two ways of defining object types that are very similar:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript有两种定义非常相似的对象类型的方式：
 - en: '[PRE14]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: We can use either semicolons or commas as separators. Trailing separators are
     allowed and optional.
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用分号或逗号作为分隔符。允许并且是可选的尾随分隔符。
 - en: 15.4.1 Differences between object type literals and interfaces
+  id: totrans-85
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.4.1 对象类型文字和接口之间的区别
 - en: In this section, we take a look at the most important differences between object
     type literals and interfaces.
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们将重点介绍对象类型文字和接口之间最重要的区别。
 - en: 15.4.1.1 Inlining
+  id: totrans-87
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.1.1 内联
 - en: 'Object type literals can be inlined, while interfaces can’t be:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 对象类型文字可以内联，而接口不能：
 - en: '[PRE15]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 15.4.1.2 Duplicate names
+  id: totrans-90
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.1.2 重复名称
 - en: 'Type aliases with duplicate names are illegal:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 具有重复名称的类型别名是非法的：
 - en: '[PRE16]'
+  id: totrans-92
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Conversely, interfaces with duplicate names are merged:'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，具有重复名称的接口会合并：
 - en: '[PRE17]'
+  id: totrans-94
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 15.4.1.3 Mapped types
+  id: totrans-95
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.1.3 映射类型
 - en: 'For Mapped types (line A), we need to use object type literals:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于映射类型（行A），我们需要使用对象类型文字：
 - en: '[PRE18]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '![](../Images/8c55f45a6e023f74c4403b0374043880.png)  **More information on
     mapped types**'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/8c55f45a6e023f74c4403b0374043880.png) **有关映射类型的更多信息**'
 - en: Mapped types are beyond the current scope of this book. For more information,
     see [the TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types).
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 映射类型超出了本书的范围。有关更多信息，请参见[TypeScript手册](https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types)。
 - en: 15.4.1.4 Polymorphic `this` types
+  id: totrans-100
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.1.4 多态`this`类型
 - en: 'Polymorphic `this` types can only be used in interfaces:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 多态`this`类型只能在接口中使用：
 - en: '[PRE19]'
+  id: totrans-102
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '![](../Images/8c55f45a6e023f74c4403b0374043880.png)  **Source of this section**'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/8c55f45a6e023f74c4403b0374043880.png) **本节的来源**'
 - en: '[GitHub issue “TypeScript: types vs. interfaces”](https://github.com/peerigon/eslint-config-peerigon/issues/64)
     by [Johannes Ewald](https://github.com/jhnns)'
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[GitHub问题“TypeScript：类型 vs. 接口”](https://github.com/peerigon/eslint-config-peerigon/issues/64)
+    由[Johannes Ewald](https://github.com/jhnns)'
 - en: '![](../Images/65d35c0a2478236e12cc4321e1b02db6.png)  **From now on, “interface”
     means “interface or object type literal” (unless stated otherwise).**'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/65d35c0a2478236e12cc4321e1b02db6.png) **从现在开始，“接口”意味着“接口或对象类型文字”（除非另有说明）。'
 - en: 15.4.2 Interfaces work structurally in TypeScript
+  id: totrans-106
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.4.2 TypeScript中的接口是结构化的
 - en: 'Interfaces work structurally – they don’t have to be implemented in order to
     match:'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 接口是结构化的 - 它们不必被实现才能匹配：
 - en: '[PRE20]'
+  id: totrans-108
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: For more information on this topic, see [[content not included]](ch_missing-chapters-online.html).
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关此主题的更多信息，请参见[[content not included]](ch_missing-chapters-online.html)。
 - en: 15.4.3 Members of interfaces and object type literals
+  id: totrans-110
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.4.3 接口和对象类型文字的成员
 - en: 'The constructs inside the bodies of interfaces and object type literals are
     called their *members*. These are the most common members:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 接口和对象类型文字的主体内的构造被称为它们的*成员*。这些是最常见的成员：
 - en: '[PRE21]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'Let’s look at these members in more detail:'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们更详细地看看这些成员：
 - en: 'Property signatures define properties:'
+  id: totrans-114
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 属性签名定义属性：
 - en: '[PRE22]'
+  id: totrans-115
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'Method signatures define methods:'
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法签名定义方法：
 - en: '[PRE23]'
+  id: totrans-117
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'Note: The names of parameters (in this case: `str`) help with documenting how
     things work but have no other purpose.'
+  id: totrans-118
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 注意：参数的名称（在本例中为：`str`）有助于记录事物的工作原理，但没有其他目的。
 - en: Index signatures are needed to describe Arrays or objects that are used as dictionaries.
+  id: totrans-119
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 需要索引签名来描述用作字典的数组或对象。
 - en: '[PRE24]'
+  id: totrans-120
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'Note: The name `key` is only there for documentation purposes.'
+  id: totrans-121
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 注意：名称 `key` 仅用于文档目的。
 - en: 'Call signatures enable interfaces to describe functions:'
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 调用签名使接口能够描述函数：
 - en: '[PRE25]'
+  id: totrans-123
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Construct signatures enable interfaces to describe classes and constructor
     functions:'
+  id: totrans-124
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 构造签名使接口能够描述类和构造函数：
 - en: '[PRE26]'
+  id: totrans-125
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: Property signatures should be self-explanatory. [Call signatures](ch_typing-functions.html#call-signatures)
     and [construct signatures](ch_classes-as-values.html#construct-signature) are
     described later in this book. We’ll take a closer look at method signatures and
     index signatures next.
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性签名应该是不言自明的。[调用签名](ch_typing-functions.html#call-signatures) 和 [构造签名](ch_classes-as-values.html#construct-signature)
+    将在本书的后面进行描述。接下来我们将更仔细地看一下方法签名和索引签名。
 - en: 15.4.4 Method signatures
+  id: totrans-127
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.4.4 方法签名
 - en: 'As far as TypeScript’s type system is concerned, method definitions and properties
     whose values are functions, are equivalent:'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 就 TypeScript 的类型系统而言，方法定义和属性的值为函数的属性是等效的：
 - en: '[PRE27]'
+  id: totrans-129
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: My recommendation is to use whichever syntax best expresses how a property should
     be set up.
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 我的建议是使用最能表达属性应如何设置的语法。
 - en: '15.4.5 Index signatures: objects as dicts'
+  id: totrans-131
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.4.5 索引签名：对象作为字典
 - en: 'So far, we have only used interfaces for objects-as-records with fixed keys.
     How do we express the fact that an object is to be used as a dictionary? For example:
     What should `TranslationDict` be in the following code fragment?'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们只使用接口来表示具有固定键的对象记录。我们如何表达对象将用作字典的事实？例如：在以下代码片段中，`TranslationDict` 应该是什么？
 - en: '[PRE28]'
+  id: totrans-133
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'We use an index signature (line A) to express that `TranslationDict` is for
     objects that map string keys to string values:'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用索引签名（行 A）来表示 `TranslationDict` 适用于将字符串键映射到字符串值的对象：
 - en: '[PRE29]'
+  id: totrans-135
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 15.4.5.1 Typing index signature keys
+  id: totrans-136
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.5.1 为索引签名键添加类型
 - en: 'Index signature keys must be either `string` or `number`:'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 索引签名键必须是 `string` 或 `number`：
 - en: Symbols are not allowed.
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不允许使用符号。
 - en: '`any` is not allowed.'
+  id: totrans-139
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`any` 是不允许的。'
 - en: Union types (e.g. `string|number`) are not allowed. However, multiple index
     signatures can be used per interface.
+  id: totrans-140
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 联合类型（例如 `string|number`）是不允许的。但是，每个接口可以使用多个索引签名。
 - en: 15.4.5.2 String keys vs. number keys
+  id: totrans-141
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.5.2 字符串键 vs. 数字键
 - en: 'Just like in plain JavaScript, TypeScript’s number property keys are a subset
     of the string property keys ([see “JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_arrays.html#array-indices)).
     Accordingly, if we have both a string index signature and a number index signature,
     the property type of the former must be a supertype of the latter. The following
     example works because `Object` is a supertype of `RegExp`:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 与纯 JavaScript 一样，TypeScript 的数字属性键是字符串属性键的子集（[参见“JavaScript for impatient programmers”](https://exploringjs.com/impatient-js/ch_arrays.html#array-indices)）。因此，如果我们既有字符串索引签名又有数字索引签名，则前者的属性类型必须是后者的超类型。以下示例有效，因为
+    `Object` 是 `RegExp` 的超类型：
 - en: '[PRE30]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 15.4.5.3 Index signatures vs. property signatures and method signatures
+  id: totrans-144
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.5.3 索引签名 vs. 属性签名和方法签名
 - en: If there are both an index signature and property and/or method signatures in
     an interface, then the type of the index property value must also be a supertype
     of the type of the property value and/or method.
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果接口中既有索引签名又有属性和/或方法签名，那么索引属性值的类型也必须是属性值和/或方法的超类型。
 - en: '[PRE31]'
+  id: totrans-146
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'In contrast, the following two interfaces produce no errors:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 相比之下，以下两个接口不会产生错误：
 - en: '[PRE32]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 15.4.6 Interfaces describe instances of `Object`
+  id: totrans-149
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.4.6 接口描述 `Object` 的实例
 - en: All interfaces describe objects that are instances of `Object` and inherit the
     properties of `Object.prototype`.
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有接口描述的对象都是 `Object` 的实例，并继承 `Object.prototype` 的属性。
 - en: 'In the following example, the parameter `x` of type `{}` is compatible with
     the return type `Object`:'
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，类型为 `{}` 的参数 `x` 与返回类型 `Object` 兼容：
 - en: '[PRE33]'
+  id: totrans-152
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'Similarly, `{}` has a method `.toString()`:'
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 同样，`{}` 有一个 `.toString()` 方法：
 - en: '[PRE34]'
+  id: totrans-154
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '15.4.7 Excess property checks: When are extra properties allowed?'
+  id: totrans-155
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.4.7 多余属性检查：何时允许额外属性？
 - en: 'As an example, consider the following interface:'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，考虑以下接口：
 - en: '[PRE35]'
+  id: totrans-157
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: 'There are two ways (among others) in which this interface could be interpreted:'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两种（等等）方式可以解释此接口：
 - en: 'Closed interpretation: It could describe all objects that have *exactly* the
     properties `.x` and `.y` with the specified types. On other words: Those objects
     must not have *excess properties* (more than the required properties).'
+  id: totrans-159
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 封闭解释：它可以描述所有具有指定类型的属性 `.x` 和 `.y` 的对象。换句话说：这些对象不能有*多余的属性*（超出所需的属性）。
 - en: 'Open interpretation: It could describe all objects that have *at least* the
     properties `.x` and `.y`. In other words: Excess properties are allowed.'
+  id: totrans-160
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 开放解释：它可以描述所有具有*至少*属性 `.x` 和 `.y` 的对象。换句话说：允许多余的属性。
 - en: 'TypeScript uses both interpretations. To explore how that works, we will use
     the following function:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 使用两种解释。为了探索它是如何工作的，我们将使用以下函数：
 - en: '[PRE36]'
+  id: totrans-162
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'The default is that the excess property `.z` is allowed:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，允许多余的属性 `.z`：
 - en: '[PRE37]'
+  id: totrans-164
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'However, if we use object literals directly, then excess properties are forbidden:'
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 但是，如果我们直接使用对象文字，则不允许多余的属性：
 - en: '[PRE38]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 15.4.7.1 Why are excess properties forbidden in object literals?
+  id: totrans-167
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.7.1 为什么对象文字中禁止多余的属性？
 - en: Why the stricter rules for object literals? They provide protection against
     typos in property keys. We will use the following interface to demonstrate what
     that means.
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么对象文字有更严格的规则？它们可以防止属性键中的拼写错误。我们将使用以下接口来演示这意味着什么。
 - en: '[PRE39]'
+  id: totrans-169
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: 'Property `.middle` is optional and can be omitted (optional properties are
     covered [later in this chapter](ch_typing-objects.html#optional-properties-interfaces)).
     To TypeScript, mistyping its name looks like omitting it and providing an excess
     property. However, it still catches the typo because excess properties are not
     allowed in this case:'
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性 `.middle` 是可选的，可以省略（可选属性在[本章后面](ch_typing-objects.html#optional-properties-interfaces)有介绍）。对于
+    TypeScript 来说，错误地拼写它的名称看起来像是省略了它并提供了多余的属性。但是，它仍然捕获了拼写错误，因为在这种情况下不允许多余的属性：
 - en: '[PRE40]'
+  id: totrans-171
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 15.4.7.2 Why are excess properties allowed if an object comes from somewhere
     else?
+  id: totrans-172
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.7.2 如果对象来自其他地方，为什么允许多余的属性？
 - en: The idea is that if an object comes from somewhere else, we can assume that
     it has already been vetted and will not have any typos. Then we can afford to
     be less careful.
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个想法是，如果一个对象来自其他地方，我们可以假设它已经经过审查，不会有任何拼写错误。然后我们可以不那么小心。
 - en: 'If typos are not an issue, our goal should be maximizing flexibility. Consider
     the following function:'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果拼写错误不是问题，我们的目标应该是最大限度地提高灵活性。考虑以下函数：
 - en: '[PRE41]'
+  id: totrans-175
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: Without allowing excess properties for most values that are passed to `getAge()`,
     the usefulness of this function would be quite limited.
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果不允许大多数传递给`getAge()`的值具有多余的属性，那么这个函数的用处将会非常有限。
 - en: 15.4.7.3 Empty interfaces allow excess properties
+  id: totrans-177
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.7.3 空接口允许多余的属性
 - en: 'If an interface is empty (or the object type literal `{}` is used), excess
     properties are always allowed:'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果接口为空（或者使用对象类型文字`{}`），则始终允许多余的属性：
 - en: '[PRE42]'
+  id: totrans-179
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: 15.4.7.4 Matching only objects without properties
+  id: totrans-180
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.7.4 仅匹配没有属性的对象
 - en: 'If we want to enforce that an object has no properties, we can use the following
     trick (credit: [Geoff Goodman](https://twitter.com/filearts/status/1222502898552180737)):'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要强制对象没有属性，我们可以使用以下技巧（来源：[Geoff Goodman](https://twitter.com/filearts/status/1222502898552180737)）：
 - en: '[PRE43]'
+  id: totrans-182
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 15.4.7.5 Allowing excess properties in object literals
+  id: totrans-183
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.4.7.5 允许对象文字中的多余属性
 - en: 'What if we want to allow excess properties in object literals? As an example,
     consider interface `Point` and function `computeDistance1()`:'
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要允许对象文字中的多余属性怎么办？例如，考虑接口`Point`和函数`computeDistance1()`：
 - en: '[PRE44]'
+  id: totrans-185
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: 'One option is to assign the object literal to an intermediate variable:'
+  id: totrans-186
   prefs: []
   type: TYPE_NORMAL
+  zh: 一种选择是将对象文字分配给一个中间变量：
 - en: '[PRE45]'
+  id: totrans-187
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'A second option is to use a type assertion:'
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 第二种选择是使用类型断言：
 - en: '[PRE46]'
+  id: totrans-189
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: 'A third option is to rewrite `computeDistance1()` so that it uses a type parameter:'
+  id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: 第三种选择是重写`computeDistance1()`，使其使用类型参数：
 - en: '[PRE47]'
+  id: totrans-191
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 'A fourth option is to extend interface `Point` so that it allows excess properties:'
+  id: totrans-192
   prefs: []
   type: TYPE_NORMAL
+  zh: 第四种选择是扩展接口`Point`，以便允许多余的属性：
 - en: '[PRE48]'
+  id: totrans-193
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: We’ll continue with two examples where TypeScript not allowing excess properties,
     is an issue.
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将继续讨论两个示例，其中 TypeScript 不允许多余的属性是一个问题。
 - en: '15.4.7.5.1 Allowing excess properties: example `Incrementor`'
+  id: totrans-195
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
+  zh: 15.4.7.5.1 允许多余的属性：示例`Incrementor`
 - en: 'In this example, we’d like to implement an `Incrementor`, but TypeScript doesn’t
     allow the extra property `.counter`:'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这个例子中，我们想要实现一个`Incrementor`，但是 TypeScript 不允许额外的属性`.counter`：
 - en: '[PRE49]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: 'Alas, even with a type assertion, there is still one type error:'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，即使使用类型断言，仍然存在一个类型错误：
 - en: '[PRE50]'
+  id: totrans-199
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: 'We can either add an index signature to interface `Incrementor`. Or – especially
     if that is not possible – we can introduce an intermediate variable:'
+  id: totrans-200
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以在接口`Incrementor`中添加索引签名。或者 - 尤其是如果不可能的话 - 我们可以引入一个中间变量：
 - en: '[PRE51]'
+  id: totrans-201
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: '15.4.7.5.2 Allowing excess properties: example `.dateStr`'
+  id: totrans-202
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
+  zh: 15.4.7.5.2 允许多余的属性：示例`.dateStr`
 - en: 'The following comparison function can be used to sort objects that have the
     property `.dateStr`:'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下比较函数可用于对具有属性`.dateStr`的对象进行排序：
 - en: '[PRE52]'
+  id: totrans-204
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: For example in unit tests, we may want to invoke this function directly with
     object literals. TypeScript doesn’t let us do this and we need to use one of the
     workarounds.
+  id: totrans-205
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，在单元测试中，我们可能希望直接使用对象文字调用此函数。TypeScript 不允许我们这样做，我们需要使用其中一种解决方法。
 - en: 15.5 Type inference
+  id: totrans-206
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.5 类型推断
 - en: 'These are the types that TypeScript infers for objects that are created via
     various means:'
+  id: totrans-207
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是 TypeScript 通过各种方式创建的对象推断的类型：
 - en: '[PRE53]'
+  id: totrans-208
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: In principle, the return type of `Object.create()` could be `object`. However,
     `any` allows us to add and change properties of the result.
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 原则上，`Object.create()`的返回类型可以是`object`。但是，`any`允许我们添加和更改结果的属性。
 - en: 15.6 Other features of interfaces
+  id: totrans-210
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.6 接口的其他特性
 - en: 15.6.1 Optional properties
+  id: totrans-211
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.6.1 可选属性
 - en: 'If we put a question mark (`?`) after the name of a property, that property
     is optional. The same syntax is used to mark parameters of functions, methods,
     and constructors as optional. In the following example, property `.middle` is
     optional:'
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在属性名称后面加上问号（`?`），那么该属性就是可选的。相同的语法用于将函数、方法和构造函数的参数标记为可选。在下面的例子中，属性`.middle`是可选的：
 - en: '[PRE54]'
+  id: totrans-213
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: 'Therefore, it’s OK to omit that property (line A):'
+  id: totrans-214
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，省略该属性是可以的（A行）：
 - en: '[PRE55]'
+  id: totrans-215
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: 15.6.1.1 Optional vs. `undefined|string`
+  id: totrans-216
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 15.6.1.1 可选 vs. `undefined|string`
 - en: What is the difference between `.prop1` and `.prop2`?
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.prop1`和`.prop2`之间有什么区别？'
 - en: '[PRE56]'
+  id: totrans-218
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: 'An optional property can do everything that `undefined|string` can. We can
     even use the value `undefined` for the former:'
+  id: totrans-219
   prefs: []
   type: TYPE_NORMAL
+  zh: 可选属性可以做`undefined|string`可以做的一切。我们甚至可以使用前者的值`undefined`：
 - en: '[PRE57]'
+  id: totrans-220
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: 'However, only `.prop1` can be omitted:'
+  id: totrans-221
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，只有`.prop1`可以省略：
 - en: '[PRE58]'
+  id: totrans-222
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: Types such as `undefined|string` and `null|string` are useful if we want to
     make omissions explicit. When people see such an explicitly omitted property,
     they know that it exists but was switched off.
+  id: totrans-223
   prefs: []
   type: TYPE_NORMAL
+  zh: 诸如`undefined|string`和`null|string`之类的类型在我们想要明确省略时非常有用。当人们看到这样一个明确省略的属性时，他们知道它存在，但已被关闭。
 - en: 15.6.2 Read-only properties
+  id: totrans-224
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.6.2 只读属性
 - en: 'In the following example, property `.prop` is read-only:'
+  id: totrans-225
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的例子中，属性`.prop`是只读的：
 - en: '[PRE59]'
+  id: totrans-226
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: 'As a consequence, we can read it, but we can’t change it:'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们可以读取它，但我们不能更改它：
 - en: '[PRE60]'
+  id: totrans-228
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: 15.7 JavaScript’s prototype chains and TypeScript’s types
+  id: totrans-229
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.7 JavaScript 的原型链和 TypeScript 的类型
 - en: TypeScript doesn’t distinguish own and inherited properties. They are all simply
     considered to be properties.
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 不区分自有属性和继承属性。它们都被简单地视为属性。
 - en: '[PRE61]'
+  id: totrans-231
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: '`obj` inherits `.toString()` from `Object.prototype`.'
+  id: totrans-232
   prefs: []
   type: TYPE_NORMAL
+  zh: '`obj`从`Object.prototype`继承`.toString()`。'
 - en: The downside of this approach is that some phenomena in JavaScript can’t be
     described via TypeScript’s type system. The upside is that the type system is
     simpler.
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法的缺点是，JavaScript 中的一些现象无法通过 TypeScript 的类型系统来描述。好处是类型系统更简单。
 - en: 15.8 Sources of this chapter
+  id: totrans-234
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.8 本章的来源
 - en: '[TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/basic-types.html)'
+  id: totrans-235
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[TypeScript 手册](https://www.typescriptlang.org/docs/handbook/basic-types.html)'
 - en: '[TypeScript Language Specification](https://github.com/microsoft/TypeScript/blob/master/doc/spec-ARCHIVED.md)'
+  id: totrans-236
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[TypeScript 语言规范](https://github.com/microsoft/TypeScript/blob/master/doc/spec-ARCHIVED.md)'
 - en: '[Comments](https://github.com/rauschma/tackling-ts/issues/15)'
+  id: totrans-237
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/tackling-ts/issues/15)'
