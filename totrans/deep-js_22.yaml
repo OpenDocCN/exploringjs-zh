@@ -1,175 +1,219 @@
 - en: '16 Regular expressions: lookaround assertions by example'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/deep-js/ch_regexp-lookaround-assertions.html](https://exploringjs.com/deep-js/ch_regexp-lookaround-assertions.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: '16.1 [Cheat sheet: lookaround assertions](ch_regexp-lookaround-assertions.html#cheat-sheet-lookaround-assertions)'
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.2 [Warnings for this chapter](ch_regexp-lookaround-assertions.html#warnings-for-this-chapter)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.3 [Example: Specifying what comes before or after a match (positive lookaround)](ch_regexp-lookaround-assertions.html#example-specifying-what-comes-before-or-after-a-match-positive-lookaround)'
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.4 [Example: Specifying what does not come before or after a match (negative
     lookaround)](ch_regexp-lookaround-assertions.html#example-specifying-what-does-not-come-before-or-after-a-match-negative-lookaround)'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.4.1 [There are no simple alternatives to negative lookaround assertions](ch_regexp-lookaround-assertions.html#there-are-no-simple-alternatives-to-negative-lookaround-assertions)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.5 [Interlude: pointing lookaround assertions inward](ch_regexp-lookaround-assertions.html#interlude-pointing-lookaround-assertions-inward)'
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.6 [Example: match strings not starting with `''abc''`](ch_regexp-lookaround-assertions.html#example-match-strings-not-starting-with-abc)'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.7 [Example: match substrings that do not contain `''.mjs''`](ch_regexp-lookaround-assertions.html#example-match-substrings-that-do-not-contain-.mjs)'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.8 [Example: skipping lines with comments](ch_regexp-lookaround-assertions.html#example-skipping-lines-with-comments)'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.9 [Example: smart quotes](ch_regexp-lookaround-assertions.html#example-smart-quotes)'
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.9.1 [Supporting escaping via backslashes](ch_regexp-lookaround-assertions.html#supporting-escaping-via-backslashes)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.10 [Acknowledgements](ch_regexp-lookaround-assertions.html#acknowledgements-2)
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.11 [Further reading](ch_regexp-lookaround-assertions.html#further-reading-4)
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
 - en: In this chapter we use examples to explore lookaround assertions in regular
     expressions. A lookaround assertion is non-capturing and must match (or not match)
     what comes before (or after) the current location in the input string.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
 - en: '16.1 Cheat sheet: lookaround assertions'
+  id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'Table 4: Overview of available lookaround assertions.'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: '| Pattern | Name |  |'
+  id: totrans-20
   prefs: []
   type: TYPE_TB
 - en: '| --- | --- | --- |'
+  id: totrans-21
   prefs: []
   type: TYPE_TB
 - en: '| `(?=«pattern»)` | Positive lookahead | ES3 |'
+  id: totrans-22
   prefs: []
   type: TYPE_TB
 - en: '| `(?!«pattern»)` | Negative lookahead | ES3 |'
+  id: totrans-23
   prefs: []
   type: TYPE_TB
 - en: '| `(?<=«pattern»)` | Positive lookbehind | ES2018 |'
+  id: totrans-24
   prefs: []
   type: TYPE_TB
 - en: '| `(?<!«pattern»)` | Negative lookbehind | ES2018 |'
+  id: totrans-25
   prefs: []
   type: TYPE_TB
 - en: There are four lookaround assertions (tbl. [4](#tbl:lookaround-assertions-overview))
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
 - en: 'Lookahead assertions (ECMAScript 3):'
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Positive lookahead: `(?=«pattern»)` matches if `pattern` matches what comes
     after the current location in the input string.'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Negative lookahead: `(?!«pattern»)` matches if `pattern` does not match what
     comes after the current location in the input string.'
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Lookbehind assertions (ECMAScript 2018):'
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Positive lookbehind: `(?<=«pattern»)` matches if `pattern` matches what comes
     before the current location in the input string.'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Negative lookbehind: `(?<!«pattern»)` matches if `pattern` does not match what
     comes before the current location in the input string.'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 16.2 Warnings for this chapter
+  id: totrans-33
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: The examples show what can be achieved via lookaround assertions. However, regular
     expression aren’t always the best solution. Another technique, such as proper
     parsing, may be a better choice.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Lookbehind assertions are a relatively new feature that may not be supported
     by all JavaScript engines you are targeting.
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Lookaround assertions may affect performance negatively, especially if their
     patterns match long strings.
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.3 Example: Specifying what comes before or after a match (positive lookaround)'
+  id: totrans-37
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'In the following interaction, we extract quoted words:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Two lookaround assertions help us here:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
 - en: '`(?<=")` “must be preceded by a quote”'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`(?=")` “must be followed by a quote”'
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
@@ -177,331 +221,468 @@
     which returns whole matches (capture group 0). Whatever the pattern of a lookaround
     assertion matches is not captured. Without lookaround assertions, the quotes show
     up in the result:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '16.4 Example: Specifying what does not come before or after a match (negative
     lookaround)'
+  id: totrans-45
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: How can we achieve the opposite of what we did in the previous section and extract
     all unquoted words from a string?
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
 - en: 'Input: `''how "are" "you" doing''`'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Output: `[''how'', ''doing'']`'
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Our first attempt is to simply convert positive lookaround assertions to negative
     lookaround assertions. Alas, that fails:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The problem is that we extract sequences of characters that are not bracketed
     by quotes. That means that in the string `'"are"'`, the “r” in the middle is considered
     unquoted, because it is preceded by an “a” and followed by an “e”.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
 - en: 'We can fix this by stating that prefix and suffix must be neither quote nor
     letter:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Another solution is to demand via `\b` that the sequence of characters `[a-z]+`
     start and end at word boundaries:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: One thing that is nice about negative lookbehind and negative lookahead is that
     they also work at the beginning or end, respectively, of a string – as demonstrated
     in the example.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
 - en: 16.4.1 There are no simple alternatives to negative lookaround assertions
+  id: totrans-57
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: Negative lookaround assertions are a powerful tool and usually impossible to
     emulate via other regular expression means.
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
 - en: 'If we don’t want to use them, we normally have to take a completely different
     approach. For example, in this case, we could split the string into (quoted and
     unquoted) words and then filter those:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Benefits of this approach:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
 - en: It works on older engines.
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: It is easy to understand.
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '16.5 Interlude: pointing lookaround assertions inward'
+  id: totrans-64
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: All of the examples we have seen so far have in common that the lookaround assertions
     dictate what must come before or after the match but without including those characters
     in the match.
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
 - en: 'The regular expressions shown in the remainder of this chapter are different:
     Their lookaround assertions point inward and restrict what’s inside the match.'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
 - en: '16.6 Example: match strings not starting with `''abc''`'
+  id: totrans-67
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: Let‘s assume we want to match all strings that do not start with `'abc'`. Our
     first attempt could be the regular expression `/^(?!abc)/`.
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
 - en: 'That works well for `.test()`:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE6]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'However, `.exec()` gives us an empty string:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE7]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: The problem is that assertions such as lookaround assertions don’t expand the
     matched text. That is, they don’t capture input characters, they only make demands
     about the current location in the input.
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
 - en: 'Therefore, the solution is to add a pattern that does capture input characters:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE8]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'As desired, this new regular expression rejects strings that are prefixed with
     `''abc''`:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE9]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'And it accepts strings that don’t have the full prefix:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE10]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '16.7 Example: match substrings that do not contain `''.mjs''`'
+  id: totrans-80
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: In the following example, we want to find
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE11]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: where `module-specifier` does not end with `'.mjs'`.
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE12]'
+  id: totrans-84
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: Here, the lookbehind assertion `(?<!\.mjs)` acts as a *guard* and prevents that
     the regular expression matches strings that contain `'.mjs`’ at this location.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
 - en: '16.8 Example: skipping lines with comments'
+  id: totrans-86
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'Scenario: We want to parse lines with settings, while skipping comments. For
     example:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE13]'
+  id: totrans-88
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: How did we arrive at the regular expression `RE_SETTING`?
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
 - en: 'We started with the following regular expression for settings:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE14]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Intuitively, it is a sequence of the following parts:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
 - en: Start of the line
+  id: totrans-93
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Non-colons (zero or more)
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A single colon
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Any characters (zero or more)
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The end of line
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'This regular expression does reject *some* comments:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE15]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'But it accepts others (that have colons in them):'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE16]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'We can fix that by prefixing `(?!#)` as a guard. Intuitively, it means: ”The
     current location in the input string must not be followed by the character `#`.”'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
 - en: 'The new regular expression works as desired:'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE17]'
+  id: totrans-104
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '16.9 Example: smart quotes'
+  id: totrans-105
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'Let’s assume we want to convert pairs of straight double quotes to curly quotes:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
 - en: 'Input: ``"yes" and "no"``'
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Output: ``“yes” and “no”``'
+  id: totrans-108
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出：``“yes” and “no”``
 - en: 'This is our first attempt:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们的第一次尝试：
 - en: '[PRE18]'
+  id: totrans-110
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: Only the first quote and the last quote is curly. The problem here is that the
     `*` quantifier matches [*greedily*](https://exploringjs.com/impatient-js/ch_regexps.html#quantifiers)
     (as much as possible).
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 只有第一个引号和最后一个引号是卷曲的。问题在于`*`量词会[*贪婪地*](https://exploringjs.com/impatient-js/ch_regexps.html#quantifiers)匹配（尽可能多地匹配）。
 - en: 'If we put a question mark after the `*`, it matches *reluctantly*:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在`*`后面加上一个问号，它会*勉强地*匹配：
 - en: '[PRE19]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 16.9.1 Supporting escaping via backslashes
+  id: totrans-114
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.9.1 通过反斜杠支持转义
 - en: 'What if we want to allow the escaping of quotes via backslashes? We can do
     that by using the guard `(?<!\\)` before the quotes:'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要通过反斜杠允许引号的转义怎么办？我们可以在引号之前使用保护符`(?<!\\)`来做到这一点：
 - en: '[PRE20]'
+  id: totrans-116
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'As a post-processing step, we would still need to do:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为后处理步骤，我们仍然需要做：
 - en: '[PRE21]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'However, this regular expression can fail when there is a backslash-escaped
     backslash:'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，当有一个反斜杠转义的反斜杠时，这个正则表达式可能会失败：
 - en: '[PRE22]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: The second backslash prevented the quotes from becoming curly.
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: 第二个反斜杠阻止了引号变成卷曲的形状。
 - en: 'We can fix that if we make our guard more sophisticated (`?:` makes the group
     non-capturing):'
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们让我们的保护符更复杂一些，我们可以解决这个问题（`?:`使得该组不被捕获）：
 - en: '[PRE23]'
+  id: totrans-123
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'The new guard allows pairs of backslashes before quotes:'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 新的保护符允许在引号之前有一对反斜杠：
 - en: '[PRE24]'
+  id: totrans-125
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'One issue remains. This guard prevents the first quote from being matched if
     it appears at the beginning of a string:'
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: 还有一个问题。这个保护符会阻止第一个引号在字符串开头时被匹配到：
 - en: '[PRE25]'
+  id: totrans-127
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'We can fix that by changing the first guard to: `(?<=[^\\](?:\\\\)*|^)`'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过将第一个保护符改为：`(?<=[^\\](?:\\\\)*|^)`来解决这个问题
 - en: '[PRE26]'
+  id: totrans-129
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 16.10 Acknowledgements
+  id: totrans-130
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.10 致谢
 - en: The first regular expression that handles escaped backslashes in front of quotes
     [was proposed by `@jonasraoni` on Twitter](https://twitter.com/jonasraoni/status/992506010454683650).
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 第一个处理引号前转义反斜杠的正则表达式[是由`@jonasraoni`在Twitter上提出的](https://twitter.com/jonasraoni/status/992506010454683650)。
 - en: 16.11 Further reading
+  id: totrans-132
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.11 进一步阅读
 - en: '[Chapter “Regular expressions (`RegExp`)”](https://exploringjs.com/impatient-js/ch_regexps.html)
     in “JavaScript for impatient programmers”'
+  id: totrans-133
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[章节“正则表达式（`RegExp`）”](https://exploringjs.com/impatient-js/ch_regexps.html)
+    在“JavaScript 程序员的急切指南”中'
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/16)'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/deep-js/issues/16)'

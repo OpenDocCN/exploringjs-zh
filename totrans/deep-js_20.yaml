@@ -1,144 +1,216 @@
 - en: 15 Immutable wrappers for collections
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 15 不可变集合的包装器
 - en: 原文：[https://exploringjs.com/deep-js/ch_immutable-collection-wrappers.html](https://exploringjs.com/deep-js/ch_immutable-collection-wrappers.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_immutable-collection-wrappers.html](https://exploringjs.com/deep-js/ch_immutable-collection-wrappers.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 15.1 [Wrapping objects](ch_immutable-collection-wrappers.html#wrapping-objects)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.1 [包装对象](ch_immutable-collection-wrappers.html#wrapping-objects)
 - en: 15.1.1 [Making collections immutable via wrapping](ch_immutable-collection-wrappers.html#making-collections-immutable-via-wrapping)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.1.1 [通过包装使集合变为不可变](ch_immutable-collection-wrappers.html#making-collections-immutable-via-wrapping)
 - en: 15.2 [An immutable wrapper for Maps](ch_immutable-collection-wrappers.html#an-immutable-wrapper-for-maps)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.2 [Map的不可变包装器](ch_immutable-collection-wrappers.html#an-immutable-wrapper-for-maps)
 - en: 15.3 [An immutable wrapper for Arrays](ch_immutable-collection-wrappers.html#an-immutable-wrapper-for-arrays)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 15.3 [数组的不可变包装器](ch_immutable-collection-wrappers.html#an-immutable-wrapper-for-arrays)
 - en: '* * *'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: An immutable wrapper for a collection makes that collection immutable by wrapping
     it in a new object. In this chapter, we examine how that works and why it is useful.
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过包装集合的不可变包装器使该集合变为不可变。在本章中，我们将探讨其工作原理以及其有用之处。
 - en: 15.1 Wrapping objects
+  id: totrans-9
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.1 包装对象
 - en: 'If there is an object whose interface we’d like to reduce, we can take the
     following approach:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果有一个我们想要减少接口的对象，我们可以采取以下方法：
 - en: Create a new object that stores the original in a private field. The new object
     is said to *wrap* the original object. The new object is called *wrapper*, the
     original object *wrapped object*.
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建一个新对象，将原始对象存储在私有字段中。新对象被称为*包装器*，原始对象被称为*被包装对象*。
 - en: The wrapper only forwards some of the method calls it receives to the wrapped
     object.
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包装器只将它接收到的一些方法调用转发给被包装对象。
 - en: 'This is what wrapping looks like:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 包装的样子如下：
 - en: '[PRE0]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Related software design patterns:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 相关软件设计模式：
 - en: Wrapping is related to [the Gang of Four design pattern *Facade*](https://en.wikipedia.org/wiki/Facade_pattern).
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包装与[四人帮设计模式*Facade*](https://en.wikipedia.org/wiki/Facade_pattern)有关。
 - en: We used [*forwarding*](https://en.wikipedia.org/wiki/Forwarding_(object-oriented_programming))
     to implement [*delegation*](https://en.wikipedia.org/wiki/Delegation_pattern).
     Delegation means that one object lets another object (the *delegate*) handle some
     of its work. It is an alternative to inheritance for sharing code.
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们使用*转发*来实现*委托*。委托意味着一个对象让另一个对象（*委托*）处理它的一些工作。这是共享代码的继承的替代方法。
 - en: 15.1.1 Making collections immutable via wrapping
+  id: totrans-18
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 15.1.1 通过包装使集合变为不可变
 - en: To make a collection immutable, we can use wrapping and remove all destructive
     operations from its interface.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 要使集合变为不可变，我们可以使用包装并从其接口中删除所有破坏性操作。
 - en: One important use case for this technique is an object that has an internal
     mutable data structure that it wants to export safely without copying it. The
     export being “live” may also be a goal. The object can achieve its goals by wrapping
     the internal data structure and making it immutable.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种技术的一个重要用例是一个具有内部可变数据结构的对象，它希望安全地导出而不复制它。导出是“活动的”也可能是一个目标。对象可以通过包装内部数据结构并使其不可变来实现其目标。
 - en: 'The next two sections showcase immutable wrappers for Maps and Arrays. They
     both have the following limitations:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来的两节展示了Map和数组的不可变包装器。它们都有以下限制：
 - en: 'They are sketches. More work is needed to make them suitable for practical
     use: Better checks, support for more methods, etc.'
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们只是草图。需要更多的工作使它们适用于实际使用：更好的检查，支持更多的方法等。
 - en: 'They work shallowly: Each one makes the wrapped object immutable, but not the
     data it returns. This could be fixed by wrapping some of the results that are
     returned by methods.'
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们的工作是浅层的：每个都使被包装对象不可变，但不影响其返回的数据。这可以通过包装一些方法返回的结果来修复。
 - en: 15.2 An immutable wrapper for Maps
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.2 不可变的Map包装器
 - en: 'Class `ImmutableMapWrapper` produces wrappers for Maps:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 类`ImmutableMapWrapper`生成Map的包装器：
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The setup of the prototype has to be performed by a static method, because we
     only have access to the private field `.#wrappedMap` from inside the class.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 原型的设置必须由静态方法执行，因为我们只能从类内部访问私有字段`.#wrappedMap`。
 - en: 'This is `ImmutableMapWrapper` in action:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`ImmutableMapWrapper`的实际应用：
 - en: '[PRE2]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 15.3 An immutable wrapper for Arrays
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 15.3 不可变的数组包装器
 - en: 'For an Array `arr`, normal wrapping is not enough because we need to intercept
     not just method calls, but also property accesses such as `arr[1] = true`. [JavaScript
     proxies](https://exploringjs.com/es6/ch_proxies.html) enable us to do this:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于数组`arr`，普通的包装是不够的，因为我们不仅需要拦截方法调用，还需要拦截属性访问，比如`arr[1] = true`。[JavaScript代理](https://exploringjs.com/es6/ch_proxies.html)使我们能够做到这一点：
 - en: '[PRE3]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Let’s wrap an Array:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们来包装一个数组：
 - en: '[PRE4]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/15)'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/deep-js/issues/15)'

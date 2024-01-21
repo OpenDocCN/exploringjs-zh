@@ -1,112 +1,170 @@
 - en: '14 Copying instances of classes: .clone() vs. copy constructors'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 14 复制类的实例：.clone() vs. 复制构造函数
 - en: 原文：[https://exploringjs.com/deep-js/ch_copying-class-instances.html](https://exploringjs.com/deep-js/ch_copying-class-instances.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_copying-class-instances.html](https://exploringjs.com/deep-js/ch_copying-class-instances.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 14.1 [`.clone()` methods](ch_copying-class-instances.html#clone-methods)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.1 [`.clone()`方法](ch_copying-class-instances.html#clone-methods)
 - en: 14.2 [Static factory methods](ch_copying-class-instances.html#static-factory-methods)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.2 [静态工厂方法](ch_copying-class-instances.html#static-factory-methods)
 - en: 14.3 [Acknowledgements](ch_copying-class-instances.html#acknowledgements-1)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 14.3 [致谢](ch_copying-class-instances.html#acknowledgements-1)
 - en: '* * *'
+  id: totrans-6
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'In this chapter, we look at two techniques for implementing copying for class
     instances:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将介绍两种实现类实例复制的技术：
 - en: '`.clone()` methods'
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.clone()`方法'
 - en: So-called *copy constructors*, constructors that receive another instance of
     the current class and use it to initialize the current instance.
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所谓的*复制构造函数*，即接收当前类的另一个实例并用它来初始化当前实例的构造函数。
 - en: 14.1 `.clone()` methods
+  id: totrans-10
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.1 `.clone()`方法
 - en: This technique introduces one method `.clone()` per class whose instances are
     to be copied. It returns a deep copy of `this`. The following example shows three
     classes that can be cloned.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种技术为每个需要被复制的类引入了一个`.clone()`方法。它返回`this`的深复制。下面的例子展示了三个可以被克隆的类。
 - en: '[PRE0]'
+  id: totrans-12
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Line A demonstrates an important aspect of this technique: compound instance
     property values must also be cloned, recursively.'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: A行展示了这种技术的一个重要方面：复合实例属性值也必须递归地被克隆。
 - en: 14.2 Static factory methods
+  id: totrans-14
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.2 静态工厂方法
 - en: A *copy constructor* is a constructor that uses another instance of the current
     class to set up the current instance. Copy constructors are popular in static
     languages such as C++ and Java, where you can provide multiple versions of a constructor
     via *static overloading*. Here, *static* means that the choice which version to
     use, is made at compile time.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '*复制构造函数*是一种使用当前类的另一个实例来设置当前实例的构造函数。复制构造函数在静态语言（如C++和Java）中很受欢迎，因为你可以通过*静态重载*提供构造函数的多个版本。在这里，*静态*意味着选择使用哪个版本是在编译时做出的。'
 - en: 'In JavaScript, we must make that decision at runtime and that leads to inelegant
     code:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript中，我们必须在运行时做出决定，这导致了不优雅的代码：
 - en: '[PRE1]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'This is how you’d use this class:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是你如何使用这个类的方式：
 - en: '[PRE2]'
+  id: totrans-19
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '*Static factory methods* are an alternative to constructors and work better
     in this case because we can directly invoke the desired functionality. (Here,
     *static* means that these factory methods are class methods.)'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: '*静态工厂方法*是构造函数的一种替代方法，在这种情况下效果更好，因为我们可以直接调用所需的功能。（这里，*静态*意味着这些工厂方法是类方法。）'
 - en: 'In the following example, the three classes `Point`, `Color` and `ColorPoint`
     each have a static factory method `.from()`:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的例子中，三个类`Point`、`Color`和`ColorPoint`都有一个静态工厂方法`.from()`：
 - en: '[PRE3]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: In line A, we once again copy recursively.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 在A行，我们再次进行递归复制。
 - en: 'This is how `ColorPoint.from()` works:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是`ColorPoint.from()`的工作原理：
 - en: '[PRE4]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 14.3 Acknowledgements
+  id: totrans-26
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 14.3 致谢
 - en: '[Ron Korvig](https://github.com/ronkorving) reminded me to use static factory
     methods and not overloaded constructors for deep-copying in JavaScript.'
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Ron Korvig](https://github.com/ronkorving)提醒我在JavaScript中进行深复制时要使用静态工厂方法而不是重载构造函数。'
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/14)'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/deep-js/issues/14)'
