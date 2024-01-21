@@ -1,98 +1,121 @@
 - en: 10 Protecting objects from being changed
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/deep-js/ch_protecting-objects.html](https://exploringjs.com/deep-js/ch_protecting-objects.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: '10.1 [Levels of protection: preventing extensions, sealing, freezing](ch_protecting-objects.html#levels-of-protection-preventing-extensions-sealing-freezing)'
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.2 [Preventing extensions of objects](ch_protecting-objects.html#preventing-extensions-of-objects)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.2.1 [Checking whether an object is extensible](ch_protecting-objects.html#checking-whether-an-object-is-extensible)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.3 [Sealing objects](ch_protecting-objects.html#sealing-objects)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.3.1 [Checking whether an object is sealed](ch_protecting-objects.html#checking-whether-an-object-is-sealed)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.4 [Freezing objects](ch_protecting-objects.html#freezing-objects)
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.4.1 [Checking whether an object is frozen](ch_protecting-objects.html#checking-whether-an-object-is-frozen)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.4.2 [Freezing is shallow](ch_protecting-objects.html#freezing-is-shallow)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.4.3 [Implementing deep freezing](ch_protecting-objects.html#implementing-deep-freezing)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.5 [Further reading](ch_protecting-objects.html#further-reading-2)
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
 - en: 'In this chapter, we’ll look at how objects can be protected from being changed.
     Examples include: Preventing properties being added and preventing properties
     being changed.'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
 - en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Required knowledge:
     property attributes**'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
 - en: 'For this chapter, you should be familiar with property attributes. If you aren’t,
     check out [§9 “Property attributes: an introduction”](ch_property-attributes-intro.html).'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
 - en: '10.1 Levels of protection: preventing extensions, sealing, freezing'
+  id: totrans-17
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'JavaScript has three levels of protecting objects:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
 - en: '*Preventing extensions* makes it impossible to add new properties to an object.
     We can still delete and change properties, though.'
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Method: `Object.preventExtensions(obj)`'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '*Sealing* prevents extensions and makes all properties *unconfigurable* (roughly:
     we can’t change how a property works anymore).'
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Method: `Object.seal(obj)`'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_UL
@@ -100,74 +123,100 @@
 - en: '*Freezing* seals an object after making all of its properties non-writable.
     That is, the object is not extensible, all properties are read-only and there
     is no way to change that.'
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Method: `Object.freeze(obj)`'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 10.2 Preventing extensions of objects
+  id: totrans-25
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'This method works as follows:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
 - en: If `obj` is not an object, it returns it.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Otherwise, it changes `obj` so that we can’t add properties anymore and returns
     it.
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The type parameter `<T>` expresses that the result has the same type as the
     parameter.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Let’s use `Object.preventExtensions()` in an example:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'We can still delete properties, though:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 10.2.1 Checking whether an object is extensible
+  id: totrans-35
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Checks whether `obj` is extensible – for example:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 10.3 Sealing objects
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Description of this method:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
 - en: If `obj` isn’t an object, it returns it.
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
@@ -175,111 +224,158 @@
     and returns it. The properties being unconfigurable means that they can’t be changed,
     anymore (except for their values): Read-only properties stay read-only, enumerable
     properties stay enumerable, etc.'
+  id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The following example demonstrates that sealing makes the object non-extensible
     and its properties unconfigurable.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE6]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'We can still change the the value of property `.first`:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE7]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'But we can’t change its attributes:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE8]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 10.3.1 Checking whether an object is sealed
+  id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '[PRE9]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Checks whether `obj` is sealed – for example:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE10]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 10.4 Freezing objects
+  id: totrans-54
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[PRE11]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: This method immediately returns `obj` if it isn’t an object.
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Otherwise, it makes all properties non-writable, seals `obj`, and returns it.
     That is, `obj` is not extensible, all properties are read-only and there is no
     way to change that.
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE12]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 10.4.1 Checking whether an object is frozen
+  id: totrans-59
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '[PRE13]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Checks whether `obj` is frozen – for example:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE14]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 10.4.2 Freezing is shallow
+  id: totrans-63
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '`Object.freeze(obj)` only freezes `obj` and its properties. It does not freeze
     the values of those properties – for example:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE15]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 10.4.3 Implementing deep freezing
+  id: totrans-66
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'If we want deep freezing, we need to implement it ourselves:'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE16]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Revisiting the example from the previous section, we can check if `deepFreeze()`
     really freezes deeply:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 重新审视上一节的示例，我们可以检查`deepFreeze()`是否真的深度冻结：
 - en: '[PRE17]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 10.5 Further reading
+  id: totrans-71
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 10.5 进一步阅读
 - en: 'More information on patterns for preventing data structures from being changed:
     [§15 “Immutable wrappers for collections”](ch_immutable-collection-wrappers.html)'
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有关防止数据结构被更改的模式的更多信息：[§15 “不可变集合的包装器”](ch_immutable-collection-wrappers.html)
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/10)'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/deep-js/issues/10)'
