@@ -1,1338 +1,1966 @@
 - en: '5 Packages: JavaScript’s units for software distribution'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 5 包：JavaScript的软件分发单元
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_packages.html](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_packages.html](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 5.1 [What is a package?](ch_packages.html#what-is-a-package)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.1 什么是包？
 - en: '5.1.1 [Publishing packages: package registries, package managers, package names](ch_packages.html#publishing-packages-package-registries-package-managers-package-names)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.1.1 发布包：包注册表，包管理器，包名称
 - en: 5.2 [The file system layout of a package](ch_packages.html#the-file-system-layout-of-a-package)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.2 包的文件系统布局
 - en: 5.2.1 [`package.json`](ch_packages.html#package.json)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.2.1 `package.json`
 - en: 5.2.2 [Property `"dependencies"` of `package.json`](ch_packages.html#property-dependencies-of-package.json)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.2.2 `package.json`的`"dependencies"`属性
 - en: 5.2.3 [Property `"bin"` of `package.json`](ch_packages.html#property-bin-of-package.json)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.2.3 `package.json`的`"bin"`属性
 - en: 5.2.4 [Property `"license"` of `package.json`](ch_packages.html#property-license-of-package.json)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.2.4 [`package.json`的`"license"`属性](ch_packages.html#property-license-of-package.json)
 - en: 5.3 [Archiving and installing packages](ch_packages.html#archiving-and-installing-packages)
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.3 归档和安装包
 - en: 5.3.1 [Installing a package from git](ch_packages.html#installing-a-package-from-git)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.3.1 从git安装包
 - en: 5.3.2 [Creating a new package and installing dependencies](ch_packages.html#creating-a-new-package-and-installing-dependencies)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.3.2 创建新包并安装依赖项
 - en: 5.4 [Referring to modules via *specifiers*](ch_packages.html#referring-to-modules-via-specifiers)
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.4 通过*规范*引用模块
 - en: 5.4.1 [Filename extensions in module specifiers](ch_packages.html#filename-extensions-in-module-specifiers)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.4.1 [模块规范中的文件扩展名](ch_packages.html#filename-extensions-in-module-specifiers)
 - en: 5.5 [Module specifiers in Node.js](ch_packages.html#module-specifiers-in-node.js)
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5 [Node.js中的模块规范](ch_packages.html#module-specifiers-in-node.js)
 - en: 5.5.1 [Resolving module specifiers in Node.js](ch_packages.html#resolving-module-specifiers-in-node.js)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5.1 在Node.js中解析模块规范
 - en: '5.5.2 [Package exports: controlling what other packages see](ch_packages.html#package-exports-controlling-what-other-packages-see)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5.2 包导出：控制其他包看到的内容
 - en: 5.5.3 [Package imports](ch_packages.html#package-imports)
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5.3 包导入
 - en: 5.5.4 [`node:` protocol imports](ch_packages.html#node-protocol-imports)
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 5.5.4 `node:`协议导入
 - en: '* * *'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: This chapter explains what npm packages are and how they interact with ESM modules.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章解释了npm包是什么以及它们如何与ESM模块交互。
 - en: '**Required knowledge:** I’m assuming that you are loosely familiar with the
     syntax of ECMAScript modules. If you are not, you can read [chapter “modules”](https://exploringjs.com/impatient-js/ch_modules.html)
     in “JavaScript for impatient programmers”.'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: '**必需的知识：**我假设您对ECMAScript模块的语法略有了解。如果没有，您可以阅读“JavaScript for impatient programmers”中的[章节“modules”](https://exploringjs.com/impatient-js/ch_modules.html)。'
 - en: 5.1 What is a package?
+  id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.1 什么是包？
 - en: 'In the JavaScripte ecosystem, a *package* is a way of organizing software projects:
     It is a directory with a standardized layout. A package can contain all kinds
     of files - for example:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript生态系统中，*包*是组织软件项目的一种方式：它是一个具有标准布局的目录。包可以包含各种文件 - 例如：
 - en: A web application written in JavaScript, to be deployed on a server
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 用JavaScript编写的Web应用程序，部署在服务器上
 - en: JavaScript libraries (for Node.js, for browsers, for all JavaScript platforms,
     etc.)
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript库（用于Node.js，浏览器，所有JavaScript平台等）
 - en: 'Libraries for programming languages other than JavaScript: TypeScript, Rust,
     etc.'
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 除JavaScript之外的其他编程语言的库：TypeScript，Rust等
 - en: Unit tests (e.g. for the libraries in the package)
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 单元测试（例如包中的库）
 - en: '*Bin scripts* – Node.js-based shell scripts – e.g., development tools such
     as compilers, test runners, and documentation generators'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*Bin scripts* – 基于Node.js的shell脚本 – 例如，开发工具，如编译器，测试运行器和文档生成器'
 - en: Many other kinds of artifacts
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 许多其他类型的工件
 - en: 'A package can *depend on* other packages (which are called its *dependencies*)
     which contain:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 包可以*依赖于*其他包（称为*依赖项*），其中包含：
 - en: Libraries needed by the package’s JavaScript code
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包的JavaScript代码所需的库
 - en: Shell scripts used during development
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 开发过程中使用的shell脚本
 - en: Etc.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: The dependencies of a package are installed inside that package (we’ll see how
     soon).
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 包的依赖项安装在该包内部（我们很快就会看到）。
 - en: 'One common distinction between packages is:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 包之间的一个常见区别是：
 - en: '*Published packages* can be installed by us:'
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*已发布的包*可以由我们安装：'
 - en: 'Global installation: We can install them globally so that their bin scripts
     become available at the command line.'
+  id: totrans-38
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 全局安装：我们可以全局安装它们，以便它们的bin脚本在命令行中可用。
 - en: 'Local installation: We can install them as dependencies into our own packages.
     Their bin scripts can be used locally (we’ll see how soon).'
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 本地安装：我们可以将它们作为依赖项安装到我们自己的包中。它们的bin脚本可以在本地使用（我们很快就会看到）。
 - en: '*Unpublished packages* never become dependencies of other packages, but do
     have dependencies themselves. Examples include web applications that are deployed
     to servers.'
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*未发布的包*永远不会成为其他包的依赖项，但它们本身有依赖项。例如，部署到服务器的Web应用程序。'
 - en: The next subsection explains how packages can be published.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一小节将解释如何发布包。
 - en: '5.1.1 Publishing packages: package registries, package managers, package names'
+  id: totrans-42
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.1.1 发布包：包注册表，包管理器，包名称
 - en: The main way of publishing a package is to upload it to a package registry –
     an online software repository. The de facto standard is [the *npm registry*](https://www.npmjs.com)
     but it is not the only option. For example, companies can host their own internal
     registries.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 发布包的主要方式是将其上传到包注册表 - 一个在线软件仓库。事实上的标准是[*npm注册表*](https://www.npmjs.com)，但这不是唯一的选择。例如，公司可以托管自己的内部注册表。
 - en: A *package manager* is a command line tool that downloads packages from a registry
     (or other sources) and installs them locally or globally. If a package contains
     bin scripts, it also makes those available locally or globally.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '*包管理器*是一个命令行工具，它从注册表（或其他来源）下载包并在本地或全局安装它们。如果一个包包含bin脚本，它也会在本地或全局提供这些脚本。'
 - en: The most popular package manager is called *npm* and comes bundled with Node.js.
     Its name originally stood for “Node Package Manager”. Later, when npm and the
     npm registry were used not only for Node.js packages, the definition was changed
     to “npm is not a package manager” ([source](https://en.wikipedia.org/wiki/Npm_(software)#Acronym)).
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 最流行的包管理器称为*npm*，并与Node.js捆绑在一起。它的名称最初代表“Node Package Manager”。后来，当npm和npm注册表不仅用于Node.js包时，定义被更改为“npm不是一个包管理器”（[来源](https://en.wikipedia.org/wiki/Npm_(software)#Acronym)）。
 - en: There are other popular package managers such as yarn and pnpm. All of these
     package managers use the npm registry by default.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 还有其他流行的包管理器，如yarn和pnpm。所有这些包管理器默认使用npm注册表。
 - en: 'Each package in the npm registry has a name. There are two kinds of names:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: npm注册表中的每个包都有一个名称。有两种名称：
 - en: '*Global names* are unique across the whole registry. These are two examples:'
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*全局名称*在整个注册表中是唯一的。这是两个例子：'
 - en: '[PRE0]'
+  id: totrans-49
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '*Scoped names* consist of two parts: A scope and a name. Scopes are globally
     unique, names are unique per scope. These are two examples:'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*作用域名称*由两部分组成：作用域和名称。作用域是全局唯一的，名称在作用域内是唯一的。这是两个例子：'
 - en: '[PRE1]'
+  id: totrans-51
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The scope starts with an `@` symbol and is separated from the name with a slash.
+  id: totrans-52
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 范围从`@`符号开始，并用斜杠与名称分隔。
 - en: 5.2 The file system layout of a package
+  id: totrans-53
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.2 包的文件系统布局
 - en: 'Once a package `my-package` is fully installed, it almost always looks like
     this:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦包`my-package`完全安装，它几乎总是看起来像这样：
 - en: '[PRE2]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: What are the purposes of these file system entries?
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些文件系统条目的目的是什么？
 - en: '`package.json` is a file every package must have:'
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`package.json`是每个包都必须拥有的文件：'
 - en: It contains metadata describing the package (its name, its version, its author,
     etc.).
+  id: totrans-58
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它包含描述包的元数据（名称、版本、作者等）。
 - en: 'It lists the dependencies of the package: other packages that it needs, such
     as libraries and tools. Per dependency, we record:'
+  id: totrans-59
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它列出了包的依赖项：它所需的其他包，如库和工具。对于每个依赖项，我们记录：
 - en: A range of version numbers. Not specifying a specific version allows for upgrades
     and for code sharing between dependencies.
+  id: totrans-60
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一系列版本号。不指定特定版本允许升级和依赖项之间的代码共享。
 - en: 'By default, dependencies come from the npm registry. But we can also specify
     other sources: a local directory, a GZIP file, a URL pointing to a GZIP file,
     a registry other than npm’s, a git repository, etc.'
+  id: totrans-61
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 默认情况下，依赖项来自npm注册表。但我们也可以指定其他来源：本地目录，GZIP文件，指向GZIP文件的URL，不同于npm的注册表，git存储库等。
 - en: '`node_modules/` is a directory into which the dependencies of the package are
     installed. Each dependency also has a `node_modules` folder with its dependencies,
     etc. The result is a tree of dependencies.'
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules/`是包的依赖项安装的目录。每个依赖项也有一个带有其依赖项等的`node_modules`文件夹。结果是一个依赖项树。'
 - en: 'Some packages also have the file `package-lock.json` that sits next to `package.json`:
     It records the exact versions of the dependencies that were installed and is kept
     up to date if we add more dependencies via npm.'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些包还有文件`package-lock.json`，它位于`package.json`旁边：它记录了安装的依赖项的确切版本，并且如果我们通过npm添加更多依赖项，它会保持更新。
 - en: 5.2.1 `package.json`
+  id: totrans-64
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.2.1 `package.json`
 - en: 'This is a starter `package.json` that can be created via npm:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个可以通过npm创建的起始`package.json`：
 - en: '[PRE3]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: What are the purposes of these properties?
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些属性的目的是什么？
 - en: 'Some properties are required for public packages (published on the npm registry):'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一些属性对于公共包（发布在npm注册表上）是必需的：
 - en: '`name` specifies the name of this package.'
+  id: totrans-69
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`name`指定了这个包的名称。'
 - en: '`version` is used for version management and follows [semantic versioning](https://semver.org)
     with three dot-separated numbers:'
+  id: totrans-70
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`version`用于版本管理，并遵循[语义化版本](https://semver.org)，由三个用点分隔的数字组成：'
 - en: The *major version* is incremented when incompatible API changes are made.
+  id: totrans-71
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*主要版本*在不兼容的API更改时递增。'
 - en: The *minor version* is incremented when functionality is added in a backward
     compatible manner.
+  id: totrans-72
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*次要版本*在向后兼容的方式下添加功能时递增。'
 - en: The *patch version* is incremented when small changes are made that don’t really
     change the functionality.
+  id: totrans-73
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*补丁版本*在进行了不会真正改变功能的小更改时递增。'
 - en: 'Other properties for public packages are optional:'
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 公共包的其他属性是可选的：
 - en: '`description`, `keywords`, `author` are optional and make it easier to find
     packages.'
+  id: totrans-75
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`description`、`keywords`、`author`是可选的，使找到包变得更容易。'
 - en: '`license` clarifies how this package can be used. It makes sense to provide
     this value if the package is public in any way. [“Choose an open source license”](https://choosealicense.com)
     can help with making this choice.'
+  id: totrans-76
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`license`澄清了这个包如何被使用。如果包在任何方面是公共的，提供这个值是有意义的。[“选择一个开源许可证”](https://choosealicense.com)可以帮助做出这个选择。'
 - en: '`main` is a property for packages with library code. It specifies the module
     that “is” the package (explained later in this chapter).'
+  id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`main`是用于包含库代码的包的属性。它指定了“是”包的模块（在本章后面解释）。'
 - en: '`scripts` is a property for setting up *package scripts* – abbreviations for
     development-time shell commands. These can be executed via `npm run`. For example,
     the script `test` can be executed via `npm run test`. For more on this topic,
     see [§15 “Running cross-platform tasks via npm package scripts”](ch_package-scripts.html).'
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`scripts`是用于设置*package scripts*的属性——开发时shell命令的缩写。这些可以通过`npm run`执行。例如，脚本`test`可以通过`npm
+    run test`执行。有关此主题的更多信息，请参阅[§15“通过npm软件包脚本运行跨平台任务”](ch_package-scripts.html)。'
 - en: 'Other useful properties:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 其他有用的属性：
 - en: '`dependencies` lists the dependencies of a package. Its format is explained
     soon.'
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dependencies`列出了软件包的依赖关系。其格式很快就会解释。'
 - en: '`devDependencies` are dependencies that are only needed during development.'
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`devDependencies`是仅在开发过程中需要的依赖关系。'
 - en: 'The following setting means that all files with the name extension `.js` are
     interpreted as ECMAScript modules. Unless we are dealing with legacy code, it
     makes sense to add it:'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 以下设置意味着所有具有扩展名`.js`的文件都被解释为ECMAScript模块。除非我们处理旧代码，否则添加它是有意义的：
 - en: '[PRE4]'
+  id: totrans-83
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '`bin` lists *bin scripts*, Node.js modules within the package that npm installs
     as shell scripts. Its format is explained soon.'
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`bin`列出了npm将其安装为shell脚本的软件包内的Node.js模块的*bin scripts*。其格式很快就会解释。'
 - en: '`license` specifies a license for the package. Its format is explained soon.'
+  id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`license`指定软件包的许可证。其格式很快就会解释。'
 - en: 'Normally, the properties `name` and `version` are required and npm warns us
     if they are missing. However, we can change that via the following setting:'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通常，`name`和`version`属性是必需的，如果缺少它们，npm会发出警告。但是，我们可以通过以下设置更改：
 - en: '[PRE5]'
+  id: totrans-87
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: That prevents the package from accidentally being published and allows us to
     omit name and version.
+  id: totrans-88
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 这可以防止软件包意外发布，并允许我们省略名称和版本。
 - en: '**For more information on `package.json`**, see [the npm documentation](https://docs.npmjs.com/files/package.json).'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关`package.json`的更多信息，请参阅[npm文档](https://docs.npmjs.com/files/package.json)。
 - en: 5.2.2 Property `"dependencies"` of `package.json`
+  id: totrans-90
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.2.2 `package.json`的属性`"dependencies"`
 - en: 'This is what the dependencies in a `package.json` file look like:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`package.json`文件中的依赖关系的样子：
 - en: '[PRE6]'
+  id: totrans-92
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: The properties record both the names of packages and constraints for their versions.
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性记录了软件包的名称和其版本的约束。
 - en: 'Versions themselves follow the [semantic versioning](https://semver.org) standard.
     They are up to three numbers (the second and third number are optional and zero
     by default) separated by dots:'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 版本本身遵循[语义化版本](https://semver.org)标准。它们由点分隔的最多三个数字组成（第二个和第三个数字是可选的，默认为零）：
 - en: '*Major version*: This number changes when a packages changes in incompatible
     ways.'
+  id: totrans-95
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '*主要版本*：当软件包以不兼容的方式更改时，此数字会更改。'
 - en: '*Minor version*: This number changes when functionality is added in a backward
     compatible manner.'
+  id: totrans-96
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '*次要版本*：当以向后兼容的方式添加功能时，此数字会更改。'
 - en: '*Patch version*: This number changes when backward compatible bug fixes are
     made.'
+  id: totrans-97
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '*补丁版本*：当进行向后兼容的错误修复时，此数字会更改。'
 - en: 'Node’s version ranges are explained in [the `semver` repository](https://github.com/npm/node-semver#versions).
     Examples include:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关Node的版本范围，请参阅[semver存储库](https://github.com/npm/node-semver#versions)。示例包括：
 - en: 'A specific version without any extra characters means that the installed version
     must match the version exactly:'
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 没有任何额外字符的特定版本意味着安装的版本必须完全匹配：
 - en: '[PRE7]'
+  id: totrans-100
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '`major.minor.x` or `major.x` means that the components that are numbers must
     match, the components that are `x` or omitted can have any values:'
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`major.minor.x`或`major.x`表示数字组件必须匹配，`x`或省略的组件可以具有任何值：'
 - en: '[PRE8]'
+  id: totrans-102
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '`*` matches any version:'
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`*`匹配任何版本：'
 - en: '[PRE9]'
+  id: totrans-104
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '`>=version` means that the installed version must be `version` or higher:'
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`>=version`表示安装的版本必须是`version`或更高：'
 - en: '[PRE10]'
+  id: totrans-106
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '`<=version` means that the installed version must be `version` or lower:'
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`<=version`表示安装的版本必须是`version`或更低：'
 - en: '[PRE11]'
+  id: totrans-108
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '`version1-version2` is the same as `>=version1 <=version2`:'
+  id: totrans-109
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`version1-version2`与`>=version1 <=version2`相同：'
 - en: '[PRE12]'
+  id: totrans-110
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '`^version` (as used in the previous example) is a *caret range* and means that
     the installed version can be `version` or higher but must not introduce breaking
     changes. That is, the major version must be the same:'
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`^version`（如前面的示例中使用的）是一个*caret range*，意味着安装的版本可以是`version`或更高，但不得引入破坏性更改。也就是说，主要版本必须相同：'
 - en: '[PRE13]'
+  id: totrans-112
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 5.2.3 Property `"bin"` of `package.json`
+  id: totrans-113
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.2.3 `package.json`的属性`"bin"`
 - en: 'This is how we can tell npm to install modules as shell scripts:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们告诉npm将模块安装为shell脚本的方法：
 - en: '[PRE14]'
+  id: totrans-115
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: If we install a package with this `"bin"` value globally, Node.js ensures that
     the commands `my-shell-script` and `another-script` become available at the command
     line.
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用全局安装具有此`"bin"`值的软件包，Node.js会确保命令`my-shell-script`和`another-script`在命令行上可用。
 - en: If we install the package locally, we can use the two commands in package scripts
     or via [the `npx` command](https://docs.npmjs.com/cli/v8/commands/npx).
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在本地安装软件包，可以在软件包脚本中使用这两个命令，或者通过[npx命令](https://docs.npmjs.com/cli/v8/commands/npx)使用。
 - en: 'A string is also allowed as the value of `"bin"`:'
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: '`"bin"`的值也可以是字符串：'
 - en: '[PRE15]'
+  id: totrans-119
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'This is an abbreviation for:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是对的缩写：
 - en: '[PRE16]'
+  id: totrans-121
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 5.2.4 Property `"license"` of `package.json`
+  id: totrans-122
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.2.4 `package.json`的属性`"license"`
 - en: 'The value of property `"license"` is always a string with a SPDX license ID.
     For example, the following value denies others the right to use a package under
     any terms (which is useful if a package is unpublished):'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 属性`"license"`的值始终是一个带有SPDX许可证ID的字符串。例如，以下值拒绝其他人以任何条款使用软件包（如果软件包未发布，则这很有用）：
 - en: '[PRE17]'
+  id: totrans-124
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[The SPDX website lists all available license IDs](https://spdx.org/licenses/).
     If you find it difficult to pick one, [the website “Choose an open source license”](https://choosealicense.com)
     can help – for example, this is the advice if you “want it simple and permissive”:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: '[SPDX网站列出了所有可用的许可证ID](https://spdx.org/licenses/)。如果您发现很难选择一个，[“选择开源许可证”网站](https://choosealicense.com)可以帮助您——例如，如果您“希望它简单和宽松”，这是建议：'
 - en: The MIT License is short and to the point. It lets people do almost anything
     they want with your project, like making and distributing closed source versions.
+  id: totrans-126
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: MIT许可证简短而直接。它允许人们几乎可以为项目做任何他们想做的事情，比如制作和分发闭源版本。
 - en: ''
+  id: totrans-127
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: Babel, .NET, and Rails use the MIT License.
+  id: totrans-128
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: Babel、.NET和Rails使用MIT许可证。
 - en: 'You can use that license like this:'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 你可以像这样使用许可证：
 - en: '[PRE18]'
+  id: totrans-130
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 5.3 Archiving and installing packages
+  id: totrans-131
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.3 存档和安装包
 - en: 'Packages in the npm registry are often archived in two different ways:'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: npm注册表中的包通常以两种不同的方式存档：
 - en: For development, they are stored in a git repository.
+  id: totrans-133
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在开发过程中，它们存储在git仓库中。
 - en: To make them installable via npm, they are uploaded to the npm registry.
+  id: totrans-134
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为了使它们可以通过npm安装，它们被上传到npm注册表。
 - en: Either way, the package is archived without its dependencies – which we have
     to install before we can use it.
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 无论哪种方式，包都会被存档，不包括它的依赖项 - 我们必须在使用之前安装它们。
 - en: 'If a package is stored in a git repository:'
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个包存储在git仓库中：
 - en: We normally want the same dependency tree to be used every time we install the
     package.
+  id: totrans-137
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通常情况下，我们希望每次安装包时都使用相同的依赖树。
 - en: That’s why `package-lock.json` is usually included.
+  id: totrans-138
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这就是为什么通常会包含`package-lock.json`。
 - en: We can regenerate artifacts from other artifacts – for example, compile TypeScript
     files to JavaScript files.
+  id: totrans-139
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以从其他工件中重新生成工件 - 例如，将TypeScript文件编译为JavaScript文件。
 - en: 'If a package is published to the npm registry:'
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个包发布到npm注册表：
 - en: It should be flexible with its dependencies so that upgrading dependencies and
     sharing packages in a dependency tree becomes possible.
+  id: totrans-141
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它应该灵活地处理其依赖关系，以便升级依赖关系并在依赖树中共享包成为可能。
 - en: That’s why `package-lock.json` is never uploaded to the npm registry.
+  id: totrans-142
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这就是为什么`package-lock.json`永远不会上传到npm注册表的原因。
 - en: It often contains generated artifacts - for example, JavaScript files compiled
     from TypeScript files are included so that people who only use JavaScript don’t
     have to install a TypeScript compiler.
+  id: totrans-143
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它通常包含生成的工件 - 例如，从TypeScript文件编译的JavaScript文件被包含在内，这样只使用JavaScript的人就不必安装TypeScript编译器。
 - en: Dev dependencies (property `devDependencies` in `package.json`) are only installed
     during development but not when we install the package from the npm registry.
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 开发依赖项（`package.json`中的`devDependencies`属性）只在开发过程中安装，而不是在我们从npm注册表安装包时安装。
 - en: Note that unpublished packages in git repositories are handled similarly to
     published packages during development.
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，git仓库中未发布的包在开发过程中与已发布的包类似处理。
 - en: 5.3.1 Installing a package from git
+  id: totrans-146
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.3.1 从git安装包
 - en: 'To install a package `pkg` from git, we clone its repository and:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 要安装一个名为`pkg`的包，我们克隆它的存储库并：
 - en: '[PRE19]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'Then the following steps are performed:'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后执行以下步骤：
 - en: '`node_modules` is created and the dependencies are installed. Installing a
     dependency also means downloading that dependency and installing its dependencies
     (etc.).'
+  id: totrans-150
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules`被创建并安装依赖项。安装一个依赖项也意味着下载该依赖项并安装它的依赖项（等等）。'
 - en: Sometimes additional setup steps are performed. Which ones those are can be
     configured via `package.json`.
+  id: totrans-151
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有时会执行额外的设置步骤。可以通过`package.json`配置这些步骤。
 - en: If the root package doesn’t have a `package-lock.json` file, it is created during
     installation (as mentioned, dependencies don’t have this file).
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果根包没有`package-lock.json`文件，则在安装过程中会创建该文件（如前所述，依赖项没有此文件）。
 - en: In a dependency tree, the same dependency may exist multiple times, possibly
     in different versions. There a ways to minimize duplication, but that is beyond
     the scope of this chapter.
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 在依赖树中，相同的依赖项可能存在多次，可能是不同的版本。有一些方法可以最小化重复，但这超出了本章的范围。
 - en: 5.3.1.1 Reinstalling a package
+  id: totrans-154
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.3.1.1 重新安装一个包
 - en: 'This is a (slightly crude) way of fixing issues in a dependency tree:'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一种（略显粗糙）修复依赖树中问题的方法：
 - en: '[PRE20]'
+  id: totrans-156
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: Note that that may result in different, newer, packages being installed. We
     can avoid that by not deleting `package-lock.json`.
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，这可能导致安装不同的、更新的包。我们可以通过不删除`package-lock.json`来避免这种情况。
 - en: 5.3.2 Creating a new package and installing dependencies
+  id: totrans-158
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.3.2 创建一个新的包并安装依赖项
 - en: 'There are many tools and technique for setting up new packages. This is one
     simple way:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 有许多工具和技术可以设置新的包。这是一个简单的方法：
 - en: '[PRE21]'
+  id: totrans-160
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'Afterward, the directory looks like this:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 之后，目录看起来像这样：
 - en: '[PRE22]'
+  id: totrans-162
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: This `package.json` has the starter content that we have already seen.
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`中包含了我们已经看到的起始内容。'
 - en: 5.3.2.1 Installing dependencies
+  id: totrans-164
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.3.2.1 安装依赖项
 - en: 'Right now, `my-package` doesn’t have any dependencies. Let’s say we want to
     use the library `lodash-es`. This is how we install it into our package:'
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，`my-package`没有任何依赖项。假设我们想要使用库`lodash-es`。这是我们将其安装到我们的包中的方法：
 - en: '[PRE23]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'This command performs the following steps:'
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
+  zh: 该命令执行以下步骤：
 - en: The package is downloaded into `my-package/node_modules/lodash-es`.
+  id: totrans-168
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 该包被下载到`my-package/node_modules/lodash-es`中。
 - en: Its dependencies are also installed. Then the dependencies of its dependencies.
     Etc.
+  id: totrans-169
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 也会安装它的依赖项。然后是它的依赖项的依赖项。等等。
 - en: 'A new property is added to `package.json`:'
+  id: totrans-170
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`package.json`中添加了一个新属性：'
 - en: '[PRE24]'
+  id: totrans-171
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '`package-lock.json` is updated with the exact version that was installed.'
+  id: totrans-172
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`package-lock.json`会更新为安装的确切版本。'
 - en: 5.4 Referring to modules via *specifiers*
+  id: totrans-173
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.4 通过*标识符*引用模块
 - en: 'Code in other ECMAScript modules is accessed via `import` statements (line
     A and line B):'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: ECMAScript模块中的代码通过`import`语句（A行和B行）访问：
 - en: '[PRE25]'
+  id: totrans-175
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Both static imports and dynamic imports use *module specifiers* to refer to
     modules:'
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
+  zh: 静态导入和动态导入都使用*模块标识符*来引用模块：
 - en: The string after `from` in line A.
+  id: totrans-177
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: A行中`from`后面的字符串。
 - en: The string argument in line B.
+  id: totrans-178
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: B行中的字符串参数。
 - en: 'There are three kinds of module specifiers:'
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 有三种类型的模块标识符：
 - en: '*Absolute specifiers* are full URLs – for example:'
+  id: totrans-180
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*绝对标识符*是完整的URL - 例如：'
 - en: '[PRE26]'
+  id: totrans-181
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: Absolute specifiers are mostly used to access libraries that are directly hosted
     on the web.
+  id: totrans-182
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 绝对标识符主要用于访问直接托管在网络上的库。
 - en: '*Relative specifiers* are relative URLs (starting with `''/''`, `''./''` or
     `''../''`) – for example:'
+  id: totrans-183
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*相对标识符*是相对URL（以`''/''`、`''./''`或`''../''`开头） - 例如：'
 - en: '[PRE27]'
+  id: totrans-184
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: Every module has a URL whose protocol depends on its location (`file:`, `https:`,
     etc.). If it uses a relative specifier, JavaScript turns that specifier into a
     full URL by resolving it against the module’s URL.
+  id: totrans-185
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 每个模块都有一个URL，其协议取决于其位置（`file:`、`https:`等）。如果它使用相对标识符，JavaScript会通过将其解析为模块的URL来将该标识符转换为完整的URL。
 - en: Relative specifiers are mostly used to access other modules within the same
     code base.
+  id: totrans-186
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 相对标识符主要用于访问同一代码库中的其他模块。
 - en: '*Bare specifiers* are paths (without protocol and domain) that start with neither
     slashes nor dots. They begin with the names of packages. Those names can optionally
     be followed by *subpaths*:'
+  id: totrans-187
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*裸specifier*是以包的名称开头的路径（没有协议和域）。这些名称可以选择后跟*子路径*：'
 - en: '[PRE28]'
+  id: totrans-188
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'Bare specifiers can also refer to packages with scoped names:'
+  id: totrans-189
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 裸specifier也可以指向具有作用域名称的包：
 - en: '[PRE29]'
+  id: totrans-190
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: Each bare specifier refers to exactly one module inside a package; if it has
     no subpath, it refers to the designated “main” module of its package. A bare specifier
     is never used directly but always *resolved* – translated to an absolute specifier.
     How resolution works depends on the platform. We’ll learn more soon.
+  id: totrans-191
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 每个裸specifier都指向包内的一个模块；如果没有子路径，则指向其包的指定“主”模块。裸specifier永远不会直接使用，而是总是*解析* - 转换为绝对specifier。解析的工作方式取决于平台。我们很快就会了解更多。
 - en: 5.4.1 Filename extensions in module specifiers
+  id: totrans-192
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.4.1 模块specifier中的文件扩展名
 - en: Absolute specifiers and relative specifiers always have filename extensions
     – usually `.js` or `.mjs`.
+  id: totrans-193
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 绝对specifier和相对specifier总是带有文件扩展名-通常是`.js`或`.mjs`。
 - en: 'There are three styles of bare specifiers:'
+  id: totrans-194
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有三种裸specifier的样式：
 - en: 'Style 1: no subpath'
+  id: totrans-195
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式1：没有子路径
 - en: 'Style 2: a subpath without a filename extension. In this case, the subpath
     works like a modifier for the package name:'
+  id: totrans-196
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式2：没有文件扩展名的子路径。在这种情况下，子路径的作用类似于包名称的修饰符：
 - en: '[PRE30]'
+  id: totrans-197
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'Style 3: a subpath with a filename extension. In this case, the package is
     seen as a collection of modules and the subpath points to one of them:'
+  id: totrans-198
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式3：带有文件扩展名的子路径。在这种情况下，包被视为模块的集合，子路径指向其中一个：
 - en: '[PRE31]'
+  id: totrans-199
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'Caveat of style 3 bare specifiers: How the filename extension is interpreted
     depends on the dependency and may differ from the importing package. For example,
     the importing package may use `.mjs` for ESM modules and `.js` for CommonJS modules,
     while the ESM modules exported by the dependency may have bare paths with the
     filename extension `.js`.'
+  id: totrans-200
   prefs: []
   type: TYPE_NORMAL
+  zh: 裸specifier样式3的注意事项：文件扩展名的解释取决于依赖项，可能与导入包不同。例如，导入包可能对ESM模块使用`.mjs`，对CommonJS模块使用`.js`，而依赖项导出的ESM模块可能具有带有文件扩展名`.js`的裸路径。
 - en: 5.5 Module specifiers in Node.js
+  id: totrans-201
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 5.5 Node.js中的模块specifier
 - en: Let’s see how module specifiers work in Node.js.
+  id: totrans-202
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看Node.js中模块specifier的工作原理。
 - en: 5.5.1 Resolving module specifiers in Node.js
+  id: totrans-203
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.5.1 Node.js中解析模块specifier
 - en: 'The [*Node.js resolution algorithm*](https://nodejs.org/api/esm.html#resolution-algorithm)
     works as follows:'
+  id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: '[*Node.js解析算法*](https://nodejs.org/api/esm.html#resolution-algorithm)的工作如下：'
 - en: 'Parameters:'
+  id: totrans-205
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 参数：
 - en: URL of importing module
+  id: totrans-206
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 导入模块的URL
 - en: Module specifier
+  id: totrans-207
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块specifier
 - en: 'Result: Resolved URL for module specifier'
+  id: totrans-208
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果：模块specifier的解析URL
 - en: 'This is the algorithm:'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是算法：
 - en: 'If a specifier is absolute, resolution is already finished. Three protocols
     are most common:'
+  id: totrans-210
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果specifier是绝对的，解析已经完成。三个协议最常见：
 - en: '`file:` for local files'
+  id: totrans-211
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`file:`用于本地文件'
 - en: '`https:` for remote files'
+  id: totrans-212
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`https:`用于远程文件'
 - en: '`node:` for built-in modules ([discussed later](ch_packages.html#node-protocol-imports))'
+  id: totrans-213
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node:`用于内置模块（[稍后讨论](ch_packages.html#node-protocol-imports)）'
 - en: If a specifier is relative, it is resolved against the URL of the importing
     module.
+  id: totrans-214
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果specifier是相对的，它将根据导入模块的URL进行解析。
 - en: 'If a specifier is bare:'
+  id: totrans-215
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果一个specifier是裸的：
 - en: If it starts with `'#'`, it is resolved by looking it up among the *package
     imports* (which are explained later) and resolving the result.
+  id: totrans-216
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果以`'#'`开头，则通过在*包导入*中查找它并解析结果来解析它（稍后将解释）。
 - en: 'Otherwise, it is a bare specifier that has one of these formats (the subpath
     is optional):'
+  id: totrans-217
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，它是一个具有以下格式之一的裸specifier（子路径是可选的）：
 - en: '`«package»/sub/path`'
+  id: totrans-218
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`«package»/sub/path`'
 - en: '`@«scope»/«scoped-package»/sub/path`'
+  id: totrans-219
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`@«scope»/«scoped-package»/sub/path`'
 - en: 'The resolution algorithm traverses the current directory and its ancestors
     until it finds a directory `node_modules` that has a subdirectory matching the
     beginning of the bare specifier, i.e. either:'
+  id: totrans-220
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 解析算法遍历当前目录及其祖先，直到找到一个具有与裸specifier开头匹配的子目录`node_modules`，即：
 - en: '`node_modules/«package»/`'
+  id: totrans-221
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules/«package»/`'
 - en: '`node_modules/@«scope»/«scoped-package»/`'
+  id: totrans-222
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules/@«scope»/«scoped-package»/`'
 - en: That directory is the directory of the package. By default, the (potentially
     empty) subpath after the package ID is interpreted as relative to the package
     directory. The default can be overridden via *package exports* which are explained
     next.
+  id: totrans-223
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 该目录是包的目录。默认情况下，包ID后的（可能为空的）子路径被解释为相对于包目录。默认值可以通过下面将要解释的*包出口*来覆盖。
 - en: The result of the resolution algorithm must point to a file. That explains why
     absolute specifiers and relative specifiers always have filename extensions. Bare
     specifiers mostly don’t because they are abbreviations that are looked up in package
     exports.
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: 解析算法的结果必须指向一个文件。这就解释了为什么绝对specifier和相对specifier总是带有文件扩展名。裸specifier大多数情况下没有，因为它们是在包出口中查找的缩写。
 - en: 'Module files usually have these filename extensions:'
+  id: totrans-225
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块文件通常具有这些文件扩展名：
 - en: If a file has the name extension `.mjs`, it is always an ES module.
+  id: totrans-226
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果文件的扩展名为`.mjs`，它总是一个ES模块。
 - en: 'A file that has the name extension `.js` is an ES module if the closest `package.json`
     has this entry:'
+  id: totrans-227
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果文件的扩展名为`.js`，则最接近的`package.json`具有此条目，则它是一个ES模块：
 - en: '`"type": "module"`'
+  id: totrans-228
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"type": "module"`'
 - en: 'If Node.js executes code provided via stdin, `--eval` or `--print`, we use
     [the following command-line option](https://nodejs.org/api/cli.html#--input-typetype)
     so that it is interpreted as an ES module:'
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果Node.js执行通过stdin、`--eval`或`--print`提供的代码，我们使用[以下命令行选项](https://nodejs.org/api/cli.html#--input-typetype)以便它被解释为ES模块：
 - en: '[PRE32]'
+  id: totrans-230
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: '5.5.2 Package exports: controlling what other packages see'
+  id: totrans-231
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.5.2 包出口：控制其他包看到什么
 - en: 'In this subsection, we are working with a package that has the following file
     layout:'
+  id: totrans-232
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本小节中，我们正在处理具有以下文件布局的包：
 - en: '[PRE33]'
+  id: totrans-233
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: '[*Package exports*](https://nodejs.org/api/packages.html#packages_package_entry_points)
     are specified via property `"exports"` in `package.json` and support two important
     features:'
+  id: totrans-234
   prefs: []
   type: TYPE_NORMAL
+  zh: '[*包出口*](https://nodejs.org/api/packages.html#packages_package_entry_points)通过`package.json`中的`"exports"`属性指定，并支持两个重要功能：'
 - en: 'Hiding the internals of a package:'
+  id: totrans-235
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 隐藏包的内部：
 - en: 'Without property `"exports"`, every module in package `my-lib` can be accessed
     via a relative path after the package name – e.g.:'
+  id: totrans-236
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 没有`"exports"`属性，包`my-lib`中的每个模块都可以在包名后使用相对路径访问 - 例如：
 - en: '[PRE34]'
+  id: totrans-237
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: Once the property exists, only specifiers listed in it can be used. Everything
     else is hidden from the outside.
+  id: totrans-238
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一旦属性存在，只能使用其中列出的指定符。其他所有内容都对外部隐藏。
 - en: 'Nicer module specifiers: Package export let us define bare specifier subpaths
     for modules that are shorter and/or have better names.'
+  id: totrans-239
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 更好的模块指定符：包出口让我们为较短和/或名称更好的模块定义裸指定符子路径。
 - en: 'Recall the three styles of bare specifiers:'
+  id: totrans-240
   prefs: []
   type: TYPE_NORMAL
+  zh: 回想一下裸指定符的三种样式：
 - en: 'Style 1: bare specifiers without subpaths'
+  id: totrans-241
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式1：没有子路径的裸指定符
 - en: 'Style 2: bare specifiers with extension-less subpaths'
+  id: totrans-242
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式2：没有扩展名的裸指定符
 - en: 'Style 3: bare specifiers with subpaths with extensions'
+  id: totrans-243
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式3：带有扩展名的裸指定符子路径
 - en: Package exports help us with all three styles
+  id: totrans-244
   prefs: []
   type: TYPE_NORMAL
+  zh: 包出口帮助我们处理所有三种样式
 - en: '5.5.2.1 Style 1: configuring which file represents (the bare specifier for)
     the package'
+  id: totrans-245
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.5.2.1 样式1：配置哪个文件代表（包的裸指定符）
 - en: '`package.json`:'
+  id: totrans-246
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`：'
 - en: '[PRE35]'
+  id: totrans-247
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: We only provide `"main"` for backward-compatibility (with older bundlers and
     Node.js 12 and older). Otherwise, the entry for `"."` is enough.
+  id: totrans-248
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们只提供`"main"`是为了向后兼容（与旧的捆绑器和Node.js 12及更旧版本）。否则，`"."`的条目就足够了。
 - en: With these package exports, we can now import from `my-lib` as follows.
+  id: totrans-249
   prefs: []
   type: TYPE_NORMAL
+  zh: 有了这些包出口，我们现在可以这样从`my-lib`导入。
 - en: '[PRE36]'
+  id: totrans-250
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'This imports `someFunction()` from this file:'
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: 这导入了`someFunction()`从这个文件：
 - en: '[PRE37]'
+  id: totrans-252
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: '5.5.2.2 Style 2: mapping extension-less subpaths to module files'
+  id: totrans-253
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.5.2.2 样式2：将不带扩展名的子路径映射到模块文件
 - en: '`package.json`:'
+  id: totrans-254
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`：'
 - en: '[PRE38]'
+  id: totrans-255
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 'We are mapping the specifier subpath `''util/errors''` to a module file. That
     enables the following import:'
+  id: totrans-256
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将指定符子路径`'util/errors'`映射到一个模块文件。这使得以下导入成为可能：
 - en: '[PRE39]'
+  id: totrans-257
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '5.5.2.3 Style 2: better subpaths without extensions for a subtree'
+  id: totrans-258
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.5.2.3 样式2：更好的不带扩展名的子路径为子树
 - en: 'The previous subsection explained how to create a single mapping for an extension-less
     subpath. There is also a way to create multiple such mappings via a single entry:'
+  id: totrans-259
   prefs: []
   type: TYPE_NORMAL
+  zh: 前一小节解释了如何为不带扩展名的子路径创建单个映射。还有一种方法可以通过单个条目创建多个这样的映射：
 - en: '`package.json`:'
+  id: totrans-260
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`：'
 - en: '[PRE40]'
+  id: totrans-261
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'Any file that is a descendant of `./dist/src/` can now be imported without
     a filename extension:'
+  id: totrans-262
   prefs: []
   type: TYPE_NORMAL
+  zh: 任何位于`./dist/src/`下的文件现在都可以在不带文件扩展名的情况下导入：
 - en: '[PRE41]'
+  id: totrans-263
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'Note the asterisks in this `"exports"` entry:'
+  id: totrans-264
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意这个`"exports"`条目中的星号：
 - en: '[PRE42]'
+  id: totrans-265
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: These are more instructions for how to map subpaths to actual paths than wildcards
     that match fragments of file paths.
+  id: totrans-266
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些更多的指令是如何将子路径映射到实际路径，而不是匹配文件路径片段的通配符。
 - en: '5.5.2.4 Style 3: mapping subpaths with extensions to module files'
+  id: totrans-267
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.5.2.4 样式3：将带有扩展名的子路径映射到模块文件
 - en: '`package.json`:'
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`：'
 - en: '[PRE43]'
+  id: totrans-269
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'We are mapping the specifier subpath `''util/errors.js''` to a module file.
     That enables the following import:'
+  id: totrans-270
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将指定符子路径`'util/errors.js'`映射到一个模块文件。这使得以下导入成为可能：
 - en: '[PRE44]'
+  id: totrans-271
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: '5.5.2.5 Style 3: better subpaths with extensions for a subtree'
+  id: totrans-272
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.5.2.5 样式3：更好的带有扩展名的子路径为子树
 - en: '`package.json`:'
+  id: totrans-273
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`：'
 - en: '[PRE45]'
+  id: totrans-274
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'Here, we shorten the module specifiers of the whole subtree under `my-package/dist/src`:'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，我们缩短了`my-package/dist/src`下整个子树的模块指定符：
 - en: '[PRE46]'
+  id: totrans-276
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: 'Without the exports, the import statement would be:'
+  id: totrans-277
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有出口，导入语句将是：
 - en: '[PRE47]'
+  id: totrans-278
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 'Note the asterisks in this `"exports"` entry:'
+  id: totrans-279
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意这个`"exports"`条目中的星号：
 - en: '[PRE48]'
+  id: totrans-280
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: These are not filesystem globs but instructions for how to map external module
     specifiers to internal ones.
+  id: totrans-281
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些不是文件系统通配符，而是如何将外部模块指定符映射到内部模块指定符的指令。
 - en: 5.5.2.6 Exposing a subtree while hiding parts of it
+  id: totrans-282
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.5.2.6 暴露子树同时隐藏其中的部分
 - en: With the following trick, we expose everything in directory `my-package/dist/src/`
     with the exception of `my-package/dist/src/internal/`
+  id: totrans-283
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过以下技巧，我们暴露了`my-package/dist/src/`目录中的所有内容，但除了`my-package/dist/src/internal/`
 - en: '[PRE49]'
+  id: totrans-284
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: Note that this trick also works when exporting subtrees *without* filename extensions.
+  id: totrans-285
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，这个技巧在*不带*文件名扩展名的情况下导出子树时也适用。
 - en: 5.5.2.7 Conditional package exports
+  id: totrans-286
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 5.5.2.7 条件包出口
 - en: 'We can also make exports [*conditional*](https://nodejs.org/api/packages.html#packages_conditional_exports):
     Then a given path maps to different values depending on the context in which a
     package is used.'
+  id: totrans-287
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以使出口[*条件*](https://nodejs.org/api/packages.html#packages_conditional_exports)：然后给定的路径根据包在其中使用的上下文而映射到不同的值。
 - en: '**Node.js vs. browsers.** For example, we could provide different implementations
     for Node.js and for browsers:'
+  id: totrans-288
   prefs: []
   type: TYPE_NORMAL
+  zh: '**Node.js vs. 浏览器。** 例如，我们可以为Node.js和浏览器提供不同的实现：'
 - en: '[PRE50]'
+  id: totrans-289
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: The `"default"` condition matches when no other key matches and must come last.
     Having one is recommended whenever we are distinguishing between platforms because
     it takes care of new and/or unknown platforms.
+  id: totrans-290
   prefs: []
   type: TYPE_NORMAL
+  zh: '`"default"`条件在没有其他键匹配时匹配，并且必须放在最后。每当我们区分平台时，建议使用它，因为它负责新的和/或未知的平台。'
 - en: '**Development vs. production.** Another use case for conditional package exports
     is switching between “development” and “production” environments:'
+  id: totrans-291
   prefs: []
   type: TYPE_NORMAL
+  zh: '**开发 vs. 生产。** 条件包出口的另一个用例是在“开发”和“生产”环境之间切换：'
 - en: '[PRE51]'
+  id: totrans-292
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: 'In Node.js we can specify an environment like this:'
+  id: totrans-293
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Node.js中，我们可以这样指定环境：
 - en: '[PRE52]'
+  id: totrans-294
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: 5.5.3 Package imports
+  id: totrans-295
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.5.3 包导入
 - en: '[Package imports](https://nodejs.org/api/packages.html#imports) let a package
     define abbreviations for module specifiers that it can use itself, internally
     (where package exports define abbreviations for other packages). This is an example:'
+  id: totrans-296
   prefs: []
   type: TYPE_NORMAL
+  zh: '[包导入](https://nodejs.org/api/packages.html#imports)让一个包为模块指定符定义缩写，它可以在内部自己使用（其中包出口为其他包定义了缩写）。这是一个例子：'
 - en: '`package.json`:'
+  id: totrans-297
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`：'
 - en: '[PRE53]'
+  id: totrans-298
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: 'The package import `#` is *conditional* (with the same features as [conditional
     package exports](ch_packages.html#conditional-package-exports)):'
+  id: totrans-299
   prefs: []
   type: TYPE_NORMAL
+  zh: 包导入`#`是*条件*的（具有与[条件包出口](ch_packages.html#conditional-package-exports)相同的功能）：
 - en: If the current package is used on Node.js, the module specifier `'#some-pkg'`
     refers to package `some-pkg-node-native`.
+  id: totrans-300
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果当前包在Node.js上使用，则模块指定符`'#some-pkg'`指的是包`some-pkg-node-native`。
 - en: Elsewhere, `'#some-pkg'` refers to the file `./polyfills/some-pkg-polyfill.js`
     inside the current package.
+  id: totrans-301
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在其他地方，`'#some-pkg'`指的是当前包内的`./polyfills/some-pkg-polyfill.js`文件。
 - en: (Only package imports can refer to external packages, package exports can’t
     do that.)
+  id: totrans-302
   prefs: []
   type: TYPE_NORMAL
+  zh: （只有包引入可以引用外部包，包导出不能这样做。）
 - en: What are the use cases for package imports?
+  id: totrans-303
   prefs: []
   type: TYPE_NORMAL
+  zh: 包引入的用例是什么？
 - en: Referring to different platform-specific implementations modules via the same
     module specifier (as demonstrated above).
+  id: totrans-304
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过相同的模块标识符引用不同的特定于平台的实现模块（如上所示）。
 - en: Aliases to modules inside the current package – to avoid relative specifiers
     (which can get complicated with deeply nested directories).
+  id: totrans-305
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当前包内部模块的别名 - 避免使用相对路径（在嵌套目录中可能会变得复杂）。
 - en: 'Be careful when using package imports with a bundler: This feature is relatively
     new and your bundler may not support it.'
+  id: totrans-306
   prefs: []
   type: TYPE_NORMAL
+  zh: 在使用打包工具时要小心包引入：这个功能相对较新，你的打包工具可能不支持它。
 - en: 5.5.4 `node:` protocol imports
+  id: totrans-307
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 5.5.4 `node:`协议导入
 - en: Node.js has many built-in modules such as `'path'` and `'fs'`. All of them are
     available as both ES modules and CommonJS modules. One issue with them is that
     they can be overridden by modules installed in `node_modules` which is both a
     security risk (if it happens accidentally) and a problem if Node.js wants to introduce
     new built-in modules in the future and their names are already taken by npm packages.
+  id: totrans-308
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js有许多内置模块，比如'path'和'fs'。它们都可以作为ES模块和CommonJS模块使用。它们的一个问题是它们可能会被安装在`node_modules`中的模块覆盖，这既是安全风险（如果意外发生）也是一个问题，如果Node.js想要在未来引入新的内置模块并且它们的名称已经被npm包占用。
 - en: 'We can use [the `node:` protocol](https://nodejs.org/api/esm.html#node-imports)
     to make it clear that we want to import a built-in module. For example, the following
     two import statements are mostly equivalent (if no npm module is installed that
     has the name `''fs''`):'
+  id: totrans-309
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用[node:协议](https://nodejs.org/api/esm.html#node-imports)来明确表示我们想要导入一个内置模块。例如，以下两个导入语句在大多数情况下是等效的（如果没有安装名为'fs'的npm模块）：
 - en: '[PRE54]'
+  id: totrans-310
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: An additional benefit of using the `node:` protocol is that we immediately see
     that an imported module is built-in. Given how many built-in modules there are,
     that helps when reading code.
+  id: totrans-311
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用`node:`协议的另一个好处是我们立即看到导入的模块是内置的。考虑到有多少内置模块，这在阅读代码时很有帮助。
 - en: Due to `node:` specifiers having a protocol, they are considered absolute. That’s
     why they are not looked up in `node_modules`.
+  id: totrans-312
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于`node:`标识符具有协议，它们被认为是绝对的。这就是为什么它们不会在`node_modules`中查找的原因。
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/5)'
+  id: totrans-313
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/nodejs-shell-scripting/issues/5)'
