@@ -1,437 +1,615 @@
 - en: 8 The problems of shared mutable state and how to avoid them
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/deep-js/ch_shared-mutable-state.html](https://exploringjs.com/deep-js/ch_shared-mutable-state.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: 8.1 [What is shared mutable state and why is it problematic?](ch_shared-mutable-state.html#what-is-shared-mutable-state-and-why-is-it-problematic)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.2 [Avoiding sharing by copying data](ch_shared-mutable-state.html#avoiding-sharing-by-copying-data)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.2.1 [How does copying help with shared mutable state?](ch_shared-mutable-state.html#how-does-copying-help-with-shared-mutable-state)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.3 [Avoiding mutations by updating non-destructively](ch_shared-mutable-state.html#avoiding-mutations-by-updating-non-destructively)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.3.1 [How does non-destructive updating help with shared mutable state?](ch_shared-mutable-state.html#how-does-non-destructive-updating-help-with-shared-mutable-state)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.4 [Preventing mutations by making data immutable](ch_shared-mutable-state.html#preventing-mutations-by-making-data-immutable)
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.4.1 [How does immutability help with shared mutable state?](ch_shared-mutable-state.html#how-does-immutability-help-with-shared-mutable-state)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.5 [Libraries for avoiding shared mutable state](ch_shared-mutable-state.html#libraries-for-avoiding-shared-mutable-state)
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.5.1 [Immutable.js](ch_shared-mutable-state.html#immutable.js)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.5.2 [Immer](ch_shared-mutable-state.html#immer)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
 - en: 'This chapter answers the following questions:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
 - en: What is shared mutable state?
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Why is it problematic?
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: How can its problems be avoided?
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.1 What is shared mutable state and why is it problematic?
+  id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'Shared mutable state works as follows:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: If two or more parties can change the same data (variables, objects, etc.).
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: And if their lifetimes overlap.
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Then there is a risk of one party’s modifications preventing other parties from
     working correctly.
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Note that this definition applies to function calls, cooperative multitasking
     (e.g., async functions in JavaScript), etc. The risks are similar in each case.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
 - en: 'The following code is an example. The example is not realistic, but it demonstrates
     the risks and is easy to understand:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'In this case, there are two independent parties:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
 - en: Function `main()` wants to log an Array before and after sorting it.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Function `logElements()` logs the elements of its parameter `arr`, but removes
     them while doing so.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`logElements()` breaks `main()` and causes it to log an empty Array in line
     A.'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
 - en: 'In the remainder of this chapter, we look at three ways of avoiding the problems
     of shared mutable state:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
 - en: Avoiding sharing by copying data
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Avoiding mutations by updating non-destructively
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Preventing mutations by making data immutable
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: In particular, we will come back to the example that we’ve just seen and fix
     it.
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
 - en: 8.2 Avoiding sharing by copying data
+  id: totrans-35
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: Copying data is one way of avoiding sharing it.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
 - en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Background**'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
 - en: 'For background on copying data in JavaScript, please refer to the following
     two chapters in this book:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
 - en: '[§6 “Copying objects and Arrays”](ch_copying-objects-and-arrays.html)'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[§14 “Copying instances of classes: `.clone()` vs. copy constructors”](ch_copying-class-instances.html)'
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.2.1 How does copying help with shared mutable state?
+  id: totrans-41
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: As long as we only *read* from shared state, we don’t have any problems. Before
     *modifying* it, we need to “un-share” it, by copying it (as deeply as necessary).
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
 - en: '*Defensive copying* is a technique to always copy when issues *might* arise.
     Its objective is to keep the current entity (function, class, etc.) safe:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
 - en: 'Input: Copying (potentially) shared data passed to us, lets us use that data
     without being disturbed by an external entity.'
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Output: Copying internal data before exposing it to an outside party, means
     that that party can’t disrupt our internal activity.'
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Note that these measures protect us from other parties, but they also protect
     other parties from us.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
 - en: The next sections illustrate both kinds of defensive copying.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
 - en: 8.2.1.1 Copying shared input
+  id: totrans-48
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'Remember that in the motivating example at the beginning of this chapter, we
     got into trouble because `logElements()` modified its parameter `arr`:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 请记住，在本章开头的激励示例中，我们因为`logElements()`修改了它的参数`arr`而陷入了麻烦：
 - en: '[PRE1]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Let’s add defensive copying to this function:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们在这个函数中添加防御性复制：
 - en: '[PRE2]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Now `logElements()` doesn’t cause problems anymore, if it is called inside
     `main()`:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，如果在`main()`中调用`logElements()`，它就不会再引起问题：
 - en: '[PRE3]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 8.2.1.2 Copying exposed internal data
+  id: totrans-55
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 8.2.1.2 复制暴露的内部数据
 - en: 'Let’s start with a class `StringBuilder` that doesn’t copy internal data it
     exposes (line A):'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们从一个不复制暴露的内部数据的`StringBuilder`类开始（A行）：
 - en: '[PRE4]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'As long as `.getParts()` isn’t used, everything works well:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 只要不使用`.getParts()`，一切都运行良好：
 - en: '[PRE5]'
+  id: totrans-59
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'If, however, the result of `.getParts()` is changed (line A), then the `StringBuilder`
     ceases to work correctly:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，如果`.getParts()`的结果发生了变化（A行），那么`StringBuilder`将无法正常工作：
 - en: '[PRE6]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'The solution is to copy the internal `._data` defensively before it is exposed
     (line A):'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 解决方案是在暴露之前（A行）防御性地复制内部的`._data`：
 - en: '[PRE7]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Now changing the result of `.getParts()` doesn’t interfere with the operation
     of `sb` anymore:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在更改`.getParts()`的结果不再干扰`sb`的操作：
 - en: '[PRE8]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 8.3 Avoiding mutations by updating non-destructively
+  id: totrans-66
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.3 通过非破坏性更新避免突变
 - en: We can avoid mutations if we only update data non-destructively.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们只进行非破坏性地更新数据，就可以避免突变。
 - en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Background**'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **背景**'
 - en: For more information on updating data, see [§7 “Updating data destructively
     and non-destructively”](ch_updating-destructively-and-nondestructively.html).
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关更新数据的更多信息，请参见[§7 “破坏性和非破坏性更新数据”](ch_updating-destructively-and-nondestructively.html)。
 - en: 8.3.1 How does non-destructive updating help with shared mutable state?
+  id: totrans-70
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.3.1 非破坏性更新如何帮助共享可变状态？
 - en: With non-destructive updating, sharing data becomes unproblematic, because we
     never mutate the shared data. (This only works if everyone that accesses the data
     does that!)
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过非破坏性更新，共享数据变得不成问题，因为我们从不改变共享的数据。（这仅在所有访问数据的人都这样做时才有效！）
 - en: 'Intriguingly, copying data becomes trivially simple:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，复制数据变得非常简单：
 - en: '[PRE9]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: This works, because we are only making non-destructive changes and are therefore
     copying the data on demand.
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是有效的，因为我们只进行非破坏性的更改，因此需要按需复制数据。
 - en: 8.4 Preventing mutations by making data immutable
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.4 通过使数据不可变来防止突变
 - en: We can prevent mutations of shared data by making that data immutable.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过使数据不可变来防止共享数据的突变。
 - en: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **Background**'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/6b17215a2abf7f098e996c026fba60fd.png)  **背景**'
 - en: 'For background on how to make data immutable in JavaScript, please refer to
     the following two chapters in this book:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关如何使JavaScript中的数据不可变的背景，请参阅本书中的以下两章：
 - en: '[§10 “Protecting objects from being changed”](ch_protecting-objects.html)'
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§10 “保护对象免受更改”](ch_protecting-objects.html)'
 - en: '[§15 “Immutable wrappers for collections”](ch_immutable-collection-wrappers.html)'
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[§15 “不可变集合的包装器”](ch_immutable-collection-wrappers.html)'
 - en: 8.4.1 How does immutability help with shared mutable state?
+  id: totrans-81
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.4.1 不可变性如何帮助共享可变状态？
 - en: If data is immutable, it can be shared without any risks. In particular, there
     is no need to copy defensively.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果数据是不可变的，它可以在没有任何风险的情况下共享。特别是，没有必要进行防御性复制。
 - en: '![](../Images/c17f3239b9e1f5d335bb0adf8211d9d3.png)  **Non-destructive updating
     is an important complement to immutable data**'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/c17f3239b9e1f5d335bb0adf8211d9d3.png)  **非破坏性更新是不可变数据的重要补充**'
 - en: If we combine the two, immutable data becomes virtually as versatile as mutable
     data but without the associated risks.
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将这两者结合起来，不可变数据变得几乎和可变数据一样多样化，但没有相关的风险。
 - en: 8.5 Libraries for avoiding shared mutable state
+  id: totrans-85
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 8.5 避免共享可变状态的库
 - en: 'There are several libraries available for JavaScript that support immutable
     data with non-destructive updating. Two popular ones are:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript有几个可用的库支持不可变数据和非破坏性更新。其中两个流行的是：
 - en: '[Immutable.js](https://github.com/immutable-js/immutable-js) provides immutable
     data structures for lists, stacks, sets, maps, etc.'
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Immutable.js](https://github.com/immutable-js/immutable-js)为列表、堆栈、集合、映射等提供不可变的数据结构。'
 - en: '[Immer](https://immerjs.github.io/immer/) also supports immutability and non-destructive
     updating but for plain objects, Arrays, Sets, and Maps. That is, no new data structures
     are needed.'
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Immer](https://immerjs.github.io/immer/) 还支持对普通对象、数组、集合和映射进行不可变性和非破坏性更新。也就是说，不需要新的数据结构。'
 - en: These libraries are described in more detail in the next two sections.
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些库将在接下来的两个部分中更详细地描述。
 - en: 8.5.1 Immutable.js
+  id: totrans-90
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.5.1 Immutable.js
 - en: 'In its repository, [the library Immutable.js](https://github.com/immutable-js/immutable-js)
     is described as:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 在其存储库中，[Immutable.js库](https://github.com/immutable-js/immutable-js)被描述为：
 - en: Immutable persistent data collections for JavaScript which increase efficiency
     and simplicity.
+  id: totrans-92
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: JavaScript的不可变持久数据集，可以提高效率和简单性。
 - en: 'Immutable.js provides immutable data structures such as:'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: Immutable.js提供不可变的数据结构，如：
 - en: '`List`'
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`List`'
 - en: '`Stack`'
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Stack`'
 - en: '`Set` (which is different from JavaScript’s built-in `Set`)'
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Set`（与JavaScript内置的`Set`不同）'
 - en: '`Map` (which is different from JavaScript’s built-in `Map`)'
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Map`（与JavaScript内置的`Map`不同）'
 - en: Etc.
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: 'In the following example, we use an immutable `Map`:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，我们使用不可变的`Map`：
 - en: '[PRE10]'
+  id: totrans-100
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Notes:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 注：
 - en: Instead of modifying the receiver, “destructive” operations such as `.set()`
     return modified copies.
+  id: totrans-102
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与修改接收器不同，“破坏性”操作（如`.set()`）返回修改后的副本。
 - en: To check if two data structures have the same content, we use the built-in `.equals()`
     method (line A and line B).
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 要检查两个数据结构是否具有相同的内容，我们使用内置的`.equals()`方法（A行和B行）。
 - en: 8.5.2 Immer
+  id: totrans-104
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 8.5.2 Immer
 - en: 'In its repository, [the library Immer](https://immerjs.github.io/immer/) is
     described as:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 在其存储库中，[Immer库](https://immerjs.github.io/immer/)被描述为：
 - en: Create the next immutable state by mutating the current one.
+  id: totrans-106
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 通过对当前状态进行突变来创建下一个不可变状态。
 - en: Immer helps with non-destructively updating (potentially nested) plain objects,
     Arrays, Sets, and Maps. That is, there are no custom data structures involved.
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: Immer有助于对（可能嵌套的）普通对象、数组、集合和映射进行非破坏性更新。也就是说，没有涉及自定义数据结构。
 - en: 'This is what using Immer looks like:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用Immer看起来像这样：
 - en: '[PRE11]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: The original data is stored in `people`. `produce()` provides us with a variable
     `draft`. We pretend that this variable is `people` and use operations with which
     we would normally make destructive changes. Immer intercepts these operations.
     Instead of mutating `draft`, it non-destructively changes `people`. The result
     is referenced by `modifiedPeople`. As a bonus, it is deeply immutable.
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 原始数据存储在`people`中。`produce()`为我们提供了一个变量`draft`。我们假装这个变量是`people`，并使用通常会进行破坏性更改的操作。Immer拦截这些操作。它不会改变`draft`，而是以非破坏性的方式改变`people`。结果被引用为`modifiedPeople`。作为奖励，它是深度不可变的。
 - en: '`assert.deepEqual()` works because Immer returns plain objects and Arrays.'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: '`assert.deepEqual()`之所以有效是因为Immer返回普通对象和数组。'
 - en: '[Comments](https://github.com/rauschma/deep-js/issues/8)'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/deep-js/issues/8)'
