@@ -224,6 +224,7 @@
   id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 环视断言在`.match()`中特别方便，因为它在`/g`模式下返回整个匹配（捕获组0）。环视断言的模式匹配的内容不会被捕获。没有环视断言，引号会出现在结果中：
 - en: '[PRE1]'
   id: totrans-44
   prefs: []
@@ -235,26 +236,31 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.4 示例：指定匹配之前或之后不出现的内容（负环视）
 - en: How can we achieve the opposite of what we did in the previous section and extract
     all unquoted words from a string?
   id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们如何实现与前一节相反的操作，并从字符串中提取所有未引用的单词？
 - en: 'Input: `''how "are" "you" doing''`'
   id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：`'how "are" "you" doing'`
 - en: 'Output: `[''how'', ''doing'']`'
   id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出：`['how', 'doing']`
 - en: 'Our first attempt is to simply convert positive lookaround assertions to negative
     lookaround assertions. Alas, that fails:'
   id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的第一个尝试是将正环视断言简单地转换为负环视断言。然而，这种方法失败了：
 - en: '[PRE2]'
   id: totrans-50
   prefs: []
@@ -266,11 +272,13 @@
   id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 问题在于我们提取了不被引号括起来的字符序列。这意味着在字符串`'"are"'`中，“are”中间的“r”被认为是未引用的，因为它前面是“a”，后面是“e”。
 - en: 'We can fix this by stating that prefix and suffix must be neither quote nor
     letter:'
   id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过声明前缀和后缀不能是引号或字母来解决这个问题：
 - en: '[PRE3]'
   id: totrans-53
   prefs: []
@@ -281,6 +289,7 @@
   id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个解决方案是通过`\b`要求字符序列`[a-z]+`在单词边界开始和结束：
 - en: '[PRE4]'
   id: totrans-55
   prefs: []
@@ -292,22 +301,26 @@
   id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 负回顾断言和负前瞻断言的一个好处是它们也可以分别在字符串的开头或结尾工作，正如示例中所演示的那样。
 - en: 16.4.1 There are no simple alternatives to negative lookaround assertions
   id: totrans-57
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 16.4.1 没有负环视断言的简单替代方案
 - en: Negative lookaround assertions are a powerful tool and usually impossible to
     emulate via other regular expression means.
   id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 负环视断言是一个强大的工具，通常无法通过其他正则表达式手段来模拟。
 - en: 'If we don’t want to use them, we normally have to take a completely different
     approach. For example, in this case, we could split the string into (quoted and
     unquoted) words and then filter those:'
   id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们不想使用它们，通常必须采取完全不同的方法。例如，在这种情况下，我们可以将字符串拆分为（带引号和不带引号的）单词，然后过滤这些单词：
 - en: '[PRE5]'
   id: totrans-60
   prefs: []
@@ -317,46 +330,55 @@
   id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法的好处：
 - en: It works on older engines.
   id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它适用于旧版引擎。
 - en: It is easy to understand.
   id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这很容易理解。
 - en: '16.5 Interlude: pointing lookaround assertions inward'
   id: totrans-64
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.5 插曲：指向内部的环视断言
 - en: All of the examples we have seen so far have in common that the lookaround assertions
     dictate what must come before or after the match but without including those characters
     in the match.
   id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们所看到的所有示例都有一个共同点，即环视断言规定了匹配之前或之后必须出现的内容，但不包括这些字符在匹配中。
 - en: 'The regular expressions shown in the remainder of this chapter are different:
     Their lookaround assertions point inward and restrict what’s inside the match.'
   id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章其余部分显示的正则表达式是不同的：它们的环视断言指向内部并限制了匹配中的内容。
 - en: '16.6 Example: match strings not starting with `''abc''`'
   id: totrans-67
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.6 示例：匹配不以`'abc'`开头的字符串
 - en: Let‘s assume we want to match all strings that do not start with `'abc'`. Our
     first attempt could be the regular expression `/^(?!abc)/`.
   id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 假设我们想匹配所有不以`'abc'`开头的字符串。我们的第一次尝试可能是正则表达式`/^(?!abc)/`。
 - en: 'That works well for `.test()`:'
   id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 这对`.test()`来说效果很好：
 - en: '[PRE6]'
   id: totrans-70
   prefs: []
@@ -366,6 +388,7 @@
   id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，`.exec()`给了我们一个空字符串：
 - en: '[PRE7]'
   id: totrans-72
   prefs: []
@@ -377,10 +400,12 @@
   id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 问题在于像环视断言这样的断言不会扩展匹配的文本。也就是说，它们不会捕获输入字符，它们只是对输入中的当前位置提出要求。
 - en: 'Therefore, the solution is to add a pattern that does capture input characters:'
   id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，解决方案是添加一个能够捕获输入字符的模式：
 - en: '[PRE8]'
   id: totrans-75
   prefs: []
@@ -391,6 +416,7 @@
   id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 如期望的那样，这个新的正则表达式拒绝了以`'abc'`为前缀的字符串：
 - en: '[PRE9]'
   id: totrans-77
   prefs: []
@@ -400,6 +426,7 @@
   id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 它接受了不具有完整前缀的字符串：
 - en: '[PRE10]'
   id: totrans-79
   prefs: []
@@ -410,10 +437,12 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.7 示例：匹配不包含`'.mjs'`的子字符串
 - en: In the following example, we want to find
   id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的示例中，我们想要找到
 - en: '[PRE11]'
   id: totrans-82
   prefs: []
@@ -423,6 +452,7 @@
   id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 其中`module-specifier`不以`'.mjs'`结尾。
 - en: '[PRE12]'
   id: totrans-84
   prefs: []
@@ -433,16 +463,19 @@
   id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，回顾断言`(?<!\.mjs)`充当了一个*保护*，防止正则表达式匹配包含`'.mjs`’的字符串。
 - en: '16.8 Example: skipping lines with comments'
   id: totrans-86
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.8 示例：跳过带有注释的行
 - en: 'Scenario: We want to parse lines with settings, while skipping comments. For
     example:'
   id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 场景：我们想解析带有设置的行，同时跳过注释。例如：
 - en: '[PRE13]'
   id: totrans-88
   prefs: []
@@ -452,10 +485,12 @@
   id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们是如何得到正则表达式`RE_SETTING`的？
 - en: 'We started with the following regular expression for settings:'
   id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们从以下正则表达式开始处理设置：
 - en: '[PRE14]'
   id: totrans-91
   prefs: []
@@ -465,35 +500,42 @@
   id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 直观地，它是以下部分的序列：
 - en: Start of the line
   id: totrans-93
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行的开头
 - en: Non-colons (zero or more)
   id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 非冒号（零个或多个）
 - en: A single colon
   id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个冒号
 - en: Any characters (zero or more)
   id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 任何字符（零个或多个）
 - en: The end of line
   id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行的末尾
 - en: 'This regular expression does reject *some* comments:'
   id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个正则表达式确实拒绝了*一些*注释：
 - en: '[PRE15]'
   id: totrans-99
   prefs: []
@@ -503,6 +545,7 @@
   id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 但它接受其他的（其中有冒号）：
 - en: '[PRE16]'
   id: totrans-101
   prefs: []
@@ -513,10 +556,12 @@
   id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过在前面加上`(?!#)`来修复这个问题。直观地，它的意思是：“输入字符串中的当前位置不能紧跟着字符`#`。”
 - en: 'The new regular expression works as desired:'
   id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 新的正则表达式按预期工作：
 - en: '[PRE17]'
   id: totrans-104
   prefs: []
@@ -527,15 +572,18 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 16.9 示例：智能引号
 - en: 'Let’s assume we want to convert pairs of straight double quotes to curly quotes:'
   id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 假设我们想将成对的直引号转换为弯引号：
 - en: 'Input: ``"yes" and "no"``'
   id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：``"yes" and "no"``
 - en: 'Output: ``“yes” and “no”``'
   id: totrans-108
   prefs:
