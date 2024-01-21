@@ -1,61 +1,76 @@
 - en: 14 Adding special values to types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_special-values.html](https://exploringjs.com/tackling-ts/ch_special-values.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: 14.1 [Adding special values in band](ch_special-values.html#adding-special-values-in-band)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 14.1.1 [Adding `null` or `undefined` to a type](ch_special-values.html#adding-null-or-undefined-to-a-type)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 14.1.2 [Adding a symbol to a type](ch_special-values.html#adding-symbol-to-type)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 14.2 [Adding special values out of band](ch_special-values.html#adding-special-values-out-of-band)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 14.2.1 [Discriminated unions](ch_special-values.html#discriminated-unions)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 14.2.2 [Other kinds of union types](ch_special-values.html#other-kinds-of-union-types)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
 - en: 'One way of understanding types is as sets of values. Sometimes there are two
     levels of values:'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
 - en: 'Base level: normal values'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Meta level: special values'
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: In this chapter, we examine how we can add special values to base-level types.
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
 - en: 14.1 Adding special values in band
+  id: totrans-14
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
@@ -63,109 +78,143 @@
     of the base type where some values are special. These special values are called
     [*sentinels*](https://en.wikipedia.org/wiki/Sentinel_value). They exist [*in band*](https://en.wikipedia.org/wiki/In-band_signaling)
     (think inside the same channel), as siblings of normal values.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
 - en: 'As an example, consider the following interface for readable streams:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-17
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: At the moment, `.getNextLine()` only handles text lines, but not ends of files
     (EOFs). How could we add support for EOF?
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
 - en: 'Possibilities include:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: An additional method `.isEof()` that needs to be called before calling `.getNextLine()`.
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`.getNextLine()` throws an exception when it reaches an EOF.'
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: A sentinel value for EOF.
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The next two subsections describe two ways in which we can introduce sentinel
     values.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
 - en: 14.1.1 Adding `null` or `undefined` to a type
+  id: totrans-24
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'When using strict TypeScript, no simple object type (defined via interfaces,
     object patterns, classes, etc.) includes `null`. That makes it a good sentinel
     value that we can add to the base type `string` via a union type:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Now, whenever we are using the value returned by `.getNextLine()`, TypeScript
     forces us to consider both possibilities: strings and `null` – for example:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'In line A, we can’t use the string method `.startsWith()` because `line` might
     be `null`. We can fix this as follows:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Now, when execution reaches line A, we can be sure that `line` is not `null`.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
 - en: 14.1.2 Adding a symbol to a type
+  id: totrans-32
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: We can also use values other than `null` as sentinels. Symbols and objects are
     best suited for this task because each one of them has a unique identity and no
     other value can be mistaken for it.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
 - en: 'This is how to use a symbol to represent EOF:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Why do we need `typeof` and can’t use `EOF` directly? That’s because `EOF`
     is a value, not a type. The type operator `typeof` converts `EOF` to a type. For
     more information on the different language levels of values and types, see [§7.7
     “The two language levels: dynamic vs. static”](ch_typescript-essentials.html#language-levels).'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
 - en: 14.2 Adding special values out of band
+  id: totrans-37
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'What do we do if potentially *any* value can be returned by a method? How do
     we ensure that base values and meta values don’t get mixed up? This is an example
     where that might happen:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Whatever value we pick for `EOF`, there is a risk of someone creating an `InputStream<typeof
     EOF>` and adding that value to the stream.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
 - en: The solution is to keep normal values and special values separate, so that they
     can’t be mixed up. Special values existing separately is called [*out of band*](https://en.wikipedia.org/wiki/Out-of-band_data)
     (think different channel).
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
 - en: 14.2.1 Discriminated unions
+  id: totrans-42
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
@@ -173,62 +222,93 @@
     a union type over several object types that all have at least one property in
     common, the so-called *discriminant*. The discriminant must have a different value
     for each object type – we can think of it as the ID of the object type.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
 - en: '14.2.1.1 Example: `InputStreamValue`'
+  id: totrans-44
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: In the following example, `InputStreamValue<T>` is a discriminated union and
     its discriminant is `.type`.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的例子中，`InputStreamValue<T>` 是一个辨别联合，其辨别标志是`.type`。
 - en: '[PRE6]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[PRE7]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: Initially, the type of `value` is `InputStreamValue<T>` (line A). Then we exclude
     the value `'eof'` for the discriminant `.type` and its type is narrowed to `NormalValue<T>`
     (line B). That’s why we can access property `.data` in line C.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 最初，`value` 的类型是 `InputStreamValue<T>`（A行）。然后我们排除了辨别标志`.type`的值`'eof'`，它的类型被缩小为`NormalValue<T>`（B行）。这就是为什么我们可以在C行访问属性`.data`。
 - en: '14.2.1.2 Example: `IteratorResult`'
+  id: totrans-49
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 14.2.1.2 示例：`IteratorResult`
 - en: 'When deciding how to implement [iterators](https://exploringjs.com/impatient-js/ch_sync-iteration.html),
     TC39 didn’t want to use a fixed sentinel value. Otherwise, that value could appear
     in iterables and break code. One solution would have been to pick a sentinel value
     when starting an iteration. TC39 instead opted for a discriminated union with
     the common property `.done`:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 在决定如何实现[迭代器](https://exploringjs.com/impatient-js/ch_sync-iteration.html)时，TC39
+    不想使用固定的哨兵值。否则，该值可能出现在可迭代对象中并破坏代码。一种解决方案是在开始迭代时选择一个哨兵值。相反，TC39选择了一个带有共同属性`.done`的辨别联合：
 - en: '[PRE8]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 14.2.2 Other kinds of union types
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 14.2.2 其他类型的联合类型
 - en: Other kinds of union types can be as convenient as discriminated unions, as
     long as we have the means to distinguish the member types of the union.
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 其他类型的联合类型可以像辨别联合一样方便，只要我们有手段来区分联合的成员类型。
 - en: 'One possibility is to distinguish the member types via unique properties:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 一种可能性是通过唯一属性来区分成员类型：
 - en: '[PRE9]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Another possibility is to distinguish the member types via `typeof` and/or
     instance checks:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一种可能性是通过`typeof`和/或实例检查来区分成员类型：
 - en: '[PRE10]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[Comments](https://github.com/rauschma/tackling-ts/issues/14)'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/tackling-ts/issues/14)'
