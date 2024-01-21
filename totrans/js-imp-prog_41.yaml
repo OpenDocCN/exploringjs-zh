@@ -1,225 +1,338 @@
 - en: 34 WeakMaps (WeakMap) (advanced)
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 34 WeakMaps (WeakMap) (高级)
 - en: 原文：[https://exploringjs.com/impatient-js/ch_weakmaps.html](https://exploringjs.com/impatient-js/ch_weakmaps.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/impatient-js/ch_weakmaps.html](https://exploringjs.com/impatient-js/ch_weakmaps.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 34.1 [WeakMaps are black boxes](ch_weakmaps.html#weakmaps-as-black-boxes)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 34.1 [WeakMaps是黑盒](ch_weakmaps.html#weakmaps-as-black-boxes)
 - en: 34.2 [The keys of a WeakMap are *weakly held*](ch_weakmaps.html#weakmap-keys-are-weakly-held)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 34.2 [WeakMap的键是*弱引用*](ch_weakmaps.html#weakmap-keys-are-weakly-held)
 - en: 34.2.1 [All WeakMap keys must be objects](ch_weakmaps.html#all-weakmap-keys-must-be-objects)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 34.2.1 [所有WeakMap的键必须是对象](ch_weakmaps.html#all-weakmap-keys-must-be-objects)
 - en: '34.2.2 [Use case: attaching values to objects](ch_weakmaps.html#use-case-attaching-values-to-objects)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 34.2.2 [用例：将值附加到对象](ch_weakmaps.html#use-case-attaching-values-to-objects)
 - en: 34.3 [Examples](ch_weakmaps.html#examples)
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 34.3 [示例](ch_weakmaps.html#examples)
 - en: 34.3.1 [Caching computed results via WeakMaps](ch_weakmaps.html#caching-computed-results-via-weakmaps)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 34.3.1 [通过WeakMaps缓存计算结果](ch_weakmaps.html#caching-computed-results-via-weakmaps)
 - en: 34.3.2 [Keeping private data in WeakMaps](ch_weakmaps.html#private-data-in-weakmaps)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 34.3.2 [在WeakMaps中保持私有数据](ch_weakmaps.html#private-data-in-weakmaps)
 - en: 34.4 [WeakMap API](ch_weakmaps.html#weakmap-api)
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 34.4 [WeakMap API](ch_weakmaps.html#weakmap-api)
 - en: '* * *'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 'WeakMaps are similar to Maps, with the following differences:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: WeakMaps类似于Maps，但有以下区别：
 - en: They are black boxes, where a value can only be accessed if you have both the
     WeakMap and the key.
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们是黑盒，只有拥有WeakMap和键的人才能访问值。
 - en: 'The keys of a WeakMap are *weakly held*: if an object is a key in a WeakMap,
     it can still be garbage-collected. That lets us use WeakMaps to attach data to
     objects.'
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: WeakMap的键是*弱引用*：如果一个对象是WeakMap的键，它仍然可以被垃圾回收。这让我们可以使用WeakMap来附加数据到对象上。
 - en: The next two sections examine in more detail what that means.
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来的两节将更详细地讨论这意味着什么。
 - en: 34.1 WeakMaps are black boxes
+  id: totrans-16
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 34.1 WeakMaps是黑盒
 - en: 'It is impossible to inspect what’s inside a WeakMap:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 不可能检查WeakMap内部的内容：
 - en: For example, you can’t iterate or loop over keys, values or entries. And you
     can’t compute the size.
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 例如，你不能迭代或循环遍历键、值或条目。你也不能计算大小。
 - en: Additionally, you can’t clear a WeakMap either – you have to create a fresh
     instance.
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 此外，你也不能清除WeakMap - 你必须创建一个新的实例。
 - en: 'These restrictions enable a security property. Quoting [Mark Miller](https://github.com/tc39/tc39-notes/blob/master/meetings/2014-11/nov-19.md#412-should-weakmapweakset-have-a-clear-method-markm):'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些限制实现了一个安全属性。引用[Mark Miller](https://github.com/tc39/tc39-notes/blob/master/meetings/2014-11/nov-19.md#412-should-weakmapweakset-have-a-clear-method-markm)：
 - en: The mapping from weakmap/key pair value can only be observed or affected by
     someone who has both the weakmap and the key. With `clear()`, someone with only
     the WeakMap would’ve been able to affect the WeakMap-and-key-to-value mapping.
+  id: totrans-21
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: WeakMap/键对值的映射只能被拥有WeakMap和键的人观察或影响。使用`clear()`，只拥有WeakMap的人将能够影响WeakMap和键到值的映射。
 - en: 34.2 The keys of a WeakMap are *weakly held*
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 34.2 WeakMap的键是*弱引用*
 - en: 'The keys of a WeakMap are said to be *weakly held*: Normally if one object
     refers to another one, then the latter object can’t be garbage-collected as long
     as the former exists. With a WeakMap, that is different: If an object is a key
     and not referred to elsewhere, it can be garbage-collected while the WeakMap still
     exists. That also leads to the corresponding entry being removed (but there is
     no way to observe that).'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: WeakMap的键被称为*弱引用*：通常，如果一个对象引用另一个对象，那么只要前者存在，后者就不能被垃圾回收。但是对于WeakMap来说，情况不同：如果一个对象是键，而且没有其他地方引用它，那么它可以在WeakMap仍然存在的情况下被垃圾回收。这也导致相应的条目被移除（但没有办法观察到）。
 - en: 34.2.1 All WeakMap keys must be objects
+  id: totrans-24
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 34.2.1 所有WeakMap的键必须是对象
 - en: 'All WeakMap keys must be objects. You get an error if you use a primitive value:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有WeakMap的键必须是对象。如果使用原始值，会报错：
 - en: '[PRE0]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: With primitive values as keys, WeakMaps wouldn’t be black boxes anymore. But
     given that primitive values are never garbage-collected, you don’t profit from
     weakly held keys anyway, and can just as well use a normal Map.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果使用原始值作为键，WeakMaps将不再是黑盒。但是鉴于原始值永远不会被垃圾回收，你也不会从弱引用键中获益，可以使用普通的Map。
 - en: '34.2.2 Use case: attaching values to objects'
+  id: totrans-28
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 34.2.2 用例：将值附加到对象
 - en: 'This is the main use case for WeakMaps: you can use them to externally attach
     values to objects – for example:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是WeakMaps的主要用例：你可以使用它们来外部附加值到对象上 - 例如：
 - en: '[PRE1]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'In line A, we attach a value to `obj`. In line B, `obj` can already be garbage-collected,
     even though `wm` still exists. This technique of attaching a value to an object
     is equivalent to a property of that object being stored externally. If `wm` were
     a property, the previous code would look as follows:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 在A行，我们将一个值附加到`obj`。在B行，`obj`可能已经被垃圾回收，尽管`wm`仍然存在。这种将值附加到对象的技术等同于将该对象的属性存储在外部。如果`wm`是一个属性，前面的代码将如下所示：
 - en: '[PRE2]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 34.3 Examples
+  id: totrans-33
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 34.3 示例
 - en: 34.3.1 Caching computed results via WeakMaps
+  id: totrans-34
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 34.3.1 通过WeakMaps缓存计算结果
 - en: 'With WeakMaps, you can associate previously computed results with objects without
     having to worry about memory management. The following function `countOwnKeys()`
     is an example: it caches previous results in the WeakMap `cache`.'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用WeakMaps，你可以将先前计算的结果与对象关联起来，而不必担心内存管理。下面的函数`countOwnKeys()`就是一个例子：它在WeakMap
+    `cache`中缓存先前的结果。
 - en: '[PRE3]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'If we use this function with an object `obj`, you can see that the result is
     only computed for the first invocation, while a cached value is used for the second
     invocation:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用这个函数和一个对象`obj`，你会发现结果只在第一次调用时计算，而第二次调用时使用了缓存值：
 - en: '[PRE4]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 34.3.2 Keeping private data in WeakMaps
+  id: totrans-39
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 34.3.2 在WeakMaps中保持私有数据
 - en: 'In the following code, the WeakMaps `_counter` and `_action` are used to store
     the values of virtual properties of instances of `Countdown`:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的代码中，WeakMaps `_counter`和`_action`用于存储`Countdown`实例的虚拟属性的值：
 - en: '[PRE5]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'This is how `Countdown` is used:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`Countdown`的使用方式：
 - en: '[PRE6]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: WeakMaps for
     private data**'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **练习：WeakMaps用于私有数据**'
 - en: '`exercises/weakmaps/weakmaps_private_data_test.mjs`'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/weakmaps/weakmaps_private_data_test.mjs`'
 - en: 34.4 WeakMap API
+  id: totrans-46
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 34.4 WeakMap API
 - en: 'The constructor and the four methods of `WeakMap` work the same as [their `Map`
     equivalents](ch_maps.html#quickref-maps):'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '`WeakMap`的构造函数和四个方法与它们的`Map`等价物一样工作： '
 - en: '`new WeakMap<K, V>(entries?: Iterable<[K, V]>)` ^([ES6])'
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new WeakMap<K, V>(entries?: Iterable<[K, V]>)` ^([ES6])'
 - en: '`.delete(key: K) : boolean` ^([ES6])'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.delete(key: K) : boolean` ^([ES6])'
 - en: '`.get(key: K) : V` ^([ES6])'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.get(key: K) : V` ^([ES6])'
 - en: '`.has(key: K) : boolean` ^([ES6])'
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.has(key: K) : boolean` ^([ES6])'
 - en: '`.set(key: K, value: V) : this` ^([ES6])'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.set(key: K, value: V) : this` ^([ES6])'
 - en: '![](../Images/4ca05ad97a693bee61e4fd6459232e60.png)  **Quiz**'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/4ca05ad97a693bee61e4fd6459232e60.png)  **测验**'
 - en: See [quiz app](ch_quizzes-exercises.html#quizzes).
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 查看[测验应用](ch_quizzes-exercises.html#quizzes)。
 - en: '[Comments](https://github.com/rauschma/impatient-js/issues/36)'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/impatient-js/issues/36)'
