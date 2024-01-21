@@ -1,139 +1,176 @@
 - en: 4 How does TypeScript work? The bird’s eye view
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_typescript-workflows.html](https://exploringjs.com/tackling-ts/ch_typescript-workflows.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: 4.1 [The structure of TypeScript projects](ch_typescript-workflows.html#the-structure-of-typescript-projects)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 4.1.1 [`tsconfig.json`](ch_typescript-workflows.html#tsconfig.json)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 4.2 [Programming TypeScript via an integrated development environment (IDE)](ch_typescript-workflows.html#programming-typescript-via-an-integrated-development-environment-ide)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 4.3 [Other files produced by the TypeScript compiler](ch_typescript-workflows.html#other-files-produced-by-the-typescript-compiler)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 4.3.1 [In order to use npm packages from TypeScript, we need type information](ch_typescript-workflows.html#in-order-to-use-npm-packages-from-typescript-we-need-type-information)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 4.4 [Using the TypeScript compiler for plain JavaScript files](ch_typescript-workflows.html#check-js)
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
 - en: 'This chapter gives the bird’s eye view of how TypeScript works: What is the
     structure of a typical TypeScript project? What is compiled and how? How can we
     use IDEs to write TypeScript?'
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
 - en: 4.1 The structure of TypeScript projects
+  id: totrans-11
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'This is one possible file structure for TypeScript projects:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Explanations:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
 - en: 'Directory `ts/` contains the TypeScript files:'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Subdirectory `ts/src/` contains the actual code.
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: Subdirectory `ts/test/` contains tests for the code.
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: Directory `dist/` is where the output of the compiler is stored.
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'The TypeScript compiler compiles TypeScript files in `ts/` to JavaScript files
     in `dist/`. For example:'
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`ts/src/main.ts` is compiled to `dist/src/main.js` (and possibly other files)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`tsconfig.json` is used to configure the TypeScript compiler.'
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 4.1.1 `tsconfig.json`
+  id: totrans-22
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'The contents of `tsconfig.json` look as follows:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'We have specified that:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
 - en: The root directory of the TypeScript code is `ts/`.
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The directory where the TypeScript compiler saves its output is `dist/`.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The module format of the output files is CommonJS.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 4.2 Programming TypeScript via an integrated development environment (IDE)
+  id: totrans-29
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'Two popular IDEs for JavaScript are:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
 - en: '[*Visual Studio Code*](https://code.visualstudio.com/) (free)'
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[*WebStorm*](https://www.jetbrains.com/webstorm/) (for purchase)'
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The observations in this section are about Visual Studio Code, but may apply
     to other IDEs, too.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
 - en: 'One important fact to be aware of is that Visual Studio Code processes TypeScript
     source code in two independent ways:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
 - en: 'Checking open files for errors: This is done via a so-called [*language server*](https://langserver.org/).
@@ -142,17 +179,20 @@
     etc. Communication with servers happens via a protocol that is based on JSON-RPC
     (*RPC* stands for *remote procedure calls*). The independence provided by that
     protocol means that servers can be written in almost any programming language.'
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Important fact to remember: The language server only lists errors for currently
     open files and doesn’t compile TypeScript, it only analyzes it statically.'
+  id: totrans-36
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '*Building* (compiling TypeScript files to JavaScript files): Here, we have
     two choices.'
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
@@ -160,6 +200,7 @@
     compiler `tsc` has a `--watch` mode that watches input files and compiles them
     to output files whenever they change. As a consequence, whenever we save a TypeScript
     file in the IDE, we immediately get the corresponding output file(s).
+  id: totrans-38
   prefs:
   - PREF_IND
   - PREF_UL
@@ -169,133 +210,187 @@
     (via the Node.js package manager npm).With building, we get a complete list of
     errors. For more information on compiling TypeScript from within Visual Studio
     Code, see [the official documentation for that IDE](https://code.visualstudio.com/docs/typescript/typescript-compiling).
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 4.3 Other files produced by the TypeScript compiler
+  id: totrans-40
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 4.3 TypeScript编译器生成的其他文件
 - en: 'Given a TypeScript file `main.ts`, the TypeScript compiler can produce several
     kinds of artifacts. The most common ones are:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定一个TypeScript文件`main.ts`，TypeScript编译器可以生成几种不同的产物。最常见的是：
 - en: 'JavaScript file: `main.js`'
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript文件：`main.js`
 - en: 'Declaration file: `main.d.ts` (contains type information; think `.ts` file
     minus the JavaScript code)'
+  id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 声明文件：`main.d.ts`（包含类型信息；类似于`.ts`文件但不包含JavaScript代码）
 - en: 'Source map file: `main.js.map`'
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 源映射文件：`main.js.map`
 - en: 'TypeScript is often not delivered via `.ts` files, but via `.js` files and
     `.d.ts` files:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript通常不是通过`.ts`文件交付的，而是通过`.js`文件和`.d.ts`文件：
 - en: The JavaScript code contains the actual functionality and can be consumed via
     plain JavaScript.
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript代码包含实际的功能，并且可以通过纯JavaScript来使用。
 - en: The declaration files help programming editors with auto-completion and similar
     services. This information enables plain JavaScript to be consumed via TypeScript.
     However, we even profit from it if we work with plain JavaScript because it gives
     us better auto-completion and more.
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 声明文件可以帮助编程编辑器进行自动补全和类似的服务。这些信息使得纯JavaScript可以通过TypeScript来消耗。然而，即使我们使用纯JavaScript，也可以从中受益，因为它可以提供更好的自动补全和更多功能。
 - en: A source map specifies for each part of the output code in `main.js`, which
     part of the input code in `main.ts` produced it. Among other things, this information
     enables runtime environments to execute JavaScript code, while showing the line
     numbers of the TypeScript code in error messages.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 源映射为`main.js`中的每个部分指定了`main.ts`中的哪个部分产生了它。除其他外，这些信息使得运行时环境可以执行JavaScript代码，同时显示TypeScript代码的行号在错误消息中。
 - en: 4.3.1 In order to use npm packages from TypeScript, we need type information
+  id: totrans-49
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 4.3.1 为了从TypeScript中使用npm包，我们需要类型信息
 - en: 'The npm registry is a huge repository of JavaScript code. If we want to use
     a JavaScript package from TypeScript, we need type information for it:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: npm注册表是一个庞大的JavaScript代码存储库。如果我们想要在TypeScript中使用JavaScript包，我们需要它的类型信息：
 - en: The package itself may include `.d.ts` files or even the complete TypeScript
     code.
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包本身可能包括`.d.ts`文件，甚至是完整的TypeScript代码。
 - en: 'If it doesn’t, we may still be able to use it: [DefinitelyTyped](https://definitelytyped.org/)
     is a repository of declaration files that people have written for plain JavaScript
     packages.'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果没有，我们可能仍然可以使用它：[DefinitelyTyped](https://definitelytyped.org/)是一个为纯JavaScript包编写声明文件的存储库。
 - en: The declaration files of DefinitelyTyped reside in the `@types` namespace. Therefore,
     if we need a declaration file for a package such as `lodash`, we have to install
     the package `@types/lodash`.
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: DefinitelyTyped的声明文件位于`@types`命名空间中。因此，如果我们需要一个像`lodash`这样的包的声明文件，我们必须安装`@types/lodash`包。
 - en: 4.4 Using the TypeScript compiler for plain JavaScript files
+  id: totrans-54
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 4.4 使用TypeScript编译器处理纯JavaScript文件
 - en: 'The TypeScript compiler can also process plain JavaScript files:'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript编译器也可以处理纯JavaScript文件：
 - en: 'With the option `--allowJs`, the TypeScript compiler copies JavaScript files
     in the input directory over to the output directory. Benefit: When [migrating
     from JavaScript to TypeScript](ch_migrating-to-typescript.html), we can start
     with a mix of JavaScript and TypeScript files and slowly convert more JavaScript
     files to TypeScript.'
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用`--allowJs`选项，TypeScript编译器会将输入目录中的JavaScript文件复制到输出目录中。好处是：当[从JavaScript迁移到TypeScript](ch_migrating-to-typescript.html)时，我们可以从JavaScript和TypeScript文件的混合开始，然后慢慢将更多的JavaScript文件转换为TypeScript。
 - en: 'With the option `--checkJs`, the compiler additionally type-checks JavaScript
     files (`--allowJs` must be on for this option to work). It does so as well as
     it can, given the limited information that is available. Which files are checked
     can be configured via comments inside them:'
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用`--checkJs`选项，编译器还会对JavaScript文件进行类型检查（此选项需要`--allowJs`开启才能工作）。它会尽可能地进行类型检查，考虑到可用的有限信息。可以通过文件内的注释来配置哪些文件需要进行检查：
 - en: 'Explicit excluding: If a JavaScript file contains the comment `// @ts-nocheck`,
     it will not be type-checked.'
+  id: totrans-58
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 显式排除：如果JavaScript文件包含注释`// @ts-nocheck`，则不会进行类型检查。
 - en: 'Explicit including: Without `--checkJs`, the comment `// @ts-check` can be
     used to type-check individual JavaScript files.'
+  id: totrans-59
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 显式包含：如果没有`--checkJs`，则可以使用注释`// @ts-check`来对单个JavaScript文件进行类型检查。
 - en: The TypeScript compiler uses static type information that is specified via JSDoc
     comments (see below for an example). If we are thorough, we can fully statically
     type plain JavaScript files and even derive declaration files from them.
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript编译器使用通过JSDoc注释指定的静态类型信息（请参见下面的示例）。如果我们认真对待，我们可以完全静态地对纯JavaScript文件进行类型标注，甚至可以从中派生出声明文件。
 - en: With the option `--noEmit`, the compiler does not produce any output, it only
     type-checks files.
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用`--noEmit`选项，编译器不会产生任何输出，只进行文件的类型检查。
 - en: 'This is an example of a JSDoc comment that provides static type information
     for a function `add()`:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个JSDoc注释的示例，为函数`add()`提供了静态类型信息：
 - en: '[PRE2]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'More information: [Type-Checking JavaScript Files](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html)
     in the TypeScript Handbook.'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[Type-Checking JavaScript Files](https://www.typescriptlang.org/docs/handbook/type-checking-javascript-files.html)
+    在TypeScript手册中。
 - en: '[Comments](https://github.com/rauschma/tackling-ts/issues/4)'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/tackling-ts/issues/4)'
