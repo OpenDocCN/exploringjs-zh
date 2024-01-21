@@ -1,1513 +1,2232 @@
 - en: 12 Running shell commands in child processes
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 12 在子进程中运行shell命令
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-child-process.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-child-process.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-child-process.html](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-child-process.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 12.1 [Overview of this chapter](ch_nodejs-child-process.html#overview-of-this-chapter)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.1 本章概述](ch_nodejs-child-process.html#overview-of-this-chapter)
 - en: 12.1.1 [Windows vs. Unix](ch_nodejs-child-process.html#windows-vs.-unix)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.1.1 [Windows vs. Unix](ch_nodejs-child-process.html#windows-vs.-unix)
 - en: 12.1.2 [Functionality we often use in the examples](ch_nodejs-child-process.html#functionality-we-often-use-in-the-examples)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.1.2 [我们在示例中经常使用的功能](ch_nodejs-child-process.html#functionality-we-often-use-in-the-examples)
 - en: '12.2 [Spawning processes asynchronously: `spawn()`](ch_nodejs-child-process.html#spawn)'
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2 [异步生成进程：`spawn()`](ch_nodejs-child-process.html#spawn)
 - en: 12.2.1 [How `spawn()` works](ch_nodejs-child-process.html#how-spawn-works)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2.1 [`spawn()`的工作原理](ch_nodejs-child-process.html#how-spawn-works)
 - en: 12.2.2 [When is the shell command executed?](ch_nodejs-child-process.html#when-is-the-shell-command-executed)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2.2 何时执行shell命令？](ch_nodejs-child-process.html#when-is-the-shell-command-executed)
 - en: 12.2.3 [Command-only mode vs. args mode](ch_nodejs-child-process.html#spawn-argument-modes)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2.3 仅命令模式 vs. 参数模式](ch_nodejs-child-process.html#spawn-argument-modes)
 - en: 12.2.4 [Sending data to the stdin of the child process](ch_nodejs-child-process.html#sending-data-to-the-stdin-of-the-child-process)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2.4 [向子进程的stdin发送数据](ch_nodejs-child-process.html#sending-data-to-the-stdin-of-the-child-process)
 - en: 12.2.5 [Piping manually](ch_nodejs-child-process.html#piping-manually)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2.5 手动进行管道传输](ch_nodejs-child-process.html#piping-manually)
 - en: 12.2.6 [Handling unsuccessful exits (including errors)](ch_nodejs-child-process.html#handling-unsuccessful-exits-including-errors)
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2.6 [处理不成功的退出（包括错误）](ch_nodejs-child-process.html#handling-unsuccessful-exits-including-errors)
 - en: 12.2.7 [Waiting for the exit of a child process](ch_nodejs-child-process.html#waiting-for-the-exit-of-a-child-process)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2.7 等待子进程退出](ch_nodejs-child-process.html#waiting-for-the-exit-of-a-child-process)
 - en: 12.2.8 [Terminating child processes](ch_nodejs-child-process.html#terminating-child-processes)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.2.8 终止子进程](ch_nodejs-child-process.html#terminating-child-processes)
 - en: '12.3 [Spawning processes synchronously: `spawnSync()`](ch_nodejs-child-process.html#spawning-processes-synchronously-spawnsync)'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3 [同步生成进程：`spawnSync()`](ch_nodejs-child-process.html#spawning-processes-synchronously-spawnsync)
 - en: 12.3.1 [When is the shell command executed?](ch_nodejs-child-process.html#when-is-the-shell-command-executed-1)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3.1 何时执行shell命令？](ch_nodejs-child-process.html#when-is-the-shell-command-executed-1)
 - en: 12.3.2 [Reading from stdout](ch_nodejs-child-process.html#reading-from-stdout)
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3.2 从stdout读取](ch_nodejs-child-process.html#reading-from-stdout)
 - en: 12.3.3 [Sending data to the stdin of the child process](ch_nodejs-child-process.html#sending-data-to-the-stdin-of-the-child-process-1)
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3.3 [向子进程的stdin发送数据](ch_nodejs-child-process.html#sending-data-to-the-stdin-of-the-child-process-1)
 - en: 12.3.4 [Handling unsuccessful exits (including errors)](ch_nodejs-child-process.html#handling-unsuccessful-exits-including-errors-1)
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.3.4 [处理不成功的退出（包括错误）](ch_nodejs-child-process.html#handling-unsuccessful-exits-including-errors-1)
 - en: 12.4 [Asynchronous helper functions based on `spawn()`](ch_nodejs-child-process.html#asynchronous-helper-functions-based-on-spawn)
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.4 [基于`spawn()`的异步辅助函数](ch_nodejs-child-process.html#asynchronous-helper-functions-based-on-spawn)
 - en: 12.4.1 [`exec()`](ch_nodejs-child-process.html#exec)
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.4.1 [`exec()`](ch_nodejs-child-process.html#exec)
 - en: 12.4.2 [`execFile()`](ch_nodejs-child-process.html#execfile)
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.4.2 [`execFile()`](ch_nodejs-child-process.html#execfile)
 - en: 12.5 [Synchronous helper functions based on `spawnAsync()`](ch_nodejs-child-process.html#synchronous-helper-functions-based-on-spawnasync)
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.5 [基于`spawnAsync()`的同步辅助函数](ch_nodejs-child-process.html#synchronous-helper-functions-based-on-spawnasync)
 - en: 12.5.1 [`execSync()`](ch_nodejs-child-process.html#execsync)
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.5.1 [`execSync()`](ch_nodejs-child-process.html#execsync)
 - en: 12.5.2 [`execFileSync()`](ch_nodejs-child-process.html#execfilesync)
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.5.2 [`execFileSync()`](ch_nodejs-child-process.html#execfilesync)
 - en: 12.6 [Useful libraries](ch_nodejs-child-process.html#useful-libraries)
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.6 有用的库](ch_nodejs-child-process.html#useful-libraries)
 - en: '12.6.1 [tinysh: a helper for spawning shell commands](ch_nodejs-child-process.html#tinysh-a-helper-for-spawning-shell-commands)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.6.1 [tinysh：用于生成shell命令的辅助程序](ch_nodejs-child-process.html#tinysh-a-helper-for-spawning-shell-commands)
 - en: '12.6.2 [node-powershell: executing Windows PowerShell commands via Node.js](ch_nodejs-child-process.html#node-powershell-executing-windows-powershell-commands-via-node.js)'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.6.2 [node-powershell：通过Node.js执行Windows PowerShell命令](ch_nodejs-child-process.html#node-powershell-executing-windows-powershell-commands-via-node.js)
 - en: 12.7 [Choosing between the functions of module `'node:child_process'`](ch_nodejs-child-process.html#choosing-between-the-functions-of-module-nodechild_process)
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 12.7 [在模块`'node:child_process'`的功能之间进行选择](ch_nodejs-child-process.html#choosing-between-the-functions-of-module-nodechild_process)
 - en: '* * *'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: In this chapter, we’ll explore how we can execute shell commands from Node.js,
     via module `'node:child_process'`.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将探讨如何通过模块`'node:child_process'`从Node.js执行shell命令。
 - en: 12.1 Overview of this chapter
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.1 本章概述
 - en: 'Module `''node:child_process''` has a function for executing shell commands
     (in *spawned* child processes) that comes in two versions:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块`'node:child_process'`有一个用于执行shell命令（在*生成的*子进程中）的函数，有两个版本：
 - en: An asynchronous version `spawn()`.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个异步版本的`spawn()`。
 - en: A synchronous version `spawnSync()`.
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个同步版本的`spawnSync()`。
 - en: 'We’ll first explore `spawn()` and then `spawnSync()`. We’ll conclude by looking
     at the following functions that are based on them and relatively similar:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将首先探讨`spawn()`，然后是`spawnSync()`。最后，我们将看一下基于它们并且相对类似的以下函数：
 - en: 'Based on `spawn()`:'
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 基于`spawn()`：
 - en: '`exec()`'
+  id: totrans-38
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`exec()`'
 - en: '`execFile()`'
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`execFile()`'
 - en: 'Based on `spawnSync()`:'
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 基于`spawnSync()`：
 - en: '`execSync()`'
+  id: totrans-41
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`execSync()`'
 - en: '`execFileSync()`'
+  id: totrans-42
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`execFileSync()`'
 - en: 12.1.1 Windows vs. Unix
+  id: totrans-43
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.1.1 Windows vs. Unix
 - en: The code shown in this chapter runs on Unix, but I have also tested it on Windows
     – where most of it works with minor changes (such as ending lines with `'\r\n'`
     instead of `'\n'`).
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章中显示的代码在Unix上运行，但我也在Windows上进行了测试-其中大部分代码需要进行轻微更改（例如以`'\r\n'`而不是`'\n'`结尾）。
 - en: 12.1.2 Functionality we often use in the examples
+  id: totrans-45
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.1.2 我们在示例中经常使用的功能
 - en: 'The following functionality shows up often in the examples. That’s why it’s
     explained here, once:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下功能在示例中经常出现。这就是为什么在这里解释一次：
 - en: 'Assertions: `assert.equal()` for primitive values and `assert.deepEqual()`
     for objects. The necessary import is never shown in the examples:'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 断言：对于原始值使用`assert.equal()`，对于对象使用`assert.deepEqual()`。示例中从未显示必要的导入：
 - en: '[PRE0]'
+  id: totrans-48
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Function `Readable.toWeb()` converts Node’s native `stream.Readable` to a web
     stream (an instance of `ReadableStream`). It is explained in [§10 “Using web streams
     on Node.js”](ch_web-streams.html). `Readable` is always imported in the examples.
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 函数`Readable.toWeb()`将Node的原生`stream.Readable`转换为web流（`ReadableStream`的实例）。这在[§10“在Node.js上使用web流”](ch_web-streams.html)中有解释。示例中始终导入`Readable`。
 - en: The asynchronous function `readableStreamToString()` consumes a readable web
     stream and returns a string (wrapped in a Promise). It is explained in [the chapter
     on web streams](ch_web-streams.html#readableStreamToString). This function is
     assumed to available in the examples.
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 异步函数`readableStreamToString()`会消耗可读的web流并返回一个字符串（包装在Promise中）。这在[web流章节](ch_web-streams.html#readableStreamToString)中有解释。假定这个函数在示例中是可用的。
 - en: '12.2 Spawning processes asynchronously: `spawn()`'
+  id: totrans-51
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.2 异步生成进程：`spawn()`
 - en: 12.2.1 How `spawn()` works
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.2.1 `spawn()`的工作原理
 - en: '[PRE1]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[`spawn()`](https://nodejs.org/api/child_process.html#child_processspawncommand-args-options)
     asynchronously executes a command in a new process: The process runs concurrently
     to Node’s main JavaScript process and we can communicate with it in various ways
     (often via streams).'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`spawn()`](https://nodejs.org/api/child_process.html#child_processspawncommand-args-options)
+    异步地在新进程中执行命令：该进程与Node的主JavaScript进程并行运行，我们可以通过各种方式与其通信（通常通过流）。'
 - en: Next, there is documentation for the parameters and the result of `spawn()`.
     If you prefer to learn by example, you can skip that content and continue with
     the subsections that follow.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来，有关`spawn()`的参数和结果的文档。如果您喜欢通过示例学习，可以跳过该内容，继续阅读后面的小节。
 - en: '12.2.1.1 Parameter: `command`'
+  id: totrans-56
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.1.1 参数：`command`
 - en: '`command` is a string with the shell command. There are two modes of using
     this parameter:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: '`command`是一个包含shell命令的字符串。有两种使用该参数的模式：'
 - en: 'Command-only mode: `args` is omitted and `command` contains the whole shell
     command. We can even use shell features such as piping between multiple executables,
     redirecting I/O into files, variables, and wildcards.'
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 仅命令模式：省略`args`，`command`包含整个shell命令。我们甚至可以使用shell功能，如在多个可执行文件之间进行管道传输，将I/O重定向到文件，变量和通配符。
 - en: '`options.shell` must be `true` because we need an shell to handle the shell
     features.'
+  id: totrans-59
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`options.shell`必须为`true`，因为我们需要一个shell来处理shell功能。'
 - en: 'Args mode: `command` contains only the name of the command and `args` contains
     its arguments.'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 参数模式：`command`仅包含命令的名称，`args`包含其参数。
 - en: If `options.shell` is `true`, many meta-characters inside arguments are interpreted
     and features such as wildcards and variable names work.
+  id: totrans-61
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`options.shell`为`true`，则参数中的许多元字符会被解释，并且通配符和变量名称等功能会起作用。
 - en: If `options.shell` is `false`, strings are used verbatim and we never have to
     escape meta-characters.
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`options.shell`为`false`，则字符串会直接使用，我们不必转义元字符。
 - en: Both modes are demonstrated [later in this chapter](ch_nodejs-child-process.html#spawn-argument-modes).
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 这两种模式在[本章后面](ch_nodejs-child-process.html#spawn-argument-modes)进行了演示。
 - en: '12.2.1.2 Parameter: `options`'
+  id: totrans-64
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.1.2 参数：`options`
 - en: 'The following `options` are most interesting:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下`options`最有趣：
 - en: '`.shell: boolean|string` (default: `false`)'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.shell: boolean|string`（默认值：`false`）'
 - en: Should a shell be used to execute the command?
+  id: totrans-67
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 是否应使用shell来执行命令？
 - en: On Windows, this option should almost always be `true`. For example, `.bat`
     and `.cmd` files cannot be executed otherwise.
+  id: totrans-68
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Windows上，此选项几乎总是应为`true`。例如，否则无法执行`.bat`和`.cmd`文件。
 - en: On Unix, only core shell features (e.g. piping, I/O redirection, filename wildcards,
     and variables) are not available if `.shell` is `false`.
+  id: totrans-69
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Unix上，只有核心shell功能（例如管道，I/O重定向，文件名通配符和变量）在`.shell`为`false`时不可用。
 - en: If `.shell` is `true`, we have to be careful with user input and sanitize it
     because it’s easy to execute arbitrary code. We also have to escape meta-characters
     if we want to use them as non-meta-characters.
+  id: totrans-70
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`.shell`为`true`，我们必须小心处理用户输入并对其进行清理，因为很容易执行任意代码。如果我们想将其用作非元字符，则还必须转义元字符。
 - en: 'We can also set `.shell` to the path of a shell executable. Then Node.js uses
     that executable to execute the command. If we set `.shell` to `true`, Node.js
     uses:'
+  id: totrans-71
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们还可以将`.shell`设置为shell可执行文件的路径。然后Node.js将使用该可执行文件来执行命令。如果我们将`.shell`设置为`true`，Node.js将使用：
 - en: 'Unix: `''/bin/sh''`'
+  id: totrans-72
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Unix：`'/bin/sh'`
 - en: 'Windows: `process.env.ComSpec`'
+  id: totrans-73
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Windows：`process.env.ComSpec`
 - en: '`.cwd: string | URL`'
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.cwd: string | URL`'
 - en: Specifies the *current working directory* (CWD) to use while executing the command.
+  id: totrans-75
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 指定在执行命令时要使用的*当前工作目录*（CWD）。
 - en: '`.stdio: Array<string|Stream>|string`'
+  id: totrans-76
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.stdio: Array<string|Stream>|string`'
 - en: Configures how standard I/O is set up. This is explained below.
+  id: totrans-77
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 配置标准I/O的设置方式。下面会有解释。
 - en: '`.env: Object` (default: `process.env`)'
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.env: Object`（默认值：`process.env`）'
 - en: 'Lets us specify shell variables for the child process. Tips:'
+  id: totrans-79
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 让我们为子进程指定shell变量。提示：
 - en: Look at `process.env` (e.g. in the Node.js REPL) to see what variables exist.
+  id: totrans-80
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 查看`process.env`（例如在Node.js REPL中）以查看存在哪些变量。
 - en: 'We can use spreading to non-destructively override an existing variable – or
     create it if it doesn’t exist yet:'
+  id: totrans-81
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以使用扩展运算符来非破坏性地覆盖现有变量 - 或者如果尚不存在，则创建它：
 - en: '[PRE2]'
+  id: totrans-82
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`.signal: AbortSignal`'
+  id: totrans-83
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.signal: AbortSignal`'
 - en: If we create an AbortController `ac`, we can pass `ac.signal` to `spawn()` and
     abort the child process via `ac.abort()`. That is demonstrated [later in this
     chapter](ch_nodejs-child-process.html#terminating-child-process-abortcontroller).
+  id: totrans-84
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果我们创建了一个AbortController `ac`，我们可以将`ac.signal`传递给`spawn()`，并通过`ac.abort()`中止子进程。这在[本章后面](ch_nodejs-child-process.html#terminating-child-process-abortcontroller)有演示。
 - en: '`.timeout: number`'
+  id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.timeout: number`'
 - en: If the child process takes longer than `.timeout` milliseconds, it is killed.
+  id: totrans-86
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果子进程的执行时间超过`.timeout`毫秒，则会被终止。
 - en: 12.2.1.3 `options.stdio`
+  id: totrans-87
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.1.3 `options.stdio`
 - en: 'Each of the standard I/O streams of the child process has a numeric ID, a so-called
     *file descriptor*:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 子进程的每个标准I/O流都有一个数字ID，称为*文件描述符*：
 - en: Standard input (stdin) has the file descriptor 0.
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 标准输入（stdin）的文件描述符为0。
 - en: Standard output (stdout) has the file descriptor 1.
+  id: totrans-90
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 标准输出(stdout)的文件描述符为1。
 - en: Standard error (stderr) has the file descriptor 2.
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 标准错误(stderr)的文件描述符为2。
 - en: There can be more file descriptors, but that’s rare.
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 可能会有更多的文件描述符，但这很少见。
 - en: '`options.stdio` configures if and how the streams of the child process are
     piped to streams in the parent process. It can be an Array where each element
     configures the file descriptor that is equal to its index. The following values
     can be used as Array elements:'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: '`options.stdio`配置子进程的流是否以及如何被管道连接到父进程的流。它可以是一个数组，其中每个元素配置等于其索引的文件描述符。可以使用以下值作为数组元素：'
 - en: '`''pipe''`:'
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''pipe''`：'
 - en: 'Index 0: Pipe `childProcess.stdin` to the child’s stdin. Note that, despite
     its name, the former is a stream that belongs to the parent process.'
+  id: totrans-95
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 索引0：将`childProcess.stdin`管道连接到子进程的stdin。请注意，尽管其名称如此，但前者是属于父进程的流。
 - en: 'Index 1: Pipe the child’s stdout to `childProcess.stdout`.'
+  id: totrans-96
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 索引1：将子进程的stdout管道连接到`childProcess.stdout`。
 - en: 'Index 2: Pipe the child’s stderr to `childProcess.stderr`.'
+  id: totrans-97
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 索引2：将子进程的stderr管道连接到`childProcess.stderr`。
 - en: '`''ignore''`: Ignore the child’s stream.'
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''ignore''`：忽略子进程的流。'
 - en: '`''inherit''`: Pipe the child’s stream to the corresponding stream of the parent
     process.'
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''inherit''`：将子进程的流管道连接到父进程的相应流。'
 - en: For example, if we want the child’s stderr to be logged to the console, we can
     use `'inherit'` at index 2.
+  id: totrans-100
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 例如，如果我们希望子进程的stderr被记录到控制台，我们可以在索引2处使用`'inherit'`。
 - en: 'Native Node.js stream: Pipe to or from that stream.'
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 原生Node.js流：管道到该流或从该流。
 - en: Other values are supported, too, but that’s beyond the scope of this chapter.
+  id: totrans-102
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 还支持其他值，但这超出了本章的范围。
 - en: 'Instead of specifying `options.stdio` via an Array, we can also abbreviate:'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了通过数组指定`options.stdio`之外，我们还可以缩写：
 - en: '`''pipe''` is equivalent to `[''pipe'', ''pipe'', ''pipe'']` (the default for
     `options.stdio`).'
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''pipe''`等同于`[''pipe'', ''pipe'', ''pipe'']`（`options.stdio`的默认值）。'
 - en: '`''ignore''` is equivalent to `[''ignore'', ''ignore'', ''ignore'']`.'
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''ignore''`等同于`[''ignore'', ''ignore'', ''ignore'']`。'
 - en: '`''inherit''` is equivalent to `[''inherit'', ''inherit'', ''inherit'']`.'
+  id: totrans-106
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`''inherit''`等同于`[''inherit'', ''inherit'', ''inherit'']`。'
 - en: '12.2.1.4 Result: instance of `ChildProcess`'
+  id: totrans-107
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.1.4 结果：`ChildProcess`的实例
 - en: '`spawn()` returns instances of [`ChildProcess`](https://nodejs.org/api/child_process.html#class-childprocess).'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: '`spawn()`返回[`ChildProcess`](https://nodejs.org/api/child_process.html#class-childprocess)的实例。'
 - en: 'Interesting data properties:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的数据属性：
 - en: '`.exitCode: number | null`'
+  id: totrans-110
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.exitCode: number | null`'
 - en: 'Contains the code with which the child process exited:'
+  id: totrans-111
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 包含子进程退出时的代码：
 - en: 0 (zero) means normal exit.
+  id: totrans-112
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 0（零）表示正常退出。
 - en: A number greater than zero means an error happened.
+  id: totrans-113
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 大于零的数字表示发生了错误。
 - en: '`null` means the process hasn’t exited yet.'
+  id: totrans-114
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`null`表示进程尚未退出。'
 - en: '`.signalCode: string | null`'
+  id: totrans-115
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.signalCode: string | null`'
 - en: The POSIX signal with which a child process was killed or `null` if it wasn’t.
     See the description of method `.kill()` below for more information.
+  id: totrans-116
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 子进程被杀死的POSIX信号，或者如果没有被杀死则为`null`。有关更多信息，请参阅下面的`.kill()`方法的描述。
 - en: 'Streams: Depending on how standard I/O is configured (see previous subsection),
     the following streams become available:'
+  id: totrans-117
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 流：根据标准I/O的配置方式（请参阅前面的小节），以下流变得可用：
 - en: '`.stdin`'
+  id: totrans-118
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.stdin`'
 - en: '`.stdout`'
+  id: totrans-119
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.stdout`'
 - en: '`.stderr`'
+  id: totrans-120
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.stderr`'
 - en: '`.pid: number | undefined`'
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.pid: number | undefined`'
 - en: The *process identifier* (PID) of the child process. If spawning fails, `.pid`
     is `undefined`. This value is available immediately after calling `spawn()`.
+  id: totrans-122
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 子进程的*进程标识符*（PID）。如果生成失败，`.pid`为`undefined`。在调用`spawn()`后立即可用此值。
 - en: 'Interesting methods:'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的方法：
 - en: '`.kill(signalCode?: number | string = ''SIGTERM''): boolean`'
+  id: totrans-124
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.kill(signalCode?: number | string = ''SIGTERM''): boolean`'
 - en: 'Sends a POSIX signal to the child process (which usually results in the termination
     of the process):'
+  id: totrans-125
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 向子进程发送POSIX信号（通常导致进程终止）：
 - en: '[The man page for `signal`](https://man7.org/linux/man-pages/man7/signal.7.html)
     contains a list of values.'
+  id: totrans-126
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`signal`的man页面](https://man7.org/linux/man-pages/man7/signal.7.html)包含值的列表。'
 - en: 'Windows does not support signals, but Node.js emulates some of them – e.g.:
     `SIGINT`, `SIGTERM`, and `SIGKILL`. For more information, see [the Node.js documentation](https://nodejs.org/api/process.html#signal-events).'
+  id: totrans-127
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Windows不支持信号，但Node.js模拟了其中一些 - 例如：`SIGINT`，`SIGTERM`和`SIGKILL`。有关更多信息，请参阅[Node.js文档](https://nodejs.org/api/process.html#signal-events)。
 - en: This method is demonstrated [later in this chapter](ch_nodejs-child-process.html#terminating-child-process-kill).
+  id: totrans-128
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法在[本章后面](ch_nodejs-child-process.html#terminating-child-process-kill)进行了演示。
 - en: 'Interesting events:'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的事件：
 - en: '`.on(''exit'', (exitCode: number|null, signalCode: string|null) => {})`'
+  id: totrans-130
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.on(''exit'', (exitCode: number|null, signalCode: string|null) => {})`'
 - en: 'This event is emitted after the child process ends:'
+  id: totrans-131
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此事件在子进程结束后发出：
 - en: 'The callback parameters provide us with either the exit code or the signal
     code: One of them will always be non-null.'
+  id: totrans-132
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 回调参数为我们提供了退出代码或信号代码：其中一个始终为非空。
 - en: Some of its standard I/O streams might still be open because multiple processes
     might share the same streams. Event `'close'` notifies us when all stdio streams
     are closed after the exit of a child process.
+  id: totrans-133
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由于多个进程可能共享相同的流，因此其标准I/O流可能仍然打开。事件`'close'`在子进程退出后通知我们所有stdio流都已关闭。
 - en: '`.on(''error'', (err: Error) => {})`'
+  id: totrans-134
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.on(''error'', (err: Error) => {})`'
 - en: This event is most commonly emitted if a process could not be spawned (see [example](ch_nodejs-child-process.html#spawning-fails)
     later) or the child process could not be killed. An `'exit'` event may or may
     not be emitted after this event.
+  id: totrans-135
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果进程无法被生成（请参阅[示例](ch_nodejs-child-process.html#spawning-fails)后面）或子进程无法被杀死，则最常见地发出此事件。在此事件之后可能会或可能不会发出`'exit'`事件。
 - en: We’ll see later [how events can be turned into Promises that can be awaited](ch_nodejs-child-process.html#wait-for-child-process-exit-via-promise).
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们稍后将看到[如何将事件转换为可以等待的Promise](ch_nodejs-child-process.html#wait-for-child-process-exit-via-promise)。
 - en: 12.2.2 When is the shell command executed?
+  id: totrans-137
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.2.2 shell命令何时执行？
 - en: 'When using the asynchronous `spawn()`, the child process for the command is
     started asynchronously. The following code demonstrates that:'
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 在使用异步`spawn()`时，命令的子进程是异步启动的。以下代码演示了这一点：
 - en: '[PRE3]'
+  id: totrans-139
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'This is the output:'
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是输出：
 - en: '[PRE4]'
+  id: totrans-141
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 12.2.3 Command-only mode vs. args mode
+  id: totrans-142
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.2.3 仅命令模式 vs. 参数模式
 - en: 'In this section, we specify the same command invocation in two ways:'
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们以两种方式指定相同的命令调用：
 - en: 'Command-only mode: We provide the whole invocation via the first parameter
     `command`.'
+  id: totrans-144
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 仅命令模式：我们通过第一个参数`command`提供整个调用。
 - en: 'Args mode: We provide the command via the first parameter `command` and its
     arguments via the second parameter `args`.'
+  id: totrans-145
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 参数模式：我们通过第一个参数`command`提供命令，通过第二个参数`args`提供参数。
 - en: 12.2.3.1 Command-only mode
+  id: totrans-146
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.3.1 仅命令模式
 - en: '[PRE5]'
+  id: totrans-147
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: Each command-only spawning with arguments requires `.shell` to be `true` (line
     A) – even if it’s as simple as this one.
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个带参数的仅命令生成都需要`.shell`为`true`（A行）-即使它像这个这么简单。
 - en: 'In line B, we tell `spawn()` how to handle standard I/O:'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 在B行，我们告诉`spawn()`如何处理标准I/O：
 - en: Ignore standard input.
+  id: totrans-150
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 忽略标准输入。
 - en: Pipe the child process stdout to `childProcess.stdout` (a stream that belongs
     to the parent process).
+  id: totrans-151
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将子进程的标准输出管道到`childProcess.stdout`（属于父进程的流）。
 - en: Pipe child process stderr to parent process stderr.
+  id: totrans-152
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将子进程的标准错误输出管道到父进程的标准错误输出。
 - en: In this case, we are only interested in the output of the child process. Therefore,
     we are done once we have processed the output. In other cases, we might have to
     wait until the child exits. How to do that, is demonstrated later.
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这种情况下，我们只对子进程的输出感兴趣。因此，一旦我们处理了输出，我们就完成了。在其他情况下，我们可能需要等到子进程退出。如何做到这一点，稍后会有演示。
 - en: In command-only mode, we see more pecularities of shells – for example, the
     Windows Command shell output includes double quotes (last line).
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 在仅命令模式下，我们看到shell的更多特殊之处 - 例如，Windows命令shell输出包括双引号（最后一行）。
 - en: 12.2.3.2 Args mode
+  id: totrans-155
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.3.2 参数模式
 - en: '[PRE6]'
+  id: totrans-156
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 12.2.3.3 Meta-characters in `args`
+  id: totrans-157
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.3.3 `args`中的元字符
 - en: 'Let’s explore what happens if there are meta-characters in `args`:'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们探讨一下如果`args`中有元字符会发生什么：
 - en: '[PRE7]'
+  id: totrans-159
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: If we don’t use a shell, meta-characters such as the dollar sign (`$`) have
     no effect (line A).
+  id: totrans-160
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们不使用shell，例如美元符号（`$`）等元字符没有效果（A行）。
 - en: With a shell, `$USER` is interpreted as a variable (line B).
+  id: totrans-161
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在shell中，`$USER`被解释为一个变量（B行）。
 - en: If we don’t want that, we have to escape the dollar sign via a backslash (line
     C).
+  id: totrans-162
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们不想要这个，我们必须通过反斜杠转义美元符号（C行）。
 - en: Similar effects occur with other meta-characters such as asterisks (`*`).
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 其他元字符（如星号（`*`））也会产生类似的效果。
 - en: These were two examples of Unix shell meta-characters. Windows shells have their
     own meta-characters and their own ways of escaping.
+  id: totrans-164
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是Unix shell元字符的两个例子。Windows shell有它们自己的元字符和它们自己的转义方式。
 - en: 12.2.3.4 A more complicated shell command
+  id: totrans-165
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.3.4 一个更复杂的shell命令
 - en: 'Let’s use more shell features (which requires command-only mode):'
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用更多的shell特性（这需要仅命令模式）：
 - en: '[PRE8]'
+  id: totrans-167
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 12.2.4 Sending data to the stdin of the child process
+  id: totrans-168
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.2.4 将数据发送到子进程的标准输入
 - en: 'So far, we have only read the standard output of a child process. But we can
     also send data to standard input:'
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们只读取了子进程的标准输出。但是我们也可以将数据发送到标准输入：
 - en: '[PRE9]'
+  id: totrans-170
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: We use the shell command `sort` (line A) to sort lines of text for us.
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用shell命令`sort`（A行）来为我们对文本行进行排序。
 - en: In line B, we use `Writable.toWeb()` to convert a native Node.js stream to a
     web stream (for more information, see [§10 “Using web streams on Node.js”](ch_web-streams.html)).
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: 在B行，我们使用`Writable.toWeb()`将本机Node.js流转换为网络流（更多信息，请参见[§10“在Node.js上使用网络流”](ch_web-streams.html)）。
 - en: How to write to a WritableStream via a writer (line C) is also explained in
     [the chapter on web streams](ch_web-streams.html#writing-to-WritableStream).
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 如何通过写入器（C行）向WritableStream写入也在[网络流章节](ch_web-streams.html#writing-to-WritableStream)中有解释。
 - en: 12.2.5 Piping manually
+  id: totrans-174
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.2.5 手动进行管道传输
 - en: 'We previously let a shell execute the following command:'
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们之前让shell执行以下命令：
 - en: '[PRE10]'
+  id: totrans-176
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'In the following example, we do the piping manually, from the echoes (line
     A) to the sorting (line B):'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的例子中，我们手动进行管道传输，从echo（A行）到sorting（B行）：
 - en: '[PRE11]'
+  id: totrans-178
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: ReadableStreams such as `echoOut` are asynchronously iterable. That’s why we
     can use a `for-await-of` loop to read their *chunks* (the fragments of the streamed
     data). For more information, see [§10 “Using web streams on Node.js”](ch_web-streams.html).
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如`echoOut`这样的ReadableStreams是异步可迭代的。这就是为什么我们可以使用`for-await-of`循环来读取它们的*chunks*（流数据的片段）。更多信息，请参见[§10“在Node.js上使用网络流”](ch_web-streams.html)。
 - en: 12.2.6 Handling unsuccessful exits (including errors)
+  id: totrans-180
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.2.6 处理不成功的退出（包括错误）
 - en: 'There are three main kinds of unsuccessful exits:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 有三种主要的不成功的退出方式：
 - en: The child process can’t be spawned.
+  id: totrans-182
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 子进程无法生成。
 - en: An error happens in the shell.
+  id: totrans-183
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Shell中发生了错误。
 - en: A process is killed.
+  id: totrans-184
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个进程被终止。
 - en: 12.2.6.1 The child process can’t be spawned
+  id: totrans-185
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.6.1 子进程无法生成
 - en: The following code demonstrates what happens if a child process can’t be spawned.
     In this case, the cause is that the shell’s path doesn’t point to an executable
     (line A).
+  id: totrans-186
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了如果子进程无法生成会发生什么。在这种情况下，原因是shell的路径没有指向可执行文件（A行）。
 - en: '[PRE12]'
+  id: totrans-187
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'This is the first time that we use events to work with child processes. In
     line B, we register an event listener for the `''error''` event. The child process
     starts after the current code fragment is finished. That helps prevent race conditions:
     When we start listening we can be sure that the event hasn’t been emitted yet.'
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们第一次使用事件来处理子进程。在B行，我们为`'error'`事件注册了一个事件监听器。当前代码片段完成后，子进程开始。这有助于防止竞争条件：当我们开始监听时，我们可以确保事件尚未被触发。
 - en: 12.2.6.2 An error happens in the shell
+  id: totrans-189
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.6.2 Shell中发生了错误
 - en: 'If the shell code contains an error, we don’t get an `''error''` event (line
     B), we get an `''exit''` event with a non-zero exit code (line A):'
+  id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果shell代码包含错误，我们不会收到`'error'`事件（B行），而是会收到一个带有非零退出代码的`'exit'`事件（A行）：
 - en: '[PRE13]'
+  id: totrans-191
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 12.2.6.3 A process is killed
+  id: totrans-192
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.6.3 进程被终止
 - en: 'If a process is killed on Unix, the exit code is `null` (line C) and the signal
     code is a string (line D):'
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果在Unix上终止进程，退出代码是`null`（C行），信号代码是一个字符串（D行）：
 - en: '[PRE14]'
+  id: totrans-194
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: Note that there is no error output (line E).
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，没有错误输出（E行）。
 - en: Instead of the child process killing itself (line A), we could have also paused
     it for a longer time and killed it manually via the process ID that we logged
     in line B.
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: 子进程不是自己终止（A行），我们也可以暂停它更长时间，然后通过我们在B行记录的进程ID手动终止它。
 - en: What happens if we kill a child process on Windows?
+  id: totrans-197
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在Windows上杀死一个子进程会发生什么？
 - en: '`exitCode` is `1`.'
+  id: totrans-198
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`exitCode` 是 `1`。'
 - en: '`signalCode` is `null`.'
+  id: totrans-199
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`signalCode` 是 `null`。'
 - en: 12.2.7 Waiting for the exit of a child process
+  id: totrans-200
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.2.7 等待子进程退出
 - en: Sometimes we only want to wait until a command is finished. That can be achieved
     via events and via Promises.
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时我们只想等到命令执行完毕。这可以通过事件和Promise来实现。
 - en: 12.2.7.1 Waiting via events
+  id: totrans-202
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.7.1 通过事件等待
 - en: '[PRE15]'
+  id: totrans-203
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: We are using the standard Node.js event pattern and register a listener for
     the `'exit'` event (line A).
+  id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用标准的Node.js事件模式，并为 `'exit'` 事件注册了一个监听器（A行）。
 - en: 12.2.7.2 Waiting via Promises
+  id: totrans-205
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.7.2 通过Promises等待
 - en: '[PRE16]'
+  id: totrans-206
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'The helper function `onExit()` that we use in line A, returns a Promise that
     is fulfilled if an `''exit''` event is emitted:'
+  id: totrans-207
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在A行使用的辅助函数 `onExit()` 返回一个Promise，如果触发了 `'exit'` 事件，它就会被满足：
 - en: '[PRE17]'
+  id: totrans-208
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'If `eventEmitter` fails, the returned Promise is rejected and `await` throws
     an exception in line A. `onExit()` handles two kinds of failures:'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 `eventEmitter` 失败，返回的Promise被拒绝，`await` 在A行抛出异常。`onExit()` 处理两种失败情况：
 - en: '`exitCode` isn’t zero (line B). That happens:'
+  id: totrans-210
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`exitCode` 不是零（B行）。发生了这种情况：'
 - en: If there is a shell error. Then `exitCode` is greater than zero.
+  id: totrans-211
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果有shell错误。那么 `exitCode` 大于零。
 - en: If the child process is killed on Unix. Then `exitCode` is `null` and `signalCode`
     is non-null.
+  id: totrans-212
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果在Unix上杀死子进程。那么 `exitCode` 是 `null`，`signalCode` 是非空的。
 - en: Killing child process on Windows produces a shell error.
+  id: totrans-213
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Windows上杀死子进程会产生一个shell错误。
 - en: An `'error'` event is emitted (line C). That happens if the child process can’t
     be spawned.
+  id: totrans-214
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个 `'error'` 事件被触发（C行）。如果孩子进程无法被生成，就会发生这种情况。
 - en: 12.2.8 Terminating child processes
+  id: totrans-215
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.2.8 终止子进程
 - en: 12.2.8.1 Terminating a child process via an AbortController
+  id: totrans-216
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.8.1 通过 AbortController 终止子进程
 - en: 'In this example, we use an AbortController to terminate a shell command:'
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这个例子中，我们使用AbortController来终止一个shell命令：
 - en: '[PRE18]'
+  id: totrans-218
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: We create an AbortController (line A), pass its signal to `spawn()` (line B),
     and terminate the shell command via the AbortController (line C).
+  id: totrans-219
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们创建一个AbortController（A行），将其信号传递给 `spawn()`（B行），并通过AbortController终止shell命令（C行）。
 - en: The child process starts asynchronously (after the current code fragment is
     executed). That’s why we can abort before the process has even started and why
     we don’t see any output in this case.
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: 子进程是异步启动的（在当前代码片段执行后）。这就是为什么我们可以在进程甚至开始之前中止，以及为什么在这种情况下我们看不到任何输出。
 - en: 12.2.8.2 Terminating a child process via `.kill()`
+  id: totrans-221
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.2.8.2 通过 `.kill()` 终止子进程
 - en: 'In the next example, we terminate a child process via the method `.kill()`
     (last line):'
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个例子中，我们通过方法 `.kill()` 终止一个子进程（最后一行）：
 - en: '[PRE19]'
+  id: totrans-223
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: Once again, we kill the child process before it has started (asynchronously!)
     and there is no output.
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次，在孩子进程开始之前我们就杀死了它（异步！），并且没有输出。
 - en: '12.3 Spawning processes synchronously: `spawnSync()`'
+  id: totrans-225
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.3 同步生成进程：`spawnSync()`
 - en: '[PRE20]'
+  id: totrans-226
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '[`spawnSync()`](https://nodejs.org/api/child_process.html#child_processspawnsynccommand-args-options)
     is the synchronous version of `spawn()` – it waits until the child process exits
     before it synchronously(!) returns an object.'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`spawnSync()`](https://nodejs.org/api/child_process.html#child_processspawnsynccommand-args-options)
+    是 `spawn()` 的同步版本 - 它会等待子进程退出，然后同步返回一个对象。'
 - en: 'The parameters are mostly the same as [those of `spawn()`](ch_nodejs-child-process.html#spawn).
     `options` has a few additional properties – e.g.:'
+  id: totrans-228
   prefs: []
   type: TYPE_NORMAL
+  zh: 参数大多与[`spawn()`](ch_nodejs-child-process.html#spawn)相同。`options` 有一些额外的属性 -
+    例如：
 - en: '`.input: string | TypedArray | DataView`'
+  id: totrans-229
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.input: string | TypedArray | DataView`'
 - en: If this property exists, its value is sent to the standard input of the child
     process.
+  id: totrans-230
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果这个属性存在，它的值将被发送到子进程的标准输入。
 - en: '`.encoding: string` (default: `''buffer''`)'
+  id: totrans-231
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.encoding: string`（默认：`''buffer''`）'
 - en: Specifies the encoding that is used for all standard I/O streams.
+  id: totrans-232
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 指定用于所有标准I/O流的编码。
 - en: 'The function returns an object. Its most interesting properties are:'
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: 该函数返回一个对象。它最有趣的属性是：
 - en: '`.stdout: Buffer | string`'
+  id: totrans-234
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.stdout: Buffer | string`'
 - en: Contains whatever was written to the standard output stream of the child process.
+  id: totrans-235
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 包含写入子进程标准输出流的内容。
 - en: '`.stderr: Buffer | string`'
+  id: totrans-236
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.stderr: Buffer | string`'
 - en: Contains whatever was written to the standard error stream of the child process.
+  id: totrans-237
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 包含写入子进程标准错误流的内容。
 - en: '`.status: number | null`'
+  id: totrans-238
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.status: number | null`'
 - en: Contains the exit code of the child process or `null`. Either the exit code
     or the signal code are non-null.
+  id: totrans-239
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 包含子进程的退出代码或 `null`。退出代码或信号代码中的一个是非空的。
 - en: '`.signal: string | null`'
+  id: totrans-240
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.signal: string | null`'
 - en: Contains the signal code of the child process or `null`. Either the exit code
     or the signal code are non-null.
+  id: totrans-241
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 包含孩子进程的信号代码或 `null`。退出代码或信号代码中的一个是非空的。
 - en: '`.error?: Error`'
+  id: totrans-242
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.error?: Error`'
 - en: This property is only created if spawning didn’t work and then contains an Error
     object.
+  id: totrans-243
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 只有在生成失败时才会创建这个属性，然后包含一个错误对象。
 - en: With the asynchronous `spawn()`, the child process ran concurrently and we could
     read standard I/O via streams. In contrast, the synchronous `spawnSync()` collects
     the contents of the streams and returns them to us synchronously (see next subsection).
+  id: totrans-244
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用异步的 `spawn()` 时，子进程并行运行，我们可以通过流读取标准I/O。相反，同步的 `spawnSync()` 收集流的内容并将其同步返回给我们（见下一小节）。
 - en: 12.3.1 When is the shell command executed?
+  id: totrans-245
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.3.1 shell命令何时执行？
 - en: 'When using the synchronous `spawnSync()`, the child process for the command
     is started synchronously. The following code demonstrates that:'
+  id: totrans-246
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用同步的 `spawnSync()` 时，命令的子进程是同步启动的。以下代码演示了这一点：
 - en: '[PRE21]'
+  id: totrans-247
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'This is the output:'
+  id: totrans-248
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是输出：
 - en: '[PRE22]'
+  id: totrans-249
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 12.3.2 Reading from stdout
+  id: totrans-250
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.3.2 从标准输出读取
 - en: 'The following code demonstrates how to read standard output:'
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了如何读取标准输出：
 - en: '[PRE23]'
+  id: totrans-252
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: In line A, we use `options.stdio` to tell `spawnSync()` that we are only interested
     in standard output. We ignore standard input and pipe standard error to the parent
     process.
+  id: totrans-253
   prefs: []
   type: TYPE_NORMAL
+  zh: 在A行，我们使用 `options.stdio` 告诉 `spawnSync()` 我们只对标准输出感兴趣。我们忽略标准输入，并将标准错误传输到父进程。
 - en: As a consequence, we only get a result property for standard output (line C)
     and the property for standard error is `null` (line D).
+  id: totrans-254
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们只能得到标准输出的结果属性（C行），标准错误的属性是 `null`（D行）。
 - en: Since we can’t access the streams that `spawnSync()` uses internally to handle
     the standard I/O of the child process, we tell it which encoding to use, via `options.encoding`
     (line B).
+  id: totrans-255
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于我们无法访问`spawnSync()`内部使用的流来处理子进程的标准I/O，我们通过`options.encoding`（B行）告诉它使用哪种编码。
 - en: 12.3.3 Sending data to the stdin of the child process
+  id: totrans-256
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.3.3 向子进程的stdin发送数据
 - en: 'We can send data to the standard input stream of a child process via the options
     property `.input` (line A):'
+  id: totrans-257
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过选项属性`.input`（A行）向子进程的标准输入流发送数据：
 - en: '[PRE24]'
+  id: totrans-258
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 12.3.4 Handling unsuccessful exits (including errors)
+  id: totrans-259
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.3.4 处理不成功的退出（包括错误）
 - en: 'There are three main kinds of unsuccessful exits (when the exit code isn’t
     zero):'
+  id: totrans-260
   prefs: []
   type: TYPE_NORMAL
+  zh: 有三种主要的不成功的退出情况（当退出代码不为零时）：
 - en: The child process can’t be spawned.
+  id: totrans-261
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 子进程无法被生成。
 - en: An error happens in the shell.
+  id: totrans-262
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: shell中发生错误。
 - en: A process is killed.
+  id: totrans-263
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 进程被终止。
 - en: 12.3.4.1 The child process can’t be spawned
+  id: totrans-264
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.4.1 子进程无法生成
 - en: 'If spawning fails, `spawn()` emits an `''error''` event. In contrast, `spawnSync()`
     sets `result.error` to an error object:'
+  id: totrans-265
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果生成失败，`spawn()`会发出一个`'error'`事件。相比之下，`spawnSync()`将`result.error`设置为一个错误对象：
 - en: '[PRE25]'
+  id: totrans-266
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 12.3.4.2 An error happens in the shell
+  id: totrans-267
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.4.2 shell中发生错误
 - en: 'If an error happens in the shell, the exit code `result.status` is greater
     than zero and `result.signal` is `null`:'
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果在shell中发生错误，退出代码`result.status`大于零，`result.signal`为`null`：
 - en: '[PRE26]'
+  id: totrans-269
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 12.3.4.3 A process is killed
+  id: totrans-270
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 12.3.4.3 进程被终止
 - en: 'If the child process is killed on Unix, `result.signal` contains the name of
     the signal and `result.status` is `null`:'
+  id: totrans-271
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果在Unix上终止子进程，`result.signal`包含信号的名称，`result.status`为`null`：
 - en: '[PRE27]'
+  id: totrans-272
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: Note that no output was sent to the standard error stream (line A).
+  id: totrans-273
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，没有输出发送到标准错误流（A行）。
 - en: 'If we kill a child process on Windows:'
+  id: totrans-274
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在Windows上终止一个子进程：
 - en: '`result.status` is 1'
+  id: totrans-275
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`result.status`为1'
 - en: '`result.signal` is `null`'
+  id: totrans-276
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`result.signal`为`null`'
 - en: '`result.stderr` is `''''`'
+  id: totrans-277
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`result.stderr`为`''''`'
 - en: 12.4 Asynchronous helper functions based on `spawn()`
+  id: totrans-278
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.4 基于`spawn()`的异步辅助函数
 - en: 'In this section, we look at two asynchronous functions in module `node:child_process`
     that are based on `spawn()`:'
+  id: totrans-279
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们将看到基于`spawn()`的两个异步函数：
 - en: '`exec()`'
+  id: totrans-280
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`exec()`'
 - en: '`execFile()`'
+  id: totrans-281
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`execFile()`'
 - en: 'We ignore [`fork()`](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options)
     in this chapter. Quoting [the Node.js documentation](https://nodejs.org/api/child_process.html#child-process):'
+  id: totrans-282
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们忽略了[`fork()`](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options)。引用[Node.js文档](https://nodejs.org/api/child_process.html#child-process)：
 - en: '`fork()` spawns a new Node.js process and invokes a specified module with an
     IPC communication channel established that allows sending messages between parent
     and child.'
+  id: totrans-283
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: '`fork()`生成一个新的Node.js进程，并调用一个指定的模块，建立了一个IPC通信通道，允许在父进程和子进程之间发送消息。'
 - en: 12.4.1 `exec()`
+  id: totrans-284
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.4.1 `exec()`
 - en: '[PRE28]'
+  id: totrans-285
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: '[`exec()`](https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback)
     runs a command in a newly spawned shell. The main differences with `spawn()` are:'
+  id: totrans-286
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`exec()`](https://nodejs.org/api/child_process.html#child_processexeccommand-options-callback)在新生成的shell中运行一个命令。与`spawn()`的主要区别在于：'
 - en: 'In addition to returning a ChildProcess, `exec()` also delivers a result via
     a callback: Either an error object or the contents of stdout and stderr.'
+  id: totrans-287
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 除了返回一个ChildProcess，`exec()`还通过回调函数传递结果：错误对象或stdout和stderr的内容。
 - en: 'Causes of errors: child process can’t be spawned, shell error, child process
     killed.'
+  id: totrans-288
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 错误原因：子进程无法生成，shell错误，子进程被终止。
 - en: In contrast, `spawn()` only emits `'error'` events if the child process can’t
     be spawned. The other two failures are handled via exit codes and (on Unix) signal
     codes.
+  id: totrans-289
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 相比之下，`spawn()`只在子进程无法被生成时发出`'error'`事件。另外两种失败是通过退出代码和（在Unix上）信号代码来处理的。
 - en: There is no parameter `args`.
+  id: totrans-290
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 没有参数`args`。
 - en: The default for `options.shell` is `true`.
+  id: totrans-291
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`options.shell`的默认值为`true`。'
 - en: '[PRE29]'
+  id: totrans-292
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: '`exec()` can be converted to a Promise-based function via [`util.promisify()`](https://nodejs.org/api/util.html#utilpromisifyoriginal):'
+  id: totrans-293
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exec()`可以通过[`util.promisify()`](https://nodejs.org/api/util.html#utilpromisifyoriginal)转换为基于Promise的函数：'
 - en: The ChildProcess becomes a property of the returned Promise.
+  id: totrans-294
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ChildProcess成为返回的Promise的属性。
 - en: 'The Promise is settled as follows:'
+  id: totrans-295
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Promise的解决方式如下：
 - en: 'Fulfillment value: `{stdout, stderr}`'
+  id: totrans-296
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 完成值：`{stdout, stderr}`
 - en: 'Rejection value: same value as parameter `error` of the callback but with two
     additional properties: `.stdout` and `.stderr`.'
+  id: totrans-297
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 拒绝值：与回调函数的参数`error`相同，但有两个额外的属性：`.stdout`和`.stderr`。
 - en: '[PRE30]'
+  id: totrans-298
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 12.4.2 `execFile()`
+  id: totrans-299
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.4.2 `execFile()`
 - en: '[`execFile(file, args?, options?, callback?): ChildProcess`](https://nodejs.org/api/child_process.html#child_processexecfilefile-args-options-callback)'
+  id: totrans-300
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`execFile(file, args?, options?, callback?): ChildProcess`](https://nodejs.org/api/child_process.html#child_processexecfilefile-args-options-callback)'
 - en: 'Works similarly to `exec()`, with the following differences:'
+  id: totrans-301
   prefs: []
   type: TYPE_NORMAL
+  zh: 与`exec()`类似，具有以下区别：
 - en: The parameter `args` is supported.
+  id: totrans-302
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 支持参数`args`。
 - en: The default for `options.shell` is `false`.
+  id: totrans-303
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`options.shell`的默认值为`false`。'
 - en: Like `exec()`, `execFile()` can be converted to a Promise-based function via
     `util.promisify()`.
+  id: totrans-304
   prefs: []
   type: TYPE_NORMAL
+  zh: 与`exec()`类似，`execFile()`可以通过`util.promisify()`转换为基于Promise的函数。
 - en: 12.5 Synchronous helper functions based on `spawnAsync()`
+  id: totrans-305
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.5 基于`spawnAsync()`的同步辅助函数
 - en: 12.5.1 `execSync()`
+  id: totrans-306
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.5.1 `execSync()`
 - en: '[PRE31]'
+  id: totrans-307
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: '[`execSync()`](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options)
     runs a command in a new child process and waits synchronously until that process
     exits. The main differences with `spawnSync()` are:'
+  id: totrans-308
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`execSync()`](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options)在一个新的子进程中运行一个命令，并同步等待该进程退出。与`spawnSync()`的主要区别在于：'
 - en: Only returns the contents of stdout.
+  id: totrans-309
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只返回stdout的内容。
 - en: 'Three kinds of failures are reported via exceptions: child process can’t be
     spawned, shell error, child process killed.'
+  id: totrans-310
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 三种失败通过异常报告：子进程无法生成，shell错误，子进程被终止。
 - en: In contrast, the result of `spawnSync()` only has an `.error` property if the
     child process can’t be spawned. The other two failures are handled via exit codes
     and (on Unix) signal codes.
+  id: totrans-311
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 相比之下，`spawnSync()`的结果只有一个`.error`属性，如果子进程无法被生成。另外两种失败是通过退出代码和（在Unix上）信号代码来处理的。
 - en: There is no parameter `args`.
+  id: totrans-312
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 没有参数`args`。
 - en: The default for `options.shell` is `true`.
+  id: totrans-313
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`options.shell`的默认值为`true`。'
 - en: '[PRE32]'
+  id: totrans-314
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 12.5.2 `execFileSync()`
+  id: totrans-315
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.5.2 `execFileSync()`
 - en: '[`execFileSync(file, args?, options?): Buffer | string`](https://nodejs.org/api/child_process.html#child_processexecfilesyncfile-args-options)'
+  id: totrans-316
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`execFileSync(file, args?, options?): Buffer | string`](https://nodejs.org/api/child_process.html#child_processexecfilesyncfile-args-options)'
 - en: 'Works similarly to `execSync()`, with the following differences:'
+  id: totrans-317
   prefs: []
   type: TYPE_NORMAL
+  zh: 与`execSync()`类似，但有以下区别：
 - en: The parameter `args` is supported.
+  id: totrans-318
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 支持参数`args`。
 - en: The default for `options.shell` is `false`.
+  id: totrans-319
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`options.shell`的默认值是`false`。'
 - en: 12.6 Useful libraries
+  id: totrans-320
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.6 有用的库
 - en: '12.6.1 tinysh: a helper for spawning shell commands'
+  id: totrans-321
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.6.1 tinysh：生成shell命令的辅助程序
 - en: '[tinysh](https://github.com/antonmedv/tinysh) by Anton Medvedev is a small
     library that helps with spawning shell commands – e.g.:'
+  id: totrans-322
   prefs: []
   type: TYPE_NORMAL
+  zh: '[tinysh](https://github.com/antonmedv/tinysh)由Anton Medvedev是一个帮助生成shell命令的小型库-例如：'
 - en: '[PRE33]'
+  id: totrans-323
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'We can override the default options by using `.call()` to pass an object as
     `this`:'
+  id: totrans-324
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过使用`.call()`将对象作为`this`传递来覆盖默认选项：
 - en: '[PRE34]'
+  id: totrans-325
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'We can use any property name and tinysh executes the shell command with that
     name. It achieves that feat via [a Proxy](https://exploringjs.com/deep-js/ch_proxies.html).
     This is a slightly modified version of the actual library:'
+  id: totrans-326
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用任何属性名称，tinysh会使用该名称执行shell命令。它通过[代理](https://exploringjs.com/deep-js/ch_proxies.html)实现了这一壮举。这是实际库的略微修改版本：
 - en: '[PRE35]'
+  id: totrans-327
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: In line A, we can see that if we get a property whose name is `bin` from `sh`,
     a function is returned that invokes `execFileSync()` and uses `bin` as the first
     argument.
+  id: totrans-328
   prefs: []
   type: TYPE_NORMAL
+  zh: 在A行中，我们可以看到如果从`sh`获取名为`bin`的属性，则返回一个调用`execFileSync()`并使用`bin`作为第一个参数的函数。
 - en: Spreading `this` in line B enables us to specify options via `.call()`. The
     defaults come first, so that they can be overridden via `this`.
+  id: totrans-329
   prefs: []
   type: TYPE_NORMAL
+  zh: 在B行中传播`this`使我们能够通过`.call()`指定选项。默认值首先出现，以便可以通过`this`进行覆盖。
 - en: '12.6.2 node-powershell: executing Windows PowerShell commands via Node.js'
+  id: totrans-330
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 12.6.2 node-powershell：通过Node.js执行Windows PowerShell命令
 - en: 'Using [the library node-powershell](https://github.com/rannn505/child-shell/tree/master/packages/node-powershell)
     on Windows, looks as follows:'
+  id: totrans-331
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上使用[node-powershell库](https://github.com/rannn505/child-shell/tree/master/packages/node-powershell)的示例如下：
 - en: '[PRE36]'
+  id: totrans-332
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 12.7 Choosing between the functions of module `'node:child_process'`
+  id: totrans-333
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 12.7 在模块`'node:child_process'`的函数之间进行选择
 - en: 'General constraints:'
+  id: totrans-334
   prefs: []
   type: TYPE_NORMAL
+  zh: 一般约束：
 - en: Should other asynchronous tasks run while the command is executed?
+  id: totrans-335
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在执行命令时，其他异步任务是否应该运行？
 - en: Use any asynchronous function.
+  id: totrans-336
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用任何异步函数。
 - en: Do you only execute one command at a time (without async tasks in the background)?
+  id: totrans-337
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 您是否只执行一个命令（没有后台异步任务）？
 - en: Use any synchronous function.
+  id: totrans-338
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用任何同步函数。
 - en: Do you want to access stdin or stdout of the child process via a stream?
+  id: totrans-339
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 您想通过流访问子进程的stdin或stdout吗？
 - en: 'Only asynchronous functions give you access to streams: `spawn()` is simpler
     in this case because it doesn’t have a callback that delivers errors and standard
     I/O content.'
+  id: totrans-340
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只有异步函数才能让您访问流：在这种情况下，`spawn()`更简单，因为它没有提供传递错误和标准I/O内容的回调。
 - en: Do you want to capture stdout or stderr in a string?
+  id: totrans-341
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 您想在字符串中捕获stdout或stderr吗？
 - en: 'Asynchronous options: `exec()` and `execFile()`'
+  id: totrans-342
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 异步选项：`exec()`和`execFile()`
 - en: 'Synchronous options: `spawnSync()`, `execSync()`, `execFileSync()`'
+  id: totrans-343
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 同步选项：`spawnSync()`，`execSync()`，`execFileSync()`
 - en: 'Asynchronous functions – choosing between `spawn()` and `exec()` or `execFile()`:'
+  id: totrans-344
   prefs: []
   type: TYPE_NORMAL
+  zh: 异步函数-在`spawn()`和`exec()`或`execFile()`之间进行选择：
 - en: '`exec()` and `execFile()` have two benefits:'
+  id: totrans-345
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`exec()`和`execFile()`有两个好处：'
 - en: Failures are easier to handle because they are all reported in the same manner
     – via the first callback parameter.
+  id: totrans-346
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由于它们都通过第一个回调参数报告，因此更容易处理失败。
 - en: Getting stdout and stderr as strings is easier - due to the callback.
+  id: totrans-347
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 获取stdout和stderr作为字符串更容易-由于回调。
 - en: You can pick `spawn()` if those benefits don’t matter to you. Its signature
     is simpler without the (optional) callback.
+  id: totrans-348
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果这些好处对您不重要，您可以选择`spawn()`。它的签名更简单，没有（可选的）回调。
 - en: 'Synchronous functions – choosing between `spawnSync()` and `execSync()` or
     `execFileSync()`:'
+  id: totrans-349
   prefs: []
   type: TYPE_NORMAL
+  zh: 同步函数-在`spawnSync()`和`execSync()`或`execFileSync()`之间进行选择：
 - en: '`execSync()` and `execFileSync()` have two specialties:'
+  id: totrans-350
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`execSync()`和`execFileSync()`有两个特点：'
 - en: They return a string with the content of stdout.
+  id: totrans-351
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们返回一个包含stdout内容的字符串。
 - en: Failures are easier to handle because they are all reported in the same manner
     – via exceptions.
+  id: totrans-352
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由于它们都通过异常报告，因此更容易处理失败。
 - en: Pick `spawnSync()` if you need more information than `execSync()` and `execFileSync()`
     provide via their return values and exceptions.
+  id: totrans-353
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果您需要比`execSync()`和`execFileSync()`通过它们的返回值和异常提供的更多信息，则选择`spawnSync()`。
 - en: 'Choosing between `exec()` and `execFile()` (the same arguments apply to choosing
     between `execSync()` and `execFileSync()`):'
+  id: totrans-354
   prefs: []
   type: TYPE_NORMAL
+  zh: 在`exec()`和`execFile()`之间进行选择（选择`execSync()`和`execFileSync()`时适用相同的参数）：
 - en: The default for `options.shell` is `true` in `exec()` but `false` in `execFile()`.
+  id: totrans-355
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`options.shell`在`exec()`中的默认值为`true`，但在`execFile()`中为`false`。'
 - en: '`execFile()` supports `args`, `exec()` doesn’t.'
+  id: totrans-356
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`execFile()`支持`args`，`exec()`不支持。'
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/12)'
+  id: totrans-357
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/nodejs-shell-scripting/issues/12)'

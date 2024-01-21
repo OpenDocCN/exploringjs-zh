@@ -1,91 +1,111 @@
 - en: 13 Installing npm packages and running bin scripts
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/nodejs-shell-scripting/ch_installing-packages.html](https://exploringjs.com/nodejs-shell-scripting/ch_installing-packages.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: 13.1 [Installing npm registry packages globally](ch_installing-packages.html#installing-npm-registry-packages-globally)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.1.1 [Which packages are installed globally? `npm ls -g`](ch_installing-packages.html#which-packages-are-installed-globally-npm-ls--g)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.1.2 [Where are packages installed globally? `npm root -g`](ch_installing-packages.html#where-are-packages-installed-globally-npm-root--g)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.1.3 [Where are shell scripts installed globally? `npm bin -g`](ch_installing-packages.html#where-are-shell-scripts-installed-globally-npm-bin--g)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.1.4 [Where are packages installed globally? The npm installation prefix](ch_installing-packages.html#where-are-packages-installed-globally-the-npm-installation-prefix)
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.1.5 [Changing where packages are installed globally](ch_installing-packages.html#changing-where-packages-are-installed-globally)
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.2 [Installing npm registry packages locally](ch_installing-packages.html#installing-npm-registry-packages-locally)
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.2.1 [Running locally installed bin scripts](ch_installing-packages.html#running-locally-installed-bin-scripts)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.3 [Installing unpublished packages](ch_installing-packages.html#installing-unpublished-packages)
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.1 [`npm link`: installing an unpublished package globally](ch_installing-packages.html#npm-link-installing-an-unpublished-package-globally)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.2 [`npm link`: installing a globally linked package locally](ch_installing-packages.html#npm-link-installing-a-globally-linked-package-locally)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.3.3 [`npm link`: undoing linking](ch_installing-packages.html#npm-link-undoing-linking)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.3.4 [Installing unpublished packages via local paths](ch_installing-packages.html#installing-unpublished-packages-via-local-paths)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.3.5 [Other ways of installing unpublished packages](ch_installing-packages.html#other-ways-of-installing-unpublished-packages)
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '13.4 [`npx`: running bin scripts in npm packages without installing them](ch_installing-packages.html#npx)'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 13.4.1 [The npx cache](ch_installing-packages.html#the-npx-cache)
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: 'The `package.json` property `"bin"` lets an npm package specify which shell
@@ -94,667 +114,1025 @@
     ensures that we can access these shell scripts (so-called *bin scripts*) from
     a command line. In this chapter, we explore two ways of installing packages with
     bin scripts:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
 - en: Locally installing a package with bin scripts means installing it as a dependency
     inside a package. The scripts are only accessible within that package.
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Globally installing a package with bin scripts means installing it in a “global
     location” so that the scripts are accessible everywhere – for either the current
     user or all users of a system (depending on how npm is set up).
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: We explore what all of that means and how we can run bin scripts after installing
     them.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
 - en: 13.1 Installing npm registry packages globally
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[Package `cowsay`](https://github.com/piuccio/cowsay) has the following `package.json`
     property:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'To install this package globally, we use `npm install -g`:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Caveat: On Unix, we may have to use `sudo` (we’ll learn soon how to avoid that):'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: After that, we can use the commands `cowsay` and `cowthink` in our command lines.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
 - en: Note that only the bin scripts are available globally. The packages are ignored
     when Node.js looks up bare module specifiers in `node_modules` directories.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
 - en: 13.1.1 Which packages are installed globally? `npm ls -g`
+  id: totrans-33
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'We can check which packages are installed globally and where:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'On Windows, the installation path is `%AppData%\npm`, e.g.:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 13.1.2 Where are packages installed globally? `npm root -g`
+  id: totrans-38
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Result on macOS:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Result on Windows:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE6]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 13.1.3 Where are shell scripts installed globally? `npm bin -g`
+  id: totrans-43
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '`npm bin -g` tells us where npm installs shell scripts globally. It also ensures
     that that directory is available in the shell PATH.'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '`npm bin -g`告诉我们npm全局安装shell脚本的位置。它还确保该目录在shell PATH中可用。'
 - en: 'Result on macOS:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: macOS上的结果：
 - en: '[PRE7]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Result on the Windows Command shell:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows命令shell上的结果：
 - en: '[PRE8]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: The executable `cowsay` without a filename extension is for Unix-based Windows
     environments such as Cygwin, MinGW, and MSYS.
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有文件名扩展名的可执行文件`cowsay`是针对基于Unix的Windows环境（如Cygwin、MinGW和MSYS）的。
 - en: 'Windows PowerShell returns this path for `gcm cowsay`:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: Windows PowerShell返回`gcm cowsay`的路径：
 - en: '[PRE9]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 13.1.4 Where are packages installed globally? The npm installation prefix
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.1.4 全局安装的包在哪里？npm安装前缀
 - en: npm’s *installation prefix* determines where packages and bin scripts are installed
     globally.
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: npm的*安装前缀*决定了全局安装包和bin脚本的安装位置。
 - en: 'This is the installation prefix on macOS:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是macOS上的安装前缀：
 - en: '[PRE10]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Accordingly:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此：
 - en: Packages are installed in `/usr/local/lib/node_modules`
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包安装在`/usr/local/lib/node_modules`中
 - en: Bin scripts are installed in `/usr/local/bin`
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Bin脚本安装在`/usr/local/bin`中
 - en: 'This is the installation prefix on Windows:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是Windows上的安装前缀：
 - en: '[PRE11]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'Accordingly:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此：
 - en: Packages are installed in `C:\Users\jane\AppData\Roaming\npm\node_modules`
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包安装在`C:\Users\jane\AppData\Roaming\npm\node_modules`中
 - en: Bin scripts are installed in `C:\Users\jane\AppData\Roaming\npm`
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Bin脚本安装在`C:\Users\jane\AppData\Roaming\npm`中
 - en: 13.1.5 Changing where packages are installed globally
+  id: totrans-64
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.1.5 改变全局安装包位置
 - en: 'In this section, we examine two ways of changing where packages are installed
     globally:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这一部分，我们将研究两种改变全局安装包位置的方法：
 - en: Changing the npm installation prefix
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 更改npm安装前缀
 - en: Using a Node.js version manager
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用Node.js版本管理器
 - en: 13.1.5.1 Changing the npm installation prefix
+  id: totrans-68
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.1.5.1 改变npm安装前缀
 - en: One way of changing where packages are installed globally is to change the npm
     installation prefix.
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 改变全局安装包位置的一种方法是改变npm的安装前缀。
 - en: 'Unix:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: Unix：
 - en: '[PRE12]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Windows Command shell:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: Windows命令shell：
 - en: '[PRE13]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Windows PowerShell:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: Windows PowerShell：
 - en: '[PRE14]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: The configuration data is saved to a file `.npmrc` in the home directory.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 配置数据保存在主目录中的`.npmrc`文件中。
 - en: From now on, global installs will be added to the directory we have just specified.
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 从现在开始，全局安装将被添加到我们刚刚指定的目录中。
 - en: Afterward, we still have to add the `npm bin -g` directory to our shell PATH
     so that our shell finds bin scripts we install globally.
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 之后，我们仍然需要将`npm bin -g`目录添加到我们的shell PATH中，以便我们的shell可以找到我们全局安装的bin脚本。
 - en: '**A downside of changing the npm prefix:** npm will now also be installed at
     the new location if we tell it to upgrade itself.'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: '**更改npm前缀的一个缺点：**如果我们告诉npm升级自己，它现在也会安装到新位置。'
 - en: 13.1.5.2 Using a Node.js version manager
+  id: totrans-80
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.1.5.2 使用Node.js版本管理器
 - en: 'Node.js version managers let us install multiple versions of Node.js at the
     same time and switch between them. Popular ones include:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js版本管理器可以让我们同时安装多个Node.js版本并在它们之间切换。流行的版本管理器包括：
 - en: 'Unix: [nvm](https://github.com/nvm-sh/nvm)'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Unix：[nvm](https://github.com/nvm-sh/nvm)
 - en: 'Cross-platform: [Volta](https://volta.sh)'
+  id: totrans-83
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 跨平台：[Volta](https://volta.sh)
 - en: 13.2 Installing npm registry packages locally
+  id: totrans-84
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.2 安装npm注册包到本地
 - en: 'To install an npm registry package such as `cowsay` *locally* (into a package),
     we do the following:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 要*本地*安装npm注册包（如`cowsay`），我们需要执行以下操作：
 - en: '[PRE15]'
+  id: totrans-86
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'This adds the following data to `package.json`:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 这将向`package.json`添加以下数据：
 - en: '[PRE16]'
+  id: totrans-88
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Additionally, the package is downloaded into the following directory:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 此外，该包被下载到以下目录：
 - en: '[PRE17]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'On Unix, npm adds these symbolic links for the bin scripts:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上，npm为bin脚本添加了这些符号链接：
 - en: '[PRE18]'
+  id: totrans-92
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'On Windows, npm adds these files to `my-package\node_modules\.bin\`:'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上，npm将这些文件添加到`my-package\node_modules\.bin\`中：
 - en: '[PRE19]'
+  id: totrans-94
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: The files without extensions are scripts for Unix-based Windows environments
     such as Cygwin, MinGW, and MSYS.
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有扩展名的文件是针对基于Unix的Windows环境（如Cygwin、MinGW和MSYS）的脚本。
 - en: '`npm bin` tells us where locally installed bin scripts are located – for example:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: '`npm bin`告诉我们本地安装的bin脚本的位置 - 例如：'
 - en: '[PRE20]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'Note: Locally, packages are always installed in a directory `node_modules`
     next to a `package.json` file. If the latter doesn’t exist in the current directory,
     npm searches for it in an ancestor directory and installs the package there. To
     check where npm would install packages locally, we can use the command `npm root`
     – for example (Unix):'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：本地安装的包始终安装在`package.json`文件旁边的`node_modules`目录中。如果当前目录中不存在`package.json`，npm会在祖先目录中搜索并在那里安装包。要检查npm在本地安装包的位置，我们可以使用`npm
+    root`命令 - 例如（Unix）：
 - en: '[PRE21]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: There is no `package.json` in John’s home directory, but npm can’t install anything
     in an ancestor directory, which is why `npm root` shows this directory. Installing
     a package locally at the current location will lead to `package.json` being created
     and installation progressing as usual.
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: John的主目录中没有`package.json`，但npm无法在祖先目录中安装任何内容，这就是为什么`npm root`显示这个目录。在当前位置本地安装包将导致创建`package.json`并像往常一样进行安装。
 - en: 13.2.1 Running locally installed bin scripts
+  id: totrans-101
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.2.1 运行本地安装的bin脚本
 - en: (All commands in this subsection are executed inside directory `my-package`.)
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: （本小节中的所有命令都在`my-package`目录中执行。）
 - en: 13.2.1.1 Running bin scripts directly
+  id: totrans-103
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.2.1.1 直接运行bin脚本
 - en: 'We can run `cowsay` as follows from a shell:'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以从shell中如下运行`cowsay`：
 - en: '[PRE22]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'On Unix, we can set up a helper:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上，我们可以设置一个辅助程序：
 - en: '[PRE23]'
+  id: totrans-107
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'Then the following command works:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后以下命令有效：
 - en: '[PRE24]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 13.2.1.2 Running bin scripts via package scripts
+  id: totrans-110
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.2.1.2 通过包脚本运行bin脚本
 - en: 'We can also add a package script to `package.json`:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以在`package.json`中添加一个包脚本：
 - en: '[PRE25]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Now we can execute this command in a shell:'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们可以在shell中执行这个命令：
 - en: '[PRE26]'
+  id: totrans-114
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'That works because npm temporarily adds the following entries to `$PATH` on
     Unix:'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是因为npm在Unix上临时将以下条目添加到`$PATH`中：
 - en: '[PRE27]'
+  id: totrans-116
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'On Windows, similar entries are added to `%Path%` or `$env:Path`:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上，类似的条目被添加到`%Path%`或`$env:Path`中：
 - en: '[PRE28]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'The following command lists the environment variables and their values that
     exist while a package script runs:'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下命令列出了包脚本运行时存在的环境变量及其值：
 - en: '[PRE29]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 13.2.1.3 Running bin scripts via npx
+  id: totrans-121
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 13.2.1.3 通过npx运行bin脚本
 - en: 'Inside a package, npx can be used to access bin scripts:'
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 在一个包内，可以使用npx来访问bin脚本：
 - en: '[PRE30]'
+  id: totrans-123
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: More on npx later.
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 稍后再详细介绍npx。
 - en: 13.3 Installing unpublished packages
+  id: totrans-125
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.3 安装未发布的包
 - en: Sometimes, we have a package that we either haven’t published yet or won’t ever
     publish and would like to install it.
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，我们有一个包，要么我们还没有发布，要么永远不会发布，并且想要安装它。
 - en: '13.3.1 `npm link`: installing an unpublished package globally'
+  id: totrans-127
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.1 `npm link`：全局安装未发布的包
 - en: 'Let’s assume we have an unpublished package whose name is `@my-scope/unpublished-package`
     that is stored in a directory `/tmp/unpublished-package/`. We can make it available
     globally as follows:'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 假设我们有一个未发布的包，其名称是 `@my-scope/unpublished-package`，存储在目录 `/tmp/unpublished-package/`
+    中。我们可以按如下方式全局提供它：
 - en: '[PRE31]'
+  id: totrans-129
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'If we do that:'
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们这样做：
 - en: 'npm adds a symbolic link to the global `node_modules` (as returned by `npm
     root -g`) – for example:'
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npm 将一个符号链接添加到全局的 `node_modules`（由 `npm root -g` 返回）- 例如：
 - en: '[PRE32]'
+  id: totrans-132
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'On Unix, npm also adds one symbol link from the global bin directory (as returned
     by `npm bin -g`) to each bin script. That link is not direct, it goes through
     the global `node_modules` directory:'
+  id: totrans-133
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Unix上，npm还会从全局bin目录（由 `npm bin -g` 返回）到每个bin脚本添加一个符号链接。该链接不是直接的，而是通过全局 `node_modules`
+    目录：
 - en: '[PRE33]'
+  id: totrans-134
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'On Windows, it adds the usual 3 scripts (which refer to the linked package
     via relative paths into the global `node_modules`):'
+  id: totrans-135
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Windows上，它添加了通常的3个脚本（通过相对路径引用全局 `node_modules` 中的链接包）：
 - en: '[PRE34]'
+  id: totrans-136
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: Due to how the linked package is referred to, any changes in it will take effect
     immediately. There is no need to re-link it when it changes.
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于链接包的引用方式，其中的任何更改都会立即生效。当它发生变化时，无需重新链接它。
 - en: To check if the global installation worked, we can use `npm ls -g` to list all
     globally installed packages.
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 要检查全局安装是否成功，我们可以使用 `npm ls -g` 列出所有全局安装的包。
 - en: '13.3.2 `npm link`: installing a globally linked package locally'
+  id: totrans-139
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.2 `npm link`：在本地安装全局链接的包
 - en: 'After we have installed our upublished package globally (see previous subsection),
     we have the option to install it locally in one of our packages (which can be
     published or unpublished):'
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们全局安装了未发布的包之后（参见前一小节），我们可以选择在我们的一个包中（可以是已发布的或未发布的）中将其安装为本地包：
 - en: '[PRE35]'
+  id: totrans-141
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: 'That creates the following link:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 这创建了以下链接：
 - en: '[PRE36]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: By default, the unpublished package is not added as a dependency to `package.json`.
     The rationale behind that is that `npm link` is often used to temporarily work
     with an unpublished version of a registry package – which shouldn’t show up in
     the dependencies.
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，未发布的包不会被添加为 `package.json` 的依赖项。其背后的原因是 `npm link` 经常用于临时使用注册表包的未发布版本-
+    这些不应该出现在依赖项中。
 - en: '13.3.3 `npm link`: undoing linking'
+  id: totrans-145
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.3 `npm link`：取消链接
 - en: 'Undoing the local link:'
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: 取消本地链接：
 - en: '[PRE37]'
+  id: totrans-147
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'Undoing the global link:'
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: 取消全局链接：
 - en: '[PRE38]'
+  id: totrans-149
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 13.3.4 Installing unpublished packages via local paths
+  id: totrans-150
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.4 通过本地路径安装未发布的包
 - en: 'Another way of installing an unpublished package locally, is to use `npm install`
     and refer to it via a local path (and not via its package name):'
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一种在本地安装未发布的包的方法是使用 `npm install` 并通过本地路径引用它（而不是通过包名）：
 - en: '[PRE39]'
+  id: totrans-152
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: That has two effects.
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有两个效果。
 - en: 'First, the following symbolic link is created:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，创建以下符号链接：
 - en: '[PRE40]'
+  id: totrans-155
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'Second, a dependency is added to `package.json`:'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，将依赖项添加到 `package.json` 中：
 - en: '[PRE41]'
+  id: totrans-157
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'This way of installing unpublished packages also works globally:'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种安装未发布的包的方法也适用于全局：
 - en: '[PRE42]'
+  id: totrans-159
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: 13.3.5 Other ways of installing unpublished packages
+  id: totrans-160
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.3.5 安装未发布的包的其他方法
 - en: '[Yalc](https://github.com/wclr/yalc) lets us publish packages to a local “Yalc
     repository” (think local registry). From that repository, we can install packages
     as dependencies for, e.g., a package `my-package/`. They are copied into the directory
     `my-package/.yalc` and `file:` or `link:` dependencies are added to `package.json`.'
+  id: totrans-161
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Yalc](https://github.com/wclr/yalc) 让我们将包发布到本地的“Yalc仓库”（类似本地注册表）。从该仓库中，我们可以将包安装为依赖项，例如，一个名为
+    `my-package/` 的包。它们被复制到目录 `my-package/.yalc` 中，并且 `file:` 或 `link:` 依赖项被添加到 `package.json`
+    中。'
 - en: '[`relative-deps`](https://github.com/mweststrate/relative-deps) supports `"relativeDependencies"`
     in `package.json` which (if they exist) override normal dependencies. In contrast
     to `npm link` and local path installations:'
+  id: totrans-162
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`relative-deps`](https://github.com/mweststrate/relative-deps) 支持 `package.json`
+    中的 `"relativeDependencies"`，如果存在的话，会覆盖正常的依赖关系。与 `npm link` 和本地路径安装相比：'
 - en: Normal dependencies don’t have to be changed.
+  id: totrans-163
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 正常的依赖关系不需要更改。
 - en: Relative dependencies are installed as if they came from the npm registry (not
     via symbolic links).
+  id: totrans-164
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 相对依赖项被安装为来自npm注册表的依赖项（而不是通过符号链接）。
 - en: '`relative-deps` also helps with keeping locally installed relative dependencies
     and their originals in sync.'
+  id: totrans-165
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`relative-deps` 还有助于保持本地安装的相对依赖项及其原始依赖项同步。'
 - en: '[`npx link`](https://hirok.io/posts/avoid-npm-link) is a safer version of `npm
     link` which doesn’t require a global install, among other benefits.'
+  id: totrans-166
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`npx link`](https://hirok.io/posts/avoid-npm-link) 是 `npm link` 的一个更安全的版本，它不需要全局安装，还有其他好处。'
 - en: '13.4 `npx`: running bin scripts in npm packages without installing them'
+  id: totrans-167
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 13.4 `npx`：在不安装它们的情况下运行npm包中的bin脚本
 - en: '[npx](https://docs.npmjs.com/cli/v8/commands/npx) is a shell command for running
     bin scripts that is bundled with npm.'
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: '[npx](https://docs.npmjs.com/cli/v8/commands/npx) 是一个与npm捆绑在一起的用于运行bin脚本的shell命令。'
 - en: 'Its most common usage is:'
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
+  zh: 它最常见的用法是：
 - en: '[PRE43]'
+  id: totrans-170
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'This command installs the package whose name is `package-name` in the npx cache
     and runs the bin script that has the same name as the package – for example:'
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个命令将名称为 `package-name` 的包安装到npx缓存中，并运行与包同名的bin脚本- 例如：
 - en: '[PRE44]'
+  id: totrans-172
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: That means we can run bin scripts without installing them first. npx is most
     useful for one-off invocations of bin scripts – for example, many frameworks provide
     bin scripts for setting up new projects and these are often run via npx.
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 这意味着我们可以在不先安装它们的情况下运行bin脚本。npx 最适用于一次性调用bin脚本- 例如，许多框架提供用于设置新项目的bin脚本，这些通常通过npx运行。
 - en: After npx has used a package for the first time, it is available in its cache
     and subsequent invocations are much faster. However, we can’t be sure how long
     a package stays in the cache. Therefore, npx isn’t a substitute for installing
     bin scripts globally or locally.
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: npx第一次使用包后，它将在其缓存中可用，并且后续调用速度更快。但是，我们无法确定包在缓存中停留的时间有多长。因此，npx不能替代全局或本地安装bin脚本。
 - en: 'If a package comes with bin scripts whose names are different from its package
     name, we can access them like this:'
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个包带有与其包名称不同的bin脚本，我们可以像这样访问它们：
 - en: '[PRE45]'
+  id: totrans-176
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'For example:'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE46]'
+  id: totrans-178
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: 13.4.1 The npx cache
+  id: totrans-179
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 13.4.1 npx缓存
 - en: Where is npx’s cache located?
+  id: totrans-180
   prefs: []
   type: TYPE_NORMAL
+  zh: npx的缓存位于哪里？
 - en: 'On Unix, we can find that out via the following command:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Unix上，我们可以通过以下命令找到：
 - en: '[PRE47]'
+  id: totrans-182
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 'That returns a path similar to this one:'
+  id: totrans-183
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回类似于这样的路径：
 - en: '[PRE48]'
+  id: totrans-184
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: 'On Windows, we can use (one line broken up into two):'
+  id: totrans-185
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows上，我们可以使用（一行分成两行）：
 - en: '[PRE49]'
+  id: totrans-186
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: 'That returns a path similar to this one (single path broken up into two lines):'
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回类似于这样的路径（单个路径分成两行）：
 - en: '[PRE50]'
+  id: totrans-188
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: 'Note that npx’s cache is different from the cache that npm uses for the modules
     it installs:'
+  id: totrans-189
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，npx的缓存与npm用于安装模块的缓存不同：
 - en: 'Unix:'
+  id: totrans-190
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Unix：
 - en: 'npm cache: `$HOME/.npm/_cacache/`'
+  id: totrans-191
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npm缓存：`$HOME/.npm/_cacache/`
 - en: 'npx cache: `$HOME/.npm/_npx/`'
+  id: totrans-192
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npx缓存：`$HOME/.npm/_npx/`
 - en: 'Windows (PowerShell):'
+  id: totrans-193
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Windows（PowerShell）：
 - en: 'npm cache: `$env:UserProfile\AppData\Local\npm-cache\_npx\`'
+  id: totrans-194
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npm缓存：`$env:UserProfile\AppData\Local\npm-cache\_npx\`
 - en: 'npx cache: `$env:UserProfile\AppData\Local\npm-cache\_cacache\`'
+  id: totrans-195
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npx缓存：`$env:UserProfile\AppData\Local\npm-cache\_cacache\`
 - en: 'The parent directory of both caches can be determined via:'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个缓存的父目录可以通过以下方式确定：
 - en: '[PRE51]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: For more information on the npm cache, see [the npm documentation](https://docs.npmjs.com/cli/v8/commands/npm-cache).
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关npm缓存的更多信息，请参阅[npm文档](https://docs.npmjs.com/cli/v8/commands/npm-cache)。
 - en: 'In contrast to the npx cache, data is never removed from the npm cache, only
     added. We can check its size as follows on Unix:'
+  id: totrans-199
   prefs: []
   type: TYPE_NORMAL
+  zh: 与npx缓存相比，npm缓存中的数据永远不会被删除，只会被添加。我们可以在Unix上通过以下方式检查其大小：
 - en: '[PRE52]'
+  id: totrans-200
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: 'And on Windows PowerShell:'
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Windows PowerShell上：
 - en: '[PRE53]'
+  id: totrans-202
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: '[Comments](https://github.com/rauschma/nodejs-shell-scripting/issues/13)'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/nodejs-shell-scripting/issues/13)'
