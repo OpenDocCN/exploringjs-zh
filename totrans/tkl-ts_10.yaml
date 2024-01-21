@@ -1,91 +1,113 @@
 - en: 8 Creating CommonJS-based npm packages via TypeScript
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/tackling-ts/ch_npm-cjs-typescript.html](https://exploringjs.com/tackling-ts/ch_npm-cjs-typescript.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
 - en: 8.1 [Required knowledge](ch_npm-cjs-typescript.html#required-knowledge)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.2 [Limitations](ch_npm-cjs-typescript.html#limitations)
+  id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.3 [The repository `ts-demo-npm-cjs`](ch_npm-cjs-typescript.html#the-repository-ts-demo-npm-cjs)
+  id: totrans-5
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.4 [`.gitignore`](ch_npm-cjs-typescript.html#gitignore)
+  id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.5 [`.npmignore`](ch_npm-cjs-typescript.html#npmignore)
+  id: totrans-7
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.6 [`package.json`](ch_npm-cjs-typescript.html#package.json)
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.6.1 [Scripts](ch_npm-cjs-typescript.html#scripts)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.6.2 [`dependencies` vs. `devDependencies`](ch_npm-cjs-typescript.html#dependencies-vs.-devdependencies)
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.6.3 [More information on `package.json`](ch_npm-cjs-typescript.html#more-information-on-package.json)
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.7 [`tsconfig.json`](ch_npm-cjs-typescript.html#tsconfig.json-1)
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.8 [TypeScript code](ch_npm-cjs-typescript.html#typescript-code)
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.8.1 [`index.ts`](ch_npm-cjs-typescript.html#index.ts)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.8.2 [`index_test.ts`](ch_npm-cjs-typescript.html#index_test.ts)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
 - en: '* * *'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
 - en: This chapter describes how to use TypeScript to create packages for the package
     manager npm that are based on the CommonJS module format.
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
 - en: '![](../Images/ef04c4c2601874494d82453a9b525b87.png)  **GitHub repository: `ts-demo-npm-cjs`**'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
 - en: In this chapter, we are exploring [the repository `ts-demo-npm-cjs`](https://github.com/rauschma/ts-demo-npm-cjs)
     which can be downloaded on GitHub. (I deliberately have not published it as a
     package to npm.)
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
 - en: 8.1 Required knowledge
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'You should be roughly familiar with:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
 - en: '[*CommonJS modules*](https://nodejs.org/api/modules.html) – a module format
@@ -94,325 +116,418 @@
     modules preceded JavaScript’s built-in [ECMAScript modules](https://exploringjs.com/impatient-js/ch_modules.html)
     and are still much used and very well supported by tooling (IDEs, built tools,
     etc.).'
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[TypeScript’s modules](https://www.typescriptlang.org/docs/handbook/modules.html)
     – whose syntax is based on ECMAScript modules. However, they are often compiled
     to CommonJS modules.'
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[npm packages](https://docs.npmjs.com/packages-and-modules/) – directories
     with files that are installed via the npm package manager. They can contain CommonJS
     modules, ECMAScript modules, and various other files.'
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.2 Limitations
+  id: totrans-25
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'In this chapter, we are using what TypeScript currently supports best:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
 - en: All our TypeScript code is compiled to CommonJS modules with the filename extension
     `.js`.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: All external imports are CommonJS modules, too.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Especially on Node.js, TypeScript currently doesn’t really support ECMAScript
     modules and filename extensions other than `.js`.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
 - en: 8.3 The repository `ts-demo-npm-cjs`
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'This is how the repository `ts-demo-npm-cjs` is structured:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE0]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Apart from the `package.json` for the package, the repository contains:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
 - en: '`ts/src/index.ts`: the actual code of the package'
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`ts/test/index_test.ts`: a test for `index.ts`'
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`tsconfig.json`: configuration data for the TypeScript compiler'
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`package.json` contains scripts for compiling:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
 - en: 'Input: directory `ts/` (TypeScript code)'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'Output: directory `dist/` (CommonJS modules; the directory doesn’t yet exist
     in the repository)'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 'This is where the compilation results for the two TypeScript files are put:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE1]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 8.4 `.gitignore`
+  id: totrans-42
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'This file lists the directories that we don’t want to check into git:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE2]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Explanations:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
 - en: '`node_modules/` is set up via `npm install`.'
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The files in `dist/` are created by the TypeScript compiler (more on that later).
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.5 `.npmignore`
+  id: totrans-48
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 'When it comes to which files should and should not be uploaded to the npm registry,
     we have different needs than we did for git. Therefore, in addition to `.gitignore`,
     we also need the file `.npmignore`:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The two differences are:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
 - en: We want to upload the results of compiling TypeScript to JavaScript (directory
     `dist/`).
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: We don’t want to upload the TypeScript source files (directory `ts/`).
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Note that npm ignores the directory `node_modules/` by default.
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
 - en: 8.6 `package.json`
+  id: totrans-55
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '`package.json` looks like this:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE4]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Let’s take a look at the properties:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
 - en: '`type`: The value `"commonjs"` means that `.js` files are interpreted as CommonJS
     modules.'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`main`: If there is a so-called *bare import* that only mentions the name of
     the current package, then this is the module that will be imported.'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`types` points to a declaration file with all the type definitions for the
     current package.'
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The next two subsections cover the remaining properties.
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
 - en: 8.6.1 Scripts
+  id: totrans-63
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Property `scripts` defines various commands that can be invoked via `npm run`.
     For example, the script `clean` is invoked via `npm run clean`. The previous `package.json`
     contains the following scripts:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
 - en: '`clean` uses [the cross-platform package `shx`](https://github.com/shelljs/shx)
     to delete the compilation results via its implementation of the Unix shell command
     `rm`. `shx` supports a variety of shell commands with the benefit of not needing
     a separate package for each command we may want to use.'
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`build` and `watch` use the TypeScript compiler `tsc` to compile the TypeScript
     files according to `tsconfig.json`. `tsc` must be installed globally or locally
     (inside the current package), usually via the npm package `typescript`.'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`test` and `testall` use [the unit test framework Mocha](https://mochajs.org/)
     to run one test or all tests.'
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`prepack`: This script is run run before a tarball is packed (due to `npm pack`,
     `npm publish`, or an installation from git).'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Note that when we are using an IDE, we don’t need the scripts `build` and `watch`
     because we can let the IDE build the artifacts. But they are needed for the script
     `prepack`.
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
 - en: 8.6.2 `dependencies` vs. `devDependencies`
+  id: totrans-70
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '`dependencies` should only contain the packages that are needed when importing
     a package. That excludes packages that are used for running tests etc.'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
 - en: 'Packages whose names start with `@types/` provide TypeScript type definitions
     for packages that don’t have any. Without the former, we can’t use the latter.
     Are these normal dependencies or dev dependencies? It depends:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
 - en: If the type definitions of our package refer to type definitions in another
     package, that package is a normal dependency.
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: Otherwise, the package is only needed during development time and a dev dependency.
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.6.3 More information on `package.json`
+  id: totrans-75
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '[“Awesome npm scripts”](https://github.com/RyanZim/awesome-npm-scripts) has
     tips for writing cross-platform scripts.'
+  id: totrans-76
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[The npm docs for `package.json`](https://docs.npmjs.com/files/package.json)
     explain various properties of that file.'
+  id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[The npm docs for `scripts`](https://docs.npmjs.com/misc/scripts) explain the
     `package.json` property `scripts`.'
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: 8.7 `tsconfig.json`
+  id: totrans-79
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[PRE5]'
+  id: totrans-80
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '`rootDir`: Where are our TypeScript files located?'
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`outDir`: Where should the compilation results be put?'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`target`: What is the targeted ECMAScript version? If the TypeScript code uses
     a feature that is not supported by the targeted version, then it is compiled to
     equivalent code that only uses supported features.'
+  id: totrans-83
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`lib`: What platform features should TypeScript be aware of? Possibilities
     include the ECMAScript standard library and the DOM of browsers. The Node.js API
     is supported differently, via the package `@types/node`.'
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`module`: Specifies the format of the compilation output.'
+  id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The remaining options are explained by [the official documentation for `tsconfig.json`](https://www.typescriptlang.org/docs/handbook/tsconfig-json.html).
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
 - en: 8.8 TypeScript code
+  id: totrans-87
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: 8.8.1 `index.ts`
+  id: totrans-88
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'This file provides the actual functionality of the package:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE6]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: It uses [function `endsWith()` of the library Lodash](https://lodash.com/docs/4.17.15#endsWith).
     That’s why Lodash is a normal dependency – it is needed at runtime.
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
 - en: 8.8.2 `index_test.ts`
+  id: totrans-92
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'This file contains a unit test for `index.ts`:'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE7]'
+  id: totrans-94
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'We can run the test like this:'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE8]'
+  id: totrans-96
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: The npm command `t` is an abbreviation for the npm command `test`.
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The npm command `test` is an abbreviation for `run test` (which runs the script
     `test` from `package.json`).
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npm命令`test`是`run test`的缩写（运行`package.json`中的`test`脚本）。
 - en: As you can see, we are running the compiled version of the test (in directory
     `dist/`), not the TypeScript code.
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 如您所见，我们正在运行测试的编译版本（在`dist/`目录中），而不是TypeScript代码。
 - en: For more information on the unit test framework Mocha, see [its homepage](https://mochajs.org/).
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关单元测试框架Mocha的更多信息，请参阅[其主页](https://mochajs.org/)。
 - en: '[Comments](https://github.com/rauschma/tackling-ts/issues/8)'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/tackling-ts/issues/8)'
