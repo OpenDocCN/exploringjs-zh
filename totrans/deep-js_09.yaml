@@ -3,37 +3,44 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 6 复制对象和数组
 - en: 原文：[https://exploringjs.com/deep-js/ch_copying-objects-and-arrays.html](https://exploringjs.com/deep-js/ch_copying-objects-and-arrays.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_copying-objects-and-arrays.html](https://exploringjs.com/deep-js/ch_copying-objects-and-arrays.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 6.1 [Shallow copying vs. deep copying](ch_copying-objects-and-arrays.html#shallow-copying-vs.-deep-copying)
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.1 [浅复制 vs. 深复制](ch_copying-objects-and-arrays.html#shallow-copying-vs.-deep-copying)
 - en: 6.2 [Shallow copying in JavaScript](ch_copying-objects-and-arrays.html#shallow-copying-in-javascript)
   id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.2 JavaScript中的浅复制
 - en: 6.2.1 [Copying plain objects and Arrays via spreading](ch_copying-objects-and-arrays.html#copying-plain-objects-and-arrays-via-spreading)
   id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.2.1 [通过扩展复制普通对象和数组](ch_copying-objects-and-arrays.html#copying-plain-objects-and-arrays-via-spreading)
 - en: 6.2.2 [Shallow copying via `Object.assign()` (optional)](ch_copying-objects-and-arrays.html#shallow-copying-via-object.assign-optional)
   id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.2.2 [通过`Object.assign()`进行浅复制（可选）](ch_copying-objects-and-arrays.html#shallow-copying-via-object.assign-optional)
 - en: 6.2.3 [Shallow copying via `Object.getOwnPropertyDescriptors()` and `Object.defineProperties()`
     (optional)](ch_copying-objects-and-arrays.html#copying-via-property-descriptors)
   id: totrans-7
@@ -41,57 +48,68 @@
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.2.3 [通过`Object.getOwnPropertyDescriptors()`和`Object.defineProperties()`进行浅复制（可选）](ch_copying-objects-and-arrays.html#copying-via-property-descriptors)
 - en: 6.3 [Deep copying in JavaScript](ch_copying-objects-and-arrays.html#deep-copying-in-javascript)
   id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.3 [JavaScript中的深复制](ch_copying-objects-and-arrays.html#deep-copying-in-javascript)
 - en: 6.3.1 [Manual deep copying via nested spreading](ch_copying-objects-and-arrays.html#manual-deep-copying-via-nested-spreading)
   id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.3.1 [通过嵌套扩展手动进行深复制](ch_copying-objects-and-arrays.html#manual-deep-copying-via-nested-spreading)
 - en: '6.3.2 [Hack: generic deep copying via JSON](ch_copying-objects-and-arrays.html#hack-generic-deep-copying-via-json)'
   id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.3.2 [技巧：通过JSON进行通用深复制](ch_copying-objects-and-arrays.html#hack-generic-deep-copying-via-json)
 - en: 6.3.3 [Implementing generic deep copying](ch_copying-objects-and-arrays.html#implementing-generic-deep-copying)
   id: totrans-11
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.3.3 [实现通用深复制](ch_copying-objects-and-arrays.html#implementing-generic-deep-copying)
 - en: 6.4 [Further reading](ch_copying-objects-and-arrays.html#further-reading)
   id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 6.4 [进一步阅读](ch_copying-objects-and-arrays.html#further-reading)
 - en: '* * *'
   id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: In this chapter, we will learn how to copy objects and Arrays in JavaScript.
   id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将学习如何在JavaScript中复制对象和数组。
 - en: 6.1 Shallow copying vs. deep copying
   id: totrans-15
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 6.1 浅复制 vs. 深复制
 - en: 'There are two “depths” with which data can be copied:'
   id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据可以以两种“深度”进行复制：
 - en: '*Shallow copying* only copies the top-level entries of objects and Arrays.
     The entry values are still the same in original and copy.'
   id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*浅复制*只会复制对象和数组的顶层条目。条目的值在原始和副本中仍然相同。'
 - en: '*Deep copying* also copies the entries of the values of the entries, etc. That
     is, it traverses the complete tree whose root is the value to be copied and makes
     copies of all nodes.'
@@ -99,32 +117,38 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*深复制*还会复制值的条目的条目等。也就是说，它遍历了以要复制的值为根的完整树，并复制了所有节点。'
 - en: The next sections cover both kinds of copying. Unfortunately, JavaScript only
     has built-in support for shallow copying. If we need deep copying, we need to
     implement it ourselves.
   id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来的部分涵盖了两种复制方式。不幸的是，JavaScript只内置了对浅复制的支持。如果我们需要深复制，就需要自己实现。
 - en: 6.2 Shallow copying in JavaScript
   id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 6.2 JavaScript中的浅复制
 - en: Let’s look at several ways of shallowly copying data.
   id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看浅复制数据的几种方法。
 - en: 6.2.1 Copying plain objects and Arrays via spreading
   id: totrans-22
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 6.2.1 通过扩展复制普通对象和数组
 - en: 'We can spread [into object literals](https://exploringjs.com/impatient-js/ch_single-objects.html#spreading-into-object-literals)
     and [into Array literals](https://exploringjs.com/impatient-js/ch_arrays.html#spreading-into-array-literals)
     to make copies:'
   id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以将[扩展到对象字面量](https://exploringjs.com/impatient-js/ch_single-objects.html#spreading-into-object-literals)和[扩展到数组字面量](https://exploringjs.com/impatient-js/ch_arrays.html#spreading-into-array-literals)中进行复制：
 - en: '[PRE0]'
   id: totrans-24
   prefs: []
@@ -135,15 +159,18 @@
   id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 遗憾的是，扩展存在一些问题。这些将在下一小节中介绍。其中一些是真正的限制，另一些只是特殊情况。
 - en: 6.2.1.1 The prototype is not copied by object spreading
   id: totrans-26
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 6.2.1.1 对象扩展不会复制原型
 - en: 'For example:'
   id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE1]'
   id: totrans-28
   prefs: []
@@ -153,6 +180,7 @@
   id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意以下两个表达式是等价的：
 - en: '[PRE2]'
   id: totrans-30
   prefs: []
@@ -162,6 +190,7 @@
   id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们可以通过给副本设置与原始相同的原型来解决这个问题：
 - en: '[PRE3]'
   id: totrans-32
   prefs: []
@@ -172,22 +201,26 @@
   id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者，我们可以在创建副本后通过`Object.setPrototypeOf()`设置其原型。
 - en: 6.2.1.2 Many built-in objects have special “internal slots” that aren’t copied
     by object spreading
   id: totrans-34
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 6.2.1.2 许多内置对象具有特殊的“内部插槽”，对象扩展不会复制它们
 - en: Examples of such built-in objects include regular expressions and dates. If
     we make a copy of them, we lose most of the data stored in them.
   id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 此类内置对象的示例包括正则表达式和日期。如果我们复制它们，就会丢失其中存储的大部分数据。
 - en: 6.2.1.3 Only own (non-inherited) properties are copied by object spreading
   id: totrans-36
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 6.2.1.3 对象扩展只会复制自有（非继承）属性
 - en: Given how [prototype chains](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html#prototype-chains)
     work, this is usually the right approach. But we still need to be aware of it.
     In the following example, the inherited property `.inheritedProp` of `original`
@@ -196,6 +229,7 @@
   id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑到[原型链](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html#prototype-chains)的工作方式，这通常是正确的方法。但我们仍然需要意识到这一点。在下面的例子中，原型的继承属性`.inheritedProp`在`copy`中不可用，因为我们只复制自有属性，而不保留原型。
 - en: '[PRE4]'
   id: totrans-38
   prefs: []
@@ -206,12 +240,14 @@
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 6.2.1.4 对象扩展只会复制可枚举属性
 - en: 'For example, the own property `.length` of Array instances is not enumerable
     and not copied. In the following example, we are copying the Array `arr` via object
     spreading (line A):'
   id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，数组实例的自有属性`.length`不可枚举，也不会被复制。在下面的例子中，我们通过对象扩展（行A）复制了数组`arr`：
 - en: '[PRE5]'
   id: totrans-41
   prefs: []
@@ -224,37 +260,44 @@
   id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 这也很少是一个限制，因为大多数属性都是可枚举的。如果我们需要复制不可枚举的属性，我们可以使用`Object.getOwnPropertyDescriptors()`和`Object.defineProperties()`来复制对象（[如何做到这一点稍后会解释](ch_copying-objects-and-arrays.html#copying-via-property-descriptors)）：
 - en: They consider all attributes (not just `value`) and therefore correctly copy
     getters, setters, read-only properties, etc.
   id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们考虑所有属性（不仅仅是`value`），因此正确地复制了getter、setter、只读属性等。
 - en: '`Object.getOwnPropertyDescriptors()` retrieves both enumerable and non-enumerable
     properties.'
   id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.getOwnPropertyDescriptors()`检索可枚举和不可枚举的属性。'
 - en: For more information on enumerability, see [§12 “Enumerability of properties”](ch_enumerability.html).
   id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关可枚举性的更多信息，请参见[§12“属性的可枚举性”](ch_enumerability.html)。
 - en: 6.2.1.5 Property attributes aren’t always copied faithfully by object spreading
   id: totrans-46
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 6.2.1.5 对象扩展并不总是忠实地复制属性
 - en: Independently of [the *attributes* of a property](ch_property-attributes-intro.html),
     its copy will always be a data property that is writable and configurable.
   id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 不考虑[属性的*属性*](ch_property-attributes-intro.html)，它的副本始终是一个可写和可配置的数据属性。
 - en: 'For example, here we create the property `original.prop` whose attributes `writable`
     and `configurable` are `false`:'
   id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，在这里，我们创建了属性`original.prop`，其属性`writable`和`configurable`都是`false`：
 - en: '[PRE6]'
   id: totrans-49
   prefs: []
@@ -264,6 +307,7 @@
   id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们复制`.prop`，那么`writable`和`configurable`都是`true`：
 - en: '[PRE7]'
   id: totrans-51
   prefs: []
@@ -273,6 +317,7 @@
   id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，getter和setter也不会被忠实地复制：
 - en: '[PRE8]'
   id: totrans-53
   prefs: []
@@ -283,16 +328,19 @@
   id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 前面提到的`Object.getOwnPropertyDescriptors()`和`Object.defineProperties()`总是以完整的属性传输自有属性（[如后面所示](ch_copying-objects-and-arrays.html#copying-via-property-descriptors)）。
 - en: 6.2.1.6 Copying is shallow
   id: totrans-55
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: 6.2.1.6 复制是浅的
 - en: 'The copy has fresh versions of each key-value entry in the original, but the
     values of the original are not copied themselves. For example:'
   id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 副本中有原始每个键值条目的新版本，但原始的值本身并没有被复制。例如：
 - en: '[PRE9]'
   id: totrans-57
   prefs: []
@@ -302,16 +350,19 @@
   id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将在本章后面讨论深拷贝。
 - en: 6.2.2 Shallow copying via `Object.assign()` (optional)
   id: totrans-59
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 6.2.2 通过`Object.assign()`进行浅复制（可选）
 - en: '`Object.assign()` works mostly like spreading into objects. That is, the following
     two ways of copying are mostly equivalent:'
   id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Object.assign()`在大多数情况下像扩展到对象中。也就是说，以下两种复制方式大部分是等价的：'
 - en: '[PRE10]'
   id: totrans-61
   prefs: []
@@ -322,21 +373,25 @@
   id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用方法而不是语法的好处是，它可以在旧的JavaScript引擎上通过库进行填充。
 - en: '`Object.assign()` is not completely like spreading, though. It differs in one,
     relatively subtle point: it creates properties differently.'
   id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Object.assign()`并不完全像扩展，它在一个相对微妙的地方有所不同：它以不同的方式创建属性。'
 - en: '`Object.assign()` uses *assignment* to create the properties of the copy.'
   id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.assign()`使用*赋值*来创建副本的属性。'
 - en: Spreading *defines* new properties in the copy.
   id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 扩展*定义*了副本中的新属性。
 - en: 'Among other things, assignment invokes own and inherited setters, while definition
     doesn’t ([more information on assignment vs. definition](ch_property-assignment-vs-definition.html)).
     This difference is rarely noticeable. The following code is an example, but it’s
@@ -344,6 +399,7 @@
   id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 除其他事项外，赋值会调用自有和继承的setter，而定义不会（[有关赋值与定义的更多信息](ch_property-assignment-vs-definition.html)）。这种差异很少会被注意到。以下代码是一个例子，但它是刻意的：
 - en: '[PRE11]'
   id: totrans-67
   prefs: []
@@ -356,12 +412,15 @@
   id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过在A行使用计算属性键，我们创建了`.__proto__`作为自有属性，并且没有调用继承的setter。然而，当`Object.assign()`复制该属性时，它会调用setter。（有关`.__proto__`的更多信息，请参见[“JavaScript
+    for impatient programmers”](https://exploringjs.com/impatient-js/ch_proto-chains-classes.html#proto)。）
 - en: 6.2.3 Shallow copying via `Object.getOwnPropertyDescriptors()` and `Object.defineProperties()`
     (optional)
   id: totrans-69
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 6.2.3 通过`Object.getOwnPropertyDescriptors()`和`Object.defineProperties()`进行浅复制（可选）
 - en: 'JavaScript lets us create properties via [*property descriptors*](ch_property-attributes-intro.html#property-descriptors),
     objects that specify property attributes. For example, via the `Object.defineProperties()`,
     which we have already seen in action. If we combine that method with `Object.getOwnPropertyDescriptors()`,
@@ -369,6 +428,7 @@
   id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript允许我们通过[*属性描述符*](ch_property-attributes-intro.html#property-descriptors)创建属性，这些属性描述了属性的属性。例如，通过`Object.defineProperties()`，我们已经看到了它的作用。如果我们将该方法与`Object.getOwnPropertyDescriptors()`结合使用，我们可以更忠实地复制：
 - en: '[PRE12]'
   id: totrans-71
   prefs: []
@@ -378,11 +438,13 @@
   id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 这消除了通过扩展复制对象的两个问题。
 - en: 'First, all attributes of own properties are copied correctly. Therefore, we
     can now copy own getters and own setters:'
   id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，自有属性的所有属性都被正确地复制。因此，我们现在可以复制自有的getter和setter：
 - en: '[PRE13]'
   id: totrans-74
   prefs: []
@@ -393,6 +455,7 @@
   id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，由于`Object.getOwnPropertyDescriptors()`，不可枚举的属性也被复制了：
 - en: '[PRE14]'
   id: totrans-76
   prefs: []
@@ -403,20 +466,24 @@
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 6.3 JavaScript中的深拷贝
 - en: Now it is time to tackle deep copying. First, we will deep-copy manually, then
     we’ll examine generic approaches.
   id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在是时候解决深拷贝的问题了。首先，我们将手动进行深拷贝，然后我们将研究通用的方法。
 - en: 6.3.1 Manual deep copying via nested spreading
   id: totrans-79
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 6.3.1 通过嵌套扩展手动进行深拷贝
 - en: 'If we nest spreading, we get deep copies:'
   id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们嵌套扩展，我们会得到深拷贝：
 - en: '[PRE15]'
   id: totrans-81
   prefs: []
@@ -427,12 +494,14 @@
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 6.3.2 技巧：通过JSON进行通用深拷贝
 - en: 'This is a hack, but, in a pinch, it provides a quick solution: In order to
     deep-copy an object `original`, we first convert it to a JSON string and parse
     that JSON string:'
   id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个技巧，但在紧急情况下，它提供了一个快速解决方案：为了深拷贝一个对象`original`，我们首先将其转换为JSON字符串，然后解析该JSON字符串：
 - en: '[PRE16]'
   id: totrans-84
   prefs: []
