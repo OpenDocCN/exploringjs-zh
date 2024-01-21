@@ -1,431 +1,651 @@
 - en: 38 Synchronous generators (advanced)
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 38 同步生成器（高级）
 - en: 原文：[https://exploringjs.com/impatient-js/ch_sync-generators.html](https://exploringjs.com/impatient-js/ch_sync-generators.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 链接：[https://exploringjs.com/impatient-js/ch_sync-generators.html](https://exploringjs.com/impatient-js/ch_sync-generators.html)
 - en: '* * *'
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 38.1 [What are synchronous generators?](ch_sync-generators.html#what-are-synchronous-generators)
+  id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.1 [什么是同步生成器？](ch_sync-generators.html#what-are-synchronous-generators)
 - en: 38.1.1 [Generator functions return iterables and fill them via `yield`](ch_sync-generators.html#generator-functions-return-iterables-and-fill-them-via-yield)
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.1.1 [生成器函数返回可迭代对象并通过`yield`填充它们](ch_sync-generators.html#generator-functions-return-iterables-and-fill-them-via-yield)
 - en: 38.1.2 [`yield` pauses a generator function](ch_sync-generators.html#yield-pauses-a-generator-function)
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.1.2 [`yield`暂停生成器函数](ch_sync-generators.html#yield-pauses-a-generator-function)
 - en: 38.1.3 [Why does `yield` pause execution?](ch_sync-generators.html#why-does-yield-pause-execution)
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.1.3 [`yield`为什么会暂停执行？](ch_sync-generators.html#why-does-yield-pause-execution)
 - en: '38.1.4 [Example: Mapping over iterables](ch_sync-generators.html#example-mapping-over-iterables)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.1.4 [示例：在可迭代对象上进行映射](ch_sync-generators.html#example-mapping-over-iterables)
 - en: 38.2 [Calling generators from generators (advanced)](ch_sync-generators.html#calling-generators-from-generators-advanced)
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.2 [从生成器中调用生成器（高级）](ch_sync-generators.html#calling-generators-from-generators-advanced)
 - en: 38.2.1 [Calling generators via `yield*`](ch_sync-generators.html#calling-generators-via-yield)
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.2.1 [通过`yield*`调用生成器](ch_sync-generators.html#calling-generators-via-yield)
 - en: '38.2.2 [Example: Iterating over a tree](ch_sync-generators.html#example-iterating-over-a-tree)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.2.2 [示例：遍历树](ch_sync-generators.html#example-iterating-over-a-tree)
 - en: '38.3 [Background: external iteration vs. internal iteration](ch_sync-generators.html#external-iteration-internal-iteration)'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.3 [背景：外部迭代 vs. 内部迭代](ch_sync-generators.html#external-iteration-internal-iteration)
 - en: '38.4 [Use case for generators: reusing traversals](ch_sync-generators.html#reusing-traversals)'
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.4 [生成器的用例：重用遍历](ch_sync-generators.html#reusing-traversals)
 - en: 38.4.1 [The traversal to reuse](ch_sync-generators.html#the-traversal-to-reuse)
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.4.1 [可重用的遍历](ch_sync-generators.html#the-traversal-to-reuse)
 - en: 38.4.2 [Internal iteration (push)](ch_sync-generators.html#internal-iteration-example)
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.4.2 [内部迭代（推送）](ch_sync-generators.html#internal-iteration-example)
 - en: 38.4.3 [External iteration (pull)](ch_sync-generators.html#external-iteration-example)
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.4.3 [外部迭代（拉取）](ch_sync-generators.html#external-iteration-example)
 - en: 38.5 [Advanced features of generators](ch_sync-generators.html#advanced-features-of-generators)
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 38.5 [生成器的高级特性](ch_sync-generators.html#advanced-features-of-generators)
 - en: '* * *'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: 38.1 What are synchronous generators?
+  id: totrans-18
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 38.1 什么是同步生成器？
 - en: 'Synchronous generators are special versions of function definitions and method
     definitions that always return synchronous iterables:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 同步生成器是函数定义和方法定义的特殊版本，它们总是返回同步可迭代对象：
 - en: '[PRE0]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Asterisks (`*`) mark functions and methods as generators:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 星号(`*`)标记函数和方法为生成器：
 - en: 'Functions: The pseudo-keyword `function*` is a combination of the keyword `function`
     and an asterisk.'
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 函数：伪关键字`function*`是关键字`function`和星号的组合。
 - en: 'Methods: The `*` is a modifier (similar to `static` and `get`).'
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法：`*`是一个修饰符（类似于`static`和`get`）。
 - en: 38.1.1 Generator functions return iterables and fill them via `yield`
+  id: totrans-24
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.1.1 生成器函数返回可迭代对象并通过`yield`填充它们
 - en: 'If we call a generator function, it returns an iterable (actually, an iterator
     that is also iterable). The generator fills that iterable via the `yield` operator:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们调用一个生成器函数，它会返回一个可迭代对象（实际上是一个同时也是可迭代的迭代器）。生成器通过`yield`操作符填充该可迭代对象：
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 38.1.2 `yield` pauses a generator function
+  id: totrans-27
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.1.2 `yield`暂停生成器函数
 - en: 'Using a generator function involves the following steps:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用生成器函数涉及以下步骤：
 - en: Function-calling it returns an iterator `iter` (that is also an iterable).
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 调用它会返回一个迭代器`iter`（也是可迭代的）。
 - en: Iterating over `iter` repeatedly invokes `iter.next()`. Each time, we jump into
     the body of the generator function until there is a `yield` that returns a value.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 重复迭代`iter`会调用`iter.next()`。每次，我们都会进入生成器函数的主体，直到出现返回值的`yield`。
 - en: 'Therefore, `yield` does more than just add values to iterables – it also pauses
     and exits the generator function:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，`yield`不仅仅是向可迭代对象添加值，它还会暂停并退出生成器函数：
 - en: Like `return`, a `yield` exits the body of the function and returns a value
     (to/via `.next()`).
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与`return`一样，`yield`退出函数体并返回一个值（通过`.next()`）。
 - en: Unlike `return`, if we repeat the invocation (of `.next()`), execution resumes
     directly after the `yield`.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与`return`不同，如果我们重复调用（`.next()`），执行将直接在`yield`之后恢复。
 - en: Let’s examine what that means via the following generator function.
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们通过以下生成器函数来检查这意味着什么。
 - en: '[PRE2]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: In order to use `genFunc2()`, we must first create the iterator/iterable `iter`.
     `genFunc2()` is now paused “before” its body.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了使用`genFunc2()`，我们必须首先创建迭代器/可迭代对象`iter`。`genFunc2()`现在被暂停在其主体“之前”。
 - en: '[PRE3]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '`iter` implements [the iteration protocol](ch_sync-iteration.html). Therefore,
     we control the execution of `genFunc2()` via `iter.next()`. Calling that method
     resumes the paused `genFunc2()` and executes it until there is a `yield`. Then
     execution pauses and `.next()` returns the operand of the `yield`:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: '`iter`实现了[迭代协议](ch_sync-iteration.html)。因此，我们通过`iter.next()`来控制`genFunc2()`的执行。调用该方法会恢复暂停的`genFunc2()`并执行，直到出现`yield`。然后执行暂停，`.next()`返回`yield`的操作数：'
 - en: '[PRE4]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Note that the yielded value `'a'` is wrapped in an object, which is how iterators
     always deliver their values.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，`yield`的值`'a'`被包装在一个对象中，这就是迭代器始终传递其值的方式。
 - en: We call `iter.next()` again and execution continues where we previously paused.
     Once we encounter the second `yield`, `genFunc2()` is paused and `.next()` returns
     the yielded value `'b'`.
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们再次调用`iter.next()`，执行将在之前暂停的地方继续。一旦遇到第二个`yield`，`genFunc2()`被暂停，`.next()`返回`'b'`。
 - en: '[PRE5]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'We call `iter.next()` one more time and execution continues until it leaves
     the body of `genFunc2()`:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们再次调用`iter.next()`，执行将继续，直到离开`genFunc2()`的主体：
 - en: '[PRE6]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: This time, property `.done` of the result of `.next()` is `true`, which means
     that the iterator is finished.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 这一次，`.next()`的结果的`.done`属性为`true`，这意味着迭代器已经完成。
 - en: 38.1.3 Why does `yield` pause execution?
+  id: totrans-46
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.1.3 `yield`为什么会暂停执行？
 - en: What are the benefits of `yield` pausing execution? Why doesn’t it simply work
     like the Array method `.push()` and fill the iterable with values without pausing?
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '`yield`暂停执行的好处是什么？为什么它不像数组方法`.push()`那样简单地填充可迭代对象而不暂停？'
 - en: Due to pausing, generators provide many of the features of *coroutines* (think
     processes that are multitasked cooperatively). For example, when we ask for the
     next value of an iterable, that value is computed *lazily* (on demand). The following
     two generator functions demonstrate what that means.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于暂停，生成器提供了许多*协程*的功能（考虑协作式多任务处理的进程）。例如，当我们请求可迭代对象的下一个值时，该值是*惰性计算*的（按需计算）。以下两个生成器函数演示了这意味着什么。
 - en: '[PRE7]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: Note that the `yield` in `numberLines()` appears inside a `for-of` loop. `yield`
     can be used inside loops, but not inside callbacks (more on that later).
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，`numberLines()`中的`yield`出现在`for-of`循环内。`yield`可以在循环内使用，但不能在回调内使用（稍后会详细介绍）。
 - en: 'Let’s combine both generators to produce the iterable `numberedLines`:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们将两个生成器组合起来产生可迭代对象`numberedLines`：
 - en: '[PRE8]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'The key benefit of using generators here is that everything works incrementally:
     via `numberedLines.next()`, we ask `numberLines()` for only a single numbered
     line. In turn, it asks `genLines()` for only a single unnumbered line.'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里使用生成器的主要好处是一切都是逐步进行的：通过`numberedLines.next()`，我们只要求`numberLines()`提供一个编号行。反过来，它只要求`genLines()`提供一个未编号行。
 - en: 'This incrementalism continues to work if, for example, `genLines()` reads its
     lines from a large text file: If we ask `numberLines()` for a numbered line, we
     get one as soon as `genLines()` has read its first line from the text file.'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果，例如，`genLines()`从大型文本文件中读取其行，则此增量主义将继续工作：如果我们要求`numberLines()`提供编号行，则只要`genLines()`从文本文件中读取了第一行，我们就会得到一个编号行。
 - en: Without generators, `genLines()` would first read all lines and return them.
     Then `numberLines()` would number all lines and return them. We therefore have
     to wait much longer until we get the first numbered line.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果没有生成器，`genLines()`将首先读取所有行并返回它们。然后`numberLines()`将对所有行进行编号并返回它们。因此，我们必须等待更长的时间才能获得第一行编号。
 - en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: Turning a
     normal function into a generator**'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png) **练习：将普通函数转换为生成器**'
 - en: '`exercises/sync-generators/fib_seq_test.mjs`'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/sync-generators/fib_seq_test.mjs`'
 - en: '38.1.4 Example: Mapping over iterables'
+  id: totrans-58
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.1.4 示例：在可迭代对象上进行映射
 - en: The following function `mapIter()` is similar to the Array method `.map()`,
     but it returns an iterable, not an Array, and produces its results on demand.
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数`mapIter()`类似于数组方法`.map()`，但它返回一个可迭代对象，而不是一个数组，并且按需生成其结果。
 - en: '[PRE9]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: Filtering
     iterables**'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png) **练习：过滤可迭代对象**'
 - en: '`exercises/sync-generators/filter_iter_gen_test.mjs`'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/sync-generators/filter_iter_gen_test.mjs`'
 - en: 38.2 Calling generators from generators (advanced)
+  id: totrans-63
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 38.2 从生成器调用生成器（高级）
 - en: 38.2.1 Calling generators via `yield*`
+  id: totrans-64
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.2.1 通过`yield*`调用生成器
 - en: '`yield` only works directly inside generators – so far we haven’t seen a way
     of delegating yielding to another function or method.'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: '`yield`只能直接在生成器内部使用 - 到目前为止，我们还没有看到将产出委托给另一个函数或方法的方法。'
 - en: 'Let’s first examine what does *not* work: in the following example, we’d like
     `foo()` to call `bar()`, so that the latter yields two values for the former.
     Alas, a naive approach fails:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们首先检查什么*不*起作用：在以下示例中，我们希望`foo()`调用`bar()`，以便后者为前者产生两个值。遗憾的是，朴素的方法失败了：
 - en: '[PRE10]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: Why doesn’t this work? The function call `bar()` returns an iterable, which
     we ignore.
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么这不起作用？函数调用`bar()`返回一个可迭代对象，我们忽略了它。
 - en: 'What we want is for `foo()` to yield everything that is yielded by `bar()`.
     That’s what the `yield*` operator does:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们希望`foo()`产生`bar()`产生的所有内容。这就是`yield*`运算符的作用：
 - en: '[PRE11]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'In other words, the previous `foo()` is roughly equivalent to:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说，前面的`foo()`大致相当于：
 - en: '[PRE12]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Note that `yield*` works with any iterable:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 请注意，`yield*`适用于任何可迭代对象：
 - en: '[PRE13]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '38.2.2 Example: Iterating over a tree'
+  id: totrans-75
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.2.2 示例：遍历树
 - en: '`yield*` lets us make recursive calls in generators, which is useful when iterating
     over recursive data structures such as trees. Take, for example, the following
     data structure for binary trees.'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: '`yield*`让我们在生成器中进行递归调用，这在迭代递归数据结构（如树）时非常有用。例如，以下是用于二叉树的数据结构。'
 - en: '[PRE14]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Method `[Symbol.iterator]()` adds support for the iteration protocol, which
     means that we can use a `for-of` loop to iterate over an instance of `BinaryTree`:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 方法`[Symbol.iterator]()`添加了对迭代协议的支持，这意味着我们可以使用`for-of`循环来迭代`BinaryTree`的实例：
 - en: '[PRE15]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png)  **Exercise: Iterating
     over a nested Array**'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: '![](../Images/90f73f1851c5b1baf43cb746913c09e6.png) **练习：遍历嵌套数组**'
 - en: '`exercises/sync-generators/iter_nested_arrays_test.mjs`'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/sync-generators/iter_nested_arrays_test.mjs`'
 - en: '38.3 Background: external iteration vs. internal iteration'
+  id: totrans-82
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 38.3 背景：外部迭代 vs. 内部迭代
 - en: 'In preparation for the next section, we need to learn about two different styles
     of iterating over the values “inside” an object:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了准备下一节，我们需要了解两种不同的迭代对象“内部”值的风格：
 - en: 'External iteration (pull): Your code asks the object for the values via an
     iteration protocol. For example, the `for-of` loop is based on JavaScript’s iteration
     protocol:'
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 外部迭代（拉取）：您的代码通过迭代协议向对象请求值。例如，`for-of`循环基于JavaScript的迭代协议：
 - en: '[PRE16]'
+  id: totrans-85
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Internal iteration (push): We pass a callback function to a method of the object
     and the method feeds the values to the callback. For example, Arrays have the
     method `.forEach()`:'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 内部迭代（推送）：我们将回调函数传递给对象的方法，该方法将值提供给回调。例如，数组具有方法`.forEach()`：
 - en: '[PRE17]'
+  id: totrans-87
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: The next section has examples for both styles of iteration.
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一节中有两种迭代风格的示例。
 - en: '38.4 Use case for generators: reusing traversals'
+  id: totrans-89
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 38.4 生成器的用例：重用遍历
 - en: One important use case for generators is extracting and reusing traversals.
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 生成器的一个重要用例是提取和重用遍历。
 - en: 38.4.1 The traversal to reuse
+  id: totrans-91
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.4.1 重用的遍历
 - en: 'As an example, consider the following function that traverses a tree of files
     and logs their paths (it uses [the Node.js API](https://nodejs.org/en/docs/) for
     doing so):'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，考虑以下遍历文件树并记录它们路径的函数（它使用[Node.js API](https://nodejs.org/en/docs/)来实现）：
 - en: '[PRE18]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'Consider the following directory:'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下目录：
 - en: '[PRE19]'
+  id: totrans-95
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'Let’s log the paths inside `mydir/`:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们记录`mydir/`内部的路径：
 - en: '[PRE20]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: How can we reuse this traversal and do something other than logging the paths?
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们如何重用这个遍历并做一些除了记录路径之外的事情呢？
 - en: 38.4.2 Internal iteration (push)
+  id: totrans-99
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.4.2 内部迭代（推）
 - en: 'One way of reusing traversal code is via *internal iteration*: Each traversed
     value is passed to a callback (line A).'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 重用遍历代码的一种方式是通过*内部迭代*：每个遍历的值都传递给一个回调函数（A行）。
 - en: '[PRE21]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 38.4.3 External iteration (pull)
+  id: totrans-102
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 38.4.3 外部迭代（拉）
 - en: 'Another way of reusing traversal code is via *external iteration*: We can write
     a generator that yields all traversed values (line A).'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 重用遍历代码的另一种方式是通过*外部迭代*：我们可以编写一个生成器，它会产生所有遍历的值（A行）。
 - en: '[PRE22]'
+  id: totrans-104
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 38.5 Advanced features of generators
+  id: totrans-105
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 38.5 生成器的高级特性
 - en: '[The chapter on generators](https://exploringjs.com/es6/ch_generators.html)
     in *Exploring ES6* covers two features that are beyond the scope of this book:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: '*Exploring ES6*中的[生成器章节](https://exploringjs.com/es6/ch_generators.html)涵盖了本书范围之外的两个特性：'
 - en: '`yield` can also *receive* data, via an argument of `.next()`.'
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`yield`也可以通过`.next()`的参数*接收*数据。'
 - en: Generators can also `return` values (not just `yield` them). Such values do
     not become iteration values, but can be retrieved via `yield*`.
+  id: totrans-108
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 生成器也可以`return`值（不仅仅是`yield`它们）。这样的值不会成为迭代值，但可以通过`yield*`来检索。
 - en: '[Comments](https://github.com/rauschma/impatient-js/issues/43)'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: '[评论](https://github.com/rauschma/impatient-js/issues/43)'
