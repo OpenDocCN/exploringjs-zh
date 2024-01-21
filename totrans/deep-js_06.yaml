@@ -3,61 +3,73 @@
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 4 环境：变量的内部工作原理
 - en: 原文：[https://exploringjs.com/deep-js/ch_environments.html](https://exploringjs.com/deep-js/ch_environments.html)
   id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/deep-js/ch_environments.html](https://exploringjs.com/deep-js/ch_environments.html)
 - en: '* * *'
   id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '4.1 [Environment: data structure for managing variables](ch_environments.html#environment-data-structure-for-managing-variables)'
   id: totrans-3
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 4.1 [环境：管理变量的数据结构](ch_environments.html#environment-data-structure-for-managing-variables)
 - en: 4.2 [Recursion via environments](ch_environments.html#recursion-via-environments)
   id: totrans-4
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 4.2 [通过环境进行递归](ch_environments.html#recursion-via-environments)
 - en: 4.2.1 [Executing the code](ch_environments.html#executing-the-code)
   id: totrans-5
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 4.2.1 [执行代码](ch_environments.html#executing-the-code)
 - en: 4.3 [Nested scopes via environments](ch_environments.html#nested-scopes-via-environments)
   id: totrans-6
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 4.3 [通过环境进行嵌套作用域](ch_environments.html#nested-scopes-via-environments)
 - en: 4.3.1 [Executing the code](ch_environments.html#executing-the-code-1)
   id: totrans-7
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 4.3.1 [执行代码](ch_environments.html#executing-the-code-1)
 - en: 4.4 [Closures and environments](ch_environments.html#closures-environments)
   id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 4.4 [闭包和环境](ch_environments.html#closures-environments)
 - en: '* * *'
   id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: In this chapter, we take a closer look at how the ECMAScript language specification
     handles variables.
   id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将更仔细地研究ECMAScript语言规范如何处理变量。
 - en: '4.1 Environment: data structure for managing variables'
   id: totrans-11
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 4.1 环境：管理变量的数据结构
 - en: 'An environment is the data structure that the ECMAScript specification uses
     to manage variables. It is a dictionary whose keys are variable names and whose
     values are the values of those variables. Each scope has its associated environment.
@@ -65,34 +77,41 @@
   id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 环境是ECMAScript规范用于管理变量的数据结构。它是一个字典，其键是变量名，值是这些变量的值。每个作用域都有其关联的环境。环境必须能够支持与变量相关的以下现象：
 - en: Recursion
   id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 递归
 - en: Nested scopes
   id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 嵌套作用域
 - en: Closures
   id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 闭包
 - en: We’ll use examples to illustrate how that is done for each phenomenon.
   id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将使用示例来说明每种现象是如何实现的。
 - en: 4.2 Recursion via environments
   id: totrans-17
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 4.2 通过环境进行递归
 - en: 'We’ll tackle recursion first. Consider the following code:'
   id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们首先解决递归。考虑以下代码：
 - en: '[PRE0]'
   id: totrans-19
   prefs: []
@@ -108,15 +127,18 @@
   id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于每个函数调用，您需要为被调用函数的变量（参数和局部变量）提供新的存储空间。这是通过所谓的*执行上下文*的堆栈来管理的，它们是环境的引用（本章的目的）。环境本身存储在堆上。这是必要的，因为它们偶尔在执行离开其作用域后继续存在（我们将在探索*闭包*时看到）。因此，它们本身不能通过堆栈管理。
 - en: 4.2.1 Executing the code
   id: totrans-21
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: 4.2.1 执行代码
 - en: 'While executing the code, we make the following pauses:'
   id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 在执行代码时，我们进行以下暂停：
 - en: '[PRE1]'
   id: totrans-23
   prefs: []
@@ -126,65 +148,78 @@
   id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 发生了什么：
 - en: Pause 1 – before calling `g()` (fig. [1](#fig:env_recursion_1)).
   id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 暂停1 - 在调用`g()`之前（图[1](#fig:env_recursion_1)）。
 - en: Pause 2 – while executing `g()` (fig. [2](#fig:env_recursion_2)).
   id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 暂停2 - 在执行`g()`时（图[2](#fig:env_recursion_2)）。
 - en: Pause 3 – while executing `f()` (fig. [3](#fig:env_recursion_3)).
   id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 暂停3 - 在执行`f()`时（图[3](#fig:env_recursion_3)）。
 - en: 'Remaining steps: Every time there is a `return`, one execution context is removed
     from the stack.'
   id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 剩下的步骤：每次有`return`时，一个执行上下文将从堆栈中移除。
 - en: '![](../Images/500f606df20758e348b5eab435dca891.png)'
   id: totrans-29
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/500f606df20758e348b5eab435dca891.png)'
 - en: 'Figure 1: Recursion, pause 1 – before calling `g()`: The execution context
     stack has one entry, which points to the top-level environment. In that environment,
     there are two entries; one for `f()` and one for `g()`.'
   id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 图1：递归，暂停1 - 在调用`g()`之前：执行上下文堆栈有一个条目，指向顶层环境。在该环境中，有两个条目；一个是`f()`，一个是`g()`。
 - en: '![](../Images/5ee98ad9451eb4fc93477cf8fd9ae8cd.png)'
   id: totrans-31
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/5ee98ad9451eb4fc93477cf8fd9ae8cd.png)'
 - en: 'Figure 2: Recursion, pause 2 – while executing `g()`: The top of the execution
     context stack points to the environment that was created for `g()`. That environment
     contains entries for the argument `y` and for the local variable `tmp`.'
   id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 图2：递归，暂停2 - 在执行`g()`时：执行上下文堆栈的顶部指向为`g()`创建的环境。该环境包含了参数`y`和本地变量`tmp`的条目。
 - en: '![](../Images/a99708ba4b44d86dd29a70adbd4f1924.png)'
   id: totrans-33
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/a99708ba4b44d86dd29a70adbd4f1924.png)'
 - en: 'Figure 3: Recursion, pause 3 – while executing `f()`: The top execution context
     now points to the environment for `f()`.'
   id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 图3：递归，暂停3 - 在执行`f()`时：顶部执行上下文现在指向`f()`的环境。
 - en: 4.3 Nested scopes via environments
   id: totrans-35
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: 4.3 通过环境进行嵌套作用域
 - en: We use the following code to explore how nested scopes are implemented via environments.
   id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用以下代码来探索如何通过环境实现嵌套作用域。
 - en: '[PRE2]'
   id: totrans-37
   prefs: []
@@ -195,12 +230,14 @@
   id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，我们有三个嵌套作用域：顶层作用域，`f()`的作用域和`square()`的作用域。观察：
 - en: The scopes are connected. An inner scope “inherits” all the variables of an
     outer scope (minus the ones it shadows).
   id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作用域是连接的。内部作用域“继承”了外部作用域的所有变量（减去它遮蔽的变量）。
 - en: Nesting scopes as a mechanism is independent of recursion. The latter is best
     managed by a stack of independent environments. The former is a relationship that
     each environment has with the environment “in which” it is created.
@@ -208,6 +245,7 @@
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作为一种机制，嵌套作用域是独立于递归的。后者最好由独立环境的堆栈管理。前者是每个环境与“创建它的”环境的关系。
 - en: Therefore, the environment of each scope points to the environment of the surrounding
     scope via a field called `outer`. When we are looking up the value of a variable,
     we first search for its name in the current environment, then in the outer environment,
