@@ -1,4 +1,4 @@
-# 十五、[通过 npm 包脚本运行跨平台任务]
+# 十五、通过 npm 包脚本运行跨平台任务
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_package-scripts.html`](https://exploringjs.com/nodejs-shell-scripting/ch_package-scripts.html)
 > 

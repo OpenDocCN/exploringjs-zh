@@ -1,4 +1,4 @@
-# 十三、[TypeScript 中枚举的替代方案]
+# 十三、TypeScript 中枚举的替代方案
 
 > 原文：[`exploringjs.com/tackling-ts/ch_enum-alternatives.html`](https://exploringjs.com/tackling-ts/ch_enum-alternatives.html)
 > 

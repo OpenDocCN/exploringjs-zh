@@ -1,4 +1,4 @@
-# 十四、[创建跨平台 shell 脚本]
+# 十四、创建跨平台 shell 脚本
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_creating-shell-scripts.html`](https://exploringjs.com/nodejs-shell-scripting/ch_creating-shell-scripts.html)
 > 

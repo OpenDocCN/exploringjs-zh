@@ -33,7 +33,7 @@
 +   [第六部分：模块化](js-imp-prog_32.md)
 +   [二十七、模块](js-imp-prog_33.md)
 +   [二十八、对象](js-imp-prog_34.md)
-+   [二十九、[ES6 中的类]](js-imp-prog_35.md)
++   [二十九、ES6 中的类](js-imp-prog_35.md)
 +   [第七部分：集合](js-imp-prog_36.md)
 +   [三十、同步迭代](js-imp-prog_37.md)
 +   [三十一、数组 (Array)](js-imp-prog_38.md)
