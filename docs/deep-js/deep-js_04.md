@@ -1,6 +1,11 @@
 # 二、JavaScript 中的类型强制转换
 
 > 原文：[`exploringjs.com/deep-js/ch_type-coercion.html`](https://exploringjs.com/deep-js/ch_type-coercion.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

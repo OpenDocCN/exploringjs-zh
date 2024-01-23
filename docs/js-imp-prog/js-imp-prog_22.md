@@ -1,6 +1,12 @@
 # 十八、大整数 - 任意精度整数 [ES2020]（高级）
 
 > 原文：[`exploringjs.com/impatient-js/ch_bigints.html`](https://exploringjs.com/impatient-js/ch_bigints.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 
 * * *
 

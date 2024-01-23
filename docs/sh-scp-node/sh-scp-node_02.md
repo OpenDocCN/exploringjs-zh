@@ -1,6 +1,12 @@
 # 一、本书简介
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_about-book.html`](https://exploringjs.com/nodejs-shell-scripting/ch_about-book.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 
 * * *
 

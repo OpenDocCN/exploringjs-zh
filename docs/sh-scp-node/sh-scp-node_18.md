@@ -1,6 +1,12 @@
 # 十四、[创建跨平台 shell 脚本]
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_creating-shell-scripts.html`](https://exploringjs.com/nodejs-shell-scripting/ch_creating-shell-scripts.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 
 * * *
 

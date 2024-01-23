@@ -1,6 +1,11 @@
 # 三、关于 TypeScript 的免费资源
 
 > 原文：[`exploringjs.com/tackling-ts/ch_resources-on-typescript.html`](https://exploringjs.com/tackling-ts/ch_resources-on-typescript.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 JavaScript 书籍：
 

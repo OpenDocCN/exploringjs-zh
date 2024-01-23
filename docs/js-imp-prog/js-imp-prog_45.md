@@ -1,6 +1,10 @@
 # 三十八、同步生成器（高级）
 
-> 链接：[`exploringjs.com/impatient-js/ch_sync-generators.html`](https://exploringjs.com/impatient-js/ch_sync-generators.html)
+> 原文：[`exploringjs.com/impatient-js/ch_sync-generators.html`](https://exploringjs.com/impatient-js/ch_sync-generators.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
 * * *
 

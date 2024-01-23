@@ -1,6 +1,11 @@
 # 十一、属性：赋值 vs. 定义
 
 > 原文：[`exploringjs.com/deep-js/ch_property-assignment-vs-definition.html`](https://exploringjs.com/deep-js/ch_property-assignment-vs-definition.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

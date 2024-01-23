@@ -1,6 +1,12 @@
 # 十五、[通过 npm 包脚本运行跨平台任务]
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_package-scripts.html`](https://exploringjs.com/nodejs-shell-scripting/ch_package-scripts.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 
 * * *
 

@@ -1,6 +1,11 @@
 # 十、保护对象免受更改
 
 > 原文：[`exploringjs.com/deep-js/ch_protecting-objects.html`](https://exploringjs.com/deep-js/ch_protecting-objects.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

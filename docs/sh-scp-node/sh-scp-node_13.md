@@ -1,6 +1,12 @@
 # 十、在 Node.js 上使用 web 流
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_web-streams.html`](https://exploringjs.com/nodejs-shell-scripting/ch_web-streams.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 
 * * *
 

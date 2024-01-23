@@ -1,6 +1,12 @@
 # 三十、同步迭代
 
 > 原文：[`exploringjs.com/impatient-js/ch_sync-iteration.html`](https://exploringjs.com/impatient-js/ch_sync-iteration.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+
 
 * * *
 
