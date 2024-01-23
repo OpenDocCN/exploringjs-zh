@@ -1,4 +1,4 @@
-+   [JavaScript 程序员的急切指南](README.md)
++   [写给不耐烦程序员的 JavaScript 指南](README.md)
 +   [第一部分：背景](js-imp-prog_01.md)
 +   [一、在购买本书之前](js-imp-prog_02.md)
 +   [二、FAQ：书籍和补充材料](js-imp-prog_03.md)

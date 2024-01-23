@@ -1,4 +1,4 @@
-+   [使用 Node.js 进行 Shell 脚本编写](README.md)
++   [Node.js Shell 脚本开发指南](README.md)
 +   [第一部分：关于本书](sh-scp-node_01.md)
 +   [一、本书简介](sh-scp-node_02.md)
 +   [二、说明](sh-scp-node_03.md)
