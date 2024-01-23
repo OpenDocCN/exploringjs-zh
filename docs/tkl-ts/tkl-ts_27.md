@@ -1,6 +1,11 @@
 # 二十二、[类型守卫和断言函数]
 
 > 原文：[`exploringjs.com/tackling-ts/ch_type-guards-assertion-functions.html`](https://exploringjs.com/tackling-ts/ch_type-guards-assertion-functions.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

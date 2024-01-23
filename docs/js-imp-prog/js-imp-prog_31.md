@@ -1,6 +1,11 @@
 # 二十六、动态评估代码：eval()，new Function()（高级）
 
 > 原文：[`exploringjs.com/impatient-js/ch_dynamic-code-evaluation.html`](https://exploringjs.com/impatient-js/ch_dynamic-code-evaluation.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

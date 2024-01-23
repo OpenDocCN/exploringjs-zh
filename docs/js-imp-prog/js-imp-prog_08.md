@@ -1,6 +1,11 @@
 # 六、使用 JavaScript：整体概况
 
 > 原文：[`exploringjs.com/impatient-js/ch_big-picture.html`](https://exploringjs.com/impatient-js/ch_big-picture.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

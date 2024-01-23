@@ -1,6 +1,11 @@
 # 十、开始使用测验和练习
 
 > 原文：[`exploringjs.com/impatient-js/ch_quizzes-exercises.html`](https://exploringjs.com/impatient-js/ch_quizzes-exercises.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

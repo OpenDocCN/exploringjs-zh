@@ -1,6 +1,11 @@
 # 十九、剩下的章节在哪里？
 
 > 原文：[`exploringjs.com/deep-js/ch_missing-chapters-site.html`](https://exploringjs.com/deep-js/ch_missing-chapters-site.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 您正在阅读本书的免费在线版本。
 

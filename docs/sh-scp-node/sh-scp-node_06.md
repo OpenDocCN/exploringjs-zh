@@ -1,6 +1,11 @@
 # 四、Node.js 概述：架构、API、事件循环、并发性
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_nodejs-overview.html`](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-overview.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

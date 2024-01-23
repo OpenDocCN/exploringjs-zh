@@ -1,6 +1,11 @@
 # 二十四、剩下的章节在哪里？
 
 > 原文：[`exploringjs.com/tackling-ts/ch_missing-chapters-online.html`](https://exploringjs.com/tackling-ts/ch_missing-chapters-online.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 您正在阅读本书的在线版本。缺少两个额外章节：
 

@@ -1,6 +1,11 @@
 # 十二、值
 
 > 原文：[`exploringjs.com/impatient-js/ch_values.html`](https://exploringjs.com/impatient-js/ch_values.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

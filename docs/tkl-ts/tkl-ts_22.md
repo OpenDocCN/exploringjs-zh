@@ -1,6 +1,11 @@
 # 十八、类作为值的类型
 
 > 原文：[`exploringjs.com/tackling-ts/ch_classes-as-values.html`](https://exploringjs.com/tackling-ts/ch_classes-as-values.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

@@ -1,6 +1,11 @@
 # 六、本书中使用的符号
 
 > 原文：[`exploringjs.com/tackling-ts/ch_book-notation.html`](https://exploringjs.com/tackling-ts/ch_book-notation.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

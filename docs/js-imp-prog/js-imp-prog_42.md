@@ -1,6 +1,11 @@
 # 三十五、集合（Set）
 
 > 原文：[`exploringjs.com/impatient-js/ch_sets.html`](https://exploringjs.com/impatient-js/ch_sets.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

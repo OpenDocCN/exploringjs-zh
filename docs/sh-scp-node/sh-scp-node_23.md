@@ -1,6 +1,11 @@
 # 十八、跨平台考虑
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_cross-platform-considerations.html`](https://exploringjs.com/nodejs-shell-scripting/ch_cross-platform-considerations.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 

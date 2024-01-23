@@ -1,6 +1,11 @@
 # 十六、使用 util.parseArgs()解析命令行参数
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_node-util-parseargs.html`](https://exploringjs.com/nodejs-shell-scripting/ch_node-util-parseargs.html)
+> 
+> 译者：[飞龙](https://github.com/wizardforcel)
+> 
+> 协议：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
 
 * * *
 
