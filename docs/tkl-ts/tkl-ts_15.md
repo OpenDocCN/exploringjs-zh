@@ -1,4 +1,4 @@
-# 12 TypeScript 枚举：它们是如何工作的？可以用于什么？
+# 十二、TypeScript 枚举：它们是如何工作的？可以用于什么？
 
 > 原文：[`exploringjs.com/tackling-ts/ch_enums.html`](https://exploringjs.com/tackling-ts/ch_enums.html)
 

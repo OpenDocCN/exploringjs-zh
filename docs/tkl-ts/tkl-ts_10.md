@@ -1,4 +1,4 @@
-# 8 通过 TypeScript 创建基于 CommonJS 的 npm 包
+# 八、通过 TypeScript 创建基于 CommonJS 的 npm 包
 
 > 原文：[`exploringjs.com/tackling-ts/ch_npm-cjs-typescript.html`](https://exploringjs.com/tackling-ts/ch_npm-cjs-typescript.html)
 

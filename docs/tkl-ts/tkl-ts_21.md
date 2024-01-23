@@ -1,4 +1,4 @@
-# 17 与类相关的类型
+# 十七、与类相关的类型
 
 > 原文：[`exploringjs.com/tackling-ts/ch_class-related-types.html`](https://exploringjs.com/tackling-ts/ch_class-related-types.html)
 

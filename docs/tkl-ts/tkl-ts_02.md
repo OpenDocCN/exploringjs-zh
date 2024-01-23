@@ -1,4 +1,4 @@
-# 1 关于这本书
+# 一、关于这本书
 
 > 链接：[`exploringjs.com/tackling-ts/ch_about-book.html`](https://exploringjs.com/tackling-ts/ch_about-book.html)
 

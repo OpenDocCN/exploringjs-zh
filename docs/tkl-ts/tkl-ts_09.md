@@ -1,4 +1,4 @@
-# 7 TypeScript 的基本要点
+# 七、TypeScript 的基本要点
 
 > 原文：[`exploringjs.com/tackling-ts/ch_typescript-essentials.html`](https://exploringjs.com/tackling-ts/ch_typescript-essentials.html)
 

@@ -1,4 +1,4 @@
-# 15 对象类型
+# 十五、对象类型
 
 > 原文：[`exploringjs.com/tackling-ts/ch_typing-objects.html`](https://exploringjs.com/tackling-ts/ch_typing-objects.html)
 

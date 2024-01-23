@@ -1,4 +1,4 @@
-# 19 数组的类型化
+# 十九、数组的类型化
 
 > 原文：[`exploringjs.com/tackling-ts/ch_typing-arrays.html`](https://exploringjs.com/tackling-ts/ch_typing-arrays.html)
 

@@ -1,4 +1,4 @@
-# 10 迁移到 TypeScript 的策略
+# 十、迁移到 TypeScript 的策略
 
 > 原文：[`exploringjs.com/tackling-ts/ch_migrating-to-typescript.html`](https://exploringjs.com/tackling-ts/ch_migrating-to-typescript.html)
 

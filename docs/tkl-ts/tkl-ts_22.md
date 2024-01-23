@@ -1,4 +1,4 @@
-# 18 类作为值的类型
+# 十八、类作为值的类型
 
 > 原文：[`exploringjs.com/tackling-ts/ch_classes-as-values.html`](https://exploringjs.com/tackling-ts/ch_classes-as-values.html)
 

@@ -1,4 +1,4 @@
-# 2 为什么使用 TypeScript？
+# 二、为什么使用 TypeScript？
 
 > 原文：[`exploringjs.com/tackling-ts/ch_why-typescript.html`](https://exploringjs.com/tackling-ts/ch_why-typescript.html)
 

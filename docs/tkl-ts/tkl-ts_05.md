@@ -1,4 +1,4 @@
-# II 用 TypeScript 入门
+# 第二部分：用 TypeScript 入门
 
 > 原文：[`exploringjs.com/tackling-ts/pt_getting-started.html`](https://exploringjs.com/tackling-ts/pt_getting-started.html)
 

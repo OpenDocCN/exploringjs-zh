@@ -1,4 +1,4 @@
-# 3 关于 TypeScript 的免费资源
+# 三、关于 TypeScript 的免费资源
 
 > 原文：[`exploringjs.com/tackling-ts/ch_resources-on-typescript.html`](https://exploringjs.com/tackling-ts/ch_resources-on-typescript.html)
 

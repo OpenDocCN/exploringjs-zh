@@ -1,4 +1,4 @@
-# 6 本书中使用的符号
+# 六、本书中使用的符号
 
 > 原文：[`exploringjs.com/tackling-ts/ch_book-notation.html`](https://exploringjs.com/tackling-ts/ch_book-notation.html)
 

@@ -1,4 +1,4 @@
-# 20 函数类型
+# 二十、函数类型
 
 > 原文：[`exploringjs.com/tackling-ts/ch_typing-functions.html`](https://exploringjs.com/tackling-ts/ch_typing-functions.html)
 

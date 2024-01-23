@@ -1,4 +1,4 @@
-# 5 尝试 TypeScript
+# 五、尝试 TypeScript
 
 > 原文：[`exploringjs.com/tackling-ts/ch_trying-out-typescript.html`](https://exploringjs.com/tackling-ts/ch_trying-out-typescript.html)
 

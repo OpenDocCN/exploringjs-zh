@@ -1,4 +1,4 @@
-# 21 类型断言（与转换相关）
+# 二十一、类型断言（与转换相关）
 
 > 原文：[`exploringjs.com/tackling-ts/ch_type-assertions.html`](https://exploringjs.com/tackling-ts/ch_type-assertions.html)
 

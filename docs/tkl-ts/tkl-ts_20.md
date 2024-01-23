@@ -1,4 +1,4 @@
-# 16 TypeScript 中的类定义
+# 十六、TypeScript 中的类定义
 
 > 原文：[`exploringjs.com/tackling-ts/ch_class-definitions.html`](https://exploringjs.com/tackling-ts/ch_class-definitions.html)
 

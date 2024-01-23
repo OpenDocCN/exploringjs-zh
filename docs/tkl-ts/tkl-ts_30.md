@@ -1,4 +1,4 @@
-# 24 剩下的章节在哪里？
+# 二十四、剩下的章节在哪里？
 
 > 原文：[`exploringjs.com/tackling-ts/ch_missing-chapters-online.html`](https://exploringjs.com/tackling-ts/ch_missing-chapters-online.html)
 

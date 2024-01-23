@@ -1,4 +1,4 @@
-# 14 向类型添加特殊值
+# 十四、向类型添加特殊值
 
 > 原文：[`exploringjs.com/tackling-ts/ch_special-values.html`](https://exploringjs.com/tackling-ts/ch_special-values.html)
 

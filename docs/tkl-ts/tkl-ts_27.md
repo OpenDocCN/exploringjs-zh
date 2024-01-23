@@ -1,4 +1,4 @@
-# 22 [类型守卫和断言函数]
+# 二十二、[类型守卫和断言函数]
 
 > 原文：[`exploringjs.com/tackling-ts/ch_type-guards-assertion-functions.html`](https://exploringjs.com/tackling-ts/ch_type-guards-assertion-functions.html)
 

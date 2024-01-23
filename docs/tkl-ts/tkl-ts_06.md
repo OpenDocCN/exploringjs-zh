@@ -1,4 +1,4 @@
-# 4 TypeScript 是如何工作的？鸟瞰
+# 四、TypeScript 是如何工作的？鸟瞰
 
 > 原文：[`exploringjs.com/tackling-ts/ch_typescript-workflows.html`](https://exploringjs.com/tackling-ts/ch_typescript-workflows.html)
 
