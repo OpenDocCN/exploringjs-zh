@@ -1,4 +1,4 @@
-# 12 在子进程中运行 shell 命令
+# 十二、在子进程中运行 shell 命令
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_nodejs-child-process.html`](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-child-process.html)
 

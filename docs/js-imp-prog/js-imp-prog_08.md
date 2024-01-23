@@ -1,4 +1,4 @@
-# 6 使用 JavaScript：整体概况
+# 六、使用 JavaScript：整体概况
 
 > 原文：[`exploringjs.com/impatient-js/ch_big-picture.html`](https://exploringjs.com/impatient-js/ch_big-picture.html)
 

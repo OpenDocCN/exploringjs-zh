@@ -1,4 +1,4 @@
-# I Frontmatter
+# 第一部分：前言
 
 > 原文：[`exploringjs.com/deep-js/pt_frontmatter.html`](https://exploringjs.com/deep-js/pt_frontmatter.html)
 

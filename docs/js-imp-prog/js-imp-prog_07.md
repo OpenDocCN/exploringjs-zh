@@ -1,4 +1,4 @@
-# II 第一步
+# 第二部分：第一步
 
 > 原文：[`exploringjs.com/impatient-js/pt_first-steps.html`](https://exploringjs.com/impatient-js/pt_first-steps.html)
 

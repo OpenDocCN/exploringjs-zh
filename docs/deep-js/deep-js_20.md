@@ -1,4 +1,4 @@
-# 15 不可变集合的包装器
+# 十五、不可变集合的包装器
 
 > 原文：[`exploringjs.com/deep-js/ch_immutable-collection-wrappers.html`](https://exploringjs.com/deep-js/ch_immutable-collection-wrappers.html)
 

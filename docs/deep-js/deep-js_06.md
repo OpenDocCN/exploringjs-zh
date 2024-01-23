@@ -1,4 +1,4 @@
-# 4 环境：变量的内部工作原理
+# 四、环境：变量的内部工作原理
 
 > 原文：[`exploringjs.com/deep-js/ch_environments.html`](https://exploringjs.com/deep-js/ch_environments.html)
 

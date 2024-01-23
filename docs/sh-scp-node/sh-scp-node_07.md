@@ -1,4 +1,4 @@
-# 5 包：JavaScript 的软件分发单元
+# 五、包：JavaScript 的软件分发单元
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_packages.html`](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
 

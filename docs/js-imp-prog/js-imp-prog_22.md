@@ -1,4 +1,4 @@
-# 18 大整数 - 任意精度整数 [ES2020]（高级）
+# 十八、大整数 - 任意精度整数 [ES2020]（高级）
 
 > 原文：[`exploringjs.com/impatient-js/ch_bigints.html`](https://exploringjs.com/impatient-js/ch_bigints.html)
 

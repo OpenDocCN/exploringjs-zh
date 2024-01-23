@@ -1,4 +1,4 @@
-# 1 本书简介
+# 一、本书简介
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_about-book.html`](https://exploringjs.com/nodejs-shell-scripting/ch_about-book.html)
 

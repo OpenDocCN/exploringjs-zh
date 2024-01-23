@@ -1,4 +1,4 @@
-# 34 WeakMaps (WeakMap) (高级)
+# 三十四、WeakMaps (WeakMap) (高级)
 
 > 原文：[`exploringjs.com/impatient-js/ch_weakmaps.html`](https://exploringjs.com/impatient-js/ch_weakmaps.html)
 

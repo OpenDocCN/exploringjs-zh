@@ -1,4 +1,4 @@
-# 10 保护对象免受更改
+# 十、保护对象免受更改
 
 > 原文：[`exploringjs.com/deep-js/ch_protecting-objects.html`](https://exploringjs.com/deep-js/ch_protecting-objects.html)
 

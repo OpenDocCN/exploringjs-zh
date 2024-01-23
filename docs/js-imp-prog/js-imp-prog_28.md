@@ -1,4 +1,4 @@
-# 23 控制流语句
+# 二十三、控制流语句
 
 > 原文：[`exploringjs.com/impatient-js/ch_control-flow.html`](https://exploringjs.com/impatient-js/ch_control-flow.html)
 

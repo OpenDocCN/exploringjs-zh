@@ -1,4 +1,4 @@
-# 17 通过实现 Promise 来探索 Promise
+# 十七、通过实现 Promise 来探索 Promise
 
 > 原文：[`exploringjs.com/deep-js/ch_implementing-promises.html`](https://exploringjs.com/deep-js/ch_implementing-promises.html)
 

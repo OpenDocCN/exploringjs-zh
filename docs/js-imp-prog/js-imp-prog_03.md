@@ -1,4 +1,4 @@
-# 2 FAQ：书籍和补充材料
+# 二、FAQ：书籍和补充材料
 
 > 原文：[`exploringjs.com/impatient-js/ch_faq-book.html`](https://exploringjs.com/impatient-js/ch_faq-book.html)
 

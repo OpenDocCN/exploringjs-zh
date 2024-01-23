@@ -1,4 +1,4 @@
-# 10 在 Node.js 上使用 web 流
+# 十、在 Node.js 上使用 web 流
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_web-streams.html`](https://exploringjs.com/nodejs-shell-scripting/ch_web-streams.html)
 

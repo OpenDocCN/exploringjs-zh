@@ -1,4 +1,4 @@
-# 20 字符串
+# 二十、字符串
 
 > 原文：[`exploringjs.com/impatient-js/ch_strings.html`](https://exploringjs.com/impatient-js/ch_strings.html)
 

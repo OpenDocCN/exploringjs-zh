@@ -1,4 +1,4 @@
-# 14 复制类的实例：.clone() vs. 复制构造函数
+# 十四、复制类的实例：.clone() vs. 复制构造函数
 
 > 原文：[`exploringjs.com/deep-js/ch_copying-class-instances.html`](https://exploringjs.com/deep-js/ch_copying-class-instances.html)
 

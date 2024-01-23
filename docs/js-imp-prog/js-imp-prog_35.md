@@ -1,4 +1,4 @@
-# 29 [ES6 中的类]
+# 二十九、[ES6 中的类]
 
 > 原文：[`exploringjs.com/impatient-js/ch_classes.html`](https://exploringjs.com/impatient-js/ch_classes.html)
 

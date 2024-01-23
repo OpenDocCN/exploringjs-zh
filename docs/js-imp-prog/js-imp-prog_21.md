@@ -1,4 +1,4 @@
-# 17 数学
+# 十七、数学
 
 > 原文：[`exploringjs.com/impatient-js/ch_math.html`](https://exploringjs.com/impatient-js/ch_math.html)
 

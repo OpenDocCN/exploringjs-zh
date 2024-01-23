@@ -1,4 +1,4 @@
-# 10 开始使用测验和练习
+# 十、开始使用测验和练习
 
 > 原文：[`exploringjs.com/impatient-js/ch_quizzes-exercises.html`](https://exploringjs.com/impatient-js/ch_quizzes-exercises.html)
 

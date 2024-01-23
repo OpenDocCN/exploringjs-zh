@@ -1,4 +1,4 @@
-# 1 在购买本书之前
+# 一、在购买本书之前
 
 > 原文：[`exploringjs.com/impatient-js/ch_about-book.html`](https://exploringjs.com/impatient-js/ch_about-book.html)
 

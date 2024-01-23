@@ -1,4 +1,4 @@
-# 5 全局变量的详细了解
+# 五、全局变量的详细了解
 
 > 原文：[`exploringjs.com/deep-js/ch_global-scope.html`](https://exploringjs.com/deep-js/ch_global-scope.html)
 

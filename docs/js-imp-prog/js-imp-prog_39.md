@@ -1,4 +1,4 @@
-# 32 Typed Arrays：处理二进制数据（高级）
+# 三十二、Typed Arrays：处理二进制数据（高级）
 
 > 原文：[`exploringjs.com/impatient-js/ch_typed-arrays.html`](https://exploringjs.com/impatient-js/ch_typed-arrays.html)
 

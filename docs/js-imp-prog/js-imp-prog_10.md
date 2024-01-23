@@ -1,4 +1,4 @@
-# 8 控制台：交互式 JavaScript 命令行
+# 八、控制台：交互式 JavaScript 命令行
 
 > 原文：[`exploringjs.com/impatient-js/ch_console.html`](https://exploringjs.com/impatient-js/ch_console.html)
 

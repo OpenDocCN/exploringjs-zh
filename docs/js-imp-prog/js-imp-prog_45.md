@@ -1,4 +1,4 @@
-# 38 同步生成器（高级）
+# 三十八、同步生成器（高级）
 
 > 链接：[`exploringjs.com/impatient-js/ch_sync-generators.html`](https://exploringjs.com/impatient-js/ch_sync-generators.html)
 

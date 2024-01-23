@@ -1,4 +1,4 @@
-# 8 在 Node.js 上处理文件系统
+# 八、在 Node.js 上处理文件系统
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_nodejs-file-system.html`](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-file-system.html)
 

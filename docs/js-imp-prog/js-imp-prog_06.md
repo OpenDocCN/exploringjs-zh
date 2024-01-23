@@ -1,4 +1,4 @@
-# 5 FAQ: JavaScript
+# 五、FAQ: JavaScript
 
 > 原文：[`exploringjs.com/impatient-js/ch_faq-language.html`](https://exploringjs.com/impatient-js/ch_faq-language.html)
 

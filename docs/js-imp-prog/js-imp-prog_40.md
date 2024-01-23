@@ -1,4 +1,4 @@
-# 33 地图（Map）
+# 三十三、地图（Map）
 
 > 原文：[`exploringjs.com/impatient-js/ch_maps.html`](https://exploringjs.com/impatient-js/ch_maps.html)
 

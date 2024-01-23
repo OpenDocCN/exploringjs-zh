@@ -1,4 +1,4 @@
-# 28 对象
+# 二十八、对象
 
 > 原文：[`exploringjs.com/impatient-js/ch_objects.html`](https://exploringjs.com/impatient-js/ch_objects.html)
 

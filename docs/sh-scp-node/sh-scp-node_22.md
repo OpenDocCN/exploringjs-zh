@@ -1,4 +1,4 @@
-# 17 Shell 脚本配方
+# 十七、Shell 脚本配方
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_shell-scripting-recipes.html`](https://exploringjs.com/nodejs-shell-scripting/ch_shell-scripting-recipes.html)
 

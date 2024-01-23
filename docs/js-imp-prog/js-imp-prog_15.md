@@ -1,4 +1,4 @@
-# 12 值
+# 十二、值
 
 > 原文：[`exploringjs.com/impatient-js/ch_values.html`](https://exploringjs.com/impatient-js/ch_values.html)
 

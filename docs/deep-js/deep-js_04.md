@@ -1,4 +1,4 @@
-# 2 JavaScript 中的类型强制转换
+# 二、JavaScript 中的类型强制转换
 
 > 原文：[`exploringjs.com/deep-js/ch_type-coercion.html`](https://exploringjs.com/deep-js/ch_type-coercion.html)
 

@@ -1,4 +1,4 @@
-# 8 共享的可变状态的问题及如何避免它们
+# 八、共享的可变状态的问题及如何避免它们
 
 > 原文：[`exploringjs.com/deep-js/ch_shared-mutable-state.html`](https://exploringjs.com/deep-js/ch_shared-mutable-state.html)
 

@@ -1,4 +1,4 @@
-# 35 集合（Set）
+# 三十五、集合（Set）
 
 > 原文：[`exploringjs.com/impatient-js/ch_sets.html`](https://exploringjs.com/impatient-js/ch_sets.html)
 

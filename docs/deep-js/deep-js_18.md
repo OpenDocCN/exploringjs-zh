@@ -1,4 +1,4 @@
-# 13 实例化类的技术
+# 十三、实例化类的技术
 
 > 原文：[`exploringjs.com/deep-js/ch_creating-class-instances.html`](https://exploringjs.com/deep-js/ch_creating-class-instances.html)
 

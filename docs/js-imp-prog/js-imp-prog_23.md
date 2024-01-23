@@ -1,4 +1,4 @@
-# 19 Unicode-简介（高级）
+# 十九、Unicode-简介（高级）
 
 > 原文：[`exploringjs.com/impatient-js/ch_unicode.html`](https://exploringjs.com/impatient-js/ch_unicode.html)
 

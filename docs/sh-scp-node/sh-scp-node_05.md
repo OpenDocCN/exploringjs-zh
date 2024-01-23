@@ -1,4 +1,4 @@
-# 3 开始使用 Node.js
+# 三、开始使用 Node.js
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_getting-started-with-nodejs.html`](https://exploringjs.com/nodejs-shell-scripting/ch_getting-started-with-nodejs.html)
 

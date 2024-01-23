@@ -1,4 +1,4 @@
-# 9 属性属性：介绍
+# 九、属性属性：介绍
 
 > 原文：[`exploringjs.com/deep-js/ch_property-attributes-intro.html`](https://exploringjs.com/deep-js/ch_property-attributes-intro.html)
 

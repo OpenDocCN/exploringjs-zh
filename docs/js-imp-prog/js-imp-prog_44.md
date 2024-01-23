@@ -1,4 +1,4 @@
-# 37 解构
+# 三十七、解构
 
 > 原文：[`exploringjs.com/impatient-js/ch_destructuring.html`](https://exploringjs.com/impatient-js/ch_destructuring.html)
 

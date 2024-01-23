@@ -1,4 +1,4 @@
-# 3 JavaScript 的历史和演变
+# 三、JavaScript 的历史和演变
 
 > 原文：[`exploringjs.com/impatient-js/ch_history.html`](https://exploringjs.com/impatient-js/ch_history.html)
 

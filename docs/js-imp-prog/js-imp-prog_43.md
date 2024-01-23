@@ -1,4 +1,4 @@
-# 36 WeakSets (WeakSet) (advanced)
+# 三十六、WeakSets (WeakSet) (advanced)
 
 > 原文：[`exploringjs.com/impatient-js/ch_weaksets.html`](https://exploringjs.com/impatient-js/ch_weaksets.html)
 

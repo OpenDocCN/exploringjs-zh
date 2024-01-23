@@ -1,4 +1,4 @@
-# 背景
+# 第一部分：背景
 
 > 链接：[`exploringjs.com/impatient-js/pt_background.html`](https://exploringjs.com/impatient-js/pt_background.html)
 

@@ -1,4 +1,4 @@
-# 21 使用模板文字和标记模板
+# 二十一、使用模板文字和标记模板
 
 > 原文：[`exploringjs.com/impatient-js/ch_template-literals.html`](https://exploringjs.com/impatient-js/ch_template-literals.html)
 

@@ -1,4 +1,4 @@
-# 7 更新数据的破坏性和非破坏性
+# 七、更新数据的破坏性和非破坏性
 
 > 原文：[`exploringjs.com/deep-js/ch_updating-destructively-and-nondestructively.html`](https://exploringjs.com/deep-js/ch_updating-destructively-and-nondestructively.html)
 

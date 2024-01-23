@@ -1,4 +1,4 @@
-# 11 变量和赋值
+# 十一、变量和赋值
 
 > 原文：[`exploringjs.com/impatient-js/ch_variables-assignment.html`](https://exploringjs.com/impatient-js/ch_variables-assignment.html)
 

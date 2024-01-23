@@ -1,4 +1,4 @@
-# 26 动态评估代码：eval()，new Function()（高级）
+# 二十六、动态评估代码：eval()，new Function()（高级）
 
 > 原文：[`exploringjs.com/impatient-js/ch_dynamic-code-evaluation.html`](https://exploringjs.com/impatient-js/ch_dynamic-code-evaluation.html)
 

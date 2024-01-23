@@ -1,4 +1,4 @@
-# 4 新的 JavaScript 功能
+# 四、新的 JavaScript 功能
 
 > 原文：[`exploringjs.com/impatient-js/ch_new-javascript-features.html`](https://exploringjs.com/impatient-js/ch_new-javascript-features.html)
 

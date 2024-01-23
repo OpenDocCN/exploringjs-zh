@@ -1,4 +1,4 @@
-# 4 Node.js 概述：架构、API、事件循环、并发性
+# 四、Node.js 概述：架构、API、事件循环、并发性
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_nodejs-overview.html`](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-overview.html)
 

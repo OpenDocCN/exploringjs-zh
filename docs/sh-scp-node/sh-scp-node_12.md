@@ -1,4 +1,4 @@
-# 9 原生 Node.js 流
+# 九、原生 Node.js 流
 
 > 链接：[`exploringjs.com/nodejs-shell-scripting/ch_nodejs-streams.html`](https://exploringjs.com/nodejs-shell-scripting/ch_nodejs-streams.html)
 

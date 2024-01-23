@@ -1,4 +1,4 @@
-# VI 正则表达式
+# 第六部分：正则表达式
 
 > 原文：[`exploringjs.com/deep-js/pt_regular-expressions.html`](https://exploringjs.com/deep-js/pt_regular-expressions.html)
 

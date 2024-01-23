@@ -1,4 +1,4 @@
-# 31 数组 (Array)
+# 三十一、数组 (Array)
 
 > 原文：[`exploringjs.com/impatient-js/ch_arrays.html`](https://exploringjs.com/impatient-js/ch_arrays.html)
 

@@ -1,4 +1,4 @@
-# 6 复制对象和数组
+# 六、复制对象和数组
 
 > 原文：[`exploringjs.com/deep-js/ch_copying-objects-and-arrays.html`](https://exploringjs.com/deep-js/ch_copying-objects-and-arrays.html)
 

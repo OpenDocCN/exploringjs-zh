@@ -1,4 +1,4 @@
-# 12 属性的可枚举性
+# 十二、属性的可枚举性
 
 > 原文：[`exploringjs.com/deep-js/ch_enumerability.html`](https://exploringjs.com/deep-js/ch_enumerability.html)
 

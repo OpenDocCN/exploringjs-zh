@@ -1,4 +1,4 @@
-# 7 语法
+# 七、语法
 
 > 原文：[`exploringjs.com/impatient-js/ch_syntax.html`](https://exploringjs.com/impatient-js/ch_syntax.html)
 

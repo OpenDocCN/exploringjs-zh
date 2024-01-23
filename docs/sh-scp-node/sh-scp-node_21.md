@@ -1,4 +1,4 @@
-# 16 使用 util.parseArgs()解析命令行参数
+# 十六、使用 util.parseArgs()解析命令行参数
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_node-util-parseargs.html`](https://exploringjs.com/nodejs-shell-scripting/ch_node-util-parseargs.html)
 

@@ -1,4 +1,4 @@
-# 3 解构算法
+# 三、解构算法
 
 > 原文：[`exploringjs.com/deep-js/ch_destructuring-algorithm.html`](https://exploringjs.com/deep-js/ch_destructuring-algorithm.html)
 

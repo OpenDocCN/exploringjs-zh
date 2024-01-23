@@ -1,4 +1,4 @@
-# 22 符号
+# 二十二、符号
 
 > 原文：[`exploringjs.com/impatient-js/ch_symbols.html`](https://exploringjs.com/impatient-js/ch_symbols.html)
 

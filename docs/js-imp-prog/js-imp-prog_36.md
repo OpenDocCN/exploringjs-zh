@@ -1,4 +1,4 @@
-# VII 集合
+# 第七部分：集合
 
 > 原文：[`exploringjs.com/impatient-js/pt_collections.html`](https://exploringjs.com/impatient-js/pt_collections.html)
 

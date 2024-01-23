@@ -1,4 +1,4 @@
-# 30 同步迭代
+# 三十、同步迭代
 
 > 原文：[`exploringjs.com/impatient-js/ch_sync-iteration.html`](https://exploringjs.com/impatient-js/ch_sync-iteration.html)
 

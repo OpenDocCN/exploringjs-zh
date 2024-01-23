@@ -1,4 +1,4 @@
-# 15 布尔值
+# 十五、布尔值
 
 > 原文：[`exploringjs.com/impatient-js/ch_booleans.html`](https://exploringjs.com/impatient-js/ch_booleans.html)
 

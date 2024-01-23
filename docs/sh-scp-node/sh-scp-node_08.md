@@ -1,4 +1,4 @@
-# 6 npm 概述（JavaScript 包管理器）
+# 六、npm 概述（JavaScript 包管理器）
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_npm-overview.html`](https://exploringjs.com/nodejs-shell-scripting/ch_npm-overview.html)
 

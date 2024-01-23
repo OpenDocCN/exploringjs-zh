@@ -1,4 +1,4 @@
-# 24 异常处理
+# 二十四、异常处理
 
 > 原文：[`exploringjs.com/impatient-js/ch_exception-handling.html`](https://exploringjs.com/impatient-js/ch_exception-handling.html)
 

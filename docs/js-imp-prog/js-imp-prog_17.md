@@ -1,4 +1,4 @@
-# IV 原始值
+# 第四部分：原始值
 
 > 链接：[`exploringjs.com/impatient-js/pt_primitive-values.html`](https://exploringjs.com/impatient-js/pt_primitive-values.html)
 

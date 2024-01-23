@@ -1,4 +1,4 @@
-# 16 正则表达式：通过示例了解先行断言
+# 十六、正则表达式：通过示例了解先行断言
 
 > 原文：[`exploringjs.com/deep-js/ch_regexp-lookaround-assertions.html`](https://exploringjs.com/deep-js/ch_regexp-lookaround-assertions.html)
 

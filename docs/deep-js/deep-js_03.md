@@ -1,4 +1,4 @@
-# II 类型、值、变量
+# 第二部分：类型、值、变量
 
 > 原文：[`exploringjs.com/deep-js/pt_types-values-variables.html`](https://exploringjs.com/deep-js/pt_types-values-variables.html)
 

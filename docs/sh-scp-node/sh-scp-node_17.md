@@ -1,4 +1,4 @@
-# 13 安装 npm 包并运行 bin 脚本
+# 十三、安装 npm 包并运行 bin 脚本
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_installing-packages.html`](https://exploringjs.com/nodejs-shell-scripting/ch_installing-packages.html)
 

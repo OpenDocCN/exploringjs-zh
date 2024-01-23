@@ -1,4 +1,4 @@
-# 1 关于这本书
+# 一、关于这本书
 
 > 原文：[`exploringjs.com/deep-js/ch_about-book.html`](https://exploringjs.com/deep-js/ch_about-book.html)
 

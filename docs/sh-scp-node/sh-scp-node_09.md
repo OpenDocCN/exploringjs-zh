@@ -1,4 +1,4 @@
-# III Node.js 核心功能
+# 第三部分：Node.js 核心功能
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/pt_nodejs-core.html`](https://exploringjs.com/nodejs-shell-scripting/pt_nodejs-core.html)
 

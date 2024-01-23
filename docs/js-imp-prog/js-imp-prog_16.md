@@ -1,4 +1,4 @@
-# 13 运算符
+# 十三、运算符
 
 > 原文：[`exploringjs.com/impatient-js/ch_operators.html`](https://exploringjs.com/impatient-js/ch_operators.html)
 

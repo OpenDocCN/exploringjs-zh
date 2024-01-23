@@ -1,4 +1,4 @@
-# 16 数字
+# 十六、数字
 
 > 原文：[`exploringjs.com/impatient-js/ch_numbers.html`](https://exploringjs.com/impatient-js/ch_numbers.html)
 

@@ -1,4 +1,4 @@
-# 18 元编程与代理
+# 十八、元编程与代理
 
 > 原文：[`exploringjs.com/deep-js/ch_proxies.html`](https://exploringjs.com/deep-js/ch_proxies.html)
 

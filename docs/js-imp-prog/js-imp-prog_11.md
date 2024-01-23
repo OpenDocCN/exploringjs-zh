@@ -1,4 +1,4 @@
-# 9 断言 API
+# 九、断言 API
 
 > 原文：[`exploringjs.com/impatient-js/ch_assertion-api.html`](https://exploringjs.com/impatient-js/ch_assertion-api.html)
 

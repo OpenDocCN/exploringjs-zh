@@ -1,4 +1,4 @@
-# VII 杂项主题
+# 第七部分：杂项主题
 
 > 原文：[`exploringjs.com/deep-js/pt_miscellaneous.html`](https://exploringjs.com/deep-js/pt_miscellaneous.html)
 

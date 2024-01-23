@@ -1,4 +1,4 @@
-# 2 说明
+# 二、说明
 
 > 原文：[`exploringjs.com/nodejs-shell-scripting/ch_instructions.html`](https://exploringjs.com/nodejs-shell-scripting/ch_instructions.html)
 

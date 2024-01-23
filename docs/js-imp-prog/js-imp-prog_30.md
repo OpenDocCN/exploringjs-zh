@@ -1,4 +1,4 @@
-# 25 可调用值
+# 二十五、可调用值
 
 > 原文：[`exploringjs.com/impatient-js/ch_callables.html`](https://exploringjs.com/impatient-js/ch_callables.html)
 
