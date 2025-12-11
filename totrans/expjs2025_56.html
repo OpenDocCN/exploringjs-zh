@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>47 Dates (Date)</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>47 Dates (Date)</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_dates.html">https://exploringjs.com/js/book/ch_dates.html</a></blockquote>
+
+        
+    
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#date-libraries">47.1 Best practice: avoid the built-in <code>Date</code></a>
+      <ol>
+        <li>
+          <a href="#things-to-look-for-in-a-date-library">47.1.1 Things to look for in a date library</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#time-standards">47.2 Time standards</a>
+      <ol>
+        <li>
+          <a href="#utc-z-gmt">47.2.1 Background: UTC vs. Z vs. GMT</a>
+        </li>
+        <li>
+          <a href="#dates-have-no-time-zones">47.2.2 Dates do not support time zones</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#date-time-formats">47.3 Background: date time formats (ISO)</a>
+      <ol>
+        <li>
+          <a href="#tip-append-a-z-to-make-date-parsing-deterministic">47.3.1 Tip: append a <code>Z</code> to make date parsing deterministic</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#time-values">47.4 Time values</a>
+      <ol>
+        <li>
+          <a href="#creating-time-values">47.4.1 Creating time values</a>
+        </li>
+        <li>
+          <a href="#getting-and-setting-time-values">47.4.2 Getting and setting time values</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#creating-dates">47.5 Creating Dates</a>
+      <ol>
+        <li>
+          <a href="#creating-dates-via-numbers">47.5.1 Creating dates via numbers</a>
+        </li>
+        <li>
+          <a href="#parsing-dates-from-strings">47.5.2 Parsing dates from strings</a>
+        </li>
+        <li>
+          <a href="#other-ways-of-creating-dates">47.5.3 Other ways of creating dates</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#getters-and-setters">47.6 Getters and setters</a>
+      <ol>
+        <li>
+          <a href="#time-unit-getters-and-setters">47.6.1 Time unit getters and setters</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#converting-dates-to-strings">47.7 Converting Dates to strings</a>
+      <ol>
+        <li>
+          <a href="#strings-with-times">47.7.1 Strings with times</a>
+        </li>
+        <li>
+          <a href="#strings-with-dates">47.7.2 Strings with dates</a>
+        </li>
+        <li>
+          <a href="#strings-with-dates-and-times">47.7.3 Strings with dates and times</a>
+        </li>
+        <li>
+          <a href="#other-methods">47.7.4 Other methods</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p><span id="index-entry-date"/></p>
+<p>This chapter describes JavaScript’s API for working with dates – the class <code>Date</code>.</p>
+<h3 id="date-libraries"><a class="heading-id-link" href="#date-libraries">47.1 Best practice: avoid the built-in <code>Date</code></a></h3>
+<p>The JavaScript <code>Date</code> API is cumbersome to use. Hence, it’s best to rely on a library for anything related to dates. This is functionality that already is, or soon will be, built in:</p>
+<ul>
+  <li>
+    <a href="https://github.com/tc39/proposal-temporal">Temporal</a> is an upcoming ECMAScript data time API that can already be used via polyfills.
+  </li>
+  <li>
+    The <code>Intl</code> API is supported by most JavaScript platforms and offers useful date-time-related functionality:
+    <ul>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat"><code>Intl.DateTimeFormat</code></a> provides “language-sensitive date and time formatting”.
+      </li>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat"><code>Intl.RelativeTimeFormat</code></a> provides “language-sensitive relative time formatting”.
+      </li>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DurationFormat"><code>Intl.DurationFormat</code></a> provides “language-sensitive duration formatting”.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Popular libraries include:</p>
+<ul>
+  <li>
+    Libraries with custom date objects (for complex use cases):
+    <ul>
+      <li>
+        <a href="https://moment.github.io/luxon/">Luxon</a>
+      </li>
+      <li>
+        <a href="https://github.com/iamkun/dayjs">Day.js</a>
+      </li>
+      <li>
+        <a href="https://js-joda.github.io/js-joda/">js-joda</a>
+      </li>
+      <li>
+        <a href="https://momentjs.com">Moment.js</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Libraries that use the built-in <code>Date</code> objects (for simpler use cases):
+    <ul>
+      <li>
+        <a href="https://tempo.formkit.com">Tempo</a>
+      </li>
+      <li>
+        <a href="https://github.com/date-fns/date-fns">date-fns</a>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h4 id="things-to-look-for-in-a-date-library"><a class="heading-id-link" href="#things-to-look-for-in-a-date-library">47.1.1 Things to look for in a date library</a></h4>
+<p>Two things are important to keep in mind:</p>
+<ul>
+  <li>
+    <p><a href="ch_next-steps.html#tree-shaking"><em>Tree-shaking</em></a> can considerably reduce the size of a library. It is a technique of only deploying those exports of a library to a web server that are imported somewhere. Functions are much more amenable to tree-shaking than classes.</p>
+  </li>
+  <li>
+    <p>Support for time zones: As explained <a href="#dates-have-no-time-zones">later</a>, <code>Date</code> does not support time zones, which introduces a number of pitfalls and is a key weakness. Make sure that your date library supports them.</p>
+  </li>
+</ul>
+<h3 id="time-standards"><a class="heading-id-link" href="#time-standards">47.2 Time standards</a></h3>
+<h4 id="utc-z-gmt"><a class="heading-id-link" href="#utc-z-gmt">47.2.1 Background: UTC vs. Z vs. GMT</a></h4>
+<p><span id="index-entry-UTC--Coordinated-Universal-Time-"/><span id="index-entry-Coordinated-Universal-Time--UTC-"/>
+<span id="index-entry-Z--Zulu-Time-Zone-"/><span id="index-entry-Zulu-Time-Zone--Z-"/>
+<span id="index-entry-GMT--Greenwich-Mean-Time-"/><span id="index-entry-Greenwich-Mean-Time--GMT-"/></p>
+<p>UTC, Z, and GMT are ways of specifying time that are similar, but subtly different:</p>
+<ul>
+  <li>
+    <p>UTC (Coordinated Universal Time) is the time standard that all times zones are based on. They are specified relative to it. That is, no country or territory has UTC as its local time zone. If a time zone has daylight savings time, its offset relative to UTC changes during a year.</p>
+  </li>
+  <li>
+    <p>Z (Zulu Time Zone) is a military time zone that is often used in aviation and the military as another name for UTC+0.</p>
+  </li>
+  <li>
+    <p>GMT (Greenwich Mean Time) is a time zone used in some European and African countries. It is UTC plus zero hours and therefore has the same time as UTC.</p>
+  </li>
+</ul>
+<p>Sources:</p>
+<ul>
+  <li>
+    <a href="https://www.timeanddate.com/time/gmt-utc-time.html">“The Difference Between GMT and UTC”</a> at TimeAndDate.com
+  </li>
+  <li>
+    <a href="https://www.timeanddate.com/time/zones/z">“Z – Zulu Time Zone (Military Time)”</a> at TimeAndDate.com
+  </li>
+</ul>
+<h4 id="dates-have-no-time-zones"><a class="heading-id-link" href="#dates-have-no-time-zones">47.2.2 Dates do not support time zones</a></h4>
+<p>Dates support the following time standards:</p>
+<ul>
+  <li>
+    The local time zone (which depends on the current location)
+  </li>
+  <li>
+    UTC
+  </li>
+  <li>
+    Time offsets (relative to UTC)
+  </li>
+</ul>
+<p>Depending on the operation, only some of those options are available. For example, when converting dates to strings or extracting time units such as the day of the month, we can only choose between the local time zone and UTC.</p>
+<p>Internally, Dates are stored as UTC. When converting from or to the local time zone, the necessary offsets are determined via the date. In the following example, the local time zone is Europe/Paris:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// CEST (Central European Summer Time)</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2122-06-29'</span>).<span class="hljs-title function_">getTimezoneOffset</span>(), -<span class="hljs-number">120</span>);</code>
+<code>  </code>
+<code><span class="hljs-comment">// CET (Central European Time)</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2122-12-29'</span>).<span class="hljs-title function_">getTimezoneOffset</span>(), -<span class="hljs-number">60</span>);</code>
+</pre>
+<p>Whenever we create or convert dates, we need to be mindful of the time standard being used – for example: <code>new Date()</code> uses the local time zone while <code>.toISOString()</code> uses UTC.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-number">2077</span>, <span class="hljs-number">0</span>, <span class="hljs-number">27</span>).<span class="hljs-title function_">toISOString</span>()</span></code>
+<code>'2077-01-26T23:00:00.000Z'</code>
+</pre>
+<p>Dates interpret 0 as January. The day of the month is 27 in the local time zone, but 26 in UTC.</p>
+<div class="boxout">
+  <p><img src="../Images/8440b17bb8219cda9f9405ac83c36db0.png" class="boxout-icon" height="24" alt="Icon “tip”" data-original-src="https://exploringjs.com/js/book/icon/tip.svg"/> <strong>Documenting the time standards supported by each operation</strong></p>
+  <div class="boxout-vspace"/>
+  <p>In the remainder of this chapter, the supported time standards are noted for each operation.</p>
+</div>
+<h5 id="the-downsides-of-not-being-able-to-specify-time-zones"><a class="heading-id-link" href="#the-downsides-of-not-being-able-to-specify-time-zones">47.2.2.1 The downsides of not being able to specify time zones</a></h5>
+<p>Not being able to specify time zones has two downsides:</p>
+<ul>
+  <li>
+    <p>It makes it impossible to support multiple time zones.</p>
+  </li>
+  <li>
+    <p>It can lead to location-specific bugs. For example, the previous example produces different results depending on where it is executed. To be safe:</p>
+    <ul>
+      <li>
+        Use UTC-based operations whenever possible
+      </li>
+      <li>
+        Use <code>Z</code> or a time offset when parsing strings (see the next section for more information).
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="date-time-formats"><a class="heading-id-link" href="#date-time-formats">47.3 Background: date time formats (ISO)</a></h3>
+<p><span id="index-entry-date-time-format"/></p>
+<p>Date time formats describe:</p>
+<ul>
+  <li>
+    The strings accepted by:
+    <ul>
+      <li>
+        <code>Date.parse()</code>
+      </li>
+      <li>
+        <code>new Date()</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    The strings returned by (always longest format):
+    <ul>
+      <li>
+        <code>Date.prototype.toISOString()</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>The following is an example of a date time string returned by <code>.toISOString()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-string">'2033-05-28T15:59:59.123Z'</span></code>
+</pre>
+<p>Date time formats have the following structures:</p>
+<ul>
+  <li>
+    <p>Date formats: Y=year; M=month; D=day</p>
+<pre class="language-txt">
+<code>YYYY-MM-DD</code>
+<code>YYYY-MM</code>
+<code>YYYY</code>
+</pre>
+  </li>
+  <li>
+    <p>Time formats: T=separator (the string <code>'T'</code>); H=hour; m=minute; s=second and millisecond; Z=Zulu Time Zone (the string <code>'Z'</code>)</p>
+<pre class="language-txt">
+<code>THH:mm:ss.sss</code>
+<code>THH:mm:ss.sssZ</code>
+<code/>
+<code>THH:mm:ss</code>
+<code>THH:mm:ssZ</code>
+<code/>
+<code>THH:mm</code>
+<code>THH:mmZ</code>
+</pre>
+  </li>
+  <li>
+    <p>Date time formats: are date formats followed by time formats.</p>
+    <ul>
+      <li>
+        For example (longest): <code>YYYY-MM-DDTHH:mm:ss.sssZ</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Instead of <code>Z</code> (which is UTC+0), we can also specify <em>time offsets</em> relative to UTC:</p>
+<ul>
+  <li>
+    <code>THH:mm+HH:mm</code> (etc.)
+  </li>
+  <li>
+    <code>THH:mm-HH:mm</code> (etc.)
+  </li>
+</ul>
+<h4 id="tip-append-a-z-to-make-date-parsing-deterministic"><a class="heading-id-link" href="#tip-append-a-z-to-make-date-parsing-deterministic">47.3.1 Tip: append a <code>Z</code> to make date parsing deterministic</a></h4>
+<p>If we add a <code>Z</code> to the end of a string, date parsing doesn’t produce different results at different locations. This is what happens if we write code in Paris:</p>
+<ul>
+  <li>
+    <p>Without <code>Z</code>: Input is January 27 (implicitly in the Europe/Paris time zone), output is January 26 (in UTC).</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2077-01-27T00:00'</span>).<span class="hljs-title function_">toISOString</span>()</span></code>
+<code>'2077-01-26T23:00:00.000Z'</code>
+</pre>
+  </li>
+  <li>
+    <p>With <code>Z</code>: Input is January 27, output is January 27.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2077-01-27T00:00Z'</span>).<span class="hljs-title function_">toISOString</span>()</span></code>
+<code>'2077-01-27T00:00:00.000Z'</code>
+</pre>
+  </li>
+</ul>
+<h3 id="time-values"><a class="heading-id-link" href="#time-values">47.4 Time values</a></h3>
+<p><span id="index-entry-time-value"/></p>
+<p>A <em>time value</em> represents a date via the number of milliseconds since 1 January 1970 00:00:00 UTC.</p>
+<p>Time values can be used to create Dates:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> timeValue = <span class="hljs-number">0</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(timeValue).<span class="hljs-title function_">toISOString</span>(),</code>
+<code>  <span class="hljs-string">'1970-01-01T00:00:00.000Z'</span>);</code>
+</pre>
+<p>Coercing a Date to a number returns its time value:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Number</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-number">123</span>))</span></code>
+<code>123</code>
+</pre>
+<p>Ordering operators coerce their operands to numbers. Therefore, we can use these operators to compare Dates:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'1972-05-03'</span>) &lt; <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2001-12-23'</span>), <span class="hljs-literal">true</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Internally:</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-number">73699200000</span> &lt; <span class="hljs-number">1009065600000</span>, <span class="hljs-literal">true</span>);</code>
+</pre>
+<h4 id="creating-time-values"><a class="heading-id-link" href="#creating-time-values">47.4.1 Creating time values</a></h4>
+<p>The following methods create time values:</p>
+<ul>
+  <li>
+    <p><code>Date.now(): number</code> (UTC)</p>
+    <p>Returns the current time as a time value.</p>
+  </li>
+  <li>
+    <p><code>Date.parse(dateTimeStr: string): number</code> (local time zone, UTC, time offset)</p>
+    <p>Parses <code>dateTimeStr</code> and returns the corresponding time value.</p>
+  </li>
+  <li>
+    <p><code>Date.UTC(year, month, date?, hours?, minutes?, seconds?, milliseconds?): number</code> (UTC)</p>
+    <p>Returns the time value for the specified UTC date time.</p>
+  </li>
+</ul>
+<h4 id="getting-and-setting-time-values"><a class="heading-id-link" href="#getting-and-setting-time-values">47.4.2 Getting and setting time values</a></h4>
+<ul>
+  <li>
+    <p><code>Date.prototype.getTime(): number</code> (UTC)</p>
+    <p>Returns the time value corresponding to the Date.</p>
+  </li>
+  <li>
+    <p><code>Date.prototype.setTime(timeValue)</code> (UTC)</p>
+    <p>Sets <code>this</code> to the date encoded by <code>timeValue</code>.</p>
+  </li>
+</ul>
+<h3 id="creating-dates"><a class="heading-id-link" href="#creating-dates">47.5 Creating Dates</a></h3>
+<h4 id="creating-dates-via-numbers"><a class="heading-id-link" href="#creating-dates-via-numbers">47.5.1 Creating dates via numbers</a></h4>
+<p><code>new Date(year: number, month: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number)</code> (local time zone)</p>
+<p>Two of the parameters have pitfalls:</p>
+<ul>
+  <li>
+    <p>For <code>month</code>, 0 is January, 1 is February, etc.</p>
+  </li>
+  <li>
+    <p>If 0 ≤ <code>year</code> ≤ 99, then 1900 is added:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-number">12</span>, <span class="hljs-number">1</span>, <span class="hljs-number">22</span>, <span class="hljs-number">19</span>, <span class="hljs-number">11</span>).<span class="hljs-title function_">getFullYear</span>()</span></code>
+<code>1912</code>
+</pre>
+    <p>That’s why, elsewhere in this chapter, we avoid the time unit <code>year</code> and always use <code>fullYear</code>. But in this case, we have no choice.</p>
+  </li>
+</ul>
+<p>Example:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-number">2077</span>,<span class="hljs-number">0</span>,<span class="hljs-number">27</span>, <span class="hljs-number">21</span>,<span class="hljs-number">49</span>).<span class="hljs-title function_">toISOString</span>() <span class="hljs-comment">// CET (UTC+1)</span></span></code>
+<code>'2077-01-27T20:49:00.000Z'</code>
+</pre>
+<p>Note that the input hours (21) are different from the output hours (20). The former refer to the local time zone, the latter to UTC.</p>
+<h4 id="parsing-dates-from-strings"><a class="heading-id-link" href="#parsing-dates-from-strings">47.5.2 Parsing dates from strings</a></h4>
+<p><code>new Date(dateTimeStr: string)</code> (local time zone, UTC, time offset)</p>
+<p>If there is a <code>Z</code> at the end, UTC is used:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2077-01-27T00:00Z'</span>).<span class="hljs-title function_">toISOString</span>()</span></code>
+<code>'2077-01-27T00:00:00.000Z'</code>
+</pre>
+<p>If there is no <code>Z</code> or time offset at the end, the local time zone is used:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2077-01-27T00:00'</span>).<span class="hljs-title function_">toISOString</span>() <span class="hljs-comment">// CET (UTC+1)</span></span></code>
+<code>'2077-01-26T23:00:00.000Z'</code>
+</pre>
+<p>If a string only contains a date, it is interpreted as UTC:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2077-01-27'</span>).<span class="hljs-title function_">toISOString</span>()</span></code>
+<code>'2077-01-27T00:00:00.000Z'</code>
+</pre>
+<h4 id="other-ways-of-creating-dates"><a class="heading-id-link" href="#other-ways-of-creating-dates">47.5.3 Other ways of creating dates</a></h4>
+<ul>
+  <li>
+    <p><code>new Date(timeValue: number)</code> (UTC)</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toISOString</span>()</span></code>
+<code>'1970-01-01T00:00:00.000Z'</code>
+</pre>
+  </li>
+  <li>
+    <p><code>new Date()</code> (UTC)</p>
+    <p>The same as <code>new Date(Date.now())</code>.</p>
+  </li>
+</ul>
+<h3 id="getters-and-setters"><a class="heading-id-link" href="#getters-and-setters">47.6 Getters and setters</a></h3>
+<h4 id="time-unit-getters-and-setters"><a class="heading-id-link" href="#time-unit-getters-and-setters">47.6.1 Time unit getters and setters</a></h4>
+<p>Dates have getters and setters for time units – for example:</p>
+<ul>
+  <li>
+    <code>Date.prototype.getFullYear()</code>
+  </li>
+  <li>
+    <code>Date.prototype.setFullYear(num)</code>
+  </li>
+</ul>
+<p>These getters and setters conform to the following patterns:</p>
+<ul>
+  <li>
+    Local time zone:
+    <ul>
+      <li>
+        <code>Date.prototype.get«Unit»()</code>
+      </li>
+      <li>
+        <code>Date.prototype.set«Unit»(num)</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    UTC:
+    <ul>
+      <li>
+        <code>Date.prototype.getUTC«Unit»()</code>
+      </li>
+      <li>
+        <code>Date.prototype.setUTC«Unit»(num)</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>These are the time units that are supported:</p>
+<ul>
+  <li>
+    Date
+    <ul>
+      <li>
+        <code>FullYear</code>
+      </li>
+      <li>
+        <code>Month</code>: month (0–11). <strong>Pitfall:</strong> 0 is January, etc.
+      </li>
+      <li>
+        <code>Date</code>: day of the month (1–31)
+      </li>
+      <li>
+        <code>Day</code> (getter only): day of the week (0–6, 0 is Sunday)
+      </li>
+    </ul>
+  </li>
+  <li>
+    Time
+    <ul>
+      <li>
+        <code>Hours</code>: hour (0–23)
+      </li>
+      <li>
+        <code>Minutes</code>: minutes (0–59)
+      </li>
+      <li>
+        <code>Seconds</code>: seconds (0–59)
+      </li>
+      <li>
+        <code>Milliseconds</code>: milliseconds (0–999)
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>There is one more getter that doesn’t conform to the previously mentioned patterns:</p>
+<ul>
+  <li>
+    <p><span id="getTimezoneOffset"><code>Date.prototype.getTimezoneOffset()</code></span></p>
+    <p>Returns the time difference between local time zone and UTC in minutes. For example, for Europe/Paris, it returns <code>-120</code> (CEST, Central European Summer Time) or <code>-60</code> (CET, Central European Time):</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2122-06-29'</span>).<span class="hljs-title function_">getTimezoneOffset</span>()</span></code>
+<code>-120</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-string">'2122-12-29'</span>).<span class="hljs-title function_">getTimezoneOffset</span>()</span></code>
+<code>-60</code>
+</pre>
+  </li>
+</ul>
+<h3 id="converting-dates-to-strings"><a class="heading-id-link" href="#converting-dates-to-strings">47.7 Converting Dates to strings</a></h3>
+<p>Example Date:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> d = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(<span class="hljs-number">0</span>);</code>
+</pre>
+<h4 id="strings-with-times"><a class="heading-id-link" href="#strings-with-times">47.7.1 Strings with times</a></h4>
+<ul>
+  <li>
+    <p><code>Date.prototype.toTimeString()</code> (local time zone)</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">d.<span class="hljs-title function_">toTimeString</span>()</span></code>
+<code>'01:00:00 GMT+0100 (Central European Standard Time)'</code>
+</pre>
+  </li>
+</ul>
+<h4 id="strings-with-dates"><a class="heading-id-link" href="#strings-with-dates">47.7.2 Strings with dates</a></h4>
+<ul>
+  <li>
+    <p><code>Date.prototype.toDateString()</code> (local time zone)</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">d.<span class="hljs-title function_">toDateString</span>()</span></code>
+<code>'Thu Jan 01 1970'</code>
+</pre>
+  </li>
+</ul>
+<h4 id="strings-with-dates-and-times"><a class="heading-id-link" href="#strings-with-dates-and-times">47.7.3 Strings with dates and times</a></h4>
+<ul>
+  <li>
+    <p><code>Date.prototype.toString()</code> (local time zone)</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">d.<span class="hljs-title function_">toString</span>()</span></code>
+<code>'Thu Jan 01 1970 01:00:00 GMT+0100 (Central European Standard Time)'</code>
+</pre>
+  </li>
+  <li>
+    <p><code>Date.prototype.toUTCString()</code> (UTC)</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">d.<span class="hljs-title function_">toUTCString</span>()</span></code>
+<code>'Thu, 01 Jan 1970 00:00:00 GMT'</code>
+</pre>
+  </li>
+  <li>
+    <p><code>Date.prototype.toISOString()</code> (UTC)</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">d.<span class="hljs-title function_">toISOString</span>()</span></code>
+<code>'1970-01-01T00:00:00.000Z'</code>
+</pre>
+  </li>
+</ul>
+<h4 id="other-methods"><a class="heading-id-link" href="#other-methods">47.7.4 Other methods</a></h4>
+<p>The following three methods are not really part of ECMAScript, but rather of <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl">the ECMAScript internationalization API</a>. That API has much functionality for formatting dates (including support for time zones), but not for parsing them.</p>
+<ul>
+  <li>
+    <code>Date.prototype.toLocaleTimeString()</code>
+  </li>
+  <li>
+    <code>Date.prototype.toLocaleDateString()</code>
+  </li>
+  <li>
+    <code>Date.prototype.toLocaleString()</code>
+  </li>
+</ul>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Creating a date string</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/dates/create_date_string_test.mjs</code></p>
+</div>
+
+    
+      
+</body>
+</html>

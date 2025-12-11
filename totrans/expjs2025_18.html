@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>15 Operators</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>15 Operators</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_operators.html">https://exploringjs.com/js/book/ch_operators.html</a></blockquote>
+
+        
+    
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#making-sense-of-operators">15.1 Making sense of operators</a>
+      <ol>
+        <li>
+          <a href="#operators-coerce-their-operands-to-appropriate-types">15.1.1 Operators coerce their operands to appropriate types</a>
+        </li>
+        <li>
+          <a href="#most-operators-only-work-with-primitive-values">15.1.2 Most operators only work with primitive values</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#ToPrimitive">15.2 Converting values to primitives<span> (advanced)</span></a>
+    </li>
+    <li>
+      <a href="#plus-operator">15.3 The plus operator (<code>+</code>)</a>
+    </li>
+    <li>
+      <a href="#assignment-operators">15.4 Assignment operators</a>
+      <ol>
+        <li>
+          <a href="#the-plain-assignment-operator">15.4.1 The plain assignment operator</a>
+        </li>
+        <li>
+          <a href="#compound-assignment-operators">15.4.2 Compound assignment operators</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#equality--vs--vs-objectis">15.5 Equality: <code>==</code> vs. <code>===</code> vs. <code>Object.is()</code></a>
+      <ol>
+        <li>
+          <a href="#strict-equality">15.5.1 Strict equality (<code>===</code> and <code>!==</code>)</a>
+        </li>
+        <li>
+          <a href="#loose-equality">15.5.2 Loose equality (<code>==</code> and <code>!=</code>)</a>
+        </li>
+        <li>
+          <a href="#recommendation-always-strict-equality">15.5.3 Recommendation: always use strict equality</a>
+        </li>
+        <li>
+          <a href="#Object.is">15.5.4 Even stricter than <code>===</code>: <code>Object.is()</code><span> (advanced)</span></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#ordering-operators">15.6 Ordering operators</a>
+    </li>
+    <li>
+      <a href="#various-other-operators">15.7 Various other operators</a>
+      <ol>
+        <li>
+          <a href="#comma-operator">15.7.1 Comma operator</a>
+        </li>
+        <li>
+          <a href="#void-operator">15.7.2 <code>void</code> operator</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<h3 id="making-sense-of-operators"><a class="heading-id-link" href="#making-sense-of-operators">15.1 Making sense of operators</a></h3>
+<p>JavaScript’s operators sometimes produce unintuitive results. With the following two rules, they are easier to understand:</p>
+<ul>
+  <li>
+    Operators coerce their operands to appropriate types.
+  </li>
+  <li>
+    Most operators only work with primitive values.
+  </li>
+</ul>
+<h4 id="operators-coerce-their-operands-to-appropriate-types"><a class="heading-id-link" href="#operators-coerce-their-operands-to-appropriate-types">15.1.1 Operators coerce their operands to appropriate types</a></h4>
+<p>If an operator gets operands that don’t have the proper types, it rarely throws an exception. Instead, it <em>coerces</em> (automatically converts) the operands so that it can work with them. Let’s look at two examples.</p>
+<p>First, the multiplication operator can only work with numbers. Therefore, it converts strings to numbers before computing its result.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'7'</span> * <span class="hljs-string">'3'</span></span></code>
+<code>21</code>
+</pre>
+<p>Second, the square brackets operator (<code>[ ]</code>) for accessing the properties of an object can only handle strings and symbols. All other values are coerced to string:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> obj = {};</code>
+<code>obj[<span class="hljs-string">'true'</span>] = <span class="hljs-number">123</span>;</code>
+<code/>
+<code><span class="hljs-comment">// Coerce true to the string 'true'</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(obj[<span class="hljs-literal">true</span>], <span class="hljs-number">123</span>);</code>
+</pre>
+<h4 id="most-operators-only-work-with-primitive-values"><a class="heading-id-link" href="#most-operators-only-work-with-primitive-values">15.1.2 Most operators only work with primitive values</a></h4>
+<p>As mentioned before, most operators only work with primitive values. If an operand is an object, it is usually coerced to a primitive value – for example:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">[<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>] + [<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>]</span></code>
+<code>'1,2,34,5,6'</code>
+</pre>
+<p>Why? The plus operator first coerces its operands to primitive values:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>([<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>])</span></code>
+<code>'1,2,3'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>([<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>])</span></code>
+<code>'4,5,6'</code>
+</pre>
+<p>Next, it concatenates the two strings:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'1,2,3'</span> + <span class="hljs-string">'4,5,6'</span></span></code>
+<code>'1,2,34,5,6'</code>
+</pre>
+<h3 id="ToPrimitive"><a class="heading-id-link" href="#ToPrimitive">15.2 Converting values to primitives<span> (advanced)</span></a></h3>
+<p><span id="index-entry-ToPrimitive"/>
+<span id="index-entry-converting-to-primitive"/>
+<span id="index-entry-primitive--converting-to"/></p>
+<p>The following JavaScript code explains how arbitrary values are converted to primitive values:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'node:assert/strict'</span>;</code>
+<code/>
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">any</span>} input </span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">'STRING'|'NUMBER'</span>} [preferredType] optional</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">primitive</span>}</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@see</span> https://tc39.es/ecma262/#sec-toprimitive</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">ToPrimitive</span>(<span class="hljs-params">input, preferredType</span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isObject</span>(input)) {</code>
+<code>    <span class="hljs-comment">// `input` is an object</span></code>
+<code>    <span class="hljs-keyword">const</span> exoticToPrim = input[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">toPrimitive</span>]; <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-keyword">if</span> (exoticToPrim !== <span class="hljs-literal">undefined</span>) {</code>
+<code>      <span class="hljs-keyword">let</span> hint;</code>
+<code>      <span class="hljs-keyword">if</span> (preferredType === <span class="hljs-literal">undefined</span>) {</code>
+<code>        hint = <span class="hljs-string">'default'</span>;</code>
+<code>      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (preferredType === <span class="hljs-string">'STRING'</span>) {</code>
+<code>        hint = <span class="hljs-string">'string'</span>;</code>
+<code>      } <span class="hljs-keyword">else</span> {</code>
+<code>        <span class="hljs-title function_">assert</span>(preferredType === <span class="hljs-string">'NUMBER'</span>);</code>
+<code>        hint = <span class="hljs-string">'number'</span>;</code>
+<code>      }</code>
+<code>      <span class="hljs-keyword">const</span> result = exoticToPrim.<span class="hljs-title function_">apply</span>(input, [hint]);</code>
+<code>      <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isObject</span>(result)) <span class="hljs-keyword">return</span> result;</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>();</code>
+<code>    }</code>
+<code>    <span class="hljs-keyword">if</span> (preferredType === <span class="hljs-literal">undefined</span>) {</code>
+<code>      preferredType = <span class="hljs-string">'NUMBER'</span>;</code>
+<code>    }</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">OrdinaryToPrimitive</span>(input, preferredType);</code>
+<code>  }</code>
+<code>  <span class="hljs-comment">// `input` is primitive</span></code>
+<code>  <span class="hljs-keyword">return</span> input;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">object</span>} O </span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">'STRING'|'NUMBER'</span>} hint </span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">primitive</span>}</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">OrdinaryToPrimitive</span>(<span class="hljs-params">O, hint</span>) {</code>
+<code>  <span class="hljs-keyword">let</span> methodNames;</code>
+<code>  <span class="hljs-keyword">if</span> (hint === <span class="hljs-string">'STRING'</span>) {</code>
+<code>    methodNames = [<span class="hljs-string">'toString'</span>, <span class="hljs-string">'valueOf'</span>];</code>
+<code>  } <span class="hljs-keyword">else</span> {</code>
+<code>    methodNames = [<span class="hljs-string">'valueOf'</span>, <span class="hljs-string">'toString'</span>];</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> name <span class="hljs-keyword">of</span> methodNames) {</code>
+<code>    <span class="hljs-keyword">const</span> method = O[name];</code>
+<code>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isCallable</span>(method)) {</code>
+<code>      <span class="hljs-keyword">const</span> result = method.<span class="hljs-title function_">apply</span>(O);</code>
+<code>      <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isObject</span>(result)) <span class="hljs-keyword">return</span> result;</code>
+<code>    }</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>();</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">isObject</span>(<span class="hljs-params">value</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'object'</span> &amp;&amp; value !== <span class="hljs-literal">null</span>;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">isCallable</span>(<span class="hljs-params">value</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'function'</span>;</code>
+<code>}</code>
+</pre>
+<p>Only the following objects define a method with the key <code>Symbol.toPrimitive</code>:</p>
+<ul>
+  <li>
+    <code>Symbol.prototype[Symbol.toPrimitive]</code>
+  </li>
+  <li>
+    <code>Date.prototype[Symbol.toPrimitive]</code>
+  </li>
+</ul>
+<p>Therefore, let’s focus on <code>OrdinaryToPrimitive()</code>: If we prefer strings, <code>.toString()</code> is called first. If we prefer numbers, <code>.valueOf()</code> is called first. We can see that in the following code.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> obj = {</code>
+<code>  <span class="hljs-title function_">toString</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'1'</span>;</span></code>
+<code><span class="hljs-params">  },</span></code>
+<code><span class="hljs-params">  <span class="hljs-title function_">valueOf</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-number">2</span>;</span></code>
+<code><span class="hljs-params">  },</span></code>
+<code><span class="hljs-params">};</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-title class_">String</span>(obj), <span class="hljs-string">'1'</span></span></code>
+<code><span class="hljs-params">);</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-title class_">Number</span>(obj), <span class="hljs-number">2</span></span></code>
+<code><span class="hljs-params">);</span></code>
+</pre>
+<h3 id="plus-operator"><a class="heading-id-link" href="#plus-operator">15.3 The plus operator (<code>+</code>)</a></h3>
+<p><span id="index-entry-plus-operator--binary-"/>
+<span id="index-entry-.x-y"/>
+<span id="index-entry-addition"/></p>
+<p>The plus operator works as follows in JavaScript:</p>
+<ul>
+  <li>
+    First, it converts both operands to primitive values (by default, conversion to primitive prefers numbers). Then it switches to one of two modes:
+    <ul>
+      <li>
+        String mode: If one of the two primitive values is a string, then it converts the other one to a string, concatenates both strings, and returns the result.
+      </li>
+      <li>
+        Number mode: Otherwise, It converts both operands to numbers, adds them, and returns the result.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>String mode lets us use <code>+</code> to assemble strings:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'There are '</span> + <span class="hljs-number">3</span> + <span class="hljs-string">' items'</span></span></code>
+<code>'There are 3 items'</code>
+</pre>
+<p>Number mode means that if neither operand is a string (or an object that becomes a string) then everything is coerced to numbers:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">4</span> + <span class="hljs-literal">true</span></span></code>
+<code>5</code>
+</pre>
+<p><code>Number(true)</code> is <code>1</code>.</p>
+<h3 id="assignment-operators"><a class="heading-id-link" href="#assignment-operators">15.4 Assignment operators</a></h3>
+<p><span id="index-entry-assignment-operator"/>
+<span id="index-entry-operator--assignment"/>
+<span id="index-entry--"/></p>
+<h4 id="the-plain-assignment-operator"><a class="heading-id-link" href="#the-plain-assignment-operator">15.4.1 The plain assignment operator</a></h4>
+<p>The plain assignment operator is used to change storage locations:</p>
+<pre class="language-js">
+<code>x = value; <span class="hljs-comment">// assign to a previously declared variable</span></code>
+<code>obj.<span class="hljs-property">propKey</span> = value; <span class="hljs-comment">// assign to a property</span></code>
+<code>arr[index] = value; <span class="hljs-comment">// assign to an Array element</span></code>
+</pre>
+<p>Initializers in variable declarations can also be viewed as a form of assignment:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> x = value;</code>
+<code><span class="hljs-keyword">let</span> y = value;</code>
+</pre>
+<h4 id="compound-assignment-operators"><a class="heading-id-link" href="#compound-assignment-operators">15.4.2 Compound assignment operators</a></h4>
+<p>JavaScript supports the following assignment operators:</p>
+<ul>
+  <li>
+    Arithmetic assignment operators: <code>+= -= *= /= %=</code> <sup>ES1</sup>
+    <ul>
+      <li>
+        <code>+=</code> can also be used for string concatenation
+      </li>
+      <li>
+        Introduced later: <code>**=</code> <sup>ES2016</sup>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Bitwise assignment operators: <code>&amp;= ^= |=</code> <sup>ES1</sup>
+  </li>
+  <li>
+    Bitwise shift assignment operators: <code>&lt;&lt;= &gt;&gt;= &gt;&gt;&gt;=</code> <sup>ES1</sup>
+  </li>
+  <li>
+    Logical assignment operators: <code>||= &amp;&amp;= ??=</code> <sup>ES2021</sup>
+  </li>
+</ul>
+<h5 id="logical-assignment-operators"><a class="heading-id-link" href="#logical-assignment-operators">15.4.2.1 Logical assignment operators<span> <sup>ES2021</sup></span></a></h5>
+<p>Logical assignment operators work differently from other compound assignment operators:</p>
+<table class="framed">
+  <style>
+    th:nth-child(1), td:nth-child(1) {
+      text-align: left;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+    th:nth-child(3), td:nth-child(3) {
+      text-align: left;
+    }
+  </style>
+  <thead>
+    <tr>
+      <th>Assignment operator</th><th>Equivalent to</th><th>Only assigns if <code>a</code> is</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>a ||= b</code></td><td><code>a || (a = b)</code></td><td>Falsy</td>
+    </tr>
+    <tr>
+      <td><code>a &amp;&amp;= b</code></td><td><code>a &amp;&amp; (a = b)</code></td><td>Truthy</td>
+    </tr>
+    <tr>
+      <td><code>a ??= b</code></td><td><code>a ?? (a = b)</code></td><td>Nullish</td>
+    </tr>
+  </tbody>
+</table>
+<p>Why is <code>a ||= b</code> equivalent to the following expression?</p>
+<blockquote>
+  <p><code>a || (a = b)</code></p>
+</blockquote>
+<p>Why not to this expression?</p>
+<blockquote>
+  <p><code>a = a || b</code></p>
+</blockquote>
+<p>The former expression has the benefit of <a href="ch_booleans.html#short-circuiting">short-circuiting</a>: The assignment is only evaluated if <code>a</code> evaluates to <code>false</code>. Therefore, the assignment is only performed if it’s necessary. In contrast, the latter expression always performs an assignment.</p>
+<p>For more on <code>??=</code>, see <a href="ch_undefined-null.html#nullish-coalescing-assignment-operator">“The nullish coalescing assignment operator (<code>??=</code>)<span> <sup>ES2021</sup></span>” (§16.4.4)</a>.</p>
+<h5 id="the-remaining-compound-assignment-operators"><a class="heading-id-link" href="#the-remaining-compound-assignment-operators">15.4.2.2 The remaining compound assignment operators</a></h5>
+<p>For operators <code>op</code> other than <code>|| &amp;&amp; ??</code>, the following two ways of assigning are equivalent:</p>
+<pre class="language-txt">
+<code>myvar op= value</code>
+<code>myvar = myvar op value</code>
+</pre>
+<p>If, for example, <code>op</code> is <code>+</code>, then we get the operator <code>+=</code> that works as follows.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> str = <span class="hljs-string">''</span>;</code>
+<code>str += <span class="hljs-string">'&lt;b&gt;'</span>;</code>
+<code>str += <span class="hljs-string">'Hello!'</span>;</code>
+<code>str += <span class="hljs-string">'&lt;/b&gt;'</span>;</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(str, <span class="hljs-string">'&lt;b&gt;Hello!&lt;/b&gt;'</span>);</code>
+</pre>
+<h3 id="equality--vs--vs-objectis"><a class="heading-id-link" href="#equality--vs--vs-objectis">15.5 Equality: <code>==</code> vs. <code>===</code> vs. <code>Object.is()</code></a></h3>
+<p>JavaScript has two kinds of equality operators:</p>
+<ul>
+  <li>
+    (<code>==</code>) loose equality (“double equals”)
+  </li>
+  <li>
+    (<code>===</code>) strict equality (“triple equals”)
+  </li>
+</ul>
+<div class="boxout">
+  <p><img src="../Images/8440b17bb8219cda9f9405ac83c36db0.png" class="boxout-icon" height="24" alt="Icon “tip”" data-original-src="https://exploringjs.com/js/book/icon/tip.svg"/> <strong>Recommendation: always use strict equality (<code>===</code>)</strong></p>
+  <div class="boxout-vspace"/>
+  <p>Loose equality has many quirks and is difficult to understand. My recommendation is to always use strict equality. I’ll explain how loose equality works but it’s not something worth remembering.</p>
+</div>
+<h4 id="strict-equality"><a class="heading-id-link" href="#strict-equality">15.5.1 Strict equality (<code>===</code> and <code>!==</code>)</a></h4>
+<p><span id="index-entry-equality-operator"/>
+<span id="index-entry-operator--equality"/>
+<span id="index-entry-.x---y"/></p>
+<p>Two values are only strictly equal if they have the same type. Strict equality never coerces.</p>
+<p>Primitive values (including strings and excluding symbols) are compared by value:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-literal">undefined</span> === <span class="hljs-literal">null</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-literal">null</span> === <span class="hljs-literal">null</span></span></code>
+<code>true</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-literal">true</span> === <span class="hljs-literal">false</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-literal">true</span> === <span class="hljs-literal">true</span></span></code>
+<code>true</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">1</span> === <span class="hljs-number">2</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">3</span> === <span class="hljs-number">3</span></span></code>
+<code>true</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'a'</span> === <span class="hljs-string">'b'</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'c'</span> === <span class="hljs-string">'c'</span></span></code>
+<code>true</code>
+</pre>
+<p>All other values must have the same identity:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">{} === {} <span class="hljs-comment">// two different empty objects</span></span></code>
+<code>false</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> obj = {};</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">obj === obj</span></code>
+<code>true</code>
+</pre>
+<p>Symbols are compared similarly to objects:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Symbol</span>() === <span class="hljs-title class_">Symbol</span>() <span class="hljs-comment">// two different symbols</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> sym = <span class="hljs-title class_">Symbol</span>();</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">sym === sym</span></code>
+<code>true</code>
+</pre>
+<p>The <code>number</code> error value <code>NaN</code> is famously not strictly equal to itself (because, internally, it’s not a single value):</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">typeof</span> <span class="hljs-title class_">NaN</span></span></code>
+<code>'number'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">NaN</span> === <span class="hljs-title class_">NaN</span></span></code>
+<code>false</code>
+</pre>
+<h4 id="loose-equality"><a class="heading-id-link" href="#loose-equality">15.5.2 Loose equality (<code>==</code> and <code>!=</code>)</a></h4>
+<p>Loose equality is one of JavaScript’s quirks. Let’s explore its behavior.</p>
+<h5 id="if-both-operands-have-the-same-type"><a class="heading-id-link" href="#if-both-operands-have-the-same-type">15.5.2.1 If both operands have the same type</a></h5>
+<p>If both operands have the same primitive type, loose equality behaves like strict equality:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">1</span> == <span class="hljs-number">2</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">3</span> == <span class="hljs-number">3</span></span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'a'</span> == <span class="hljs-string">'b'</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'c'</span> == <span class="hljs-string">'c'</span></span></code>
+<code>true</code>
+</pre>
+<p>If both operands are objects, the same rule applies: Loose equality behaves like strict equality and they are only equal if they have the same identity.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] == [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] <span class="hljs-comment">// two different objects</span></span></code>
+<code>false</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> arr = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>];</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">arr == arr</span></code>
+<code>true</code>
+</pre>
+<p>Comparing symbols works similarly.</p>
+<h5 id="coercion-1"><a class="heading-id-link" href="#coercion-1">15.5.2.2 Coercion</a></h5>
+<p>If the operands have different types, loose equality often coerces. Some of those type coercions make sense:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'123'</span> == <span class="hljs-number">123</span></span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-literal">false</span> == <span class="hljs-number">0</span></span></code>
+<code>true</code>
+</pre>
+<p>Others less so:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">0</span> == <span class="hljs-string">'\r\n\t '</span> <span class="hljs-comment">// only whitespace</span></span></code>
+<code>true</code>
+</pre>
+<p>An object is coerced to a primitive value (only) if the other operand is primitive:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] == <span class="hljs-string">'1,2,3'</span></span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">[<span class="hljs-string">'17'</span>] == <span class="hljs-number">17</span></span></code>
+<code>true</code>
+</pre>
+<h5 id="vs-boolean"><a class="heading-id-link" href="#-vs-boolean">15.5.2.3 <code>==</code> vs. <code>Boolean()</code></a></h5>
+<p>Comparison with booleans is different from converting to boolean via <code>Boolean()</code>:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Boolean</span>(<span class="hljs-number">0</span>)</span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Boolean</span>(<span class="hljs-number">2</span>)</span></code>
+<code>true</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">0</span> == <span class="hljs-literal">false</span></span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span> == <span class="hljs-literal">true</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span> == <span class="hljs-literal">false</span></span></code>
+<code>false</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Boolean</span>(<span class="hljs-string">''</span>)</span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Boolean</span>(<span class="hljs-string">'abc'</span>)</span></code>
+<code>true</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">''</span> == <span class="hljs-literal">false</span></span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span> == <span class="hljs-literal">true</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span> == <span class="hljs-literal">false</span></span></code>
+<code>false</code>
+</pre>
+<h5 id="undefined--null"><a class="heading-id-link" href="#undefined--null">15.5.2.4 <code>undefined == null</code></a></h5>
+<p><code>==</code> considers <code>undefined</code> and <code>null</code> to be equal:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-literal">undefined</span> == <span class="hljs-literal">null</span></span></code>
+<code>true</code>
+</pre>
+<h5 id="how-exactly-does-loose-equality-work-advanced"><a class="heading-id-link" href="#how-exactly-does-loose-equality-work-advanced">15.5.2.5 How exactly does loose equality work?<span> (advanced)</span></a></h5>
+<p>In the ECMAScript specification, loose equality is defined via <a href="https://tc39.es/ecma262/#sec-islooselyequal">the following operation</a>:</p>
+<p><code>IsLooselyEqual(x: any, y: any): boolean</code></p>
+<ul>
+  <li>
+    If both operands have the same type, return the result of <a href="https://tc39.es/ecma262/#sec-isstrictlyequal"><code>IsStrictlyEqual(x, y)</code></a> (not explained here).
+  </li>
+  <li>
+    If one operand is <code>null</code> and the other one is <code>undefined</code>, return <code>true</code>.
+  </li>
+  <li>
+    If one operand is a number and the other one a string, convert the string to a number and return the result of applying <code>IsLooselyEqual()</code>.
+  </li>
+  <li>
+    If one operand is a bigint and the other one a string, convert the string to a bigint and return the result of applying <code>IsLooselyEqual()</code>.
+  </li>
+  <li>
+    If one operand is a boolean, convert it to a number and return the result of applying <code>IsLooselyEqual()</code>.
+  </li>
+  <li>
+    If one operand is an object and the other is a string, a number, a bigint or a symbol, then convert the object to a primitive via <a href="#ToPrimitive"><code>ToPrimitive()</code></a> and return the result of applying <code>IsLooselyEqual()</code>.
+  </li>
+  <li>
+    If one operand is a bigint and the other operand is a number:
+    <ul>
+      <li>
+        If either operand is not finite, return <code>false</code>.
+      </li>
+      <li>
+        If both operands represent the same mathematical value, return <code>true</code>; otherwise return <code>false</code>.
+      </li>
+    </ul>
+  </li>
+  <li>
+    Return <code>false</code>.
+  </li>
+</ul>
+<p>As you can see, this algorithm is not exactly intuitive. Hence the following recommendation.</p>
+<h4 id="recommendation-always-strict-equality"><a class="heading-id-link" href="#recommendation-always-strict-equality">15.5.3 Recommendation: always use strict equality</a></h4>
+<p>I recommend to always use <code>===</code>. It makes our code easier to understand and spares us from having to think about the quirks of <code>==</code>.</p>
+<p>Let’s look at two use cases for <code>==</code> and what I recommend to do instead.</p>
+<h5 id="use-case-for--comparing-with-a-number-or-a-string"><a class="heading-id-link" href="#use-case-for--comparing-with-a-number-or-a-string">15.5.3.1 Use case for <code>==</code>: comparing with a number or a string</a></h5>
+<p><code>==</code> lets us check if a value <code>x</code> is a number or that number as a string – with a single comparison:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">if</span> (x == <span class="hljs-number">123</span>) {</code>
+<code>  <span class="hljs-comment">// x is either 123 or '123'</span></code>
+<code>}</code>
+</pre>
+<p>I prefer either of the following two alternatives:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">if</span> (x === <span class="hljs-number">123</span> || x === <span class="hljs-string">'123'</span>) ···</code>
+<code><span class="hljs-keyword">if</span> (<span class="hljs-title class_">Number</span>(x) === <span class="hljs-number">123</span>) ···</code>
+</pre>
+<p>We can also convert <code>x</code> to a number when we first encounter it.</p>
+<h5 id="use-case-for--comparing-with-undefined-or-null"><a class="heading-id-link" href="#use-case-for--comparing-with-undefined-or-null">15.5.3.2 Use case for <code>==</code>: comparing with <code>undefined</code> or <code>null</code></a></h5>
+<p>Another use case for <code>==</code> is to check if a value <code>x</code> is either <code>undefined</code> or <code>null</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">if</span> (x == <span class="hljs-literal">null</span>) {</code>
+<code>  <span class="hljs-comment">// x is either null or undefined</span></code>
+<code>}</code>
+</pre>
+<p>The problem with this code is that we can’t be sure if someone meant to write it that way or if they made a typo and meant <code>=== null</code>.</p>
+<p>I prefer this alternative:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">if</span> (x === <span class="hljs-literal">undefined</span> || x === <span class="hljs-literal">null</span>) ···</code>
+</pre>
+<h4 id="Object.is"><a class="heading-id-link" href="#Object.is">15.5.4 Even stricter than <code>===</code>: <code>Object.is()</code><span> (advanced)</span></a></h4>
+<p><span id="index-entry-Object.is--"/></p>
+<p>Method <code>Object.is()</code> compares two values:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">is</span>(<span class="hljs-number">3</span>, <span class="hljs-number">3</span>)</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">is</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>)</span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">is</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'3'</span>)</span></code>
+<code>false</code>
+</pre>
+<p><code>Object.is()</code> is even stricter than <code>===</code> – e.g.:</p>
+<ul>
+  <li>
+    <p>It considers <code>NaN</code>, <a href="ch_numbers.html#NaN">the error value for computations involving numbers</a>, to be equal to itself:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">is</span>(<span class="hljs-title class_">NaN</span>, <span class="hljs-title class_">NaN</span>)</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">NaN</span> === <span class="hljs-title class_">NaN</span></span></code>
+<code>false</code>
+</pre>
+  </li>
+  <li>
+    <p>It distinguishes a positive zero and a negative zero (the two are usually considered to be the same value, so this functionality is not that useful):</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">is</span>(<span class="hljs-number">0</span>, -<span class="hljs-number">0</span>)</span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">0</span> === -<span class="hljs-number">0</span></span></code>
+<code>true</code>
+</pre>
+  </li>
+</ul>
+<h5 id="detecting-nan-via-objectis"><a class="heading-id-link" href="#detecting-nan-via-objectis">15.5.4.1 Detecting <code>NaN</code> via <code>Object.is()</code></a></h5>
+<p><code>Object.is()</code> considering <code>NaN</code> to be equal to itself is occasionally useful. For example, we can use it to implement an improved version of the Array method <code>.indexOf()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title function_">myIndexOf</span> = (<span class="hljs-params">arr, elem</span>) =&gt; {</code>
+<code>  <span class="hljs-keyword">return</span> arr.<span class="hljs-title function_">findIndex</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">is</span>(x, elem));</code>
+<code>};</code>
+</pre>
+<p><code>myIndexOf()</code> finds <code>NaN</code> in an Array, while <code>.indexOf()</code> doesn’t:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title function_">myIndexOf</span>([<span class="hljs-number">0</span>,<span class="hljs-title class_">NaN</span>,<span class="hljs-number">2</span>], <span class="hljs-title class_">NaN</span>)</span></code>
+<code>1</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">[<span class="hljs-number">0</span>,<span class="hljs-title class_">NaN</span>,<span class="hljs-number">2</span>].<span class="hljs-title function_">indexOf</span>(<span class="hljs-title class_">NaN</span>)</span></code>
+<code>-1</code>
+</pre>
+<p>The result <code>-1</code> means that <code>.indexOf()</code> couldn’t find its argument in the Array.</p>
+<h3 id="ordering-operators"><a class="heading-id-link" href="#ordering-operators">15.6 Ordering operators</a></h3>
+<figure id="tbl:ordering_operators" class="float">
+  <table class="framed">
+    <style>
+      th:nth-child(1), td:nth-child(1) {
+        text-align: left;
+      }
+      th:nth-child(2), td:nth-child(2) {
+        text-align: left;
+      }
+    </style>
+    <thead>
+      <tr>
+        <th>Operator</th><th>name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>&lt;</code></td><td>less than</td>
+      </tr>
+      <tr>
+        <td><code>&lt;=</code></td><td>Less than or equal</td>
+      </tr>
+      <tr>
+        <td><code>&gt;</code></td><td>Greater than</td>
+      </tr>
+      <tr>
+        <td><code>&gt;=</code></td><td>Greater than or equal</td>
+      </tr>
+    </tbody>
+  </table>
+  <figcaption>
+    <p><span class="float-label">Table 15.1:</span> JavaScript’s ordering operators.</p>
+  </figcaption>
+</figure>
+<p>JavaScript’s ordering operators (<a href="#tbl:ordering_operators">table 15.1</a>) work for both numbers and strings:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">5</span> &gt;= <span class="hljs-number">2</span></span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'bar'</span> &lt; <span class="hljs-string">'foo'</span></span></code>
+<code>true</code>
+</pre>
+<p><code>&lt;=</code> and <code>&gt;=</code> are based on strict equality.</p>
+<div class="boxout">
+  <p><img src="../Images/5aa4bf88dc66ecb2bac6be4022a1fed4.png" class="boxout-icon" height="24" alt="Icon “warning”" data-original-src="https://exploringjs.com/js/book/icon/warning.svg"/> <strong>The ordering operators don’t work well for human languages</strong></p>
+  <div class="boxout-vspace"/>
+  <p>The ordering operators don’t work well for comparing text in a human language, e.g., when capitalization or accents are involved. The details are explained in <a href="ch_strings.html#comparing-strings">“Comparing strings” (§22.6)</a>.</p>
+</div>
+<h3 id="various-other-operators"><a class="heading-id-link" href="#various-other-operators">15.7 Various other operators</a></h3>
+<p>The following operators are covered elsewhere in this book:</p>
+<ul>
+  <li>
+    Operators for <a href="ch_booleans.html#ch_booleans">booleans</a>, <a href="ch_numbers.html#ch_numbers">numbers</a>, <a href="ch_strings.html#ch_strings">strings</a>, <a href="ch_objects.html#ch_objects">objects</a>
+  </li>
+  <li>
+    <a href="ch_undefined-null.html#nullish-coalescing-operator">The nullish coalescing operator (<code>??</code>) for default values</a>
+  </li>
+</ul>
+<p><span refcheck="#comma-operator #void-operator">The next two subsections</span> discuss two operators that are rarely used.</p>
+<h4 id="comma-operator"><a class="heading-id-link" href="#comma-operator">15.7.1 Comma operator</a></h4>
+<p><span id="index-entry-comma-operator"/>
+<span id="index-entry-operator--comma"/>
+<span id="index-entry----comma-operator-"/></p>
+<p>The comma operator has two operands, evaluates both of them and returns the second one:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> result = (<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'evaluated'</span>), <span class="hljs-string">'YES'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  result, <span class="hljs-string">'YES'</span></code>
+<code>);</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>evaluated</code>
+</pre>
+<p>For more information on this operator, see <a href="http://exploringjs.com/es5/ch09.html#comma_operator"><em>Speaking JavaScript</em></a>.</p>
+<h4 id="void-operator"><a class="heading-id-link" href="#void-operator">15.7.2 <code>void</code> operator</a></h4>
+<p><span id="index-entry-void-operator"/>
+<span id="index-entry-operator--void"/></p>
+<p>The <code>void</code> operator evaluates its operand and returns <code>undefined</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> result = <span class="hljs-keyword">void</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'evaluated'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  result, <span class="hljs-literal">undefined</span></code>
+<code>);</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>evaluated</code>
+</pre>
+<p>For more information on this operator, see <a href="http://exploringjs.com/es5/ch09.html#void_operator"><em>Speaking JavaScript</em></a>.</p>
+
+    
+      
+</body>
+</html>

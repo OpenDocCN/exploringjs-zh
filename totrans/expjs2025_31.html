@@ -1,0 +1,518 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>26 Exception handling</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>26 Exception handling</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_exception-handling.html">https://exploringjs.com/js/book/ch_exception-handling.html</a></blockquote>
+
+        
+    
+    
+    
+<p><span id="index-entry-exception"/></p>
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#motivation-throwing-and-catching-exceptions">26.1 Motivation: throwing and catching exceptions</a>
+    </li>
+    <li>
+      <a href="#throw">26.2 <code>throw</code></a>
+      <ol>
+        <li>
+          <a href="#what-values-should-we-throw">26.2.1 What values should we throw?</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#try-statement">26.3 The <code>try</code> statement</a>
+      <ol>
+        <li>
+          <a href="#the-try-block">26.3.1 The <code>try</code> block</a>
+        </li>
+        <li>
+          <a href="#the-catch-clause">26.3.2 The <code>catch</code> clause</a>
+        </li>
+        <li>
+          <a href="#the-finally-clause">26.3.3 The <code>finally</code> clause</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#class-Error">26.4 The superclass of all built-in exception classes: <code>Error</code></a>
+      <ol>
+        <li>
+          <a href="#errorprototypename">26.4.1 <code>Error.prototype.name</code></a>
+        </li>
+        <li>
+          <a href="#error.message">26.4.2 Error instance property <code>.message</code></a>
+        </li>
+        <li>
+          <a href="#error-stack">26.4.3 Error instance property <code>.stack</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#error-cause">26.5 Chaining errors: the instance property <code>.cause</code><span> <sup>ES2022</sup></span></a>
+      <ol>
+        <li>
+          <a href="#why-would-we-want-to-chain-errors">26.5.1 Why would we want to chain errors?</a>
+        </li>
+        <li>
+          <a href="#should-we-store-context-data-in-cause">26.5.2 Should we store context data in <code>.cause</code>?</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#subclasses-of-error">26.6 Subclasses of <code>Error</code></a>
+      <ol>
+        <li>
+          <a href="#built-in-error-subclasses">26.6.1 The built-in subclasses of <code>Error</code></a>
+        </li>
+        <li>
+          <a href="#subclassing-error">26.6.2 Subclassing <code>Error</code></a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p>This chapter covers how JavaScript handles exceptions.</p>
+<div class="boxout">
+  <p><img src="../Images/38ba63de820aae6f94a019538ae0f222.png" class="boxout-icon" height="24" alt="Icon “details”" data-original-src="https://exploringjs.com/js/book/icon/details.svg"/> <strong>Why doesn’t JavaScript throw exceptions more often?</strong></p>
+  <div class="boxout-vspace"/>
+  <p>JavaScript didn’t support exceptions until ES3. That explains why they are used sparingly by the language and its standard library.</p>
+</div>
+<h3 id="motivation-throwing-and-catching-exceptions"><a class="heading-id-link" href="#motivation-throwing-and-catching-exceptions">26.1 Motivation: throwing and catching exceptions</a></h3>
+<p>Consider the following code. It reads profiles stored in files into an Array with instances of class <code>Profile</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">readProfiles</span>(<span class="hljs-params">filePaths</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> profiles = [];</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> filePath <span class="hljs-keyword">of</span> filePaths) {</code>
+<code>    <span class="hljs-keyword">try</span> {</code>
+<code>      <span class="hljs-keyword">const</span> profile = <span class="hljs-title function_">readOneProfile</span>(filePath);</code>
+<code>      profiles.<span class="hljs-title function_">push</span>(profile);</code>
+<code>    } <span class="hljs-keyword">catch</span> (err) { <span class="hljs-comment">// (A)</span></code>
+<code>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Error in: '</span>+filePath, err);</code>
+<code>    }</code>
+<code>  }</code>
+<code>}</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">readOneProfile</span>(<span class="hljs-params">filePath</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> profile = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Profile</span>();</code>
+<code>  <span class="hljs-keyword">const</span> file = <span class="hljs-title function_">openFile</span>(filePath);</code>
+<code>  <span class="hljs-comment">// ··· (Read the data in `file` into `profile`)</span></code>
+<code>  <span class="hljs-keyword">return</span> profile;</code>
+<code>}</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">openFile</span>(<span class="hljs-params">filePath</span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (!fs.<span class="hljs-title function_">existsSync</span>(filePath)) {</code>
+<code>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Could not find file '</span>+filePath); <span class="hljs-comment">// (B)</span></code>
+<code>  }</code>
+<code>  <span class="hljs-comment">// ··· (Open the file whose path is `filePath`)</span></code>
+<code>}</code>
+</pre>
+<p>Let’s examine what happens in line B: An error occurred, but the best place to handle the problem is not the current location, it’s line A. There, we can skip the current file and move on to the next one.</p>
+<p>Therefore:</p>
+<ul>
+  <li>
+    In line B, we use a <code>throw</code> statement to indicate that there was a problem.
+  </li>
+  <li>
+    In line A, we use a <code>try-catch</code> statement to handle the problem.
+  </li>
+</ul>
+<p>When we throw, the following constructs are active:</p>
+<pre class="language-txt">
+<code>readProfiles(···)</code>
+<code>  for (const filePath of filePaths)</code>
+<code>    try</code>
+<code>      readOneProfile(···)</code>
+<code>        openFile(···)</code>
+<code>          if (!fs.existsSync(filePath))</code>
+<code>            throw</code>
+</pre>
+<p>One by one, <code>throw</code> exits the nested constructs, until it encounters a <code>try</code> statement. Execution continues in the <code>catch</code> clause of that <code>try</code> statement.</p>
+<h3 id="throw"><a class="heading-id-link" href="#throw">26.2 <code>throw</code></a></h3>
+<p><span id="index-entry-throw"/></p>
+<p>This is the syntax of the <code>throw</code> statement:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">throw</span> «value»;</code>
+</pre>
+<h4 id="what-values-should-we-throw"><a class="heading-id-link" href="#what-values-should-we-throw">26.2.1 What values should we throw?</a></h4>
+<p>Any value can be thrown in JavaScript. However, it’s best to use instances of <code>Error</code> or a subclass because they support additional features such as stack traces and error chaining (see <a href="#class-Error">“The superclass of all built-in exception classes: <code>Error</code>” (§26.4)</a>).</p>
+<p>That leaves us with the following options:</p>
+<ul>
+  <li>
+    <p>Using class <code>Error</code> directly. That is less limiting in JavaScript than in a more static language because we can add our own properties to instances:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> err = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Could not find the file'</span>);</code>
+<code>err.<span class="hljs-property">filePath</span> = filePath;</code>
+<code><span class="hljs-keyword">throw</span> err;</code>
+</pre>
+  </li>
+  <li>
+    <p>Using one of <a href="#built-in-error-subclasses">the subclasses of <code>Error</code></a> such as <code>TypeError</code> or <code>RangeError</code>.</p>
+  </li>
+  <li>
+    <p>Subclassing <code>Error</code> (more details are explained <a href="#subclassing-error">later</a>):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {</code>
+<code>}</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">MyError</span>(<span class="hljs-string">'Problem!'</span>);</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">throws</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">func</span>(),</span></code>
+<code><span class="hljs-params">  <span class="hljs-title class_">MyError</span></span></code>
+<code><span class="hljs-params">);</span></code>
+</pre>
+  </li>
+</ul>
+<h3 id="try-statement"><a class="heading-id-link" href="#try-statement">26.3 The <code>try</code> statement</a></h3>
+<p><span id="index-entry-try"/></p>
+<p>The maximal version of the <code>try</code> statement looks as follows:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">try</span> {</code>
+<code>  «try_statements»</code>
+<code>} <span class="hljs-keyword">catch</span> (error) {</code>
+<code>  «catch_statements»</code>
+<code>} <span class="hljs-keyword">finally</span> {</code>
+<code>  «finally_statements»</code>
+<code>}</code>
+</pre>
+<p>We can combine these clauses as follows:</p>
+<ul>
+  <li>
+    <code>try-catch</code>
+  </li>
+  <li>
+    <code>try-finally</code>
+  </li>
+  <li>
+    <code>try-catch-finally</code>
+  </li>
+</ul>
+<h4 id="the-try-block"><a class="heading-id-link" href="#the-try-block">26.3.1 The <code>try</code> block</a></h4>
+<p>The <code>try</code> block can be considered the body of the statement. This is where we execute the regular code.</p>
+<h4 id="the-catch-clause"><a class="heading-id-link" href="#the-catch-clause">26.3.2 The <code>catch</code> clause</a></h4>
+<p><span id="index-entry-catch"/></p>
+<p>If an exception is thrown somewhere inside the <code>try</code> block (which may happen deeply nested inside the tree of function/method calls) then execution switches to the <code>catch</code> clause where the parameter refers to the exception. After that, execution normally continues after the <code>try</code> statement. That may change if:</p>
+<ul>
+  <li>
+    There is a <code>return</code>, <code>break</code>, or <code>throw</code> inside the <code>catch</code> block.
+  </li>
+  <li>
+    There is a <code>finally</code> clause (which is always executed before the <code>try</code> statement ends).
+  </li>
+</ul>
+<p>The following code demonstrates that the value that is thrown in line A is indeed caught in line B.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> errorObject = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>();</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">throw</span> errorObject; <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">}</span></code>
+<code/>
+<code><span class="hljs-params"><span class="hljs-keyword">try</span> {</span></code>
+<code><span class="hljs-params">  <span class="hljs-title function_">func</span>();</span></code>
+<code><span class="hljs-params">} <span class="hljs-keyword">catch</span> (err) { <span class="hljs-comment">// (B)</span></span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(err, errorObject);</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h5 id="omitting-catch-binding"><a class="heading-id-link" href="#omitting-catch-binding">26.3.2.1 Omitting the <code>catch</code> binding<span> <sup>ES2019</sup></span></a></h5>
+<p>We can omit the <code>catch</code> parameter if we are not interested in the value that was thrown:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">try</span> {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>} <span class="hljs-keyword">catch</span> {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>That may occasionally be useful. For example, Node.js has the API function <a href="https://nodejs.org/api/assert.html#assert_assert_throws_fn_error_message"><code>assert.throws(func)</code></a> that checks whether an error is thrown inside <code>func</code>. It could be implemented as follows.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">throws</span>(<span class="hljs-params">func</span>) {</code>
+<code>  <span class="hljs-keyword">try</span> {</code>
+<code>    <span class="hljs-title function_">func</span>();</code>
+<code>  } <span class="hljs-keyword">catch</span> {</code>
+<code>    <span class="hljs-keyword">return</span>; <span class="hljs-comment">// everything OK</span></code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Function didn’t throw an exception!'</span>);</code>
+<code>}</code>
+</pre>
+<p>However, a more complete implementation of this function would have a <code>catch</code> parameter and would, for example, check that its type is as expected.</p>
+<h4 id="the-finally-clause"><a class="heading-id-link" href="#the-finally-clause">26.3.3 The <code>finally</code> clause</a></h4>
+<p><span id="index-entry-finally"/></p>
+<p>The code inside the <code>finally</code> clause is always executed at the end of a <code>try</code> statement – no matter what happens in the <code>try</code> block or the <code>catch</code> clause.</p>
+<p>Let’s look at a common use case for <code>finally</code>: We have created a resource and want to always destroy it when we are done with it, no matter what happens while working with it. We would implement that as follows:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> resource = <span class="hljs-title function_">createResource</span>();</code>
+<code><span class="hljs-keyword">try</span> {</code>
+<code>  <span class="hljs-comment">// Work with `resource`. Errors may be thrown.</span></code>
+<code>} <span class="hljs-keyword">finally</span> {</code>
+<code>  resource.<span class="hljs-title function_">destroy</span>();</code>
+<code>}</code>
+</pre>
+<h5 id="finally-is-always-executed"><a class="heading-id-link" href="#finally-is-always-executed">26.3.3.1 <code>finally</code> is always executed</a></h5>
+<p>The <code>finally</code> clause is always executed, even if an error is thrown (line A):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> finallyWasExecuted = <span class="hljs-literal">false</span>;</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">try</span> {</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(); <span class="hljs-comment">// (A)</span></code>
+<code>    } <span class="hljs-keyword">finally</span> {</code>
+<code>      finallyWasExecuted = <span class="hljs-literal">true</span>;</code>
+<code>    }</code>
+<code>  },</code>
+<code>  <span class="hljs-title class_">Error</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(finallyWasExecuted, <span class="hljs-literal">true</span>);</code>
+</pre>
+<p>And even if there is a <code>return</code> statement (line A):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> finallyWasExecuted = <span class="hljs-literal">false</span>;</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span>; <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">  } <span class="hljs-keyword">finally</span> {</span></code>
+<code><span class="hljs-params">    finallyWasExecuted = <span class="hljs-literal">true</span>;</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-title function_">func</span>();</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(finallyWasExecuted, <span class="hljs-literal">true</span>);</span></code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Exception handling</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/exception-handling/call_function_test.mjs</code></p>
+</div>
+<h3 id="class-Error"><a class="heading-id-link" href="#class-Error">26.4 The superclass of all built-in exception classes: <code>Error</code></a></h3>
+<p>This is what <code>Error</code>’s instance properties and constructor look like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Error</span> {</code>
+<code>  <span class="hljs-comment">// Actually a prototype data property</span></code>
+<code>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">name</span>(): <span class="hljs-built_in">string</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-string">'Error'</span>;</code>
+<code>  }</code>
+<code/>
+<code>  <span class="hljs-comment">// Instance properties</span></code>
+<code>  <span class="hljs-attr">message</span>: <span class="hljs-built_in">string</span>;</code>
+<code>  cause?: <span class="hljs-built_in">unknown</span>; <span class="hljs-comment">// ES2022</span></code>
+<code>  <span class="hljs-attr">stack</span>: <span class="hljs-built_in">string</span>; <span class="hljs-comment">// non-standard but widely supported</span></code>
+<code/>
+<code>  <span class="hljs-title function_">constructor</span>(</code>
+<code><span class="hljs-params">    message: <span class="hljs-built_in">string</span> = <span class="hljs-string">''</span>,</span></code>
+<code><span class="hljs-params">    options?: ErrorOptions <span class="hljs-comment">// ES2022</span></span></code>
+<code><span class="hljs-params">  </span>) {}</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ErrorOptions</span> {</code>
+<code>  cause?: <span class="hljs-built_in">unknown</span>; <span class="hljs-comment">// ES2022</span></code>
+<code>}</code>
+</pre>
+<p>The constructor has two parameters:</p>
+<ul>
+  <li>
+    <code>message</code> specifies an error message.
+  </li>
+  <li>
+    <code>options</code> was introduced in ECMAScript 2022. It contains an object where one property is currently supported:
+    <ul>
+      <li>
+        <code>.cause</code> specifies which exception (if any) caused the current error.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>The subsections after the next one explain the instance properties <code>.message</code> and <code>.stack</code> in more detail. The next section explains <code>.cause</code>.</p>
+<h4 id="errorprototypename"><a class="heading-id-link" href="#errorprototypename">26.4.1 <code>Error.prototype.name</code></a></h4>
+<p>Each built-in error class <code>E</code> has a property <code>E.prototype.name</code>:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Error</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">name</span></span></code>
+<code>'Error'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">RangeError</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">name</span></span></code>
+<code>'RangeError'</code>
+</pre>
+<p>Therefore, there are two ways to get the name of the class of a built-in error object:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">RangeError</span>().<span class="hljs-property">name</span></span></code>
+<code>'RangeError'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">RangeError</span>().<span class="hljs-property">constructor</span>.<span class="hljs-property">name</span></span></code>
+<code>'RangeError'</code>
+</pre>
+<h4 id="error.message"><a class="heading-id-link" href="#error.message">26.4.2 Error instance property <code>.message</code></a></h4>
+<p><code>.message</code> contains just the error message:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> err = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Hello!'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">String</span>(err), <span class="hljs-string">'Error: Hello!'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(err.<span class="hljs-property">message</span>, <span class="hljs-string">'Hello!'</span>);</code>
+</pre>
+<p>If we omit the message then the empty string is used as a default value (inherited from <code>Error.prototype.message</code>):</p>
+<p>If we omit the message, it is the empty string:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>().<span class="hljs-property">message</span>, <span class="hljs-string">''</span>);</code>
+</pre>
+<h4 id="error-stack"><a class="heading-id-link" href="#error-stack">26.4.3 Error instance property <code>.stack</code></a></h4>
+<p>The instance property <code>.stack</code> is not an ECMAScript feature, but is widely supported by JavaScript engines. It is usually a string, but its exact structure is not standardized and varies between engines.</p>
+<p>This is what it looks like on the JavaScript engine V8:</p>
+<pre class="language-js numberLines">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">h</span>(<span class="hljs-params">z</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> error = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>();</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(error.<span class="hljs-property">stack</span>);</code>
+<code>}</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">g</span>(<span class="hljs-params">y</span>) {</code>
+<code>  <span class="hljs-title function_">h</span>(y + <span class="hljs-number">1</span>);</code>
+<code>}</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">x</span>) {</code>
+<code>  <span class="hljs-title function_">g</span>(x + <span class="hljs-number">1</span>);</code>
+<code>}</code>
+<code><span class="hljs-title function_">f</span>(<span class="hljs-number">3</span>);</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>Error</code>
+<code>    at h (demos/async-js/stack_trace.mjs:2:17)</code>
+<code>    at g (demos/async-js/stack_trace.mjs:6:3)</code>
+<code>    at f (demos/async-js/stack_trace.mjs:9:3)</code>
+<code>    at demos/async-js/stack_trace.mjs:11:1</code>
+</pre>
+<p>The first line of this <span id="index-entry-stack-trace"><em>stack trace</em></span> (a trace of the call stack) shows that the <code>Error</code> was created in line 2. The last line shows that everything started in line 11.</p>
+<h3 id="error-cause"><a class="heading-id-link" href="#error-cause">26.5 Chaining errors: the instance property <code>.cause</code><span> <sup>ES2022</sup></span></a></h3>
+<p>The instance property <code>.cause</code> is created via the options object in the second parameter of <code>new Error()</code>. It specifies which other error caused the current one.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> err = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'msg'</span>, {<span class="hljs-attr">cause</span>: <span class="hljs-string">'the cause'</span>});</code>
+<code>assert.<span class="hljs-title function_">equal</span>(err.<span class="hljs-property">cause</span>, <span class="hljs-string">'the cause'</span>);</code>
+</pre>
+<h4 id="why-would-we-want-to-chain-errors"><a class="heading-id-link" href="#why-would-we-want-to-chain-errors">26.5.1 Why would we want to chain errors?</a></h4>
+<p>Sometimes, we catch errors that are thrown during a more deeply nested function call and would like to attach more information to it:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">readFiles</span>(<span class="hljs-params">filePaths</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> filePaths.<span class="hljs-title function_">map</span>(</code>
+<code>    <span class="hljs-function">(<span class="hljs-params">filePath</span>) =&gt;</span> {</code>
+<code>      <span class="hljs-keyword">try</span> {</code>
+<code>        <span class="hljs-keyword">const</span> text = <span class="hljs-title function_">readText</span>(filePath);</code>
+<code>        <span class="hljs-keyword">const</span> json = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(text);</code>
+<code>        <span class="hljs-keyword">return</span> <span class="hljs-title function_">processJson</span>(json);</code>
+<code>      } <span class="hljs-keyword">catch</span> (error) {</code>
+<code>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>( <span class="hljs-comment">// (A)</span></code>
+<code>          <span class="hljs-string">`While processing <span class="hljs-subst">${filePath}</span>`</span>,</code>
+<code>          {<span class="hljs-attr">cause</span>: error}</code>
+<code>        );</code>
+<code>      }</code>
+<code>    });</code>
+<code>}</code>
+</pre>
+<p>The statements inside the <code>try</code> clause may throw all kinds of errors. At the locations where those errors are thrown, there is often no awareness of the file that caused them. That’s why we attach that information in line A.</p>
+<p>If an error is shown on the console (e.g. because it was caught or logged) or if we use Node’s <code>util.inspect()</code> (line A), we can see the cause and its stack trace:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'node:assert/strict'</span>;</code>
+<code><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> util <span class="hljs-keyword">from</span> <span class="hljs-string">'node:util'</span>;</code>
+<code/>
+<code><span class="hljs-title function_">outerFunction</span>();</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">outerFunction</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-title function_">innerFunction</span>();</span></code>
+<code><span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">const</span> errorWithCause = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(</span></code>
+<code><span class="hljs-params">      <span class="hljs-string">'Outer error'</span>, {<span class="hljs-attr">cause</span>: err}</span></code>
+<code><span class="hljs-params">    );</span></code>
+<code><span class="hljs-params">    assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">      util.<span class="hljs-title function_">inspect</span>(errorWithCause).<span class="hljs-title function_">split</span>(<span class="hljs-regexp">/\r?\n/</span>), <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">      [</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'Error: Outer error'</span>,</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'    at outerFunction (file:///tmp/main.mjs:10:28)'</span>,</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'    at file:///tmp/main.mjs:4:1'</span>,</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'    ... 2 lines matching cause stack trace ...'</span>,</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'  [cause]: TypeError: The cause'</span>,</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'      at innerFunction (file:///tmp/main.mjs:31:9)'</span>,</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'      at outerFunction (file:///tmp/main.mjs:8:5)'</span>,</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'      at file:///tmp/main.mjs:4:1'</span>,</span></code>
+<code><span class="hljs-params">        <span class="hljs-string">'}'</span>,</span></code>
+<code><span class="hljs-params">      ]</span></code>
+<code><span class="hljs-params">    );</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+<code/>
+<code><span class="hljs-params"><span class="hljs-keyword">function</span> <span class="hljs-title function_">innerFunction</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>(<span class="hljs-string">'The cause'</span>);</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>Alas, we don’t see the cause if we convert an error to a string or look at its <code>.stack</code>.</p>
+<h4 id="should-we-store-context-data-in-cause"><a class="heading-id-link" href="#should-we-store-context-data-in-cause">26.5.2 Should we store context data in <code>.cause</code>?</a></h4>
+<p><code>error.cause</code> is not just for instances of <code>Error</code>; any data we store in it is displayed properly:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'node:assert/strict'</span>;</code>
+<code><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> util <span class="hljs-keyword">from</span> <span class="hljs-string">'node:util'</span>;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> error = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(</code>
+<code>  <span class="hljs-string">'Could not reach server'</span>, {</code>
+<code>    <span class="hljs-attr">cause</span>: {<span class="hljs-attr">server</span>: <span class="hljs-string">'https://127.0.0.1'</span>}</code>
+<code>  }</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  util.<span class="hljs-title function_">inspect</span>(error).<span class="hljs-title function_">split</span>(<span class="hljs-regexp">/\r?\n/</span>),</code>
+<code>  [</code>
+<code>    <span class="hljs-string">"Error: Could not reach server"</span>,</code>
+<code>    <span class="hljs-string">"    at file:///tmp/main.mjs:4:15"</span>,</code>
+<code>    <span class="hljs-string">"  [cause]: { server: 'https://127.0.0.1' }"</span>,</code>
+<code>    <span class="hljs-string">"}"</span>,</code>
+<code>  ]</code>
+<code>);</code>
+</pre>
+<p>Some people recommend using <code>.cause</code> to provide data as context for an error. What are the pros and cons of doing that?</p>
+<ul>
+  <li>
+    Pro: The context data is displayed nicely alongside the error.
+  </li>
+  <li>
+    Cons:
+    <ul>
+      <li>
+        <code>.cause</code> only supports arbitrary data because in JavaScript, we can <code>throw</code> arbitrary data. Using it for non-thrown data means we are kind of misusing this mechanism.
+      </li>
+      <li>
+        If we use <code>.cause</code> for context data, we can’t chain exceptions anymore.
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="subclasses-of-error"><a class="heading-id-link" href="#subclasses-of-error">26.6 Subclasses of <code>Error</code></a></h3>
+<h4 id="built-in-error-subclasses"><a class="heading-id-link" href="#built-in-error-subclasses">26.6.1 The built-in subclasses of <code>Error</code></a></h4>
+<p><code>Error</code> has the following subclasses – quoting <a href="https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard">the ECMAScript specification</a>:</p>
+<ul>
+  <li>
+    <a href="ch_promises.html#AggregateError"><code>AggregateError</code></a> <sup>ES2021</sup> represents multiple errors at once. In the standard library, only <code>Promise.any()</code> uses it.
+  </li>
+  <li>
+    <code>RangeError</code> indicates a value that is not in the set or range of allowable values.
+  </li>
+  <li>
+    <code>ReferenceError</code> indicates that an invalid reference value has been detected.
+  </li>
+  <li>
+    <code>SyntaxError</code> indicates that a parsing error has occurred.
+  </li>
+  <li>
+    <code>TypeError</code> is used to indicate an unsuccessful operation when none of the other <em>NativeError</em> objects are an appropriate indication of the failure cause.
+  </li>
+  <li>
+    <code>URIError</code> indicates that one of the global URI handling functions was used in a way that is incompatible with its definition.
+  </li>
+</ul>
+<h4 id="subclassing-error"><a class="heading-id-link" href="#subclassing-error">26.6.2 Subclassing <code>Error</code></a></h4>
+<p>Since ECMAScript 2022, the <code>Error</code> constructor accepts two parameters (see previous subsection). Therefore, we have two choices when subclassing it: We can either omit the constructor in our subclass or we can invoke <code>super()</code> like this:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyCustomError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">message, options</span>) {</code>
+<code>    <span class="hljs-variable language_">super</span>(message, options);</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  }</code>
+<code>}</code>
+</pre>
+
+    
+      
+</body>
+</html>

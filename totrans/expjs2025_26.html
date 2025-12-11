@@ -1,0 +1,1457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>22 Strings</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>22 Strings</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_strings.html">https://exploringjs.com/js/book/ch_strings.html</a></blockquote>
+
+        
+    
+    
+    
+<p><span id="index-entry-string"/></p>
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#cheat-sheet-strings">22.1 Cheat sheet: strings</a>
+      <ol>
+        <li>
+          <a href="#working-with-strings">22.1.1 Working with strings</a>
+        </li>
+        <li>
+          <a href="#javascript-characters-vs-code-points-vs-grapheme-clusters">22.1.2 JavaScript characters vs. code points vs. grapheme clusters</a>
+        </li>
+        <li>
+          <a href="#string-methods">22.1.3 String methods</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#plain-string-literals">22.2 Plain string literals</a>
+      <ol>
+        <li>
+          <a href="#escaping">22.2.1 Escaping</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#accessing-javascript-characters">22.3 Accessing JavaScript characters</a>
+    </li>
+    <li>
+      <a href="#string-concatenation">22.4 String concatenation</a>
+      <ol>
+        <li>
+          <a href="#string-concatenation-via-plus">22.4.1 String concatenation via <code>+</code></a>
+        </li>
+        <li>
+          <a href="#string-concatenation-via-arrays">22.4.2 Concatenating via Arrays (<code>.push()</code> and <code>.join()</code>)</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#converting-values-to-strings">22.5 Converting values to strings in JavaScript has pitfalls</a>
+      <ol>
+        <li>
+          <a href="#example-code-that-is-problematic">22.5.1 Example: code that is problematic</a>
+        </li>
+        <li>
+          <a href="#four-common-ways-of-converting-values-to-strings">22.5.2 Four common ways of converting values to strings</a>
+        </li>
+        <li>
+          <a href="#using-jsonstringify-to-convert-values-to-strings">22.5.3 Using <code>JSON.stringify()</code> to convert values to strings</a>
+        </li>
+        <li>
+          <a href="#solutions">22.5.4 Solutions</a>
+        </li>
+        <li>
+          <a href="#customizing-how-objects-are-converted-to-strings">22.5.5 Customizing how objects are converted to strings</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#comparing-strings">22.6 Comparing strings</a>
+    </li>
+    <li>
+      <a href="#atoms-of-text">22.7 Atoms of text: code points, JavaScript characters, grapheme clusters</a>
+      <ol>
+        <li>
+          <a href="#working-with-code-units-javascript-characters">22.7.1 Working with code units (JavaScript characters)</a>
+        </li>
+        <li>
+          <a href="#working-with-code-points">22.7.2 Working with code points</a>
+        </li>
+        <li>
+          <a href="#working-with-grapheme-clusters">22.7.3 Working with grapheme clusters</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#quickref-string">22.8 Quick reference: Strings</a>
+      <ol>
+        <li>
+          <a href="#converting-to-string">22.8.1 Converting to string</a>
+        </li>
+        <li>
+          <a href="#numeric-values-of-text-atoms">22.8.2 Numeric values of text atoms</a>
+        </li>
+        <li>
+          <a href="#stringprototype-regular-expression-methods">22.8.3 <code>String.prototype.*</code>: regular expression methods</a>
+        </li>
+        <li>
+          <a href="#stringprototype-finding-and-matching">22.8.4 <code>String.prototype.*</code>: finding and matching</a>
+        </li>
+        <li>
+          <a href="#stringprototype-extracting">22.8.5 <code>String.prototype.*</code>: extracting</a>
+        </li>
+        <li>
+          <a href="#stringprototype-combining">22.8.6 <code>String.prototype.*</code>: combining</a>
+        </li>
+        <li>
+          <a href="#stringprototype-transforming">22.8.7 <code>String.prototype.*</code>: transforming</a>
+        </li>
+        <li>
+          <a href="#sources-of-this-quick-reference">22.8.8 Sources of this quick reference</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<h3 id="cheat-sheet-strings"><a class="heading-id-link" href="#cheat-sheet-strings">22.1 Cheat sheet: strings</a></h3>
+<p>Strings are primitive values in JavaScript and immutable. That is, string-related operations always produce new strings and never change existing strings.</p>
+<h4 id="working-with-strings"><a class="heading-id-link" href="#working-with-strings">22.1.1 Working with strings</a></h4>
+<p>Literals for strings:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> str1 = <span class="hljs-string">'Don\'t say "goodbye"'</span>; <span class="hljs-comment">// string literal</span></code>
+<code><span class="hljs-keyword">const</span> str2 = <span class="hljs-string">"Don't say \"goodbye\""</span>; <span class="hljs-comment">// string literals</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-string">`As easy as <span class="hljs-subst">${<span class="hljs-number">123</span>}</span>!`</span>, <span class="hljs-comment">// template literal</span></code>
+<code>  <span class="hljs-string">'As easy as 123!'</span>,</code>
+<code>);</code>
+</pre>
+<p>Backslashes are used to:</p>
+<ul>
+  <li>
+    Escape literal delimiters (first 2 lines of previous example)
+  </li>
+  <li>
+    Represent special characters:
+    <ul>
+      <li>
+        <code>\\</code> represents a backslash
+      </li>
+      <li>
+        <code>\n</code> represents a newline
+      </li>
+      <li>
+        <code>\r</code> represents a carriage return
+      </li>
+      <li>
+        <code>\t</code> represents a tab
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Inside a <code>String.raw</code> tagged template (line A), backslashes are treated as normal characters:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title class_">String</span>.<span class="hljs-property">raw</span><span class="hljs-string">`\ \n\t`</span>, <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-string">'\\ \\n\\t'</span>,</code>
+<code>);</code>
+</pre>
+<p>Convertings values to strings:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>(<span class="hljs-literal">undefined</span>)</span></code>
+<code>'undefined'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>(<span class="hljs-literal">null</span>)</span></code>
+<code>'null'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>(<span class="hljs-number">123.45</span>)</span></code>
+<code>'123.45'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>(<span class="hljs-literal">true</span>)</span></code>
+<code>'true'</code>
+</pre>
+<p>Copying parts of a string</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// There is no type for characters;</span></code>
+<code><span class="hljs-comment">// reading characters produces strings:</span></code>
+<code><span class="hljs-keyword">const</span> str3 = <span class="hljs-string">'abc'</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  str3[<span class="hljs-number">2</span>], <span class="hljs-string">'c'</span> <span class="hljs-comment">// no negative indices allowed</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  str3.<span class="hljs-title function_">at</span>(-<span class="hljs-number">1</span>), <span class="hljs-string">'c'</span> <span class="hljs-comment">// negative indices allowed</span></code>
+<code>);</code>
+<code/>
+<code><span class="hljs-comment">// Copying more than one character:</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-string">'abc'</span>.<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>), <span class="hljs-string">'ab'</span></code>
+<code>);</code>
+</pre>
+<p>Concatenating strings:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-string">'I bought '</span> + <span class="hljs-number">3</span> + <span class="hljs-string">' apples'</span>,</code>
+<code>  <span class="hljs-string">'I bought 3 apples'</span>,</code>
+<code>);</code>
+<code/>
+<code><span class="hljs-keyword">let</span> str = <span class="hljs-string">''</span>;</code>
+<code>str += <span class="hljs-string">'I bought '</span>;</code>
+<code>str += <span class="hljs-number">3</span>;</code>
+<code>str += <span class="hljs-string">' apples'</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  str, <span class="hljs-string">'I bought 3 apples'</span>,</code>
+<code>);</code>
+</pre>
+<h4 id="javascript-characters-vs-code-points-vs-grapheme-clusters"><a class="heading-id-link" href="#javascript-characters-vs-code-points-vs-grapheme-clusters">22.1.2 JavaScript characters vs. code points vs. grapheme clusters</a></h4>
+<ul>
+  <li>
+    <strong>Code points</strong> are 21-bit Unicode characters.
+  </li>
+  <li>
+    <strong>JavaScript characters</strong> are 16-bit UTF-16 code units. To encode a code point, we need one to two code units. Most code points fit into one code unit.
+  </li>
+  <li>
+    <strong>Grapheme clusters</strong> are <em>user-perceived characters</em> and represent written symbols. Most grapheme clusters are only one code point long, but they can also be longer – e.g., some emojis.
+  </li>
+</ul>
+<p>Example – a grapheme cluster that consists of multiple code points:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> graphemeCluster = <span class="hljs-string">'😵‍💫'</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-comment">// 5 JavaScript characters</span></code>
+<code>  <span class="hljs-string">'😵‍💫'</span>.<span class="hljs-property">length</span>, <span class="hljs-number">5</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-comment">// Iteration splits into code points</span></code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(graphemeCluster),</code>
+<code>  [<span class="hljs-string">'😵'</span>, <span class="hljs-string">'\u200D'</span>, <span class="hljs-string">'💫'</span>]</code>
+<code>);</code>
+</pre>
+<p>For more information on how to handle text, see <a href="#atoms-of-text">“Atoms of text: code points, JavaScript characters, grapheme clusters” (§22.7)</a>.</p>
+<h4 id="string-methods"><a class="heading-id-link" href="#string-methods">22.1.3 String methods</a></h4>
+<p>This subsection gives a brief overview of the string API. There is <a href="#quickref-string">a more comprehensive quick reference</a> at the end of this chapter.</p>
+<p>Finding substrings:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abca'</span>.<span class="hljs-title function_">includes</span>(<span class="hljs-string">'a'</span>)</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abca'</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'ab'</span>)</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abca'</span>.<span class="hljs-title function_">endsWith</span>(<span class="hljs-string">'ca'</span>)</span></code>
+<code>true</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abca'</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'a'</span>)</span></code>
+<code>0</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abca'</span>.<span class="hljs-title function_">lastIndexOf</span>(<span class="hljs-string">'a'</span>)</span></code>
+<code>3</code>
+</pre>
+<p>Splitting and joining:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-string">'a, b,c'</span>.<span class="hljs-title function_">split</span>(<span class="hljs-regexp">/, ?/</span>),</code>
+<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">join</span>(<span class="hljs-string">', '</span>),</code>
+<code>  <span class="hljs-string">'a, b, c'</span></code>
+<code>);</code>
+</pre>
+<p>Padding and trimming:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'7'</span>.<span class="hljs-title function_">padStart</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'0'</span>)</span></code>
+<code>'007'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'yes'</span>.<span class="hljs-title function_">padEnd</span>(<span class="hljs-number">6</span>, <span class="hljs-string">'!'</span>)</span></code>
+<code>'yes!!!'</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'\t abc\n '</span>.<span class="hljs-title function_">trim</span>()</span></code>
+<code>'abc'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'\t abc\n '</span>.<span class="hljs-title function_">trimStart</span>()</span></code>
+<code>'abc\n '</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'\t abc\n '</span>.<span class="hljs-title function_">trimEnd</span>()</span></code>
+<code>'\t abc'</code>
+</pre>
+<p>Repeating and changing case:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'*'</span>.<span class="hljs-title function_">repeat</span>(<span class="hljs-number">5</span>)</span></code>
+<code>'*****'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'= b2b ='</span>.<span class="hljs-title function_">toUpperCase</span>()</span></code>
+<code>'= B2B ='</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'ΑΒΓ'</span>.<span class="hljs-title function_">toLowerCase</span>()</span></code>
+<code>'αβγ'</code>
+</pre>
+<h3 id="plain-string-literals"><a class="heading-id-link" href="#plain-string-literals">22.2 Plain string literals</a></h3>
+<p>Plain string literals are delimited by either single quotes or double quotes:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> str1 = <span class="hljs-string">'abc'</span>;</code>
+<code><span class="hljs-keyword">const</span> str2 = <span class="hljs-string">"abc"</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(str1, str2);</code>
+</pre>
+<p>Single quotes are used more often because it makes it easier to mention HTML, where double quotes are preferred.</p>
+<p><a href="ch_template-literals.html#ch_template-literals">The next chapter</a> covers <em>template literals</em>, which give us:</p>
+<ul>
+  <li>
+    String interpolation
+  </li>
+  <li>
+    Multiple lines
+  </li>
+  <li>
+    Raw string literals (backslash has no special meaning)
+  </li>
+</ul>
+<h4 id="escaping"><a class="heading-id-link" href="#escaping">22.2.1 Escaping</a></h4>
+<p>The backslash lets us create special characters:</p>
+<ul>
+  <li>
+    Unix line break: <code>'\n'</code>
+  </li>
+  <li>
+    Windows line break: <code>'\r\n'</code>
+  </li>
+  <li>
+    Tab: <code>'\t'</code>
+  </li>
+  <li>
+    Backslash: <code>'\\'</code>
+  </li>
+</ul>
+<p>The backslash also lets us use the delimiter of a string literal inside that literal:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-string">'She said: "Let\'s go!"'</span>,</code>
+<code>  <span class="hljs-string">"She said: \"Let's go!\""</span>);</code>
+</pre>
+<h3 id="accessing-javascript-characters"><a class="heading-id-link" href="#accessing-javascript-characters">22.3 Accessing JavaScript characters</a></h3>
+<p>JavaScript has no extra data type for characters – characters are always represented as strings.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> str = <span class="hljs-string">'abc'</span>;</code>
+<code/>
+<code><span class="hljs-comment">// Reading a JavaScript character at a given index</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(str[<span class="hljs-number">1</span>], <span class="hljs-string">'b'</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Counting the JavaScript characters in a string:</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(str.<span class="hljs-property">length</span>, <span class="hljs-number">3</span>);</code>
+</pre>
+<p>The characters we see on screen are called <em>grapheme clusters</em>. Most of them are represented by single JavaScript characters. However, there are also grapheme clusters (especially emojis) that are represented by multiple JavaScript characters:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-property">length</span></span></code>
+<code>2</code>
+</pre>
+<p>How that works is explained in <a href="#atoms-of-text">“Atoms of text: code points, JavaScript characters, grapheme clusters” (§22.7)</a>.</p>
+<h3 id="string-concatenation"><a class="heading-id-link" href="#string-concatenation">22.4 String concatenation</a></h3>
+<h4 id="string-concatenation-via-plus"><a class="heading-id-link" href="#string-concatenation-via-plus">22.4.1 String concatenation via <code>+</code></a></h4>
+<p><span id="index-entry-concatenating-strings"/></p>
+<p>If at least one operand is a string, the plus operator (<code>+</code>) converts any non-strings to strings and concatenates the result:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-number">3</span> + <span class="hljs-string">' times '</span> + <span class="hljs-number">4</span>, <span class="hljs-string">'3 times 4'</span>);</code>
+</pre>
+<p>The assignment operator <code>+=</code> is useful if we want to assemble a string, piece by piece:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> str = <span class="hljs-string">''</span>; <span class="hljs-comment">// must be `let`!</span></code>
+<code>str += <span class="hljs-string">'Say it'</span>;</code>
+<code>str += <span class="hljs-string">' one more'</span>;</code>
+<code>str += <span class="hljs-string">' time'</span>;</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(str, <span class="hljs-string">'Say it one more time'</span>);</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/38ba63de820aae6f94a019538ae0f222.png" class="boxout-icon" height="24" alt="Icon “details”" data-original-src="https://exploringjs.com/js/book/icon/details.svg"/> <strong>Concatenating via <code>+</code> is efficient</strong></p>
+  <div class="boxout-vspace"/>
+  <p>Using <code>+</code> to assemble strings is quite efficient because most JavaScript engines internally optimize it.</p>
+</div>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Concatenating strings</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/strings/concat_string_array_test.mjs</code></p>
+</div>
+<h4 id="string-concatenation-via-arrays"><a class="heading-id-link" href="#string-concatenation-via-arrays">22.4.2 Concatenating via Arrays (<code>.push()</code> and <code>.join()</code>)</a></h4>
+<p>Occasionally, taking a detour via an Array can be useful for concatenating strings – especially if there is to be a separator between them (such as <code>', '</code> in line A):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getPackingList</span>(<span class="hljs-params">isAbroad = <span class="hljs-literal">false</span>, days = <span class="hljs-number">1</span></span>) {</code>
+<code>  <span class="hljs-keyword">const</span> items = [];</code>
+<code>  items.<span class="hljs-title function_">push</span>(<span class="hljs-string">'tooth brush'</span>);</code>
+<code>  <span class="hljs-keyword">if</span> (isAbroad) {</code>
+<code>    items.<span class="hljs-title function_">push</span>(<span class="hljs-string">'passport'</span>);</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">if</span> (days &gt; <span class="hljs-number">3</span>) {</code>
+<code>    items.<span class="hljs-title function_">push</span>(<span class="hljs-string">'water bottle'</span>);</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> items.<span class="hljs-title function_">join</span>(<span class="hljs-string">', '</span>); <span class="hljs-comment">// (A)</span></code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">getPackingList</span>(),</code>
+<code>  <span class="hljs-string">'tooth brush'</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">getPackingList</span>(<span class="hljs-literal">true</span>, <span class="hljs-number">7</span>),</code>
+<code>  <span class="hljs-string">'tooth brush, passport, water bottle'</span></code>
+<code>);</code>
+</pre>
+<h3 id="converting-values-to-strings"><a class="heading-id-link" href="#converting-values-to-strings">22.5 Converting values to strings in JavaScript has pitfalls</a></h3>
+<p>Converting values to strings in JavaScript is more complicated than it might seem:</p>
+<ul>
+  <li>
+    Most approaches have values they can’t handle.
+  </li>
+  <li>
+    We don’t always see all of the data.
+  </li>
+</ul>
+<h4 id="example-code-that-is-problematic"><a class="heading-id-link" href="#example-code-that-is-problematic">22.5.1 Example: code that is problematic</a></h4>
+<p>Can you spot the problem in the following code?</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">UnexpectedValueError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">value</span>) {</code>
+<code>    <span class="hljs-variable language_">super</span>(<span class="hljs-string">'Unexpected value: '</span> + value); <span class="hljs-comment">// (A)</span></code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>For some values, this code throws an exception in line A:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(<span class="hljs-title class_">Symbol</span>())</span></code>
+<code>TypeError: Cannot convert a Symbol value to a string</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>({<span class="hljs-attr">__proto__</span>:<span class="hljs-literal">null</span>})</span></code>
+<code>TypeError: Cannot convert object to primitive value</code>
+</pre>
+<p>Read on for more information.</p>
+<h4 id="four-common-ways-of-converting-values-to-strings"><a class="heading-id-link" href="#four-common-ways-of-converting-values-to-strings">22.5.2 Four common ways of converting values to strings</a></h4>
+<ol>
+  <li>
+    <code>String(v)</code>
+  </li>
+  <li>
+    <code>v.toString()</code>
+  </li>
+  <li>
+    <code>'' + v</code>
+  </li>
+  <li>
+    <code>`${v}`</code>
+  </li>
+</ol>
+<p>The following table shows how these operations fare with various values (#4 produces the same results as #3).</p>
+<table class="framed">
+  <style>
+    th:nth-child(1), td:nth-child(1) {
+      text-align: left;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+    th:nth-child(3), td:nth-child(3) {
+      text-align: left;
+    }
+    th:nth-child(4), td:nth-child(4) {
+      text-align: left;
+    }
+  </style>
+  <thead>
+    <tr>
+      <th/><th><code>String(v)</code></th><th><code>'' + v</code></th><th><code>v.toString()</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>undefined</code></td><td><code>'undefined'</code></td><td><code>'undefined'</code></td><td><strong>TypeError</strong></td>
+    </tr>
+    <tr>
+      <td><code>null</code></td><td><code>'null'</code></td><td><code>'null'</code></td><td><strong>TypeError</strong></td>
+    </tr>
+    <tr>
+      <td><code>true</code></td><td><code>'true'</code></td><td><code>'true'</code></td><td><code>'true'</code></td>
+    </tr>
+    <tr>
+      <td><code>123</code></td><td><code>'123'</code></td><td><code>'123'</code></td><td><code>'123'</code></td>
+    </tr>
+    <tr>
+      <td><code>123n</code></td><td><code>'123'</code></td><td><code>'123'</code></td><td><code>'123'</code></td>
+    </tr>
+    <tr>
+      <td><code>"abc"</code></td><td><code>'abc'</code></td><td><code>'abc'</code></td><td><code>'abc'</code></td>
+    </tr>
+    <tr>
+      <td><code>Symbol()</code></td><td><code>'Symbol()'</code></td><td><strong>TypeError</strong></td><td><code>'Symbol()'</code></td>
+    </tr>
+    <tr>
+      <td><code>{a:1}</code></td><td><code>'[object Object]'</code></td><td><code>'[object Object]'</code></td><td><code>'[object Object]'</code></td>
+    </tr>
+    <tr>
+      <td><code>['a']</code></td><td><code>'a'</code></td><td><code>'a'</code></td><td><code>'a'</code></td>
+    </tr>
+    <tr>
+      <td><code>{__proto__:null}</code></td><td><strong>TypeError</strong></td><td><strong>TypeError</strong></td><td><strong>TypeError</strong></td>
+    </tr>
+    <tr>
+      <td><code>Symbol.prototype</code></td><td><strong>TypeError</strong></td><td><strong>TypeError</strong></td><td><strong>TypeError</strong></td>
+    </tr>
+    <tr>
+      <td><code>() =&gt; {}</code></td><td><code>'() =&gt; {}'</code></td><td><code>'() =&gt; {}'</code></td><td><code>'() =&gt; {}'</code></td>
+    </tr>
+  </tbody>
+</table>
+<p>Let’s explore why some of these values produce exceptions or results that aren’t very useful.</p>
+<h5 id="tricky-values-symbols"><a class="heading-id-link" href="#tricky-values-symbols">22.5.2.1 Tricky values: symbols</a></h5>
+<p>Symbols must be converted to strings explicitly (via <code>String()</code> or <code>.toString()</code>). Conversion via concatenation throws an exception:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">''</span> + <span class="hljs-title class_">Symbol</span>()</span></code>
+<code>TypeError: Cannot convert a Symbol value to a string</code>
+</pre>
+<p>Why is that? The intent is to prevent accidentally converting a symbol property key to a string (which is also a valid property key).</p>
+<h5 id="tricky-values-objects-with-null-prototypes"><a class="heading-id-link" href="#tricky-values-objects-with-null-prototypes">22.5.2.2 Tricky values: objects with <code>null</code> prototypes</a></h5>
+<p>It’s obvious why <code>v.toString()</code> doesn’t work if there is no method <code>.toString()</code>. However, the other conversion operations call the following methods in the following order and use the first primitive value that is returned (after converting it to string):</p>
+<ul>
+  <li>
+    <code>v[Symbol.toPrimitive]()</code>
+  </li>
+  <li>
+    <code>v.toString()</code>
+  </li>
+  <li>
+    <code>v.valueOf()</code>
+  </li>
+</ul>
+<p>If none of these methods are present, a <code>TypeError</code> is thrown.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>({<span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>, [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">toPrimitive</span>]() {<span class="hljs-keyword">return</span> <span class="hljs-string">'YES'</span>}})</span></code>
+<code>'YES'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>({<span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>, <span class="hljs-title function_">toString</span>(<span class="hljs-params"/>) {<span class="hljs-keyword">return</span> <span class="hljs-string">'YES'</span>}})</span></code>
+<code>'YES'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>({<span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>, <span class="hljs-title function_">valueOf</span>(<span class="hljs-params"/>) {<span class="hljs-keyword">return</span> <span class="hljs-string">'YES'</span>}})</span></code>
+<code>'YES'</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>({<span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>}) <span class="hljs-comment">// no method available</span></span></code>
+<code>TypeError: Cannot convert object to primitive value</code>
+</pre>
+<p>Where might we encounter objects with <code>null</code> prototypes?</p>
+<ul>
+  <li>
+    <a href="ch_objects.html#dictionary-objects-with-null-prototypes">“Objects with <code>null</code> prototypes as dictionaries” (§30.9.11.4)</a>
+  </li>
+  <li>
+    <a href="ch_objects.html#lookup-tables-with-null-prototypes">“Objects with <code>null</code> prototypes as fixed lookup tables” (§30.9.11.5)</a>
+  </li>
+  <li>
+    <a href="ch_objects.html#null-prototypes-in-standard-library">“<code>null</code> prototypes in the standard library” (§30.9.11.6)</a>
+  </li>
+</ul>
+<h5 id="tricky-values-objects-in-general"><a class="heading-id-link" href="#tricky-values-objects-in-general">22.5.2.3 Tricky values: objects in general</a></h5>
+<p>Plain objects have default string representations that are not very useful:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>({<span class="hljs-attr">a</span>: <span class="hljs-number">1</span>})</span></code>
+<code>'[object Object]'</code>
+</pre>
+<p>Arrays have better string representations, but they still hide much information:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>])</span></code>
+<code>'a,b'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>([<span class="hljs-string">'a'</span>, [<span class="hljs-string">'b'</span>]])</span></code>
+<code>'a,b'</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>])</span></code>
+<code>'1,2'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>([<span class="hljs-string">'1'</span>, <span class="hljs-string">'2'</span>])</span></code>
+<code>'1,2'</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>([<span class="hljs-literal">true</span>])</span></code>
+<code>'true'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>([<span class="hljs-string">'true'</span>])</span></code>
+<code>'true'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>(<span class="hljs-literal">true</span>)</span></code>
+<code>'true'</code>
+</pre>
+<h5 id="tricky-value-symbolprototype"><a class="heading-id-link" href="#tricky-value-symbolprototype">22.5.2.4 Tricky value: <code>Symbol.prototype</code></a></h5>
+<p>You’ll probably never encounter the value <code>Symbol.prototype</code> (the object that provides symbols with methods) in the wild but it’s an interesting edge case: <code>Symbol.prototype[Symbol.toPrimitive]()</code> throws an exception if <code>this</code> isn’t a symbol. That explains why converting <code>Symbol.prototype</code> to a string doesn’t work:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Symbol</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">toPrimitive</span>]()</span></code>
+<code>TypeError: Symbol.prototype [ @@toPrimitive ] requires that 'this' be a Symbol</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>(<span class="hljs-title class_">Symbol</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>)</span></code>
+<code>TypeError: Symbol.prototype [ @@toPrimitive ] requires that 'this' be a Symbol</code>
+</pre>
+<h4 id="using-jsonstringify-to-convert-values-to-strings"><a class="heading-id-link" href="#using-jsonstringify-to-convert-values-to-strings">22.5.3 Using <code>JSON.stringify()</code> to convert values to strings</a></h4>
+<p>The JSON data format is a text representation of JavaScript values. Therefore, <a href="ch_json.html#JSON.stringify"><code>JSON.stringify()</code></a> can also be used to convert values to strings. It works especially well for objects and Arrays where the normal conversion to string has significant deficiencies:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({<span class="hljs-attr">a</span>: <span class="hljs-number">1</span>})</span></code>
+<code>'{"a":1}'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>([<span class="hljs-string">'a'</span>, [<span class="hljs-string">'b'</span>]])</span></code>
+<code>'["a",["b"]]'</code>
+</pre>
+<p><code>JSON.stringify()</code> is OK with objects whose prototypes are <code>null</code>:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({<span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>})</span></code>
+<code>'{"a":1}'</code>
+</pre>
+<p>On major downside is that <code>JSON.stringify()</code> only supports the following values:</p>
+<ul>
+  <li>
+    Primitive values:
+    <ul>
+      <li>
+        <code>null</code>
+      </li>
+      <li>
+        Booleans
+      </li>
+      <li>
+        Numbers (except for <code>NaN</code> and <code>Infinity</code>)
+      </li>
+      <li>
+        Strings
+      </li>
+    </ul>
+  </li>
+  <li>
+    Non-primitive values:
+    <ul>
+      <li>
+        Arrays
+      </li>
+      <li>
+        Objects (except for functions)
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>For most other values, we get <code>undefined</code> as a result (and not a string):</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(<span class="hljs-literal">undefined</span>)</span></code>
+<code>undefined</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(<span class="hljs-title class_">Symbol</span>())</span></code>
+<code>undefined</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(<span class="hljs-function">() =&gt;</span> {})</span></code>
+<code>undefined</code>
+</pre>
+<p>Bigints cause exceptions:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(<span class="hljs-number">123n</span>)</span></code>
+<code>TypeError: Do not know how to serialize a BigInt</code>
+</pre>
+<p>Properties with <code>undefined</code>-producing values are omitted:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({<span class="hljs-attr">a</span>: <span class="hljs-title class_">Symbol</span>(), <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>})</span></code>
+<code>'{"b":2}'</code>
+</pre>
+<p>Array elements whose values produce <code>undefined</code>, are stringified as <code>null</code>:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>([<span class="hljs-string">'a'</span>, <span class="hljs-title class_">Symbol</span>(), <span class="hljs-string">'b'</span>])</span></code>
+<code>'["a",null,"b"]'</code>
+</pre>
+<p>The following table summarizes the results of <code>JSON.stringify(v)</code>:</p>
+<table class="framed">
+  <style>
+    th:nth-child(1), td:nth-child(1) {
+      text-align: left;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+  </style>
+  <thead>
+    <tr>
+      <th/><th><code>JSON.stringify(v)</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>undefined</code></td><td><code>undefined</code></td>
+    </tr>
+    <tr>
+      <td><code>null</code></td><td><code>'null'</code></td>
+    </tr>
+    <tr>
+      <td><code>true</code></td><td><code>'true'</code></td>
+    </tr>
+    <tr>
+      <td><code>123</code></td><td><code>'123'</code></td>
+    </tr>
+    <tr>
+      <td><code>123n</code></td><td><strong>TypeError</strong></td>
+    </tr>
+    <tr>
+      <td><code>'abc'</code></td><td><code>'"abc"'</code></td>
+    </tr>
+    <tr>
+      <td><code>Symbol()</code></td><td><code>undefined</code></td>
+    </tr>
+    <tr>
+      <td><code>{a:1}</code></td><td><code>'{"a":1}'</code></td>
+    </tr>
+    <tr>
+      <td><code>['a']</code></td><td><code>'["a"]'</code></td>
+    </tr>
+    <tr>
+      <td><code>() =&gt; {}</code></td><td><code>undefined</code></td>
+    </tr>
+    <tr>
+      <td><code>{__proto__:null}</code></td><td><code>'{}'</code></td>
+    </tr>
+    <tr>
+      <td><code>Symbol.prototype</code></td><td><code>'{}'</code></td>
+    </tr>
+  </tbody>
+</table>
+<p>For more information, see <a href="ch_json.html#json-stringify-details">“Details on how data is converted to JSON” (§48.3.1.3)</a>.</p>
+<h5 id="multiline-output"><a class="heading-id-link" href="#multiline-output">22.5.3.1 Multiline output</a></h5>
+<p>By default, <code>JSON.stringify()</code> returns a single line of text. However the optional third parameter enables multiline output and lets us specify how much to indent – for example:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>({<span class="hljs-attr">first</span>: <span class="hljs-string">'Robin'</span>, <span class="hljs-attr">last</span>: <span class="hljs-string">'Doe'</span>}, <span class="hljs-literal">null</span>, <span class="hljs-number">2</span>),</code>
+<code><span class="hljs-string">`{</span></code>
+<code><span class="hljs-string">  "first": "Robin",</span></code>
+<code><span class="hljs-string">  "last": "Doe"</span></code>
+<code><span class="hljs-string">}`</span></code>
+<code>);</code>
+</pre>
+<h5 id="displaying-strings-via-jsonstringify"><a class="heading-id-link" href="#displaying-strings-via-jsonstringify">22.5.3.2 Displaying strings via <code>JSON.stringify()</code></a></h5>
+<p><code>JSON.stringify()</code> is useful for displaying arbitrary strings:</p>
+<ul>
+  <li>
+    The result always fits into a single line.
+  </li>
+  <li>
+    Invisible characters such as newlines and tabs become visible.
+  </li>
+</ul>
+<p>Example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> strWithNewlinesAndTabs = <span class="hljs-string">`</span></code>
+<code><span class="hljs-string">TAB-&gt;	&lt;-TAB</span></code>
+<code><span class="hljs-string">Second line </span></code>
+<code><span class="hljs-string">`</span>;</code>
+<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(strWithNewlinesAndTabs));</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>"\nTAB-&gt;\t&lt;-TAB\nSecond line \n"</code>
+</pre>
+<h4 id="solutions"><a class="heading-id-link" href="#solutions">22.5.4 Solutions</a></h4>
+<p>Alas, there are no good built-in solutions for stringification that work all the time. In this section, we’ll explore a short function that works for all simple use cases, along with solutions for more sophisticated use cases.</p>
+<h5 id="short-solution-a-custom-tostring-function"><a class="heading-id-link" href="#short-solution-a-custom-tostring-function">22.5.4.1 Short solution: a custom <code>toString()</code> function</a></h5>
+<p>What would a simple solution for stringification look like?</p>
+<p><code>JSON.stringify()</code> works well for a lot of data, especially plain objects and Arrays. If it can’t stringify a given value, it returns <code>undefined</code> instead of a string – unless the value is a bigint. Then it throws an exception.</p>
+<p>Therefore, we can use the following function for stringification:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">toString</span>(<span class="hljs-params">v</span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> v === <span class="hljs-string">'bigint'</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> v + <span class="hljs-string">'n'</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(v) ?? <span class="hljs-title class_">String</span>(v); <span class="hljs-comment">// (A)</span></code>
+<code>}</code>
+</pre>
+<p>For values that are not supported by <code>JSON.stringify()</code>, we use <code>String()</code> as a fallback (line A). That function only throws for the following two values – which are both handled well by <code>JSON.stringify()</code>:</p>
+<ul>
+  <li>
+    <code>{__proto__:null}</code>
+  </li>
+  <li>
+    <code>Symbol.prototype</code>
+  </li>
+</ul>
+<p>The following table summarizes the results of <code>toString()</code>:</p>
+<table class="framed">
+  <style>
+    th:nth-child(1), td:nth-child(1) {
+      text-align: left;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+  </style>
+  <thead>
+    <tr>
+      <th/><th><code>toString()</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>undefined</code></td><td><code>'undefined'</code></td>
+    </tr>
+    <tr>
+      <td><code>null</code></td><td><code>'null'</code></td>
+    </tr>
+    <tr>
+      <td><code>true</code></td><td><code>'true'</code></td>
+    </tr>
+    <tr>
+      <td><code>123</code></td><td><code>'123'</code></td>
+    </tr>
+    <tr>
+      <td><code>123n</code></td><td><code>'123n'</code></td>
+    </tr>
+    <tr>
+      <td><code>'abc'</code></td><td><code>'"abc"'</code></td>
+    </tr>
+    <tr>
+      <td><code>Symbol()</code></td><td><code>'Symbol()'</code></td>
+    </tr>
+    <tr>
+      <td><code>{a:1}</code></td><td><code>'{"a":1}'</code></td>
+    </tr>
+    <tr>
+      <td><code>['a']</code></td><td><code>'["a"]'</code></td>
+    </tr>
+    <tr>
+      <td><code>() =&gt; {}</code></td><td><code>'() =&gt; {}'</code></td>
+    </tr>
+    <tr>
+      <td><code>{__proto__:null}</code></td><td><code>'{}'</code></td>
+    </tr>
+    <tr>
+      <td><code>Symbol.prototype</code></td><td><code>'{}'</code></td>
+    </tr>
+  </tbody>
+</table>
+<h5 id="library-for-stringifying-values"><a class="heading-id-link" href="#library-for-stringifying-values">22.5.4.2 Library for stringifying values</a></h5>
+<ul>
+  <li>
+    The library <a href="https://github.com/sindresorhus/stringify-object">stringify-object</a> by Sindre Sorhus: “Stringify an object/array like <code>JSON.stringify</code> just without all the double-quotes”
+  </li>
+</ul>
+<h5 id="nodejs-functions-for-stringifying-values"><a class="heading-id-link" href="#nodejs-functions-for-stringifying-values">22.5.4.3 Node.js functions for stringifying values</a></h5>
+<p>Node.js has several built-in functions that provide sophisticated support for converting JavaScript values to strings – e.g.:</p>
+<ul>
+  <li>
+    <a href="https://nodejs.org/api/util.html#utilinspectobject-options"><code>util.inspect(obj)</code></a> “returns a string representation of <code>obj</code> that is intended for debugging”.
+  </li>
+  <li>
+    <a href="https://nodejs.org/api/util.html#utilformatformat-args"><code>util.format(format, ...args)</code></a> “returns a formatted string using the first argument as a printf-like format string which can contain zero or more format specifiers”.
+  </li>
+</ul>
+<p>These functions can even handle circular data:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> util <span class="hljs-keyword">from</span> <span class="hljs-string">'node:util'</span>;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> cycle = {};</code>
+<code>cycle.<span class="hljs-property">prop</span> = cycle;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  util.<span class="hljs-title function_">inspect</span>(cycle),</code>
+<code>  <span class="hljs-string">'&lt;ref *1&gt; { prop: [Circular *1] }'</span></code>
+<code>);</code>
+</pre>
+<h5 id="alternative-to-stringification-logging-data-to-the-console"><a class="heading-id-link" href="#alternative-to-stringification-logging-data-to-the-console">22.5.4.4 Alternative to stringification: logging data to the console</a></h5>
+<p>Console methods such as <code>console.log()</code> tend to produce good output and have few limitations:</p>
+<pre class="language-js">
+<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>({<span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>, <span class="hljs-attr">prop</span>: <span class="hljs-title class_">Symbol</span>()});</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>[Object: null prototype] { prop: Symbol() }</code>
+</pre>
+<p>However, by default, they only display objects up to a certain depth:</p>
+<pre class="language-js">
+<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>({<span class="hljs-attr">a</span>: {<span class="hljs-attr">b</span>: {<span class="hljs-attr">c</span>: {<span class="hljs-attr">d</span>: <span class="hljs-literal">true</span>}}}});</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>{ a: { b: { c: [Object] } } }</code>
+</pre>
+<p>Node.js lets us specify the depth for <code>console.dir()</code> – with <code>null</code> meaning infinite:</p>
+<pre class="language-js">
+<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">dir</span>({<span class="hljs-attr">a</span>: {<span class="hljs-attr">b</span>: {<span class="hljs-attr">c</span>: {<span class="hljs-attr">d</span>: <span class="hljs-literal">true</span>}}}}, {<span class="hljs-attr">depth</span>: <span class="hljs-literal">null</span>});</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>{</code>
+<code>  a: { b: { c: { d: true } } }</code>
+<code>}</code>
+</pre>
+<p>In browsers, <code>console.dir()</code> does not have an options object but lets us interactively and incrementally descend into objects.</p>
+<h4 id="customizing-how-objects-are-converted-to-strings"><a class="heading-id-link" href="#customizing-how-objects-are-converted-to-strings">22.5.5 Customizing how objects are converted to strings</a></h4>
+<h5 id="customizing-the-string-conversion-of-objects"><a class="heading-id-link" href="#customizing-the-string-conversion-of-objects">22.5.5.1 Customizing the string conversion of objects</a></h5>
+<p>We can customize the built-in way of stringifying objects by implementing the method <code>.toString()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> helloObj = {</code>
+<code>  <span class="hljs-title function_">toString</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'Hello!'</span>;</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">};</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-title class_">String</span>(helloObj), <span class="hljs-string">'Hello!'</span></span></code>
+<code><span class="hljs-params">);</span></code>
+</pre>
+<h5 id="customizing-the-conversion-to-json"><a class="heading-id-link" href="#customizing-the-conversion-to-json">22.5.5.2 Customizing the conversion to JSON</a></h5>
+<p>We can customize how an object is converted to JSON by implementing the method <code>.toJSON()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> point = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-number">1</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-number">2</span>,</code>
+<code>  <span class="hljs-title function_">toJSON</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> [<span class="hljs-variable language_">this</span>.<span class="hljs-property">x</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">y</span>];</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(point), <span class="hljs-string">'[1,2]'</span></span></code>
+<code><span class="hljs-params">);</span></code>
+</pre>
+<h3 id="comparing-strings"><a class="heading-id-link" href="#comparing-strings">22.6 Comparing strings</a></h3>
+<p>Strings can be compared via the following operators:</p>
+<pre class="language-txt">
+<code>&lt; &lt;= &gt; &gt;=</code>
+</pre>
+<p>There is one important caveat to consider: These operators compare based on the numeric values of JavaScript characters. That means that the order that JavaScript uses for strings is different from the one used in dictionaries and phone books:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'A'</span> &lt; <span class="hljs-string">'B'</span> <span class="hljs-comment">// ok</span></span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'a'</span> &lt; <span class="hljs-string">'B'</span> <span class="hljs-comment">// not ok</span></span></code>
+<code>false</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'ä'</span> &lt; <span class="hljs-string">'b'</span> <span class="hljs-comment">// not ok</span></span></code>
+<code>false</code>
+</pre>
+<p>Properly comparing text is beyond the scope of this book. It is supported via <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl">the ECMAScript Internationalization API (<code>Intl</code>)</a>.</p>
+<h3 id="atoms-of-text"><a class="heading-id-link" href="#atoms-of-text">22.7 Atoms of text: code points, JavaScript characters, grapheme clusters</a></h3>
+<p>Quick recap of <a href="ch_unicode.html#ch_unicode">“Unicode – a brief introduction<span> (advanced)</span>” (§21)</a>:</p>
+<ul>
+  <li>
+    <p><em>Code points</em> are the atomic parts of Unicode text. Each code point is 21 bits in size.</p>
+  </li>
+  <li>
+    <p>Each <em>JavaScript</em> character is a UTF-16 code unit (16 bits). We need one to two code units to encode a code point. Most code points fit into one code unit.</p>
+  </li>
+  <li>
+    <p><em>Grapheme clusters</em> (<em>user-perceived characters</em>) represent written symbols, as displayed on screen or paper. One or more code points are needed to encode a single grapheme cluster. Most grapheme clusters are one code point long.</p>
+  </li>
+</ul>
+<p>The following code demonstrates that a single code point comprises one or two JavaScript characters. We count the latter via <code>.length</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// 3 code points, 3 JavaScript characters:</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-string">'abc'</span>.<span class="hljs-property">length</span>, <span class="hljs-number">3</span>);</code>
+<code/>
+<code><span class="hljs-comment">// 1 code point, 2 JavaScript characters:</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-string">'🙂'</span>.<span class="hljs-property">length</span>, <span class="hljs-number">2</span>);</code>
+</pre>
+<p>The following table summarizes the concepts we have just explored:</p>
+<table class="framed">
+  <style>
+    th:nth-child(1), td:nth-child(1) {
+      text-align: left;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+    th:nth-child(3), td:nth-child(3) {
+      text-align: left;
+    }
+  </style>
+  <thead>
+    <tr>
+      <th>Entity</th><th>Size</th><th>Encoded via</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>JavaScript character (UTF-16 code unit)</td><td>16 bits</td><td>–</td>
+    </tr>
+    <tr>
+      <td>Unicode code point</td><td>21 bits</td><td>1–2 code units</td>
+    </tr>
+    <tr>
+      <td>Unicode grapheme cluster</td><td/><td>1+ code points</td>
+    </tr>
+  </tbody>
+</table>
+<h4 id="working-with-code-units-javascript-characters"><a class="heading-id-link" href="#working-with-code-units-javascript-characters">22.7.1 Working with code units (JavaScript characters)</a></h4>
+<p><span id="index-entry-Unicode-code-unit-escape"/><span id="index-entry-escape--Unicode-code-unit"/></p>
+<p>Indices and lengths of strings are based on JavaScript characters – which are UTF-16 code units.</p>
+<h5 id="accessing-code-units"><a class="heading-id-link" href="#accessing-code-units">22.7.1.1 Accessing code units</a></h5>
+<p>Code units are accessed like Array elements:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> str = <span class="hljs-string">'αβγ'</span>;</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">str.<span class="hljs-property">length</span></span></code>
+<code>3</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">str[<span class="hljs-number">0</span>]</span></code>
+<code>'α'</code>
+</pre>
+<p><code>str.split('')</code> splits into code units:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">str.<span class="hljs-title function_">split</span>(<span class="hljs-string">''</span>)</span></code>
+<code>[ 'α', 'β', 'γ' ]</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'A🙂'</span>.<span class="hljs-title function_">split</span>(<span class="hljs-string">''</span>)</span></code>
+<code>[ 'A', '\uD83D', '\uDE42' ]</code>
+</pre>
+<p>The emoji 🙂 consists of two code units.</p>
+<h5 id="escaping-code-units"><a class="heading-id-link" href="#escaping-code-units">22.7.1.2 Escaping code units</a></h5>
+<p><span id="index-entry-Unicode-code-unit-escape2"/><span id="index-entry-escape--Unicode-code-unit2"/></p>
+<p>To specify a code unit hexadecimally, we can use a <em>Unicode code unit escape</em> with exactly four hexadecimal digits:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'\u03B1\u03B2\u03B3'</span></span></code>
+<code>'αβγ'</code>
+</pre>
+<p><span id="index-entry-ASCII-escape"/><span id="index-entry-escape--ASCII"/></p>
+<p><strong>ASCII escapes:</strong> If the code point of a character is below 256, we can refer to it via an <em>ASCII escape</em> with exactly two hexadecimal digits:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'He\x6C\x6Co'</span></span></code>
+<code>'Hello'</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/38ba63de820aae6f94a019538ae0f222.png" class="boxout-icon" height="24" alt="Icon “details”" data-original-src="https://exploringjs.com/js/book/icon/details.svg"/> <strong>Official name of an ASCII escape: hexadecimal escape sequence</strong></p>
+  <div class="boxout-vspace"/>
+  <p>It was the first escape that used hexadecimal numbers.</p>
+</div>
+<h5 id="converting-code-units-to-numbers-char-codes"><a class="heading-id-link" href="#converting-code-units-to-numbers-char-codes">22.7.1.3 Converting code units to numbers (char codes)</a></h5>
+<p>To get the char code of a character, we can use <code>.charCodeAt()</code>:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'α'</span>.<span class="hljs-title function_">charCodeAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
+<code>'3b1'</code>
+</pre>
+<p><code>String.fromCharCode()</code> converts a char code to a string:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>.<span class="hljs-title function_">fromCharCode</span>(<span class="hljs-number">0x3B1</span>)</span></code>
+<code>'α'</code>
+</pre>
+<h4 id="working-with-code-points"><a class="heading-id-link" href="#working-with-code-points">22.7.2 Working with code points</a></h4>
+<h5 id="accessing-code-points"><a class="heading-id-link" href="#accessing-code-points">22.7.2.1 Accessing code points</a></h5>
+<p>Iteration (which is described <a href="ch_sync-iteration.html#ch_sync-iteration">later in this book</a>) splits strings into code points:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> codePoints = <span class="hljs-string">'A🙂'</span>;</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> codePoint <span class="hljs-keyword">of</span> codePoints) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(codePoint + <span class="hljs-string">' '</span> + codePoint.<span class="hljs-property">length</span>);</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>A 1</code>
+<code>🙂 2</code>
+</pre>
+<p><code>Array.from()</code> uses iteration:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-string">'A🙂'</span>)</span></code>
+<code>[ 'A', '🙂' ]</code>
+</pre>
+<p>Therefore, this is how we can count the number of code points in a string:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-string">'A🙂'</span>).<span class="hljs-property">length</span></span></code>
+<code>2</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'A🙂'</span>.<span class="hljs-property">length</span></span></code>
+<code>3</code>
+</pre>
+<h5 id="escaping-code-points"><a class="heading-id-link" href="#escaping-code-points">22.7.2.2 Escaping code points</a></h5>
+<p><span id="index-entry-Unicode-code-point-escape"/><span id="index-entry-escape--Unicode-code-point"/></p>
+<p>A <em>Unicode code point escape</em> lets us specify a code point hexadecimally (1–5 digits). It produces one or two JavaScript characters.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'\u{1F642}'</span></span></code>
+<code>'🙂'</code>
+</pre>
+<h5 id="converting-code-points-in-strings-to-numbers"><a class="heading-id-link" href="#converting-code-points-in-strings-to-numbers">22.7.2.3 Converting code points in strings to numbers</a></h5>
+<p><code>.codePointAt()</code> returns the code point number for a sequence of 1–2 JavaScript characters:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
+<code>'1f642'</code>
+</pre>
+<p><code>String.fromCodePoint()</code> converts a code point number to 1–2 JavaScript characters:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>.<span class="hljs-title function_">fromCodePoint</span>(<span class="hljs-number">0x1F642</span>)</span></code>
+<code>'🙂'</code>
+</pre>
+<h5 id="regular-expressions-for-code-points"><a class="heading-id-link" href="#regular-expressions-for-code-points">22.7.2.4 Regular expressions for code points</a></h5>
+<p>If we use the flag <code>/v</code> for a regular expression, it supports Unicode better and matches code points not code units:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">match</span>(<span class="hljs-regexp">/./g</span>)</span></code>
+<code>[ '\uD83D', '\uDE42' ]</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">match</span>(<span class="hljs-regexp">/./g</span>v)</span></code>
+<code>[ '🙂' ]</code>
+</pre>
+<p>More information: <a href="ch_regexps.html#regexp-flag-unicode-sets">“Flag <code>/v</code>: limited support for multi-code-point grapheme clusters<span> <sup>ES2024</sup></span>” (§46.11.4)</a>.</p>
+<h4 id="working-with-grapheme-clusters"><a class="heading-id-link" href="#working-with-grapheme-clusters">22.7.3 Working with grapheme clusters</a></h4>
+<h5 id="accessing-grapheme-clusters"><a class="heading-id-link" href="#accessing-grapheme-clusters">22.7.3.1 Accessing grapheme clusters</a></h5>
+<p>This is a grapheme cluster that consists of 3 code points:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> graphemeCluster = <span class="hljs-string">'😵‍💫'</span>;</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-comment">// Iteration splits into code points</span></code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(graphemeCluster),</code>
+<code>  [<span class="hljs-string">'😵'</span>, <span class="hljs-string">'\u200D'</span>, <span class="hljs-string">'💫'</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-comment">// 5 JavaScript characters</span></code>
+<code>  <span class="hljs-string">'😵‍💫'</span>.<span class="hljs-property">length</span>, <span class="hljs-number">5</span></code>
+<code>);</code>
+</pre>
+<p>To split a string into grapheme clusters, we can use <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter"><code>Intl.Segmenter</code></a> – a class that isn’t part of ECMAScript proper, but part of <a href="https://ecma-international.org/publications-and-standards/standards/ecma-402/">the ECMAScript internationalization API</a>. It is supported by most JavaScript platforms. This is how we can use it:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> segmenter = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Intl</span>.<span class="hljs-title class_">Segmenter</span>(<span class="hljs-string">'en-US'</span>, { <span class="hljs-attr">granularity</span>: <span class="hljs-string">'grapheme'</span> });</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(segmenter.<span class="hljs-title function_">segment</span>(<span class="hljs-string">'A🙂😵‍💫'</span>)),</code>
+<code>  [</code>
+<code>    { <span class="hljs-attr">segment</span>: <span class="hljs-string">'A'</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">input</span>: <span class="hljs-string">'A🙂😵‍💫'</span> },</code>
+<code>    { <span class="hljs-attr">segment</span>: <span class="hljs-string">'🙂'</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">input</span>: <span class="hljs-string">'A🙂😵‍💫'</span> },</code>
+<code>    { <span class="hljs-attr">segment</span>: <span class="hljs-string">'😵‍💫'</span>, <span class="hljs-attr">index</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">input</span>: <span class="hljs-string">'A🙂😵‍💫'</span> },</code>
+<code>  ]</code>
+<code>);</code>
+</pre>
+<p><code>.segmenter()</code> returns an iterable over segment objects. We can use it via <code>for-of</code>, <code>Array.from()</code>, <code>Iterator.from()</code>, etc.</p>
+<h5 id="regular-expressions-for-grapheme-clusters"><a class="heading-id-link" href="#regular-expressions-for-grapheme-clusters">22.7.3.2 Regular expressions for grapheme clusters</a></h5>
+<p>The regular expression flag <code>/v</code> provides some limited support for grapheme clusters – e.g., we can match emojis with potentially multiple code points like this:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'A🙂😵‍💫'</span>.<span class="hljs-title function_">match</span>(<span class="hljs-regexp">/\p{RGI_Emoji}/g</span>v)</span></code>
+<code>[ '🙂', '😵‍💫' ]</code>
+</pre>
+<p>More information: <a href="ch_regexps.html#regexp-flag-unicode-sets">“Flag <code>/v</code>: limited support for multi-code-point grapheme clusters<span> <sup>ES2024</sup></span>” (§46.11.4)</a>.</p>
+<h3 id="quickref-string"><a class="heading-id-link" href="#quickref-string">22.8 Quick reference: Strings</a></h3>
+<h4 id="converting-to-string"><a class="heading-id-link" href="#converting-to-string">22.8.1 Converting to string</a></h4>
+<p><a href="#tbl:converting-to-string">Table 22.1</a> describes how various values are converted to strings.</p>
+<figure id="tbl:converting-to-string" class="float">
+  <table class="framed">
+    <style>
+      th:nth-child(1), td:nth-child(1) {
+        text-align: left;
+      }
+      th:nth-child(2), td:nth-child(2) {
+        text-align: left;
+      }
+    </style>
+    <thead>
+      <tr>
+        <th><code>x</code></th><th><code>String(x)</code></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>undefined</code></td><td><code>'undefined'</code></td>
+      </tr>
+      <tr>
+        <td><code>null</code></td><td><code>'null'</code></td>
+      </tr>
+      <tr>
+        <td>boolean</td><td><code>false</code> → <code>'false'</code>, <code>true</code> → <code>'true'</code></td>
+      </tr>
+      <tr>
+        <td>number</td><td>Example: <code>123</code> → <code>'123'</code></td>
+      </tr>
+      <tr>
+        <td>bigint</td><td>Example: <code>123n</code> → <code>'123'</code></td>
+      </tr>
+      <tr>
+        <td>string</td><td><code>x</code> (input, unchanged)</td>
+      </tr>
+      <tr>
+        <td>symbol</td><td>Example: <code>Symbol('abc')</code> → <code>'Symbol(abc)'</code></td>
+      </tr>
+      <tr>
+        <td>object</td><td>Configurable via, e.g., <code>toString()</code></td>
+      </tr>
+    </tbody>
+  </table>
+  <figcaption>
+    <p><span class="float-label">Table 22.1:</span> Converting values to strings.</p>
+  </figcaption>
+</figure>
+<h4 id="numeric-values-of-text-atoms"><a class="heading-id-link" href="#numeric-values-of-text-atoms">22.8.2 Numeric values of text atoms</a></h4>
+<ul>
+  <li>
+    <strong>Char code</strong>: number representing a JavaScript character. JavaScript’s name for <em>Unicode code unit</em>.
+    <ul>
+      <li>
+        Size: 16 bits, unsigned
+      </li>
+      <li>
+        Convert number to string: <code>String.fromCharCode()</code> <sup>ES1</sup>
+      </li>
+      <li>
+        Convert string to number: string method <code>.charCodeAt()</code> <sup>ES1</sup>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <strong>Code point</strong>: number representing an atomic part of Unicode text.
+    <ul>
+      <li>
+        Size: 21 bits, unsigned (17 planes, 16 bits each)
+      </li>
+      <li>
+        Convert number to string: <code>String.fromCodePoint()</code> <sup>ES6</sup>
+      </li>
+      <li>
+        Convert string to number: string method <code>.codePointAt()</code> <sup>ES6</sup>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h4 id="stringprototype-regular-expression-methods"><a class="heading-id-link" href="#stringprototype-regular-expression-methods">22.8.3 <code>String.prototype.*</code>: regular expression methods</a></h4>
+<p>The following methods are listed in <a href="ch_regexps.html#quickref-RegExp">the quick reference for regular expressions</a>:</p>
+<ul>
+  <li>
+    <code>String.prototype.match()</code>
+  </li>
+  <li>
+    <code>String.prototype.matchAll()</code>
+  </li>
+  <li>
+    <code>String.prototype.replace()</code>
+  </li>
+  <li>
+    <code>String.prototype.replaceAll()</code>
+  </li>
+  <li>
+    <code>String.prototype.search()</code>
+  </li>
+  <li>
+    <code>String.prototype.split()</code>
+  </li>
+</ul>
+<h4 id="stringprototype-finding-and-matching"><a class="heading-id-link" href="#stringprototype-finding-and-matching">22.8.4 <code>String.prototype.*</code>: finding and matching</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-String.prototype.startsWith">String.prototype.startsWith(searchString, startPos=0)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns <code>true</code> if <code>searchString</code> occurs in the string at index <code>startPos</code>. Returns <code>false</code> otherwise.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'.gitignore'</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'.'</span>)</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abcde'</span>.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'bc'</span>, <span class="hljs-number">1</span>)</span></code>
+<code>true</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.endsWith">String.prototype.endsWith(searchString, endPos=this.length)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns <code>true</code> if the string would end with <code>searchString</code> if its length were <code>endPos</code>. Returns <code>false</code> otherwise.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'poem.txt'</span>.<span class="hljs-title function_">endsWith</span>(<span class="hljs-string">'.txt'</span>)</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abcde'</span>.<span class="hljs-title function_">endsWith</span>(<span class="hljs-string">'cd'</span>, <span class="hljs-number">4</span>)</span></code>
+<code>true</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.includes">String.prototype.includes(searchString, startPos=0)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns <code>true</code> if the string contains the <code>searchString</code> and <code>false</code> otherwise. The search starts at <code>startPos</code>.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">includes</span>(<span class="hljs-string">'b'</span>)</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">includes</span>(<span class="hljs-string">'b'</span>, <span class="hljs-number">2</span>)</span></code>
+<code>false</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.indexOf">String.prototype.indexOf(searchString, minIndex=0)</code> <span class="ibox ibox-small" size="small">ES1</span></p>
+    <ul>
+      <li>
+        If <code>searchString</code> appears at <code>minIndex</code> or after: Return the lowest index where it is found. Otherwise: Return <code>-1</code>.
+      </li>
+    </ul>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'aaax'</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'aa'</span>, <span class="hljs-number">0</span>)</span></code>
+<code>0</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'aaax'</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'aa'</span>, <span class="hljs-number">1</span>)</span></code>
+<code>1</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'aaax'</span>.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'aa'</span>, <span class="hljs-number">2</span>)</span></code>
+<code>-1</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.lastIndexOf">String.prototype.lastIndexOf(searchString, maxIndex?)</code> <span class="ibox ibox-small" size="small">ES1</span></p>
+    <ul>
+      <li>
+        If <code>searchString</code> appears at <code>maxIndex</code> or before: Return the highest index where it is found. Otherwise: Return <code>-1</code>.
+      </li>
+      <li>
+        If <code>maxIndex</code> is missing, the search starts at <code>this.length - searchString.length</code> (assuming that <code>searchString</code> is shorter than <code>this</code>).
+      </li>
+    </ul>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'xaaa'</span>.<span class="hljs-title function_">lastIndexOf</span>(<span class="hljs-string">'aa'</span>, <span class="hljs-number">3</span>)</span></code>
+<code>2</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'xaaa'</span>.<span class="hljs-title function_">lastIndexOf</span>(<span class="hljs-string">'aa'</span>, <span class="hljs-number">2</span>)</span></code>
+<code>2</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'xaaa'</span>.<span class="hljs-title function_">lastIndexOf</span>(<span class="hljs-string">'aa'</span>, <span class="hljs-number">1</span>)</span></code>
+<code>1</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'xaaa'</span>.<span class="hljs-title function_">lastIndexOf</span>(<span class="hljs-string">'aa'</span>, <span class="hljs-number">0</span>)</span></code>
+<code>-1</code>
+</pre>
+  </li>
+</ul>
+<h4 id="stringprototype-extracting"><a class="heading-id-link" href="#stringprototype-extracting">22.8.5 <code>String.prototype.*</code>: extracting</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-String.prototype.slice">String.prototype.slice(start=0, end=this.length)</code> <span class="ibox ibox-small" size="small">ES3</span></p>
+    <p>Returns the substring of the string that starts at (including) index <code>start</code> and ends at (excluding) index <code>end</code>. If an index is negative, it is added to <code>.length</code> before it is used (<code>-1</code> becomes <code>this.length-1</code>, etc.).</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>, <span class="hljs-number">3</span>)</span></code>
+<code>'bc'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">slice</span>(<span class="hljs-number">1</span>)</span></code>
+<code>'bc'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">slice</span>(-<span class="hljs-number">2</span>)</span></code>
+<code>'bc'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.at">String.prototype.at(index: number)</code> <span class="ibox ibox-small" size="small">ES2022</span></p>
+    <ul>
+      <li>
+        Returns the JavaScript character at <code>index</code> as a string.
+      </li>
+      <li>
+        If the index is out of bounds, it returns <code>undefined</code>.
+      </li>
+      <li>
+        If <code>index</code> is negative, it is added to <code>.length</code> before it is used (<code>-1</code> becomes <code>this.length-1</code>, etc.).
+      </li>
+    </ul>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">at</span>(<span class="hljs-number">0</span>)</span></code>
+<code>'a'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">at</span>(-<span class="hljs-number">1</span>)</span></code>
+<code>'c'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.substring">String.prototype.substring(start, end=this.length)</code> <span class="ibox ibox-small" size="small">ES1</span></p>
+    <p>Use <code>.slice()</code> instead of this method. <code>.substring()</code> wasn’t implemented consistently in older engines and doesn’t support negative indices.</p>
+  </li>
+</ul>
+<h4 id="stringprototype-combining"><a class="heading-id-link" href="#stringprototype-combining">22.8.6 <code>String.prototype.*</code>: combining</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-String.prototype.concat">String.prototype.concat(...strings)</code> <span class="ibox ibox-small" size="small">ES3</span></p>
+    <p>Returns the concatenation of the string and <code>strings</code>. <code>'a'.concat('b')</code> is equivalent to  <code>'a'+'b'</code>. The latter is much more popular.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'ab'</span>.<span class="hljs-title function_">concat</span>(<span class="hljs-string">'cd'</span>, <span class="hljs-string">'ef'</span>, <span class="hljs-string">'gh'</span>)</span></code>
+<code>'abcdefgh'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.padEnd">String.prototype.padEnd(len, fillString=' ')</code> <span class="ibox ibox-small" size="small">ES2017</span></p>
+    <p>Appends (fragments of) <code>fillString</code> to the string until it has the desired length <code>len</code>. If it already has or exceeds <code>len</code>, then it is returned without any changes.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'#'</span>.<span class="hljs-title function_">padEnd</span>(<span class="hljs-number">2</span>)</span></code>
+<code>'# '</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">padEnd</span>(<span class="hljs-number">2</span>)</span></code>
+<code>'abc'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'#'</span>.<span class="hljs-title function_">padEnd</span>(<span class="hljs-number">5</span>, <span class="hljs-string">'abc'</span>)</span></code>
+<code>'#abca'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.padStart">String.prototype.padStart(len, fillString=' ')</code> <span class="ibox ibox-small" size="small">ES2017</span></p>
+    <p>Prepends (fragments of) <code>fillString</code> to the string until it has the desired length <code>len</code>. If it already has or exceeds <code>len</code>, then it is returned without any changes.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'#'</span>.<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>)</span></code>
+<code>' #'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'abc'</span>.<span class="hljs-title function_">padStart</span>(<span class="hljs-number">2</span>)</span></code>
+<code>'abc'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'#'</span>.<span class="hljs-title function_">padStart</span>(<span class="hljs-number">5</span>, <span class="hljs-string">'abc'</span>)</span></code>
+<code>'abca#'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.repeat">String.prototype.repeat(count=0)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns the string, concatenated <code>count</code> times.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'*'</span>.<span class="hljs-title function_">repeat</span>()</span></code>
+<code>''</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'*'</span>.<span class="hljs-title function_">repeat</span>(<span class="hljs-number">3</span>)</span></code>
+<code>'***'</code>
+</pre>
+  </li>
+</ul>
+<h4 id="stringprototype-transforming"><a class="heading-id-link" href="#stringprototype-transforming">22.8.7 <code>String.prototype.*</code>: transforming</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-String.prototype.toUpperCase">String.prototype.toUpperCase()</code> <span class="ibox ibox-small" size="small">ES1</span></p>
+    <p>Returns a copy of the string in which all lowercase alphabetic characters are converted to uppercase. How well that works for various alphabets, depends on the JavaScript engine.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'-a2b-'</span>.<span class="hljs-title function_">toUpperCase</span>()</span></code>
+<code>'-A2B-'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'αβγ'</span>.<span class="hljs-title function_">toUpperCase</span>()</span></code>
+<code>'ΑΒΓ'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.toLowerCase">String.prototype.toLowerCase()</code> <span class="ibox ibox-small" size="small">ES1</span></p>
+    <p>Returns a copy of the string in which all uppercase alphabetic characters are converted to lowercase. How well that works for various alphabets, depends on the JavaScript engine.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'-A2B-'</span>.<span class="hljs-title function_">toLowerCase</span>()</span></code>
+<code>'-a2b-'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'ΑΒΓ'</span>.<span class="hljs-title function_">toLowerCase</span>()</span></code>
+<code>'αβγ'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.trim">String.prototype.trim()</code> <span class="ibox ibox-small" size="small">ES5</span></p>
+    <p>Returns a copy of the string in which all leading and trailing whitespace (spaces, tabs, line terminators, etc.) is gone.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'\r\n#\t  '</span>.<span class="hljs-title function_">trim</span>()</span></code>
+<code>'#'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'  abc  '</span>.<span class="hljs-title function_">trim</span>()</span></code>
+<code>'abc'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.trimStart">String.prototype.trimStart()</code> <span class="ibox ibox-small" size="small">ES2019</span></p>
+    <p>Similar to <code>.trim()</code> but only the beginning of the string is trimmed:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'  abc  '</span>.<span class="hljs-title function_">trimStart</span>()</span></code>
+<code>'abc  '</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.trimEnd">String.prototype.trimEnd()</code> <span class="ibox ibox-small" size="small">ES2019</span></p>
+    <p>Similar to <code>.trim()</code> but only the end of the string is trimmed:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'  abc  '</span>.<span class="hljs-title function_">trimEnd</span>()</span></code>
+<code>'  abc'</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.normalize">String.prototype.normalize(form = 'NFC')</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <ul>
+      <li>
+        Normalizes the string according to <a href="https://unicode.org/reports/tr15/">the Unicode Normalization Forms</a>.
+      </li>
+      <li>
+        Values of <code>form</code>: <code>'NFC', 'NFD', 'NFKC', 'NFKD'</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.isWellFormed">String.prototype.isWellFormed()</code> <span class="ibox ibox-small" size="small">ES2024</span></p>
+    <p>Returns <code>true</code> if a string is ill-formed and contains <em>lone surrogates</em> (see <a href="#qref-String.prototype.toWellFormed"><code>.toWellFormed()</code></a> for more information). Otherwise, it returns <code>false</code>.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">split</span>(<span class="hljs-string">''</span>) <span class="hljs-comment">// split into code units</span></span></code>
+<code>[ '\uD83D', '\uDE42' ]</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'\uD83D\uDE42'</span>.<span class="hljs-title function_">isWellFormed</span>()</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'\uD83D\uDE42\uD83D'</span>.<span class="hljs-title function_">isWellFormed</span>() <span class="hljs-comment">// lone surrogate 0xD83D</span></span></code>
+<code>false</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-String.prototype.toWellFormed">String.prototype.toWellFormed()</code> <span class="ibox ibox-small" size="small">ES2024</span></p>
+    <p>Each JavaScript string character is a <a href="ch_unicode.html#utf-16">UTF-16 code unit</a>. One code point is encoded as either one UTF-16 code unit or two UTF-16 code unit. In the latter case, the two code units are called <em>leading surrogate</em> and <em>trailing surrogate</em>. A surrogate without its partner is called a <em>lone surrogate</em>. A string with one or more lone surrogates is <em>ill-formed</em>.</p>
+    <p><code>.toWellFormed()</code> converts an ill-formed string to a well-formed one by replacing each lone surrogate with code point 0xFFFD (“replacement character”). That character is often displayed as a � (a black rhombus with a white question mark). It is located in the <em>Specials</em> Unicode block of characters, at the very end of the <em>Basic Multilingual Plane</em>. <a href="https://en.wikipedia.org/wiki/Specials_%28Unicode_block%29#Replacement_character">This is what Wikipedia says about the replacement character</a>: “It is used to indicate problems when a system is unable to render a stream of data to correct symbols.”</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">split</span>(<span class="hljs-string">''</span>), <span class="hljs-comment">// split into code units</span></code>
+<code>  [<span class="hljs-string">'\uD83D'</span>, <span class="hljs-string">'\uDE42'</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>   <span class="hljs-comment">// 0xD83D is a lone surrogate</span></code>
+<code>  <span class="hljs-string">'\uD83D\uDE42\uD83D'</span>.<span class="hljs-title function_">toWellFormed</span>().<span class="hljs-title function_">split</span>(<span class="hljs-string">''</span>),</code>
+<code>  [<span class="hljs-string">'\uD83D'</span>, <span class="hljs-string">'\uDE42'</span>, <span class="hljs-string">'\uFFFD'</span>]</code>
+<code>);</code>
+</pre>
+  </li>
+</ul>
+<h4 id="sources-of-this-quick-reference"><a class="heading-id-link" href="#sources-of-this-quick-reference">22.8.8 Sources of this quick reference</a></h4>
+<ul>
+  <li>
+    <a href="https://tc39.es/ecma262/">ECMAScript language specification</a>
+  </li>
+  <li>
+    <a href="https://github.com/microsoft/TypeScript/tree/main/src/lib/">TypeScript’s built-in typings</a>
+  </li>
+  <li>
+    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">MDN web docs for JavaScript</a>
+  </li>
+</ul>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Using string methods</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/strings/remove_extension_test.mjs</code></p>
+</div>
+
+    
+      
+</body>
+</html>
