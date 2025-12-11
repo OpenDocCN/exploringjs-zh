@@ -1,0 +1,286 @@
+- en: 44 Async functions ES2017
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_async-functions.html](https://exploringjs.com/js/book/ch_async-functions.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[44.1 Async functions: the basics](#async-functions-the-basics)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.1.1 The `await` operator makes Promises synchronous](#await-operator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.1.2 Returning a value from an async function resolves the function’s result](#async-function-return)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.1.3 Asynchronous callable entities](#async-callables)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.2 What values can be used with `await`?](#what-values-can-be-used-with-await)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.2.1 Awaiting fulfilled Promises](#awaiting-fulfilled-promises)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.2.2 Awaiting rejected Promises](#awaiting-rejected-promises)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.2.3 Awaiting non-Promise values](#awaiting-nonpromise-values)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.3 Where can `await` be used?](#where-can-await-be-used)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.3.1 Using `await` at the top levels of modules ^(ES2022)](#using-await-at-the-top-levels-of-modules-es2022)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.3.2 Awaiting is shallow](#awaiting-is-shallow)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.3.3 Example: `.map()` with an async function as a callback](#map-with-async-callback)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.4 `return` in async functions](#return-in-async-functions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.4.1 The result of an async function is always a Promise](#the-result-of-an-async-function-is-always-a-promise)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.4.2 Returning a Promise resolves the result Promise](#returning-a-promise-resolves-the-result-promise)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.5 Async functions start synchronously, settle asynchronously](#async-funcs-start-sync-settle-async)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.6 Tips for using async functions](#tips-for-using-async-functions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.6.1 We don’t need `await` if we “fire and forget”](#fire-and-forget-await)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.6.2 It can make sense to `await` and ignore the result](#it-can-make-sense-to-await-and-ignore-the-result)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.6.3 The pros and cons of `return await`](#return-await)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.7 Concurrency and `await` (advanced)](#concurrency-and-await)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.7.1 `await`: running Promise-based functions sequentially](#await-sequentially)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[44.7.2 `await`: running Promise-based functions concurrently](#await-concurrently)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '*Async functions* provide better syntax for code that uses Promises. Promises
+    are therefore required knowledge for understanding async functions. They are explained
+    in [the previous chapter](ch_promises.html#ch_promises).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[44.1 Async functions: the basics](#async-functions-the-basics)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider the following async function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Two keywords are important:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The keyword `async` before `function` means that this is an async function.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The `await` operator is applied to Promises and either extracts fulfillment
+    values or throws rejection values. More on it soon.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The previous, rather synchronous-looking code is equivalent to the following
+    code that uses Promises directly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Both `fetchJsonAsync()` and `fetchJsonViaPromises()` are called in exactly
+    the same way – e.g., like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **Async functions
+    are as Promise-based as functions that use Promises directly**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: From the outside, it is virtually impossible to tell the difference between
+    an async function and a function that returns a Promise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[44.1.1 The `await` operator makes Promises synchronous](#await-operator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Inside the body of an async function, we write Promise-based code as if it
+    were synchronous. We only need to apply the `await` operator whenever a value
+    is a Promise. That operator pauses the async function and resumes it once the
+    Promise is settled:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If the Promise is fulfilled, `await` returns the fulfillment value.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: If the Promise is rejected, `await` throws the rejection value.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[44.1.2 Returning a value from an async function resolves the function’s result](#async-function-return)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The result of an async function is always a Promise:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Any value that is returned (explicitly or implicitly) is used to resolve that
+    Promise:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Any exception that is thrown is used to reject the Promise:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[44.1.3 Asynchronous callable entities](#async-callables)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: JavaScript has the following async versions of synchronous callable entities.
+    Their roles are always either real function or method.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]` `// Async arrow function` `const func3 = async () => {};`  [PRE8] [PRE9]'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10][PRE11]js[PRE12] #### [44.4.2 Returning a Promise resolves the result
+    Promise](#returning-a-promise-resolves-the-result-promise)    If we return a Promise
+    `q` then it resolves the result Promise `p` of the async function: `p` adopts
+    the state of `q` (`q` basically replaces `p`). Resolving never nests Promises.    Returning
+    a fulfilled Promise fulfills the result Promise:    [PRE13]    Returning a rejected
+    Promise has the same effect as throwing an exception:    [PRE14]    The behavior
+    of `return` is similar to how a Promise `q` is treated in the following situations:    *   `return
+    q` inside `promise.then((result) => { ··· })` *   `return q` inside `promise.catch((err)
+    => { ··· })` *   `resolve(q)` inside `new Promise((resolve, reject) => { ··· })`    ###
+    [44.5 Async functions start synchronously, settle asynchronously](#async-funcs-start-sync-settle-async)    Async
+    functions are executed as follows:    *   The Promise `resultPromise` for the
+    result is created when the async function is started. *   Then the body is executed.
+    There are two ways in which execution can leave the body:     *   **A permanent
+    exit** happens when `resultPromise` is settled:         *   `return` resolves
+    `resultPromise`.         *   `throw` rejects `resultPromise`.     *   **A temporary
+    exit** happens when there is an `await` whose operand is a Promise `p`:         *   The
+    async function is paused and execution leaves it (similarly to how `yield` works
+    in [sync generators](ch_sync-generators.html#ch_sync-generators)).         *   It
+    is resumed asynchronously (in a new task) once `p` is settled. *   Promise `resultPromise`
+    is returned after the first (permanent or temporary) exit.    Note that the notification
+    of the settlement of `resultPromise` happens asynchronously, as is always the
+    case with Promises.    The following code demonstrates that an async function
+    is started synchronously (line A), then the current task finishes (line C), then
+    the result Promise is settled – asynchronously (line B).    [PRE15]    Output:    [PRE16]    ###
+    [44.6 Tips for using async functions](#tips-for-using-async-functions)    ####
+    [44.6.1 We don’t need `await` if we “fire and forget”](#fire-and-forget-await)    `await`
+    is not required when working with a Promise-based function; we only need it if
+    we want to pause and wait until the returned Promise is settled. If we only want
+    to start an asynchronous operation, then we don’t need it:    [PRE17]    In this
+    code, we don’t await `.write()` because we don’t care when it is finished. We
+    do, however, want to wait until `.close()` is done.    Note: Each invocation of
+    `.write()` starts synchronously. That prevents race conditions.    #### [44.6.2 It
+    can make sense to `await` and ignore the result](#it-can-make-sense-to-await-and-ignore-the-result)    It
+    can occasionally make sense to use `await`, even if we ignore its result – for
+    example:    [PRE18]    Here, we are using `await` to join a long-running asynchronous
+    operation. That ensures that the logging really happens *after* that operation
+    is done.    #### [44.6.3 The pros and cons of `return await`](#return-await)    If
+    we await a Promise before returning it, we unwrap it before immediately wrapping
+    it again:    [PRE19]    Since `return` resolves the result Promise of `f()`, the
+    following code is simpler and equivalent:    [PRE20]    There are, however, three
+    reasons to stick with `return await`:    *   The code fragment is easier to move
+    around. *   We don’t depend on a feature of Promises that is slightly obscure:
+    resolving unwraps Promises. *   It behaves better inside a `try-catch` statement
+    (see below).    Let’s explore the last reason. If we await the rejected Promise
+    in line A before returning it, it causes an exception:    [PRE21]    If, on the
+    other hand, we return without `await`, no exception is thrown and the result Promise
+    of `f()` adopts the state of the rejected Promise:    [PRE22]    ### [44.7 Concurrency
+    and `await` (advanced)](#concurrency-and-await)    In the next two subsections,
+    we’ll use the helper function `returnAfterPause()`:    [PRE23]   [PRE24] async
+    function sequentialAwait() {  const result1 = await returnAfterPause(''first'');  assert.equal(result1,
+    ''first'');   const result2 = await returnAfterPause(''second'');  assert.equal(result2,
+    ''second''); }  [PRE25] START first END first START second END second  [PRE26]
+    async function concurrentPromiseAll() {  const result = await Promise.all([  returnAfterPause(''first''),  returnAfterPause(''second''),  ]);  assert.deepEqual(result,
+    [''first'', ''second'']); }  [PRE27] START first START second END first END second  [PRE28]
+    async function concurrentAwait() {  const resultPromise1 = returnAfterPause(''first'');  const
+    resultPromise2 = returnAfterPause(''second'');   assert.equal(await resultPromise1,
+    ''first'');  assert.equal(await resultPromise2, ''second''); }  [PRE29] START
+    first START second END first END second  [PRE30]` [PRE31][PRE32][PRE33][PRE34]``````'
+  prefs: []
+  type: TYPE_NORMAL

@@ -1,0 +1,422 @@
+- en: 48 Creating and parsing JSON (JSON)
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_json.html](https://exploringjs.com/js/book/ch_json.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[48.1 The discovery and standardization of JSON](#the-discovery-and-standardization-of-json)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.1.1 JSON’s grammar is frozen](#json-grammar-is-frozen)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.2 JSON syntax](#json-syntax)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.3 The `JSON` API](#json-api)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.3.1 `JSON.stringify(data, replacer?, space?)`](#JSON.stringify)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.3.2 `JSON.parse(text, reviver?)`](#JSON.parse)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.3.3 Example: converting to and from JSON](#example-converting-to-and-from-json)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.4 Customizing stringification and parsing (advanced)](#json-replacers-revivers)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.4.1 `.stringfy()`: specifying which properties of objects to stringify](#stringfy-specifying-which-properties-of-objects-to-stringify)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.4.2 `.stringify()` and `.parse()`: value visitors](#json-value-visitors)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.4.3 Example: visiting values](#example-visiting-values)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.4.4 Example: stringifying unsupported values](#example-stringifying-unsupported-values)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.4.5 Example: parsing unsupported values](#example-parsing-unsupported-values)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.5 FAQ](#faq)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[48.5.1 Why doesn’t JSON support comments?](#why-doesnt-json-support-comments)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'JSON (“JavaScript Object Notation”) is a storage format that uses text to encode
+    data. Its syntax is a subset of JavaScript expressions. As an example, consider
+    the following text, stored in a file `jane.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: JavaScript has the global namespace object `JSON` that provides methods for
+    creating and parsing JSON.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[48.1 The discovery and standardization of JSON](#the-discovery-and-standardization-of-json)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A specification for JSON was published by Douglas Crockford in 2001, at [`json.org`](http://json.org/).
+    He explains:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: I discovered JSON. I do not claim to have invented JSON because it already existed
+    in nature. What I did was I found it, I named it, I described how it was useful.
+    I don't claim to be the first person to have discovered it; I know that there
+    are other people who discovered it at least a year before I did. The earliest
+    occurrence I've found was, there was someone at Netscape who was using JavaScript
+    array literals for doing data communication as early as 1996, which was at least
+    five years before I stumbled onto the idea.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'Later, JSON was standardized as [ECMA-404](https://ecma-international.org/publications-and-standards/standards/ecma-404/):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '1st edition: October 2013'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '2nd edition: December 2017'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[48.1.1 JSON’s grammar is frozen](#json-grammar-is-frozen)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Quoting the ECMA-404 standard:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Because it is so simple, it is not expected that the JSON grammar will ever
+    change. This gives JSON, as a foundational notation, tremendous stability.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Therefore, JSON will never get improvements such as optional trailing commas,
+    comments, or unquoted keys – independently of whether or not they are considered
+    desirable. However, that still leaves room for creating supersets of JSON that
+    compile to plain JSON.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[48.2 JSON syntax](#json-syntax)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'JSON consists of the following parts of JavaScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Compound:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Object literals:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Property keys are double-quoted strings.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Property values are JSON values.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: No trailing commas are allowed.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Array literals:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Elements are JSON values.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: No holes or trailing commas are allowed.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Atomic:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`null` (but not `undefined`)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Booleans
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Numbers (excluding `NaN`, `+Infinity`, `-Infinity`)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Strings (must be double-quoted)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As a consequence, we can’t (directly) represent cyclic structures in JSON.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[48.3 The `JSON` API](#json-api)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The global namespace object `JSON` contains two methods for working with JSON
+    data:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`JSON.stringify(data, replacer?, space?)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`JSON.parse(text, reviver?)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next sections explain how those methods work.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[48.3.1 `JSON.stringify(data, replacer?, space?)`](#JSON.stringify)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: This method converts JavaScript `data` to a JSON string. In this section, we
+    ignore the parameter `replacer`; it is explained in [“Customizing stringification
+    and parsing (advanced)” (§48.4)](#json-replacers-revivers).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[48.3.1.1 Result: a single line of text](#result-a-single-line-of-text)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we only provide the first argument, `.stringify()` returns a single line
+    of text:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[48.3.1.2 Result: a tree of indented lines](#result-a-tree-of-indented-lines)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If you provide a non-negative integer for `space`, then `.stringify()` returns
+    one or more lines and indents by `space` spaces per level of nesting:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[48.3.1.3 Details on how data is converted to JSON](#json-stringify-details)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '**Primitive values:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Supported primitive values are stringified as expected:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Unsupported numbers: the string `''null''`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Bigints (no matter where they appear): `TypeError`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Other unsupported primitive values are not stringified; they produce the result
+    `undefined`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '**Objects:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If an object has a method `.toJSON()`, then the result of that method is stringified:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Dates have a method `.toJSON()` that returns a string:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Wrapped primitive values are unwrapped and stringified:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'An unsupported `undefined`-producing value is stringified as `null` inside
+    an Array:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'All other objects – except for functions – are stringified as object literals.
+    If a property has an unsupported `undefined`-producing value, it is omitted:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Functions are not stringified:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '**Circular data:** `JSON.stringify()` throws an exception if data is circular:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[48.3.2 `JSON.parse(text, reviver?)`](#JSON.parse)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: This method converts a JSON `text` to a JavaScript value. In this section, we
+    ignore the parameter `reviver`; it is explained in [“Customizing stringification
+    and parsing (advanced)” (§48.4)](#json-replacers-revivers).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[48.3.3 Example: converting to and from JSON](#example-converting-to-and-from-json)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The following class implements conversions from (line A) and to (line B) JSON.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE16]     assert.deepEqual(      Point.fromJson(JSON.parse(''{"x":3,"y":5}'')),      new
+    Point(3, 5) );          [PRE17]     assert.equal(      JSON.stringify(new Point(3,
+    5)),      ''{"x":3,"y":5}'' );          [PRE18] const obj = {  a: 1,  b: {  c:
+    2,  d: 3,  } }; assert.equal(  JSON.stringify(obj, [''b'', ''c'']),  ''{"b":{"c":2}}'');  [PRE19]
+    type ValueVisitor = (key: string, value: any) => any;  [PRE20] const log = [];
+    function valueVisitor(key, value) {  log.push({this: this, key, value});  return
+    value; // no change }  `const root = {`  `a: 1,`  `b: {`  `c: 2,`  `d: 3,`  `}`
+    `};` `JSON.stringify(root, valueVisitor);` `assert.deepEqual(log, [`  `{ this:
+    { '''': root }, key: '''',  value: root   },`  `{ this: root        , key: ''a'',
+    value: 1      },`  `{ this: root        , key: ''b'', value: root.b },`  `{ this:
+    root.b      , key: ''c'', value: 2      },`  `{ this: root.b      , key: ''d'',
+    value: 3      },` `]);`  [PRE21]`As we can see, the replacer of `JSON.stringify()`
+    visits values top-down (root first, leaves last). The rationale for going in that
+    direction is that we are converting JavaScript values to JSON values. And a single
+    JavaScript object may be expanded into a tree of JSON-compatible values.    In
+    contrast, the reviver of `JSON.parse()` visits values bottom-up (leaves first,
+    root last). The rationale for going in that direction is that we are assembling
+    JSON values into JavaScript values. Therefore, we need to convert the parts before
+    we can convert the whole.    #### [48.4.4 Example: stringifying unsupported values](#example-stringifying-unsupported-values)    `JSON.stringify()`
+    has no special support for regular expression objects – it stringifies them as
+    if they were plain objects:    [PRE22]    We can fix that via a replacer:    [PRE23]    ####
+    [48.4.5 Example: parsing unsupported values](#example-parsing-unsupported-values)    To
+    `JSON.parse()` the result from the previous section, we need a reviver:    [PRE24]    ###
+    [48.5 FAQ](#faq)    #### [48.5.1 Why doesn’t JSON support comments?](#why-doesnt-json-support-comments)    Douglas
+    Crockford explains why in [a Google+ post from 1 May 2012](https://web.archive.org/web/20190308024153/https://plus.google.com/+DouglasCrockfordEsq/posts/RK8qyGVaGSr):    >
+    I removed comments from JSON because I saw people were using them to hold parsing
+    directives, a practice which would have destroyed interoperability. I know that
+    the lack of comments makes some people sad, but it shouldn''t. >  > Suppose you
+    are using JSON to keep configuration files, which you would like to annotate.
+    Go ahead and insert all the comments you like. Then pipe it through JSMin [a minifier
+    for JavaScript] before handing it to your JSON parser.[PRE25]``'
+  prefs: []
+  type: TYPE_NORMAL

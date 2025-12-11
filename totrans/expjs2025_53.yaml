@@ -1,0 +1,194 @@
+- en: 45 Asynchronous iteration ES2018
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_async-iteration.html](https://exploringjs.com/js/book/ch_async-iteration.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[45.1 Basic asynchronous iteration](#basic-asynchronous-iteration)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.1.1 Protocol: async iteration](#async-iteration-protocol)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.1.2 Using async iteration directly](#using-async-iteration-directly)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.1.3 Using async iteration via `for-await-of`](#for-await-of)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.2 Asynchronous generators](#async-generators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.2.1 Example: creating an async iterable via an async generator](#example-creating-an-async-iterable-via-an-async-generator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.2.2 Example: converting a sync iterable to an async iterable](#example-converting-a-sync-iterable-to-an-async-iterable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.2.3 Example: converting an async iterable to an Array](#asyncIterableToArray)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.2.4 Example: transforming an async iterable](#example-transforming-an-async-iterable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.2.5 Example: mapping over asynchronous iterables](#example-mapping-over-asynchronous-iterables)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.3 Async iteration over Node.js streams](#async-iteration-over-nodejs-streams)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.3.1 Node.js streams: async via callbacks (push)](#nodejs-streams-async-via-callbacks-push)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.3.2 Node.js streams: async via async iteration (pull)](#nodejs-streams-async-via-async-iteration-pull)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[45.3.3 Example: from chunks to lines](#example-from-chunks-to-lines)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '![Icon “reading”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **Required
+    knowledge**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For this chapter, you should be familiar with:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Promises](ch_promises.html#ch_promises)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Async functions](ch_async-functions.html#ch_async-functions)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[45.1 Basic asynchronous iteration](#basic-asynchronous-iteration)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[45.1.1 Protocol: async iteration](#async-iteration-protocol)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To understand how asynchronous iteration works, let’s first revisit [synchronous
+    iteration](ch_sync-iteration.html#ch_sync-iteration). It comprises the following
+    interfaces:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: An `Iterable` is a data structure whose contents can be accessed via iteration.
+    It is a factory for iterators.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An `Iterator` is a factory for iteration results that we retrieve by calling
+    the method `.next()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Each `IterationResult` contains the iterated `.value` and a boolean `.done`
+    that is `true` after the last element and `false` before.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For the protocol for asynchronous iteration, we only want to change one thing:
+    the values produced by `.next()` should be delivered asynchronously. There are
+    two conceivable options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The `.value` could contain a `Promise<T>`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.next()` could return `Promise<IteratorResult<T>>`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In other words, the question is whether to wrap just values or whole iterator
+    results in Promises.
+  prefs: []
+  type: TYPE_NORMAL
+- en: It has to be the latter because when `.next()` returns a result, it starts an
+    asynchronous computation. Whether or not that computation produces a value or
+    signals the end of the iteration can only be determined after it is finished.
+    Therefore, both `.done` and `.value` need to be wrapped in a Promise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The interfaces for async iteration look as follows.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: The only difference to the synchronous interfaces is the return type of `.next()`
+    (line A).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[45.1.2 Using async iteration directly](#using-async-iteration-directly)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code uses the asynchronous iteration protocol directly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE3] In line A, we create an asynchronous iterable over the value `''a''`
+    and `''b''`. We’ll see an implementation of `syncToAsyncIterable()` later.    We
+    call `.next()` in line B, line C and line D. Each time, we use `.then()` to unwrap
+    the Promise and `assert.deepEqual()` to check the unwrapped value.    We can simplify
+    this code if we use an async function. Now we unwrap Promises via `await` and
+    the code looks almost like we are doing synchronous iteration:    [PRE4]js    ####
+    [45.1.3 Using async iteration via `for-await-of`](#for-await-of)    The asynchronous
+    iteration protocol is not meant to be used directly. One of the language constructs
+    that supports it is the `for-await-of` loop, which is an asynchronous version
+    of the `for-of` loop. It can be used in async functions and *async generators*
+    (which are introduced later in this chapter). This is an example of `for-await-of`
+    in use:    [PRE5]js    Output:    [PRE6]js    `for-await-of` is relatively flexible.
+    In addition to asynchronous iterables, it also supports synchronous iterables:    [PRE7]js    Output:    [PRE8]js    And
+    it supports synchronous iterables over values that are wrapped in Promises:    [PRE9]js    Output:    [PRE10]js    ![Icon
+    “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercises: Asynchronous
+    iteration**    *   Converting an async iterable to an Array: `exercises/async-iteration/async_iterable_to_array_test.mjs`     *   Warning:
+    We’ll soon see the solution for this exercise in this chapter. *   Implementing
+    an asynchronously iterable queue: `exercises/async-iteration/async-iter-queue_test.mjs`    ###
+    [45.2 Asynchronous generators](#async-generators)    Asynchronous generators are
+    very similar to synchronous generators; especially the operators `yield` and `yield*`.
+    Therefore, those are not explained here. See [the chapter on synchronous generators](ch_sync-generators.html#ch_sync-generators)
+    for more information.    An asynchronous generator is two things at the same time:    *   An
+    async function (input): We can use `await` and `for-await-of` to retrieve data.
+    *   A generator that returns an asynchronous iterable (output): We can use `yield`
+    and `yield*` to produce data.    Therefore, the input and output of an asynchronous
+    generator are:    *   The input can be:     *   synchronous (single values, sync
+    iterables)     *   asynchronous (Promises, async iterables) *   The output is
+    an asynchronous iterator (that is also iterable).    This looks as follows:    [PRE11]js   [PRE12]`'
+  prefs: []
+  type: TYPE_NORMAL

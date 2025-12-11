@@ -1,0 +1,154 @@
+- en: 33 Synchronous generators ES6 (advanced)
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_sync-generators.html](https://exploringjs.com/js/book/ch_sync-generators.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[33.1 What are synchronous generators?](#what-are-sync-generators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.1.1 Generator functions return iterators and fill them via `yield`](#generators-return-iterators)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.1.2 `yield` pauses a generator function](#yield-pauses-a-generator-function)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.1.3 Why does `yield` pause execution?](#why-does-yield-pause-execution)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.1.4 Example: Mapping over iterables](#example-mapping-over-iterables)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.2 Calling generators from generators (advanced)](#calling-generators-from-generators-advanced)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.2.1 Calling generators via `yield*`](#yield-star)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.2.2 Example: Iterating over a tree](#example-iterating-over-a-tree)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.3 Use case for generators: reusing traversals](#reusing-traversals)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.3.1 Background: external iteration vs. internal iteration](#external-iteration-internal-iteration)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.3.2 The traversal to reuse](#the-traversal-to-reuse)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.3.3 Example: internal iteration (push)](#internal-iteration-example)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.3.4 External iteration (pull)](#external-iteration-example)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.4 Advanced features of generators](#advanced-features-of-generators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[33.1 What are synchronous generators?](#what-are-sync-generators)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Synchronous generators are special versions of function definitions and method
+    definitions that help with processing synchronous iterables and synchronous iterators.
+    They always return synchronous iterators (which are iterable):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0] `// Generator method definition in an object literal` `const obj = {`  `*
+    generatorMethod() {`  `// ···`  `}` `};`  `` `// Generator method definition in
+    a class definition` `// (class declaration or class expression)` `class MyClass
+    {`  `* generatorMethod() {`  `// ···`  `}` `}` `` [PRE1]'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2][PRE3]``js[PRE4]`` [PRE5]`` Output:    [PRE6]    ![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Creating an iterator over a range of integers**    `exercises/sync-generators/integer-range_test.mjs`    ####
+    [33.1.2 `yield` pauses a generator function](#yield-pauses-a-generator-function)    Using
+    a generator function involves the following steps:    *   Function-calling it
+    returns an iterator `iter`. *   Iterating over `iter` repeatedly invokes `iter.next()`.
+    Each time, we jump into the body of the generator function until there is a `yield`
+    that returns a value.    Therefore, `yield` does more than just add values to
+    iterators – it also pauses and exits the generator function:    *   Like `return`,
+    a `yield` exits the body of the function and returns a value (to/via `.next()`).
+    *   Unlike `return`, if we repeat the invocation (of `.next()`), execution resumes
+    directly after the `yield`.    Let’s examine what that means via the following
+    generator function.    [PRE7]    In order to use `genFunc2()`, we must first create
+    the iterator/iterable `iter`. `genFunc2()` is now paused “before” its body.    [PRE8]    `iter`
+    implements [the iteration protocol](ch_sync-iteration.html#ch_sync-iteration).
+    Therefore, we control the execution of `genFunc2()` via `iter.next()`. Calling
+    that method resumes the paused `genFunc2()` and executes it until there is a `yield`.
+    Then execution pauses and `.next()` returns the operand of the `yield`:    [PRE9]    Note
+    that the yielded value `''a''` is wrapped in an object, which is how iterators
+    always deliver their values.    We call `iter.next()` again and execution continues
+    where we previously paused. Once we encounter the second `yield`, `genFunc2()`
+    is paused and `.next()` returns the yielded value `''b''`.    [PRE10]    We call
+    `iter.next()` one more time and execution continues until it leaves the body of
+    `genFunc2()`:    [PRE11]    This time, property `.done` of the result of `.next()`
+    is `true`, which means that the iterator is finished.    #### [33.1.3 Why does
+    `yield` pause execution?](#why-does-yield-pause-execution)    What are the benefits
+    of `yield` pausing execution? Why doesn’t it simply work like the Array method
+    `.push()` and fill the iterator with values without pausing?    Due to pausing,
+    generators provide many of the features of *coroutines* (think processes that
+    are multitasked cooperatively). For example, when we ask for the next value of
+    an iterator, that value is computed *lazily* (on demand). The following two generator
+    functions demonstrate what that means.    [PRE12]   [PRE13]` Note that the `yield`
+    in `numberLines()` appears inside a `for-of` loop. `yield` can be used inside
+    loops, but not inside callbacks (more on that later).    Let’s combine both generators
+    to produce the iterator `numberedLines`:    [PRE14]    The key benefit of using
+    generators here is that everything works incrementally: via `numberedLines.next()`,
+    we ask `numberLines()` for only a single numbered line. In turn, it asks `genLines()`
+    for only a single unnumbered line.    This incrementalism continues to work if,
+    for example, `genLines()` reads its lines from a large text file: If we ask `numberLines()`
+    for a numbered line, we get one as soon as `genLines()` has read its first line
+    from the text file.    Without generators, `genLines()` would first read all lines
+    and return them. Then `numberLines()` would number all lines and return them.
+    We therefore have to wait much longer until we get the first numbered line.    ![Icon
+    “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise: Turning
+    a normal function into a generator**    `exercises/sync-generators/fib_seq_test.mjs`    ####
+    [33.1.4 Example: Mapping over iterables](#example-mapping-over-iterables)    The
+    following function `mapIter()` is similar to the Array method `.map()`, but it
+    returns an iterator, not an Array, and produces its results on demand.    [PRE15]   [PRE16]
+    ![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Filtering iterables**    `exercises/sync-generators/filter_iter_gen_test.mjs`    ###
+    [33.2 Calling generators from generators (advanced)](#calling-generators-from-generators-advanced)    ####
+    [33.2.1 Calling generators via `yield*`](#yield-star)    `yield` only works directly
+    inside generators – so far we haven’t seen a way of delegating yielding to another
+    function or method.    Let’s first examine what does *not* work: in the following
+    example, we’d like `compute()` to call `helper()`, so that the latter yields two
+    values for the former. Alas, a naive approach fails:    [PRE17]js    Why doesn’t
+    this work? The function call `helper()` returns an iterator, which we ignore.    What
+    we want is for `compute()` to yield everything that is yielded by `helper()`.
+    That’s what the `yield*` operator does:    [PRE18]js    In other words, the previous
+    `compute()` is roughly equivalent to:    [PRE19]js    Note that `yield*` works
+    with any iterable:    [PRE20]js    #### [33.2.2 Example: Iterating over a tree](#example-iterating-over-a-tree)    `yield*`
+    lets us make recursive calls in generators, which is useful when iterating over
+    recursive data structures such as trees. Take, for example, the following data
+    structure for binary trees.    [PRE21]js   [PRE22]`js [PRE23]js`` [PRE24]js[PRE25]````'
+  prefs: []
+  type: TYPE_NORMAL
