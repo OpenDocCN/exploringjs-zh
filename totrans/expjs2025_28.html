@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>24 Symbols ES6</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>24 Symbols ES6</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_symbols.html">https://exploringjs.com/js/book/ch_symbols.html</a></blockquote>
+
+        
+    
+    
+    
+<p><span id="index-entry-symbol"/></p>
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#nature-of-symbols">24.1 Symbols are primitive values with unique identities</a>
+      <ol>
+        <li>
+          <a href="#symbols-are-primitive-values">24.1.1 Symbols are primitive values</a>
+        </li>
+        <li>
+          <a href="#symbols-have-unique-identities-and-are-not-compared-by-value">24.1.2 Symbols have unique identities and are not compared by value</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#symbol-descriptions">24.2 The descriptions of symbols</a>
+    </li>
+    <li>
+      <a href="#use-cases-for-symbols">24.3 Use cases for symbols</a>
+      <ol>
+        <li>
+          <a href="#symbols-as-values-for-constants">24.3.1 Symbols as values for constants</a>
+        </li>
+        <li>
+          <a href="#symbols-as-unique-property-keys">24.3.2 Symbols as unique property keys</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#publicly-known-symbols">24.4 Publicly known symbols</a>
+    </li>
+    <li>
+      <a href="#converting-symbols">24.5 Converting symbols</a>
+    </li>
+  </ol>
+</nav>
+<h3 id="nature-of-symbols"><a class="heading-id-link" href="#nature-of-symbols">24.1 Symbols are primitive values with unique identities</a></h3>
+<p>Symbols are primitive values that are created via the factory function <code>Symbol()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> mySymbol = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'mySymbol'</span>);</code>
+</pre>
+<p>The parameter is optional and provides a description, which is mainly useful for debugging.</p>
+<h4 id="symbols-are-primitive-values"><a class="heading-id-link" href="#symbols-are-primitive-values">24.1.1 Symbols are primitive values</a></h4>
+<p>Symbols are primitive values:</p>
+<ul>
+  <li>
+    <p>They have to be categorized via <code>typeof</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> sym = <span class="hljs-title class_">Symbol</span>();</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-keyword">typeof</span> sym, <span class="hljs-string">'symbol'</span>);</code>
+</pre>
+  </li>
+  <li>
+    <p>They can be property keys in objects:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> obj = {</code>
+<code>  [sym]: <span class="hljs-number">123</span>,</code>
+<code>};</code>
+</pre>
+  </li>
+</ul>
+<h4 id="symbols-have-unique-identities-and-are-not-compared-by-value"><a class="heading-id-link" href="#symbols-have-unique-identities-and-are-not-compared-by-value">24.1.2 Symbols have unique identities and are not compared by value</a></h4>
+<p>Even though symbols are primitives, they are also like objects in that values created by <code>Symbol()</code> have unique identities and are not compared by value:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Symbol</span>() === <span class="hljs-title class_">Symbol</span>()</span></code>
+<code>false</code>
+</pre>
+<p>Prior to symbols, an object was the best choice if we needed a values that had a unique identity (was only equal to itself):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> string1 = <span class="hljs-string">'abc'</span>;</code>
+<code><span class="hljs-keyword">const</span> string2 = <span class="hljs-string">'abc'</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  string1 === string2, <span class="hljs-literal">true</span> <span class="hljs-comment">// not unique</span></code>
+<code>);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> object1 = {};</code>
+<code><span class="hljs-keyword">const</span> object2 = {};</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  object1 === object2, <span class="hljs-literal">false</span> <span class="hljs-comment">// unique</span></code>
+<code>);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> symbol1 = <span class="hljs-title class_">Symbol</span>();</code>
+<code><span class="hljs-keyword">const</span> symbol2 = <span class="hljs-title class_">Symbol</span>();</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  symbol1 === symbol2, <span class="hljs-literal">false</span> <span class="hljs-comment">// unique</span></code>
+<code>);</code>
+</pre>
+<h3 id="symbol-descriptions"><a class="heading-id-link" href="#symbol-descriptions">24.2 The descriptions of symbols</a></h3>
+<p>The parameter we pass to the symbol factory function provides a description for the created symbol:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> mySymbol = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'mySymbol'</span>);</code>
+</pre>
+<p>The description can be accessed in two ways.</p>
+<p>First, it is part of the string returned by <code>.toString()</code>:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(mySymbol.<span class="hljs-title function_">toString</span>(), <span class="hljs-string">'Symbol(mySymbol)'</span>);</code>
+</pre>
+<p>Second, since ES2019, we can retrieve the description via the property <code>.description</code>:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(mySymbol.<span class="hljs-property">description</span>, <span class="hljs-string">'mySymbol'</span>);</code>
+</pre>
+<h3 id="use-cases-for-symbols"><a class="heading-id-link" href="#use-cases-for-symbols">24.3 Use cases for symbols</a></h3>
+<p>The main use cases for symbols, are:</p>
+<ul>
+  <li>
+    Values for constants
+  </li>
+  <li>
+    Unique property keys
+  </li>
+</ul>
+<h4 id="symbols-as-values-for-constants"><a class="heading-id-link" href="#symbols-as-values-for-constants">24.3.1 Symbols as values for constants</a></h4>
+<p>Let’s assume you want to create constants representing the colors red, orange, yellow, green, blue, and violet. One simple way of doing so would be to use strings:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">COLOR_BLUE</span> = <span class="hljs-string">'Blue'</span>;</code>
+</pre>
+<p>On the plus side, logging that constant produces helpful output. On the minus side, there is a risk of mistaking an unrelated value for a color because two strings with the same content are considered equal:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">MOOD_BLUE</span> = <span class="hljs-string">'Blue'</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-variable constant_">COLOR_BLUE</span>, <span class="hljs-variable constant_">MOOD_BLUE</span>);</code>
+</pre>
+<p>We can fix that problem via symbols:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">COLOR_BLUE</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Blue'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">MOOD_BLUE</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Blue'</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">notEqual</span>(<span class="hljs-variable constant_">COLOR_BLUE</span>, <span class="hljs-variable constant_">MOOD_BLUE</span>);</code>
+</pre>
+<p>Let’s use symbol-valued constants to implement a function:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">COLOR_RED</span>    = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Red'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">COLOR_ORANGE</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Orange'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">COLOR_YELLOW</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Yellow'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">COLOR_GREEN</span>  = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Green'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">COLOR_BLUE</span>   = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Blue'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">COLOR_VIOLET</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Violet'</span>);</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getComplement</span>(<span class="hljs-params">color</span>) {</code>
+<code>  <span class="hljs-keyword">switch</span> (color) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-attr">COLOR_RED</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-variable constant_">COLOR_GREEN</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-attr">COLOR_ORANGE</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-variable constant_">COLOR_BLUE</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-attr">COLOR_YELLOW</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-variable constant_">COLOR_VIOLET</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-attr">COLOR_GREEN</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-variable constant_">COLOR_RED</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-attr">COLOR_BLUE</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-variable constant_">COLOR_ORANGE</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-attr">COLOR_VIOLET</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-variable constant_">COLOR_YELLOW</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Exception</span>(<span class="hljs-string">'Unknown color: '</span>+color);</code>
+<code>  }</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">getComplement</span>(<span class="hljs-variable constant_">COLOR_YELLOW</span>), <span class="hljs-variable constant_">COLOR_VIOLET</span>);</code>
+</pre>
+<h4 id="symbols-as-unique-property-keys"><a class="heading-id-link" href="#symbols-as-unique-property-keys">24.3.2 Symbols as unique property keys</a></h4>
+<p>The keys of properties (fields) in objects are used at two levels:</p>
+<ul>
+  <li>
+    <p>The program operates at a <em>base level</em>. The keys at that level reflect the <em>problem domain</em> – the area in which a program solves a problem – for example:</p>
+    <ul>
+      <li>
+        If a program manages employees, the property keys may be about job titles, salary categories, department IDs, etc.
+      </li>
+      <li>
+        If the program is a chess app, the property keys may be about chess pieces, chess boards, player colors, etc.
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>ECMAScript and many libraries operate at a <em>meta-level</em>. They manage data and provide services that are not part of the problem domain. – for example:</p>
+    <ul>
+      <li>
+        <p>The standard method <code>.toString()</code> is used by ECMAScript when creating a string representation of an object (line A):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> point = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-number">7</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-number">4</span>,</code>
+<code>  <span class="hljs-title function_">toString</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">`(<span class="hljs-subst">${<span class="hljs-variable language_">this</span>.x}</span>, <span class="hljs-subst">${<span class="hljs-variable language_">this</span>.y}</span>)`</span>;</span></code>
+<code><span class="hljs-params">  },</span></code>
+<code><span class="hljs-params">};</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-title class_">String</span>(point), <span class="hljs-string">'(7, 4)'</span>); <span class="hljs-comment">// (A)</span></span></code>
+</pre>
+        <p><code>.x</code> and <code>.y</code> are base-level properties – they are used to solve the problem of computing with points. <code>.toString()</code> is a meta-level property – it doesn’t have anything to do with the problem domain.</p>
+      </li>
+      <li>
+        <p>The standard ECMAScript method <code>.toJSON()</code> can be used to customize how an object is converted to </p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> point = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-number">7</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-number">4</span>,</code>
+<code>  <span class="hljs-title function_">toJSON</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> [<span class="hljs-variable language_">this</span>.<span class="hljs-property">x</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">y</span>];</span></code>
+<code><span class="hljs-params">  },</span></code>
+<code><span class="hljs-params">};</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(point), <span class="hljs-string">'[7,4]'</span>);</span></code>
+</pre>
+        <p><code>.x</code> and <code>.y</code> are base-level properties, <code>.toJSON()</code> is a meta-level property.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>The base level and the meta-level of a program must be independent: Base-level property keys should not be in conflict with meta-level property keys.</p>
+<p>If we use names (strings) as property keys, we are facing two challenges:</p>
+<ul>
+  <li>
+    <p>When a language is first created, it can use any meta-level names it wants. Base-level code is forced to avoid those names. Later, however, when much base-level code already exists, meta-level names can’t be chosen freely anymore.</p>
+  </li>
+  <li>
+    <p>We could introduce naming rules to separate base level and meta-level. For example, Python brackets meta-level names with two underscores: <code>__init__</code>, <code>__iter__</code>, <code>__hash__</code>, etc. However, the meta-level names of the language and the meta-level names of libraries would still exist in the same namespace and can clash.</p>
+  </li>
+</ul>
+<p>These are two examples of where the latter was an issue for JavaScript:</p>
+<ul>
+  <li>
+    <p>In May 2018, the Array method <code>.flatten()</code> had to be renamed to <code>.flat()</code> because the former name was already used by libraries (<a href="https://github.com/tc39/proposal-flatMap/commit/093eacc7fe0906e70f7626bf6c7d6e9dfc53cce9">source</a>).</p>
+  </li>
+  <li>
+    <p>In November 2020, the Array method <code>.item()</code> had to be renamed to <code>.at()</code> because the former name was already used by a library (<a href="https://github.com/tc39/proposal-relative-indexing-method#web-incompatibility-history">source</a>).</p>
+  </li>
+</ul>
+<p>Symbols, used as property keys, help us here: Each symbol is unique and a symbol key never clashes with any other string or symbol key.</p>
+<h5 id="example-a-library-with-a-metalevel-method"><a class="heading-id-link" href="#example-a-library-with-a-metalevel-method">24.3.2.1 Example: a library with a meta-level method</a></h5>
+<p>As an example, let’s assume we are writing a library that treats objects differently if they implement a special method. This is what defining a property key for such a method and implementing it for an object would look like:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> specialMethod = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'specialMethod'</span>);</code>
+<code><span class="hljs-keyword">const</span> obj = {</code>
+<code>  <span class="hljs-attr">_id</span>: <span class="hljs-string">'kf12oi'</span>,</code>
+<code>  [specialMethod]() { <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">_id</span>;</code>
+<code>  }</code>
+<code>};</code>
+<code>assert.<span class="hljs-title function_">equal</span>(obj[specialMethod](), <span class="hljs-string">'kf12oi'</span>);</code>
+</pre>
+<p>The square brackets in line A enable us to specify that the method must have the key <code>specialMethod</code>. More details are explained in <a href="ch_objects.html#object-literals-computed-keys">“Computed keys in object literals” (§30.9.2)</a>.</p>
+<h3 id="publicly-known-symbols"><a class="heading-id-link" href="#publicly-known-symbols">24.4 Publicly known symbols</a></h3>
+<p><span id="index-entry-publicly-known-symbol"/><span id="index-entry-symbol--publicly-known"/></p>
+<p>Symbols that play special roles within ECMAScript are called <em>publicly known symbols</em>. Examples include:</p>
+<ul>
+  <li>
+    <p><code>Symbol.iterator</code>: makes an object <em>iterable</em>. It’s the key of a method that returns an iterator. For more information on this topic, see <a href="ch_sync-iteration.html#ch_sync-iteration">“Synchronous iteration<span> <sup>ES6</sup></span>” (§32)</a>.</p>
+  </li>
+  <li>
+    <p><code>Symbol.hasInstance</code>: customizes how <code>instanceof</code> works. If an object implements a method with that key, it can be used on the right-hand side of that operator. For example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">PrimitiveNull</span> = {</code>
+<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">hasInstance</span>](x) {</code>
+<code>    <span class="hljs-keyword">return</span> x === <span class="hljs-literal">null</span>;</code>
+<code>  }</code>
+<code>};</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-literal">null</span> <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">PrimitiveNull</span>, <span class="hljs-literal">true</span>);</code>
+</pre>
+  </li>
+  <li>
+    <p><code>Symbol.toStringTag</code>: influences the default <code>.toString()</code> method.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>({})</span></code>
+<code>'[object Object]'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">String</span>({ [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">toStringTag</span>]: <span class="hljs-string">'is no money'</span> })</span></code>
+<code>'[object is no money]'</code>
+</pre>
+    <p>Note: It’s usually better to override <code>.toString()</code>.</p>
+  </li>
+</ul>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercises: Publicly known symbols</strong></p>
+  <div class="boxout-vspace"/>
+  <ul>
+    <li>
+      <code>Symbol.toStringTag</code>: <code>exercises/symbols/to_string_tag_test.mjs</code>
+    </li>
+    <li>
+      <code>Symbol.hasInstance</code>: <code>exercises/symbols/has_instance_test.mjs</code>
+    </li>
+  </ul>
+</div>
+<h3 id="converting-symbols"><a class="heading-id-link" href="#converting-symbols">24.5 Converting symbols</a></h3>
+<p>What happens if we convert a symbol <code>sym</code> to another primitive type? <a href="#tbl:converting-to-symbol">Table 24.1</a> has the answers.</p>
+<figure id="tbl:converting-to-symbol" class="float">
+  <table class="framed">
+    <style>
+      th:nth-child(1), td:nth-child(1) {
+        text-align: left;
+      }
+      th:nth-child(2), td:nth-child(2) {
+        text-align: left;
+      }
+      th:nth-child(3), td:nth-child(3) {
+        text-align: left;
+      }
+    </style>
+    <thead>
+      <tr>
+        <th>Convert to</th><th>Explicit conversion</th><th>Coercion (implicit conv.)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>boolean</td><td><code>Boolean(sym)</code> → OK</td><td><code>!sym</code> → OK</td>
+      </tr>
+      <tr>
+        <td>number</td><td><code>Number(sym)</code> → <code>TypeError</code></td><td><code>sym*2</code> → <code>TypeError</code></td>
+      </tr>
+      <tr>
+        <td>string</td><td><code>String(sym)</code> → OK</td><td><code>''+sym</code> → <code>TypeError</code></td>
+      </tr>
+      <tr>
+        <td/><td><code>sym.toString()</code> → OK</td><td><code>`${sym}`</code> → <code>TypeError</code></td>
+      </tr>
+    </tbody>
+  </table>
+  <figcaption>
+    <p><span class="float-label">Table 24.1:</span> The results of converting symbols to other primitive types.</p>
+  </figcaption>
+</figure>
+<p>One key pitfall with symbols is how often exceptions are thrown when converting them to something else. What is the thinking behind that? First, conversion to number never makes sense and should be warned about. Second, converting a symbol to a string is indeed useful for diagnostic output. But it also makes sense to warn about accidentally turning a symbol into a string (which is a different kind of property key):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> obj = {};</code>
+<code><span class="hljs-keyword">const</span> sym = <span class="hljs-title class_">Symbol</span>();</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> { obj[<span class="hljs-string">'__'</span>+sym+<span class="hljs-string">'__'</span>] = <span class="hljs-literal">true</span> },</code>
+<code>  { <span class="hljs-attr">message</span>: <span class="hljs-string">'Cannot convert a Symbol value to a string'</span> });</code>
+</pre>
+<p>The downside is that the exceptions make working with symbols more complicated. You have to explicitly convert symbols when assembling strings via the plus operator:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> mySymbol = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'mySymbol'</span>);</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'Symbol I used: '</span> + mySymbol</span></code>
+<code>TypeError: Cannot convert a Symbol value to a string</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'Symbol I used: '</span> + <span class="hljs-title class_">String</span>(mySymbol)</span></code>
+<code>'Symbol I used: Symbol(mySymbol)'</code>
+</pre>
+
+    
+      
+</body>
+</html>

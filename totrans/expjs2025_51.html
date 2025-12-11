@@ -1,0 +1,2215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>43 Promises for asynchronous programming ES6</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>43 Promises for asynchronous programming ES6</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_promises.html">https://exploringjs.com/js/book/ch_promises.html</a></blockquote>
+
+        
+    
+    
+    
+<p><span id="index-entry-Promise2"/></p>
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#the-basics-of-using-promises">43.1 The basics of using Promises</a>
+      <ol>
+        <li>
+          <a href="#using-promise-based-functions">43.1.1 Using a Promise-based function</a>
+        </li>
+        <li>
+          <a href="#promises-vs-events">43.1.2 Promises vs. events</a>
+        </li>
+        <li>
+          <a href="#implementing-promise-based-functions">43.1.3 Implementing a Promise-based function</a>
+        </li>
+        <li>
+          <a href="#basic-states-of-promises">43.1.4 The three basic states of Promises</a>
+        </li>
+        <li>
+          <a href="#Promise.resolve-Promise.reject">43.1.5 Creating resolved and rejected Promises via <code>Promise.resolve()</code> and <code>Promise.reject()</code></a>
+        </li>
+        <li>
+          <a href="#returning-and-throwing-in-then-callbacks">43.1.6 Returning and throwing in <code>.then()</code> callbacks</a>
+        </li>
+        <li>
+          <a href="#catch-and-its-callback">43.1.7 <code>.catch()</code> and its callback</a>
+        </li>
+        <li>
+          <a href="#chaining-method-calls">43.1.8 Chaining method calls</a>
+        </li>
+        <li>
+          <a href="#Promise.try">43.1.9 <code>Promise.try()</code>: starting a Promise chain<span> <sup>ES2025</sup></span></a>
+        </li>
+        <li>
+          <a href="#Promise.prototype.finally">43.1.10 <code>Promise.prototype.finally()</code><span> <sup>ES2018</sup></span></a>
+        </li>
+        <li>
+          <a href="#Promise.withResolvers">43.1.11 <code>Promise.withResolvers()</code><span> <sup>ES2024</sup></span></a>
+        </li>
+        <li>
+          <a href="#promises-vs-callbacks">43.1.12 Advantages of promises over plain callbacks</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#examples">43.2 Examples</a>
+      <ol>
+        <li>
+          <a href="#nodejs-reading-a-file-asynchronously">43.2.1 Node.js: Reading a file asynchronously</a>
+        </li>
+        <li>
+          <a href="#promisifying-xmlhttprequest">43.2.2 Browsers: Promisifying <code>XMLHttpRequest</code></a>
+        </li>
+        <li>
+          <a href="#fetch-api">43.2.3 Fetch API</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#tip-for-error-handling-dont-mix-rejections-and-exceptions">43.3 Tip for error handling: don’t mix rejections and exceptions</a>
+    </li>
+    <li>
+      <a href="#promise-based-functions-start-sync-settle-async">43.4 Promise-based functions start synchronously, settle asynchronously</a>
+    </li>
+    <li>
+      <a href="#promise-combinators">43.5 Promise combinator functions: working with Arrays of Promises</a>
+      <ol>
+        <li>
+          <a href="#what-is-a-promise-combinator-function">43.5.1 What is a Promise combinator function?</a>
+        </li>
+        <li>
+          <a href="#Promise.all">43.5.2 <code>Promise.all()</code></a>
+        </li>
+        <li>
+          <a href="#Promise.race">43.5.3 <code>Promise.race()</code></a>
+        </li>
+        <li>
+          <a href="#Promise.any">43.5.4 <code>Promise.any()</code><span> <sup>ES2021</sup></span></a>
+        </li>
+        <li>
+          <a href="#Promise.allSettled">43.5.5 <code>Promise.allSettled()</code><span> <sup>ES2020</sup></span></a>
+        </li>
+        <li>
+          <a href="#shortcircuiting-advanced">43.5.6 Short-circuiting<span> (advanced)</span></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#concurrency-and-promiseall-advanced">43.6 Concurrency and <code>Promise.all()</code><span> (advanced)</span></a>
+      <ol>
+        <li>
+          <a href="#sequential-execution-vs-concurrent-execution">43.6.1 Sequential execution vs. concurrent execution</a>
+        </li>
+        <li>
+          <a href="#focus-on-async-start">43.6.2 Concurrency tip: focus on when operations start</a>
+        </li>
+        <li>
+          <a href="#promise-all-is-fork-join">43.6.3 <code>Promise.all()</code> is fork-join</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#tips-for-chaining-promises">43.7 Tips for chaining Promises</a>
+      <ol>
+        <li>
+          <a href="#chaining-mistake-losing-thetail">43.7.1 Chaining mistake: losing the tail</a>
+        </li>
+        <li>
+          <a href="#chaining-mistake-nesting">43.7.2 Chaining mistake: nesting</a>
+        </li>
+        <li>
+          <a href="#chaining-mistake-more-nesting-than-necessary">43.7.3 Chaining mistake: more nesting than necessary</a>
+        </li>
+        <li>
+          <a href="#not-all-nesting-is-bad">43.7.4 Not all nesting is bad</a>
+        </li>
+        <li>
+          <a href="#chaining-mistake-creating-promises-instead-of-chaining">43.7.5 Chaining mistake: creating Promises instead of chaining</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#thenables-promiselike-objects-advanced">43.8 Thenables (Promise-like objects)<span> (advanced)</span></a>
+      <ol>
+        <li>
+          <a href="#example-a-fulfilled-thenable">43.8.1 Example: a fulfilled thenable</a>
+        </li>
+        <li>
+          <a href="#example-a-rejected-thenable">43.8.2 Example: a rejected thenable</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#quickref-Promise">43.9 Quick reference: <code>Promise</code></a>
+      <ol>
+        <li>
+          <a href="#new-promise">43.9.1 <code>new Promise()</code></a>
+        </li>
+        <li>
+          <a href="#promise-creating-promises">43.9.2 <code>Promise.*</code>: creating Promises</a>
+        </li>
+        <li>
+          <a href="#promise-miscellaneous-functionality">43.9.3 <code>Promise.*</code>: miscellaneous functionality</a>
+        </li>
+        <li>
+          <a href="#promise-promise-combinators">43.9.4 <code>Promise.*</code>: Promise combinators</a>
+        </li>
+        <li>
+          <a href="#promiseprototype">43.9.5 <code>Promise.prototype.*</code></a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<div class="boxout">
+  <p><img src="../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png" class="boxout-icon" height="24" alt="Icon “reading”" data-original-src="https://exploringjs.com/js/book/icon/reading.svg"/> <strong>Recommended reading</strong></p>
+  <div class="boxout-vspace"/>
+  <p>This chapter builds on <a href="ch_async-js.html#ch_async-js">the previous chapter</a> with background on asynchronous programming in JavaScript.</p>
+</div>
+<h3 id="the-basics-of-using-promises"><a class="heading-id-link" href="#the-basics-of-using-promises">43.1 The basics of using Promises</a></h3>
+<h4 id="using-promise-based-functions"><a class="heading-id-link" href="#using-promise-based-functions">43.1.1 Using a Promise-based function</a></h4>
+<p>Promises are a technique for delivering results asynchronously. Instead of directly returning a result, a Promise-based function returns a <em>Promise</em>: a container object that is initially empty. If and when the function is eventually done, it puts either a result or an error into the Promise.</p>
+<p>The following code shows how the Promise-based function <code>addAsync()</code> is used. We’ll see how that function is implemented soon.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promise = <span class="hljs-title function_">addAsync</span>(<span class="hljs-number">3</span>, <span class="hljs-number">4</span>);</code>
+<code>promise.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> { <span class="hljs-comment">// success</span></code>
+<code>    assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">7</span>);</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> { <span class="hljs-comment">// failure</span></code>
+<code>    assert.<span class="hljs-title function_">fail</span>(error);</code>
+<code>  })</code>
+<code>;</code>
+</pre>
+<p>To access what’s inside the Promise (if and when there is something inside it), we register callbacks:</p>
+<ul>
+  <li>
+    Method <code>.then()</code> registers callbacks that are called with the result (if and when there is one).
+  </li>
+  <li>
+    Method <code>.catch()</code> registers callbacks that are called with the error (if and when there is one).
+  </li>
+</ul>
+<p>This aspect of Promises is similar to <a href="ch_async-js.html#event-pattern">the event pattern</a>.</p>
+<h4 id="promises-vs-events"><a class="heading-id-link" href="#promises-vs-events">43.1.2 Promises vs. events</a></h4>
+<p>Promises differ from events in two ways:</p>
+<ul>
+  <li>
+    <p>They deliver at most one result and are optimized for that use case:</p>
+    <ul>
+      <li>
+        <p>If we register a <code>.then()</code> callback when a Promise is still empty, it is notified if and when the Promise receives a result. If we register a <code>.catch()</code> callback when a Promise is still empty, it is notified if and when the Promise receives an error.</p>
+      </li>
+      <li>
+        <p>Once a Promise receives a result or an error, that value is cached. Thus, if we register a callback after that happens, it gets the cached value (depending on whether it is eligible to receive it). That means there is no risk of registering a callback too late.</p>
+      </li>
+      <li>
+        <p>The first value received by a Promise permanently <em>settles</em> that Promise: Values it receives later are ignored.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>We can chain the Promise methods <code>.then()</code> and <code>.catch()</code> because they both return Promises. That helps with sequentially invoking multiple asynchronous functions. More on that later.</p>
+  </li>
+</ul>
+<h4 id="implementing-promise-based-functions"><a class="heading-id-link" href="#implementing-promise-based-functions">43.1.3 Implementing a Promise-based function</a></h4>
+<p>This is an implementation of a Promise-based function that adds two numbers <code>x</code> and <code>y</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">addAsync</span>(<span class="hljs-params">x, y</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>( <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> { <span class="hljs-comment">// (B)</span></code>
+<code>      <span class="hljs-keyword">if</span> (x === <span class="hljs-literal">undefined</span> || y === <span class="hljs-literal">undefined</span>) {</code>
+<code>        <span class="hljs-title function_">reject</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Must provide two parameters'</span>));</code>
+<code>      } <span class="hljs-keyword">else</span> {</code>
+<code>        <span class="hljs-title function_">resolve</span>(x + y);</code>
+<code>      }</code>
+<code>    }</code>
+<code>  );</code>
+<code>}</code>
+</pre>
+<p><code>addAsync()</code> immediately creates and returns a Promise by new-invoking the <code>Promise</code> constructor (line A). It can only change the state of the new Promise from inside the callback (line B) that it passes to the constructor:</p>
+<ul>
+  <li>
+    The callback parameter <code>resolve</code> is a function that puts a result into the Promise (in case of success).
+  </li>
+  <li>
+    The callback parameter <code>reject</code> is a function that puts an error into the Promise (in case of failure).
+  </li>
+</ul>
+<p>One we have invoked either these functions, subsequent invocations of them have no effect.</p>
+<h5 id="revealing-constructor-pattern"><a class="heading-id-link" href="#revealing-constructor-pattern">43.1.3.1 The revealing constructor pattern<span> (advanced)</span></a></h5>
+<p>The Promise constructor uses <em>the revealing constructor pattern</em>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(</code>
+<code>  <span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  }</code>
+<code>);</code>
+</pre>
+<p><a href="https://blog.domenic.me/the-revealing-constructor-pattern/">Quoting Domenic Denicola</a>, one of the people behind JavaScript’s Promise API:</p>
+<blockquote>
+  <p>I call this <em>the revealing constructor pattern</em> because the <code>Promise</code> constructor is <em>revealing</em> its internal capabilities, but only to the code that constructs the promise in question. The ability to resolve or reject the promise is only revealed to the constructing code, and is crucially <em>not</em> revealed to anyone <em>using</em> the promise. So if we hand off <code>p</code> to another consumer, say</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">doThingsWith</span>(p);</code>
+</pre>
+  <p>then we can be sure that this consumer cannot mess with any of the internals that were revealed to us by the constructor. This is as opposed to, for example, putting <code>resolve</code> and <code>reject</code> methods on <code>p</code>, which anyone could call.</p>
+</blockquote>
+<h4 id="basic-states-of-promises"><a class="heading-id-link" href="#basic-states-of-promises">43.1.4 The three basic states of Promises</a></h4>
+<p><span id="index-entry-states-of-a-Promise"/><span id="index-entry-Promise--states-of-a"/>
+<span id="index-entry-pending--Promise-state-"/>
+<span id="index-entry-fulfilled--Promise-state-"/>
+<span id="index-entry-rejected--Promise-state-"/>
+<span id="index-entry-settled--Promise-state-"/></p>
+<p><a href="#fig:promise_states_simple">Figure 43.1</a> depicts the three states a Promise can be in.</p>
+<figure id="fig:promise_states_simple" class="float">
+  <p><img src="../Images/06c68bd8e345f2ccc6d4e27fffb6f694.png" width="256" height="100" alt="" data-original-src="https://exploringjs.com/js/book/img/promises/promise_states_simple.svg"/></p>
+  <figcaption>
+    <p><span class="float-label">Figure 43.1:</span> A Promise is initially in the state “pending”. It can later transition to either the state “fulfilled” or the state “rejected” (but it may never do so). If a Promise is in a final (non-pending) state, it is called <em>settled</em>.</p>
+  </figcaption>
+</figure>
+<h5 id="promises-that-are-never-settled"><a class="heading-id-link" href="#promises-that-are-never-settled">43.1.4.1 Some Promises are never settled</a></h5>
+<p>This is an example of a Promise that is never settled and forever pending:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">() =&gt;</span> {})</code>
+</pre>
+<h5 id="resolving-vs-fulfilling-promises"><a class="heading-id-link" href="#resolving-vs-fulfilling-promises">43.1.4.2 What is the difference between resolving and fulfilling a Promise?</a></h5>
+<p>A Promise can only be fulfilled with a non-Promise value. In contrast, we can resolve a Promise with either a non-Promise value or a Promise. If the callback of <code>new Promise()</code> calls <code>resolve(x)</code> then it depends on <code>x</code> what happens to the newly created Promise <code>p</code>:</p>
+<ul>
+  <li>
+    If <code>x</code> is a non-Promise value then <code>p</code> is fulfilled with <code>x</code>.
+  </li>
+  <li>
+    If <code>x</code> is a Promise, then <code>p</code> adopts the state of <code>x</code> (which basically results in <code>x</code> replacing <code>p</code>). In other words:
+    <ul>
+      <li>
+        While <code>x</code> is pending, <code>p</code> is pending.
+      </li>
+      <li>
+        If and when <code>x</code> is fulfilled, <code>p</code> is fulfilled.
+      </li>
+      <li>
+        If and when <code>x</code> is rejected, <code>p</code> is rejected.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>In other words: Resolving only determines the fate of a Promise; it may or may not fulfill it. This behavior helps with chaining Promise methods. More on that later.</p>
+<h4 id="Promise.resolve-Promise.reject"><a class="heading-id-link" href="#Promise.resolve-Promise.reject">43.1.5 Creating resolved and rejected Promises via <code>Promise.resolve()</code> and <code>Promise.reject()</code></a></h4>
+<p>If <code>x</code> is a non-Promise value then <code>Promise.resolve(x)</code> creates a Promise that is fulfilled with that value:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-number">123</span>)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-number">123</span>);</code>
+<code>  });</code>
+</pre>
+<p>If the argument is already a Promise, it is returned unchanged:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> abcPromise = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(abcPromise), abcPromise</code>
+<code>);</code>
+</pre>
+<p><code>Promise.reject(err)</code> accepts a value <code>err</code> (that is normally not a Promise) and returns a Promise that is rejected with it:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> myError = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'My error!'</span>);</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(myError)</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(err, myError);</code>
+<code>  });</code>
+</pre>
+<p>Why is that useful?</p>
+<ul>
+  <li>
+    On one hand, we can use <code>Promise.resolve()</code> to convert a value that may or may not be a Promise to a value that is guaranteed to be a Promise.
+  </li>
+  <li>
+    On the other hand, we may want to create a Promise that is fulfilled or rejected with a given non-Promise value. Then we can use <code>Promise.resolve()</code> and <code>Promise.reject()</code> – as demonstrated by the example below.
+  </li>
+</ul>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">convertToNumber</span>(<span class="hljs-params">stringOrNumber</span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> stringOrNumber === <span class="hljs-string">'number'</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(stringOrNumber);</code>
+<code>  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> stringOrNumber === <span class="hljs-string">'string'</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">stringToNumberAsync</span>(stringOrNumber);</code>
+<code>  } <span class="hljs-keyword">else</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>());</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<h4 id="returning-and-throwing-in-then-callbacks"><a class="heading-id-link" href="#returning-and-throwing-in-then-callbacks">43.1.6 Returning and throwing in <code>.then()</code> callbacks</a></h4>
+<p><code>.then()</code> registers callbacks for Promise fulfillments. It also returns a new Promise. Doing so enables method chaining: We can invoke <code>.then()</code> and <code>.catch()</code> on the result and keep the asynchronous computation going.</p>
+<p>How the Promise returned by <code>.then()</code> is resolved, depends on what happens inside its callback. Let’s look at three common cases.</p>
+<h5 id="then-callback-returns-non-promise-value"><a class="heading-id-link" href="#then-callback-returns-non-promise-value">43.1.6.1 Returning a non-Promise value from the <code>.then()</code> callback</a></h5>
+<p>First, the callback can return a non-Promise value (line A). Consequently, the Promise returned by <code>.then()</code> is fulfilled with that value (as checked in line B):</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">str</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">return</span> str + str; <span class="hljs-comment">// (A)</span></code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">str2</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(str2, <span class="hljs-string">'abcabc'</span>); <span class="hljs-comment">// (B)</span></code>
+<code>  });</code>
+</pre>
+<h5 id="then-callback-returns-promise"><a class="heading-id-link" href="#then-callback-returns-promise">43.1.6.2 Returning a Promise from the <code>.then()</code> callback</a></h5>
+<p>Second, the callback can return a Promise <code>q</code> (line A). Consequently, the Promise <code>p</code> returned by <code>.then()</code> is resolved with <code>q</code>. In other words: <code>p</code> is effectively replaced by <code>q</code>.</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">str</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// (A)</span></code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">num</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(num, <span class="hljs-number">123</span>);</code>
+<code>  });</code>
+</pre>
+<p>Why is that useful? We can return the result of a Promise-based operation and process its fulfillment value via a “flat” (non-nested) <code>.then()</code>. Compare:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Flat</span></code>
+<code><span class="hljs-title function_">asyncFunc1</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">/*···*/</span></code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc2</span>();</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result2</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">/*···*/</span></code>
+<code>  });</code>
+<code/>
+<code><span class="hljs-comment">// Nested</span></code>
+<code><span class="hljs-title function_">asyncFunc1</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">/*···*/</span></code>
+<code>    <span class="hljs-title function_">asyncFunc2</span>()</code>
+<code>    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result2</span>) =&gt;</span> {</code>
+<code>      <span class="hljs-comment">/*···*/</span></code>
+<code>    });</code>
+<code>  });</code>
+</pre>
+<h5 id="then-callback-throws-exception"><a class="heading-id-link" href="#then-callback-throws-exception">43.1.6.3 Throwing an exception inside the <code>.then()</code> callback</a></h5>
+<p>Third, the callback can throw an exception. Consequently, the Promise returned by <code>.then()</code> is rejected with that exception. That is, a synchronous error is converted into an asynchronous error.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> myError = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'My error!'</span>);</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">str</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">throw</span> myError;</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(err, myError);</code>
+<code>  });</code>
+</pre>
+<h4 id="catch-and-its-callback"><a class="heading-id-link" href="#catch-and-its-callback">43.1.7 <code>.catch()</code> and its callback</a></h4>
+<p>The difference between <code>.then()</code> and <code>.catch()</code> is that the latter is triggered by rejections, not fulfillments. However, both methods turn the actions of their callbacks into Promises in the same manner. For example, in the following code, the value returned by the <code>.catch()</code> callback in line A becomes a fulfillment value:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> err = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>();</code>
+<code/>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(err)</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(e, err);</code>
+<code>    <span class="hljs-comment">// Something went wrong, use a default value</span></code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-string">'default value'</span>; <span class="hljs-comment">// (A)</span></code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">str</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(str, <span class="hljs-string">'default value'</span>);</code>
+<code>  });</code>
+</pre>
+<h4 id="chaining-method-calls"><a class="heading-id-link" href="#chaining-method-calls">43.1.8 Chaining method calls</a></h4>
+<p><code>.then()</code> and <code>.catch()</code> always returning Promises enables us to create arbitrary long chains of method calls:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">myAsyncFunc</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc1</span>() <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">      <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc2</span>(); <span class="hljs-comment">// a Promise</span></span></code>
+<code><span class="hljs-params">    })</span></code>
+<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result2</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">      <span class="hljs-keyword">return</span> result2 ?? <span class="hljs-string">'(Empty)'</span>; <span class="hljs-comment">// not a Promise</span></span></code>
+<code><span class="hljs-params">    })</span></code>
+<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result3</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">      <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc4</span>(); <span class="hljs-comment">// a Promise</span></span></code>
+<code><span class="hljs-params">    });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>Due to chaining, the <code>return</code> in line A returns the result of the last <code>.then()</code>.</p>
+<p>In a way, <code>.then()</code> is the asynchronous version of the synchronous semicolon:</p>
+<ul>
+  <li>
+    <code>asyncFunc1().then(asyncFunc2)</code><br/>
+    executes the asynchronous operations <code>asyncFunc1</code> and <code>asyncFunc2</code> sequentially.
+  </li>
+  <li>
+    <code>syncFunc1(); syncFunc2()</code><br/>
+    executes the synchronous operations <code>syncFunc1</code> and <code>syncFunc2</code> sequentially.
+  </li>
+</ul>
+<p>We can also add <code>.catch()</code> into the mix and let it handle multiple error sources at the same time:</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">asyncFunc1</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc2</span>();</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result2</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// Failure: handle errors of asyncFunc1(), asyncFunc2()</span></code>
+<code>    <span class="hljs-comment">// and any (sync) exceptions thrown in previous callbacks</span></code>
+<code>  });</code>
+</pre>
+<h4 id="Promise.try"><a class="heading-id-link" href="#Promise.try">43.1.9 <code>Promise.try()</code>: starting a Promise chain<span> <sup>ES2025</sup></span></a></h4>
+<p>Where the Promise method <code>.then(cb)</code> continues a Promise chain, <code>Promise.try(cb)</code> starts a Promise chain – while treating the callback <code>cb</code> similarly:</p>
+<ul>
+  <li>
+    It calls <code>cb</code>.
+  </li>
+  <li>
+    If <code>cb</code> throws an exception, <code>Promise.try()</code> returns a rejection with that exception.
+  </li>
+  <li>
+    If <code>cb</code> returns a value, <code>Promise.try()</code> resolves that value into a Promise (without nesting if the value already is a Promise).
+  </li>
+</ul>
+<h5 id="use-case-for-promisetry-starting-a-promise-chain-with-code-that-is-not-purely-asynchronous"><a class="heading-id-link" href="#use-case-for-promisetry-starting-a-promise-chain-with-code-that-is-not-purely-asynchronous">43.1.9.1 Use case for <code>Promise.try()</code>: starting a Promise chain with code that is not purely asynchronous</a></h5>
+<p>We need <code>Promise.try()</code> to start a Promise chain with code that is a mix of synchronous and asynchronous functionality:</p>
+<ul>
+  <li>
+    Why a mix? If code is purely asynchronous, we can use it to start a Promise chain. If code is purely synchronous, there is no need for Promises.
+  </li>
+  <li>
+    Why at the start? Later in a Promise chain, Promise functions such as <code>.then()</code> are good tools for dealing with mixed code.
+  </li>
+</ul>
+<p>Let’s look at an example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">computeAsync</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">try</span>(<span class="hljs-function">() =&gt;</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">const</span> value = <span class="hljs-title function_">syncFuncMightThrow</span>(); <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc</span>(value); <span class="hljs-comment">// (B)</span></span></code>
+<code><span class="hljs-params">  });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>We have a mix of synchronous functionality (line A) and asynchronous functionality (line B).</p>
+<p>Why wrap the code inside the callback at all? It helps if the synchronous function we call in line A throws an exception: Then <code>Promise.try()</code> catches that exception and converts it into a rejected Promise for us. Therefore, the previous code is mostly equivalent to:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">computeAsync</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">const</span> value = <span class="hljs-title function_">syncFuncMightThrow</span>();</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc</span>(value);</span></code>
+<code><span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(err);</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h5 id="why-not-use-an-async-function"><a class="heading-id-link" href="#why-not-use-an-async-function">43.1.9.2 Why not use an async function?</a></h5>
+<p><code>Promise.try()</code> is only needed if we work directly with Promises. Async functions (which are explained in <a href="ch_async-functions.html#ch_async-functions">the next chapter</a>) already provide good support for dealing with a mix of sync and async code (anywhere).</p>
+<h5 id="alternative-to-promisetry"><a class="heading-id-link" href="#alternative-to-promisetry">43.1.9.3 Alternative to <code>Promise.try()</code></a></h5>
+<p>This following code is an alternative to <code>Promise.try()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">countPlusOneAsync</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>().<span class="hljs-title function_">then</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">countSyncOrAsync</span>() <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">  )</span></code>
+<code><span class="hljs-params">  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> result + <span class="hljs-number">1</span>;</span></code>
+<code><span class="hljs-params">  });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p><code>Promise.resolve()</code> creates a Promise that is fulfilled with <code>undefined</code>. That result does not matter to us. What does matter is that we have just started a Promise chain and can put the code to try into the callback in line A.</p>
+<p>The main downside compared to <code>Promise.try()</code> is that this pattern executes the code in line A on the next tick (and not immediately).</p>
+<h4 id="Promise.prototype.finally"><a class="heading-id-link" href="#Promise.prototype.finally">43.1.10 <code>Promise.prototype.finally()</code><span> <sup>ES2018</sup></span></a></h4>
+<p>The Promise method <code>.finally()</code> is often used as follows:</p>
+<pre class="language-js">
+<code>somePromise</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  })</code>
+<code>;</code>
+</pre>
+<p>The <code>.finally()</code> callback is always executed – independently of <code>somePromise</code> and the values returned by <code>.then()</code> and/or <code>.catch()</code>. In contrast:</p>
+<ul>
+  <li>
+    The <code>.then()</code> callback is only executed if <code>somePromise</code> is fulfilled.
+  </li>
+  <li>
+    The <code>.catch()</code> callback is only executed if:
+    <ul>
+      <li>
+        either <code>somePromise</code> is rejected,
+      </li>
+      <li>
+        or the <code>.then()</code> callback returns a rejected Promise,
+      </li>
+      <li>
+        or the <code>.then()</code> callback throws an exception.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>If the callback returns a non-Promise value or a fulfilled Promise, <code>.finally()</code> ignores that result and simply passes on the settlement that existed before it was called:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-number">123</span>)</code>
+<code>  .<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {})</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">123</span>);</code>
+<code>  });</code>
+<code/>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'error'</span>)</code>
+<code>  .<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {})</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(error, <span class="hljs-string">'error'</span>);</code>
+<code>  });</code>
+</pre>
+<p>If however, the <code>.finally()</code> callback throws an exception or returns a rejected Promise, the Promise returned by <code>.finally()</code> is rejected:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'error (previously)'</span>)</code>
+<code>  .<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">throw</span> <span class="hljs-string">'error (finally)'</span>;</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(error, <span class="hljs-string">'error (finally)'</span>);</code>
+<code>  });</code>
+<code/>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'error (previously)'</span>)</code>
+<code>  .<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'error (finally)'</span>);</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(error, <span class="hljs-string">'error (finally)'</span>);</code>
+<code>  });</code>
+</pre>
+<h5 id="use-case-for-finally-cleaning-up"><a class="heading-id-link" href="#use-case-for-finally-cleaning-up">43.1.10.1 Use case for <code>.finally()</code>: cleaning up</a></h5>
+<p>One common use case for <code>.finally()</code> is similar to a common use case of the synchronous <code>finally</code> clause: cleaning up after you are done with a resource. That should always happen, regardless of whether everything went smoothly or there was an error – for example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> connection;</code>
+<code>db.<span class="hljs-title function_">open</span>()</code>
+<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">conn</span>) =&gt;</span> {</code>
+<code>  connection = conn;</code>
+<code>  <span class="hljs-keyword">return</span> connection.<span class="hljs-title function_">select</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">'Jane'</span> });</code>
+<code>})</code>
+<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</code>
+<code>  <span class="hljs-comment">// Process result</span></code>
+<code>  <span class="hljs-comment">// Use `connection` to make more queries</span></code>
+<code>})</code>
+<code><span class="hljs-comment">// ···</span></code>
+<code>.<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>  <span class="hljs-comment">// handle errors</span></code>
+<code>})</code>
+<code>.<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {</code>
+<code>  connection.<span class="hljs-title function_">close</span>();</code>
+<code>});</code>
+</pre>
+<h5 id="use-case-for-finally-doing-something-first-after-any-kind-of-settlement"><a class="heading-id-link" href="#use-case-for-finally-doing-something-first-after-any-kind-of-settlement">43.1.10.2 Use case for <code>.finally()</code>: doing something first after any kind of settlement</a></h5>
+<p>We can also use <code>.finally()</code> before both <code>.then()</code> and <code>.catch()</code>. Then what we do in the <code>.finally()</code> callback is always executed before the other two callbacks. As an example, consider the following function <code>handleAsyncResult()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">handleAsyncResult</span>(<span class="hljs-params">promise</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> promise</code>
+<code>    .<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {</code>
+<code>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'finally'</span>);</code>
+<code>    })</code>
+<code>    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</code>
+<code>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'then '</span> + result);</code>
+<code>    })</code>
+<code>    .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'catch '</span> + error);</code>
+<code>    })</code>
+<code>  ;</code>
+<code>}</code>
+</pre>
+<p>This is what happens with a fulfilled Promise:</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">handleAsyncResult</span>(<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>));</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>finally</code>
+<code>then fulfilled</code>
+</pre>
+<p>This is what happens with a rejected Promise:</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">handleAsyncResult</span>(<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'rejected'</span>));</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>finally</code>
+<code>catch rejected</code>
+</pre>
+<h4 id="Promise.withResolvers"><a class="heading-id-link" href="#Promise.withResolvers">43.1.11 <code>Promise.withResolvers()</code><span> <sup>ES2024</sup></span></a></h4>
+<p>The most common way of creating and resolving a Promise is via the <code>Promise</code> constructor:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(</code>
+<code>  <span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> { ··· }</code>
+<code>);</code>
+</pre>
+<p>One limitation of creating Promises like that is that the settlement functions <code>resolve</code> and <code>reject</code> are meant to only be used inside the callback. Sometimes we want to use them outside of it. That’s when the following static factory method is useful:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> { promise, resolve, reject } = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">withResolvers</span>();</code>
+</pre>
+<p>This is what using that factory method looks like:</p>
+<pre class="language-js">
+<code>{</code>
+<code>  <span class="hljs-keyword">const</span> { promise, resolve, reject } = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">withResolvers</span>();</code>
+<code>  <span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>);</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(</code>
+<code>    <span class="hljs-keyword">await</span> promise,</code>
+<code>    <span class="hljs-string">'fulfilled'</span></code>
+<code>  );</code>
+<code>}</code>
+<code>{</code>
+<code>  <span class="hljs-keyword">const</span> { promise, resolve, reject } = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">withResolvers</span>();</code>
+<code>  <span class="hljs-title function_">reject</span>(<span class="hljs-string">'rejected'</span>);</code>
+<code>  <span class="hljs-keyword">try</span> {</code>
+<code>    <span class="hljs-keyword">await</span> promise;</code>
+<code>  } <span class="hljs-keyword">catch</span> (err) {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(err, <span class="hljs-string">'rejected'</span>);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/3decb3ca67c240d2bb04742c1f28af18.png" class="boxout-icon" height="24" alt="Icon “question”" data-original-src="https://exploringjs.com/js/book/icon/question.svg"/> <strong>Why the name <code>withResolvers</code>? Why not, e.g., <code>withSettlers</code>?</strong></p>
+  <div class="boxout-vspace"/>
+  <ul>
+    <li>
+      <code>resolve()</code> may not settle <code>promise</code> – it only resolves it.
+    </li>
+    <li>
+      The ECMAScript specification uses <a href="https://tc39.es/ecma262/#sec-createresolvingfunctions">the name “resolving functions”</a> for <code>resolve</code> and <code>reject</code>.
+    </li>
+  </ul>
+</div>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Implementing an asynchronous queue via a linked list whose elements are Promises</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/promises/promise-queue_test.mjs</code></p>
+</div>
+<h5 id="an-implementation"><a class="heading-id-link" href="#an-implementation">43.1.11.1 An implementation</a></h5>
+<p>We can implement <code>Promise.withResolvers()</code> as follows:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">promiseWithResolvers</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">let</span> resolve;</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">let</span> reject;</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> promise = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-function">(<span class="hljs-params">res, rej</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-comment">// Executed synchronously!</span></span></code>
+<code><span class="hljs-params">      resolve = res;</span></code>
+<code><span class="hljs-params">      reject = rej;</span></code>
+<code><span class="hljs-params">    });</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> {promise, resolve, reject};</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h5 id="example-oneelement-queue"><a class="heading-id-link" href="#example-oneelement-queue">43.1.11.2 Example: one-element queue</a></h5>
+<pre class="language-js">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">OneElementQueue</span> {</code>
+<code>  #promise = <span class="hljs-literal">null</span>;</code>
+<code>  #resolve = <span class="hljs-literal">null</span>;</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">const</span> { promise, resolve } = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">withResolvers</span>();</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.#promise = promise;</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.#resolve = resolve;</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">  <span class="hljs-title function_">get</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#promise;</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">  <span class="hljs-title function_">put</span>(<span class="hljs-params">value</span>) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.#<span class="hljs-title function_">resolve</span>(value);</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+<code/>
+<code><span class="hljs-params">{ <span class="hljs-comment">// Putting before getting</span></span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> queue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OneElementQueue</span>();</span></code>
+<code><span class="hljs-params">  queue.<span class="hljs-title function_">put</span>(<span class="hljs-string">'one'</span>);</span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> queue.<span class="hljs-title function_">get</span>(),</span></code>
+<code><span class="hljs-params">    <span class="hljs-string">'one'</span></span></code>
+<code><span class="hljs-params">  );</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params">{ <span class="hljs-comment">// Getting before putting</span></span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> queue = <span class="hljs-keyword">new</span> <span class="hljs-title class_">OneElementQueue</span>();</span></code>
+<code><span class="hljs-params">  <span class="hljs-built_in">setTimeout</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-comment">// Runs after `await` pauses the current execution context</span></span></code>
+<code><span class="hljs-params">    <span class="hljs-function">() =&gt;</span> queue.<span class="hljs-title function_">put</span>(<span class="hljs-string">'two'</span>),</span></code>
+<code><span class="hljs-params">    <span class="hljs-number">0</span></span></code>
+<code><span class="hljs-params">  );</span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> queue.<span class="hljs-title function_">get</span>(),</span></code>
+<code><span class="hljs-params">    <span class="hljs-string">'two'</span></span></code>
+<code><span class="hljs-params">  );</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h4 id="promises-vs-callbacks"><a class="heading-id-link" href="#promises-vs-callbacks">43.1.12 Advantages of promises over plain callbacks</a></h4>
+<p>These are some of the advantages of Promises over plain callbacks when it comes to handling one-off results:</p>
+<ul>
+  <li>
+    <p>The type signatures of Promise-based functions and methods are cleaner: if a function is callback-based, some parameters are about input, while the one or two callbacks at the end are about output. With Promises, everything output-related is handled via the returned value.</p>
+  </li>
+  <li>
+    <p>Chaining asynchronous processing steps is more convenient.</p>
+  </li>
+  <li>
+    <p>Promises handle both asynchronous errors (via rejections) and synchronous errors: Inside the callbacks for <code>new Promise()</code>, <code>.then()</code>, and <code>.catch()</code>, exceptions are converted to rejections. In contrast, if we use callbacks for asynchronicity, exceptions are normally not handled for us; we have to do it ourselves.</p>
+  </li>
+  <li>
+    <p>Promises are a single standard that is slowly replacing several, mutually incompatible alternatives. For example, in Node.js, many functions are now available in Promise-based versions. And new asynchronous browser APIs are usually Promise-based.</p>
+  </li>
+</ul>
+<p>One of the biggest advantages of Promises involves not working with them directly: they are the foundation of <em>async functions</em>, a synchronous-looking syntax for performing asynchronous computations. Asynchronous functions are covered in <a href="ch_async-functions.html#ch_async-functions">the next chapter</a>.</p>
+<h3 id="examples"><a class="heading-id-link" href="#examples">43.2 Examples</a></h3>
+<p>Seeing Promises in action helps with understanding them. Let’s look at examples.</p>
+<h4 id="nodejs-reading-a-file-asynchronously"><a class="heading-id-link" href="#nodejs-reading-a-file-asynchronously">43.2.1 Node.js: Reading a file asynchronously</a></h4>
+<p>Consider the following text file <code>person.json</code> with <a href="ch_json.html#ch_json">JSON data</a> in it:</p>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"first"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Jane"</span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"last"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"Doe"</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Let’s look at two versions of code that reads this file and parses it into an object. First, a callback-based version. Second, a Promise-based version.</p>
+<h5 id="the-callbackbased-version"><a class="heading-id-link" href="#the-callbackbased-version">43.2.1.1 The callback-based version</a></h5>
+<p>The following code reads the contents of this file and converts it to a JavaScript object. It is based on Node.js-style callbacks:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> fs <span class="hljs-keyword">from</span> <span class="hljs-string">'node:fs'</span>;</code>
+<code>fs.<span class="hljs-title function_">readFile</span>(<span class="hljs-string">'person.json'</span>,</code>
+<code>  <span class="hljs-function">(<span class="hljs-params">error, text</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">if</span> (error) { <span class="hljs-comment">// (A)</span></code>
+<code>      <span class="hljs-comment">// Failure</span></code>
+<code>      assert.<span class="hljs-title function_">fail</span>(error);</code>
+<code>    } <span class="hljs-keyword">else</span> {</code>
+<code>      <span class="hljs-comment">// Success</span></code>
+<code>      <span class="hljs-keyword">try</span> { <span class="hljs-comment">// (B)</span></code>
+<code>        <span class="hljs-keyword">const</span> obj = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(text); <span class="hljs-comment">// (C)</span></code>
+<code>        assert.<span class="hljs-title function_">deepEqual</span>(obj, {</code>
+<code>          <span class="hljs-attr">first</span>: <span class="hljs-string">'Jane'</span>,</code>
+<code>          <span class="hljs-attr">last</span>: <span class="hljs-string">'Doe'</span>,</code>
+<code>        });</code>
+<code>      } <span class="hljs-keyword">catch</span> (e) {</code>
+<code>        <span class="hljs-comment">// Invalid JSON</span></code>
+<code>        assert.<span class="hljs-title function_">fail</span>(e);</code>
+<code>      }</code>
+<code>    }</code>
+<code>  });</code>
+</pre>
+<p><code>fs</code> is a built-in Node.js module for file system operations. We use the callback-based function <code>fs.readFile()</code> to read a file whose name is <code>person.json</code>. If we succeed, the content is delivered via the parameter <code>text</code> as a string. In line C, we convert that string from the text-based data format JSON into a JavaScript object. <code>JSON</code> is an object with methods for consuming and producing JSON. It is part of JavaScript’s standard library and documented <a href="ch_json.html#ch_json">later in this book</a>.</p>
+<p>Note that there are two error-handling mechanisms: the <code>if</code> in line A takes care of asynchronous errors reported by <code>fs.readFile()</code>, while the <code>try</code> in line B takes care of synchronous errors reported by <code>JSON.parse()</code>.</p>
+<h5 id="the-promisebased-version"><a class="heading-id-link" href="#the-promisebased-version">43.2.1.2 The Promise-based version</a></h5>
+<p>The following code uses <code>readFile()</code> from <code>node:fs/promises</code>, the Promise-based version of <code>fs.readFile()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">import</span> {readFile} <span class="hljs-keyword">from</span> <span class="hljs-string">'node:fs/promises'</span>;</code>
+<code><span class="hljs-title function_">readFile</span>(<span class="hljs-string">'person.json'</span>)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">text</span>) =&gt;</span> { <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-comment">// Success</span></code>
+<code>    <span class="hljs-keyword">const</span> obj = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(text);</code>
+<code>    assert.<span class="hljs-title function_">deepEqual</span>(obj, {</code>
+<code>      <span class="hljs-attr">first</span>: <span class="hljs-string">'Jane'</span>,</code>
+<code>      <span class="hljs-attr">last</span>: <span class="hljs-string">'Doe'</span>,</code>
+<code>    });</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> { <span class="hljs-comment">// (B)</span></code>
+<code>    <span class="hljs-comment">// Failure: file I/O error or JSON syntax error</span></code>
+<code>    assert.<span class="hljs-title function_">fail</span>(err);</code>
+<code>  });</code>
+</pre>
+<p>Function <code>readFile()</code> returns a Promise. In line A, we specify a success callback via method <code>.then()</code> of that Promise. The remaining code in <code>then</code>’s callback is synchronous.</p>
+<p><code>.then()</code> returns a Promise, which enables the invocation of the Promise method <code>.catch()</code> in line B. We use it to specify a failure callback.</p>
+<p>Note that <code>.catch()</code> lets us handle both the asynchronous errors of <code>readFile()</code> and the synchronous errors of <code>JSON.parse()</code> because exceptions inside a <code>.then()</code> callback become rejections.</p>
+<h4 id="promisifying-xmlhttprequest"><a class="heading-id-link" href="#promisifying-xmlhttprequest">43.2.2 Browsers: Promisifying <code>XMLHttpRequest</code></a></h4>
+<p>We have previously seen the event-based <code>XMLHttpRequest</code> API for downloading data in web browsers. The following function promisifies that API:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">httpGet</span>(<span class="hljs-params">url</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(</code>
+<code>    <span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {</code>
+<code>      <span class="hljs-keyword">const</span> xhr = <span class="hljs-keyword">new</span> <span class="hljs-title class_">XMLHttpRequest</span>();</code>
+<code>      xhr.<span class="hljs-property">onload</span> = <span class="hljs-function">() =&gt;</span> {</code>
+<code>        <span class="hljs-keyword">if</span> (xhr.<span class="hljs-property">status</span> === <span class="hljs-number">200</span>) {</code>
+<code>          <span class="hljs-title function_">resolve</span>(xhr.<span class="hljs-property">responseText</span>); <span class="hljs-comment">// (A)</span></code>
+<code>        } <span class="hljs-keyword">else</span> {</code>
+<code>          <span class="hljs-comment">// Something went wrong (404, etc.)</span></code>
+<code>          <span class="hljs-title function_">reject</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(xhr.<span class="hljs-property">statusText</span>)); <span class="hljs-comment">// (B)</span></code>
+<code>        }</code>
+<code>      }</code>
+<code>      xhr.<span class="hljs-property">onerror</span> = <span class="hljs-function">() =&gt;</span> {</code>
+<code>        <span class="hljs-title function_">reject</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Network error'</span>)); <span class="hljs-comment">// (C)</span></code>
+<code>      };</code>
+<code>      xhr.<span class="hljs-title function_">open</span>(<span class="hljs-string">'GET'</span>, url);</code>
+<code>      xhr.<span class="hljs-title function_">send</span>();</code>
+<code>    });</code>
+<code>}</code>
+</pre>
+<p>Note how the results and errors of <code>XMLHttpRequest</code> are handled via <code>resolve()</code> and <code>reject()</code>:</p>
+<ul>
+  <li>
+    A successful outcome leads to the returned Promise being fullfilled with it (line A).
+  </li>
+  <li>
+    An error leads to the Promise being rejected (lines B and C).
+  </li>
+</ul>
+<p>This is how to use <code>httpGet()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">httpGet</span>(<span class="hljs-string">'http://example.com/textfile.txt'</span>)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">content</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(content, <span class="hljs-string">'Content of textfile.txt\n'</span>);</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">fail</span>(error);</code>
+<code>  });</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Timing out a Promise</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/promises/promise_timeout_test.mjs</code></p>
+</div>
+<h4 id="fetch-api"><a class="heading-id-link" href="#fetch-api">43.2.3 Fetch API</a></h4>
+<p>Most JavaScript platforms support Fetch, a Promise-based API for downloading data. Think of it as a Promise-based version of <code>XMLHttpRequest</code>. The following is an excerpt of <a href="https://fetch.spec.whatwg.org/#fetch-api">the API</a>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Body</span> {</code>
+<code>  <span class="hljs-title function_">text</span>() : <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;;</code>
+<code>  ···</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Response</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Body</span> {</code>
+<code>  ···</code>
+<code>}</code>
+<code><span class="hljs-keyword">declare</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">fetch</span>(<span class="hljs-params">str</span>) : <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Response</span>&gt;;</code>
+</pre>
+<p>That means we can use <code>fetch()</code> as follows:</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">fetch</span>(<span class="hljs-string">'http://example.com/textfile.txt'</span>)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> response.<span class="hljs-title function_">text</span>())</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">text</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(text, <span class="hljs-string">'Content of textfile.txt'</span>);</code>
+<code>  });</code>
+</pre>
+<p><code>fetch()</code> is also used here: <a href="ch_async-functions.html#map-with-async-callback">“Example: <code>.map()</code> with an async function as a callback” (§44.3.3)</a>.</p>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Using the fetch API</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/promises/fetch_json_test.mjs</code></p>
+</div>
+<h3 id="tip-for-error-handling-dont-mix-rejections-and-exceptions"><a class="heading-id-link" href="#tip-for-error-handling-dont-mix-rejections-and-exceptions">43.3 Tip for error handling: don’t mix rejections and exceptions</a></h3>
+<p>Tip for implementing functions and methods:</p>
+<blockquote>
+  <p>Don’t mix (asynchronous) rejections and (synchronous) exceptions.</p>
+</blockquote>
+<p>This makes our synchronous and asynchronous code more predictable and simpler because we can always focus on a single error-handling mechanism.</p>
+<p>For Promise-based functions and methods, the rule means that they should never throw exceptions. Alas, it is easy to accidentally get this wrong – for example:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Don’t do this</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-title function_">doSomethingSync</span>(); <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title function_">doSomethingAsync</span>()</span></code>
+<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">    });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>The problem is that if an exception is thrown in line A, then <code>asyncFunc()</code> will throw an exception. Callers of that function only expect rejections and are not prepared for an exception. There are three ways in which we can fix this issue.</p>
+<p>We can wrap the whole body of the function in a <code>try-catch</code> statement and return a rejected Promise if an exception is thrown:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Solution 1</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-title function_">doSomethingSync</span>();</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title function_">doSomethingAsync</span>()</span></code>
+<code><span class="hljs-params">      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">        <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">      });</span></code>
+<code><span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(err);</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>Given that <code>.then()</code> converts exceptions to rejections, we can execute <code>doSomethingSync()</code> inside a <code>.then()</code> callback. To do so, we start a Promise chain via <code>Promise.resolve()</code>. We ignore the fulfillment value <code>undefined</code> of that initial Promise.</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Solution 2</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>()</span></code>
+<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-title function_">doSomethingSync</span>();</span></code>
+<code><span class="hljs-params">      <span class="hljs-keyword">return</span> <span class="hljs-title function_">doSomethingAsync</span>();</span></code>
+<code><span class="hljs-params">    })</span></code>
+<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">    });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>Lastly, <code>new Promise()</code> also converts exceptions to rejections. Using this constructor is therefore similar to the previous solution:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Solution 3</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-title function_">doSomethingSync</span>();</span></code>
+<code><span class="hljs-params">      <span class="hljs-title function_">resolve</span>(<span class="hljs-title function_">doSomethingAsync</span>());</span></code>
+<code><span class="hljs-params">    })</span></code>
+<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">    });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h3 id="promise-based-functions-start-sync-settle-async"><a class="heading-id-link" href="#promise-based-functions-start-sync-settle-async">43.4 Promise-based functions start synchronously, settle asynchronously</a></h3>
+<p>Most Promise-based functions are executed as follows:</p>
+<ul>
+  <li>
+    Their execution starts right away, synchronously (in the current task).
+  </li>
+  <li>
+    But the Promise they return is guaranteed to be settled asynchronously (in a later task) – if ever.
+  </li>
+</ul>
+<p>The following code demonstrates that:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'asyncFunc'</span>);</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-function">(<span class="hljs-params">resolve, _reject</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'new Promise()'</span>);</span></code>
+<code><span class="hljs-params">      <span class="hljs-title function_">resolve</span>();</span></code>
+<code><span class="hljs-params">    }</span></code>
+<code><span class="hljs-params">  );</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'START'</span>);</span></code>
+<code><span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>()</span></code>
+<code><span class="hljs-params">  .<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'.then()'</span>); <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">  });</span></code>
+<code><span class="hljs-params"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'END'</span>);</span></code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>START</code>
+<code>asyncFunc</code>
+<code>new Promise()</code>
+<code>END</code>
+<code>.then()</code>
+</pre>
+<p>We can see that the callback of <code>new Promise()</code> is executed before the end of the code, while the result is delivered later (line A).</p>
+<p>Benefits of this approach:</p>
+<ul>
+  <li>
+    <p>Starting synchronously helps avoid race conditions because we can rely on the order in which Promise-based functions begin. There is an example <a href="ch_async-functions.html#fire-and-forget-await">in the next chapter</a>, where text is written to a file and race conditions are avoided.</p>
+  </li>
+  <li>
+    <p>Chaining Promises won’t starve other tasks of processing time because before a Promise is settled, there will always be a break, during which the event loop can run.</p>
+  </li>
+  <li>
+    <p>Promise-based functions always return results asynchronously; we can be sure that there is never a synchronous return. This kind of predictability makes code easier to work with.</p>
+  </li>
+</ul>
+<div class="boxout">
+  <p><img src="../Images/38e6ff55e8d602659f3cdb8893e63f62.png" class="boxout-icon" height="24" alt="Icon “external”" data-original-src="https://exploringjs.com/js/book/icon/external.svg"/> <strong>More information on this approach</strong></p>
+  <div class="boxout-vspace"/>
+  <p><a href="http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony">“Designing APIs for Asynchrony”</a> by Isaac Z. Schlueter</p>
+</div>
+<h3 id="promise-combinators"><a class="heading-id-link" href="#promise-combinators">43.5 Promise combinator functions: working with Arrays of Promises</a></h3>
+<p><span id="index-entry-Promise-combinator-function"/>
+<span id="index-entry-combinator-function--Promise"/></p>
+<h4 id="what-is-a-promise-combinator-function"><a class="heading-id-link" href="#what-is-a-promise-combinator-function">43.5.1 What is a Promise combinator function?</a></h4>
+<p>The <a href="https://wiki.haskell.org/Combinator_pattern"><em>combinator pattern</em></a> is a pattern in functional programming for building structures. It is based on two kinds of functions:</p>
+<ul>
+  <li>
+    <em>Primitive functions</em> (short: <em>primitives</em>) create atomic pieces.
+  </li>
+  <li>
+    <em>Combinator functions</em> (short: <em>combinators</em>) combine atomic and/or compound pieces to create compound pieces.
+  </li>
+</ul>
+<p>When it comes to JavaScript Promises:</p>
+<ul>
+  <li>
+    <p>Primitive functions include: <code>Promise.resolve()</code>, <code>Promise.reject()</code></p>
+  </li>
+  <li>
+    <p>Combinators include: <code>Promise.all()</code>, <code>Promise.race()</code>, <code>Promise.any()</code>, <code>Promise.allSettled()</code>. In each of these cases:</p>
+    <ul>
+      <li>
+        Input is an iterable over zero or more Promises.
+      </li>
+      <li>
+        Output is a single Promise.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Next, we’ll take a closer look at the mentioned Promise combinators.</p>
+<h4 id="Promise.all"><a class="heading-id-link" href="#Promise.all">43.5.2 <code>Promise.all()</code></a></h4>
+<p><span id="index-entry-Promise.all--"/></p>
+<p>This is the type signature of <code>Promise.all()</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">all</span>&lt;T&gt;(<span class="hljs-attr">promises</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt;): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Array</span>&lt;T&gt;&gt;</code>
+</pre>
+<p><code>Promise.all()</code> returns a Promise which is:</p>
+<ul>
+  <li>
+    Fulfilled if all <code>promises</code> are fulfilled.
+    <ul>
+      <li>
+        Then its fulfillment value is an Array with the fulfillment values of <code>promises</code>.
+      </li>
+    </ul>
+  </li>
+  <li>
+    Rejected if at least one Promise is rejected.
+    <ul>
+      <li>
+        Then its rejection value is the rejection value of that Promise.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>This is a quick demo of the output Promise being fulfilled:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promises = [</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result a'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result b'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result c'</span>),</code>
+<code>];</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(promises)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">arr</span>) =&gt;</span> assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    arr, [<span class="hljs-string">'result a'</span>, <span class="hljs-string">'result b'</span>, <span class="hljs-string">'result c'</span>]</code>
+<code>  ));</code>
+</pre>
+<p>The following example demonstrates what happens if at least one of the input Promises is rejected:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promises = [</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result a'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result b'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR'</span>),</code>
+<code>];</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(promises)</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> assert.<span class="hljs-title function_">equal</span>(</code>
+<code>    err, <span class="hljs-string">'ERROR'</span></code>
+<code>  ));</code>
+</pre>
+<p><a href="#fig:combinator-promise-all">Figure 43.2</a> illustrates how <code>Promise.all()</code> works.</p>
+<figure id="fig:combinator-promise-all" class="float">
+  <p><img src="../Images/304b67c9d82e5f471ff49a4f60ee10e2.png" height="246" alt="" style="width:318.274px" data-original-src="https://exploringjs.com/js/book/img/promises/combinator-promise-all.svg"/></p>
+  <figcaption>
+    <p><span class="float-label">Figure 43.2:</span> The Promise combinator <code>Promise.all()</code>.</p>
+  </figcaption>
+</figure>
+<h5 id="asynchronous-map-via-promiseall"><a class="heading-id-link" href="#asynchronous-map-via-promiseall">43.5.2.1 Asynchronous <code>.map()</code> via <code>Promise.all()</code></a></h5>
+<p>Array transformation methods such as <code>.map()</code>, <code>.filter()</code>, etc., are made for synchronous computations. For example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">timesTwoSync</span>(<span class="hljs-params">x</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-number">2</span> * x;</code>
+<code>}</code>
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>];</code>
+<code><span class="hljs-keyword">const</span> result = arr.<span class="hljs-title function_">map</span>(timesTwoSync);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(result, [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>]);</code>
+</pre>
+<p>What happens if the callback of <code>.map()</code> is a Promise-based function (a function that maps normal values to Promises)? Then the result of <code>.map()</code> is an Array of Promises. Alas, that is not data that normal code can work with. Thankfully, we can fix that via <code>Promise.all()</code>: It converts an Array of Promises into a Promise that is fulfilled with an Array of normal values.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">timesTwoAsync</span>(<span class="hljs-params">x</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> <span class="hljs-title function_">resolve</span>(x * <span class="hljs-number">2</span>));</code>
+<code>}</code>
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>];</code>
+<code><span class="hljs-keyword">const</span> promiseArr = arr.<span class="hljs-title function_">map</span>(timesTwoAsync);</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(promiseArr)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">deepEqual</span>(result, [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>]);</code>
+<code>  });</code>
+</pre>
+<h5 id="promise-all-download-text"><a class="heading-id-link" href="#promise-all-download-text">43.5.2.2 A more realistic <code>.map()</code> example</a></h5>
+<p>Next, we’ll use <code>.map()</code> and <code>Promise.all()</code> to downlooad text files from the web. For that, we need the following tool function:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">downloadText</span>(<span class="hljs-params">url</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">fetch</span>(url)</code>
+<code>    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> { <span class="hljs-comment">// (A)</span></code>
+<code>      <span class="hljs-keyword">if</span> (!response.<span class="hljs-property">ok</span>) { <span class="hljs-comment">// (B)</span></code>
+<code>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(response.<span class="hljs-property">statusText</span>);</code>
+<code>      }</code>
+<code>      <span class="hljs-keyword">return</span> response.<span class="hljs-title function_">text</span>(); <span class="hljs-comment">// (C)</span></code>
+<code>    });</code>
+<code>}</code>
+</pre>
+<p><code>downloadText()</code> uses the Promise-based <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch">fetch API</a> to download a text file as a string:</p>
+<ul>
+  <li>
+    First, it asynchronously retrieves a <code>response</code> (line A).
+  </li>
+  <li>
+    <code>response.ok</code> (line B) checks if there were errors such as “file not found”.
+  </li>
+  <li>
+    If there weren’t any, we use <code>.text()</code> (line C) to retrieve the content of the file as a string.
+  </li>
+</ul>
+<p>In the following example, we download two text files:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> urls = [</code>
+<code>  <span class="hljs-string">'http://example.com/first.txt'</span>,</code>
+<code>  <span class="hljs-string">'http://example.com/second.txt'</span>,</code>
+<code>];</code>
+<code/>
+<code><span class="hljs-keyword">const</span> promises = urls.<span class="hljs-title function_">map</span>(</code>
+<code>  <span class="hljs-function"><span class="hljs-params">url</span> =&gt;</span> <span class="hljs-title function_">downloadText</span>(url));</code>
+<code/>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(promises)</code>
+<code>  .<span class="hljs-title function_">then</span>(</code>
+<code>    <span class="hljs-function">(<span class="hljs-params">arr</span>) =&gt;</span> assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>      arr, [<span class="hljs-string">'First!'</span>, <span class="hljs-string">'Second!'</span>]</code>
+<code>    ));</code>
+</pre>
+<h5 id="a-simple-implementation-of-promiseall"><a class="heading-id-link" href="#a-simple-implementation-of-promiseall">43.5.2.3 A simple implementation of <code>Promise.all()</code></a></h5>
+<p>This is a simplified implementation of <code>Promise.all()</code> (e.g., it performs no safety checks):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">all</span>(<span class="hljs-params">iterable</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">let</span> elementCount = <span class="hljs-number">0</span>;</code>
+<code>    <span class="hljs-keyword">let</span> result;</code>
+<code/>
+<code>    <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>;</code>
+<code>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> promise <span class="hljs-keyword">of</span> iterable) {</code>
+<code>      <span class="hljs-comment">// Preserve the current value of `index`</span></code>
+<code>      <span class="hljs-keyword">const</span> currentIndex = index;</code>
+<code>      promise.<span class="hljs-title function_">then</span>(</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {</code>
+<code>          result[currentIndex] = value;</code>
+<code>          elementCount++;</code>
+<code>          <span class="hljs-keyword">if</span> (elementCount === result.<span class="hljs-property">length</span>) {</code>
+<code>            <span class="hljs-title function_">resolve</span>(result); <span class="hljs-comment">// (A)</span></code>
+<code>          }</code>
+<code>        },</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {</code>
+<code>          <span class="hljs-title function_">reject</span>(err); <span class="hljs-comment">// (B)</span></code>
+<code>        });</code>
+<code>      index++;</code>
+<code>    }</code>
+<code>    <span class="hljs-keyword">if</span> (index === <span class="hljs-number">0</span>) {</code>
+<code>      <span class="hljs-comment">// Resolution is normally done in line A</span></code>
+<code>      <span class="hljs-title function_">resolve</span>([]);</code>
+<code>      <span class="hljs-keyword">return</span>;</code>
+<code>    }</code>
+<code>    <span class="hljs-comment">// Now we know how many Promises there are in `iterable`.</span></code>
+<code>    <span class="hljs-comment">// We can wait until now with initializing `result` because</span></code>
+<code>    <span class="hljs-comment">// the callbacks of .then() are executed asynchronously.</span></code>
+<code>    result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(index);</code>
+<code>  });</code>
+<code>}</code>
+</pre>
+<p>The two main locations where the result Promise is settled are line A and line B. After one of them settled, the other can’t change the settlement value anymore because a Promise can only be settled once.</p>
+<h4 id="Promise.race"><a class="heading-id-link" href="#Promise.race">43.5.3 <code>Promise.race()</code></a></h4>
+<p><span id="index-entry-Promise.race--"/></p>
+<p>This is the type signature of <code>Promise.race()</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">race</span>&lt;T&gt;(<span class="hljs-attr">promises</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt;): <span class="hljs-title class_">Promise</span>&lt;T&gt;</code>
+</pre>
+<p><code>Promise.race()</code> returns a Promise <code>q</code> which is settled as soon as the first Promise <code>p</code> among <code>promises</code> is settled. <code>q</code> has the same settlement value as <code>p</code>.</p>
+<p>In the following demo, the settlement of the fulfilled Promise (line A) happens before the settlement of the rejected Promise (line B). Therefore, the result is also fulfilled (line C).</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promises = [</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span></code>
+<code>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result'</span>), <span class="hljs-number">100</span>)), <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span></code>
+<code>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR'</span>), <span class="hljs-number">200</span>)), <span class="hljs-comment">// (B)</span></code>
+<code>];</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">race</span>(promises)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> assert.<span class="hljs-title function_">equal</span>( <span class="hljs-comment">// (C)</span></code>
+<code>    result, <span class="hljs-string">'result'</span>));</code>
+</pre>
+<p>In the next demo, the rejection happens first:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promises = [</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span></code>
+<code>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result'</span>), <span class="hljs-number">200</span>)),</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span></code>
+<code>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR'</span>), <span class="hljs-number">100</span>)),</code>
+<code>];</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">race</span>(promises)</code>
+<code>  .<span class="hljs-title function_">then</span>(</code>
+<code>    <span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> assert.<span class="hljs-title function_">fail</span>(),</code>
+<code>    <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> assert.<span class="hljs-title function_">equal</span>(</code>
+<code>      err, <span class="hljs-string">'ERROR'</span>));</code>
+</pre>
+<p>Note that the Promise returned by <code>Promise.race()</code> is settled as soon as the first among its input Promises is settled. That means that the result of <code>Promise.race([])</code> is never settled.</p>
+<p><a href="#fig:combinator-promise-race">Figure 43.3</a> illustrates how <code>Promise.race()</code> works.</p>
+<figure id="fig:combinator-promise-race" class="float">
+  <p><img src="../Images/3728be0c72a2536ecd233d4e9ef7d204.png" height="246" alt="" style="width:318.274px" data-original-src="https://exploringjs.com/js/book/img/promises/combinator-promise-race.svg"/></p>
+  <figcaption>
+    <p><span class="float-label">Figure 43.3:</span> The Promise combinator <code>Promise.race()</code>.</p>
+  </figcaption>
+</figure>
+<h5 id="timing-out-via-race"><a class="heading-id-link" href="#timing-out-via-race">43.5.3.1 Using <code>Promise.race()</code> to time out a Promise</a></h5>
+<p>In this section, we are going to use <code>Promise.race()</code> to time out Promises. We will be using the following helper functions:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Returns a Promise that is resolved with `value`</span></code>
+<code><span class="hljs-comment"> * after `ms` milliseconds.</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">resolveAfter</span>(<span class="hljs-params">ms, value=<span class="hljs-literal">undefined</span></span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, _reject</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">resolve</span>(value), ms);</code>
+<code>  });</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Returns a Promise that is rejected with `reason`</span></code>
+<code><span class="hljs-comment"> * after `ms` milliseconds.</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">rejectAfter</span>(<span class="hljs-params">ms, reason=<span class="hljs-literal">undefined</span></span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">_resolve, reject</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">reject</span>(reason), ms);</code>
+<code>  });</code>
+<code>}</code>
+</pre>
+<p>This function times out a Promise:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">timeout</span>(<span class="hljs-params">timeoutInMs, promise</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">race</span>([</code>
+<code>    promise,</code>
+<code>    <span class="hljs-title function_">rejectAfter</span>(timeoutInMs,</code>
+<code>      <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Operation timed out'</span>)</code>
+<code>    ),</code>
+<code>  ]);</code>
+<code>}</code>
+</pre>
+<p><code>timeout()</code> returns a Promise whose settlement is the same as the one of whichever Promise settles first among the following two:</p>
+<ol>
+  <li>
+    The parameter <code>promise</code>
+  </li>
+  <li>
+    A Promise that is rejected after <code>timeoutInMs</code> milliseconds
+  </li>
+</ol>
+<p>To produce the second Promise, <code>timeout()</code> uses the fact that resolving a pending Promise with a rejected Promise leads to the former being rejected.</p>
+<p>Let’s see <code>timeout()</code> in action. Here, the input Promise is fulfilled before the timeout. Therefore, the output Promise is fulfilled.</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">timeout</span>(<span class="hljs-number">200</span>, <span class="hljs-title function_">resolveAfter</span>(<span class="hljs-number">100</span>, <span class="hljs-string">'Result!'</span>))</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">result</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-string">'Result!'</span>));</code>
+</pre>
+<p>Here, the timeout happens before the input Promise is fulfilled. Therefore, the output Promise is rejected.</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">timeout</span>(<span class="hljs-number">100</span>, <span class="hljs-title function_">resolveAfter</span>(<span class="hljs-number">200</span>, <span class="hljs-string">'Result!'</span>))</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> assert.<span class="hljs-title function_">deepEqual</span>(err, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Operation timed out'</span>)));</code>
+</pre>
+<p>It is important to understand what “timing out a Promise” really means:</p>
+<ul>
+  <li>
+    If the input Promise is settled quickly enough, its settlement is passed on to the output Promise.
+  </li>
+  <li>
+    If it isn’t settled quickly enough, the output Promise is rejected.
+  </li>
+</ul>
+<p>That is, timing out only prevents the input Promise from affecting the output (since a Promise can only be settled once). But it does not stop the asynchronous operation that produced the input Promise.</p>
+<h5 id="a-simple-implementation-of-promiserace"><a class="heading-id-link" href="#a-simple-implementation-of-promiserace">43.5.3.2 A simple implementation of <code>Promise.race()</code></a></h5>
+<p>This is a simplified implementation of <code>Promise.race()</code> (e.g., it performs no safety checks):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">race</span>(<span class="hljs-params">iterable</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> promise <span class="hljs-keyword">of</span> iterable) {</code>
+<code>      promise.<span class="hljs-title function_">then</span>(</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {</code>
+<code>          <span class="hljs-title function_">resolve</span>(value); <span class="hljs-comment">// (A)</span></code>
+<code>        },</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {</code>
+<code>          <span class="hljs-title function_">reject</span>(err); <span class="hljs-comment">// (B)</span></code>
+<code>        });</code>
+<code>    }</code>
+<code>  });</code>
+<code>}</code>
+</pre>
+<p>The result Promise is settled in either line A or line B. Once it is, the settlement value can’t be changed anymore.</p>
+<h4 id="Promise.any"><a class="heading-id-link" href="#Promise.any">43.5.4 <code>Promise.any()</code><span> <sup>ES2021</sup></span></a></h4>
+<p><span id="index-entry-Promise.any--"/></p>
+<p>This is the type signature of <code>Promise.any()</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">any</span>&lt;T&gt;(<span class="hljs-attr">promises</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt;): <span class="hljs-title class_">Promise</span>&lt;T&gt;</code>
+</pre>
+<p><code>Promise.any()</code> returns a Promise <code>p</code>. How it is settled, depends on the parameter <code>promises</code> (which refers to an iterable over Promises):</p>
+<ul>
+  <li>
+    If and when the first Promise is fulfilled, <code>p</code> is resolved with that Promise.
+  </li>
+  <li>
+    If all Promises are rejected, <code>p</code> is rejected with an instance of <code>AggregateError</code> that contains all rejection values.
+  </li>
+</ul>
+<p><a href="#fig:combinator-promise-any">Figure 43.4</a> illustrates how <code>Promise.any()</code> works.</p>
+<figure id="fig:combinator-promise-any" class="float">
+  <p><img src="../Images/e8a5def71f107f982eeb0cdeee8e7f86.png" height="246" alt="" style="width:318.274px" data-original-src="https://exploringjs.com/js/book/img/promises/combinator-promise-any.svg"/></p>
+  <figcaption>
+    <p><span class="float-label">Figure 43.4:</span> The Promise combinator <code>Promise.any()</code>.</p>
+  </figcaption>
+</figure>
+<h5 id="AggregateError"><a class="heading-id-link" href="#AggregateError">43.5.4.1 <code>AggregateError</code><span> <sup>ES2021</sup></span></a></h5>
+<p>This is the type signature of <code>AggregateError</code> (a subclass of <a href="ch_exception-handling.html#class-Error"><code>Error</code></a>):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">AggregateError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {</code>
+<code>  <span class="hljs-comment">// Instance properties (complementing the ones of Error)</span></code>
+<code>  <span class="hljs-attr">errors</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">any</span>&gt;;</code>
+<code/>
+<code>  <span class="hljs-title function_">constructor</span>(</code>
+<code><span class="hljs-params">    errors: Iterable&lt;<span class="hljs-built_in">any</span>&gt;,</span></code>
+<code><span class="hljs-params">    message: <span class="hljs-built_in">string</span> = <span class="hljs-string">''</span>,</span></code>
+<code><span class="hljs-params">    options?: ErrorOptions <span class="hljs-comment">// ES2022</span></span></code>
+<code><span class="hljs-params">  </span>);</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ErrorOptions</span> {</code>
+<code>  cause?: <span class="hljs-built_in">any</span>; <span class="hljs-comment">// ES2022</span></code>
+<code>}</code>
+</pre>
+<h5 id="two-first-examples"><a class="heading-id-link" href="#two-first-examples">43.5.4.2 Two first examples</a></h5>
+<p>This is what happens if one Promise is fulfilled:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promises = [</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR A'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR B'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result'</span>),</code>
+<code>];</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">any</span>(promises)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> assert.<span class="hljs-title function_">equal</span>(</code>
+<code>    result, <span class="hljs-string">'result'</span></code>
+<code>  ));</code>
+</pre>
+<p>This is what happens if all Promises are rejected:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promises = [</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR A'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR B'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR C'</span>),</code>
+<code>];</code>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">any</span>(promises)</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">aggregateError</span>) =&gt;</span> assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    aggregateError.<span class="hljs-property">errors</span>,</code>
+<code>    [<span class="hljs-string">'ERROR A'</span>, <span class="hljs-string">'ERROR B'</span>, <span class="hljs-string">'ERROR C'</span>]</code>
+<code>  ));</code>
+</pre>
+<h5 id="promiseany-vs-promiseall"><a class="heading-id-link" href="#promiseany-vs-promiseall">43.5.4.3 <code>Promise.any()</code> vs. <code>Promise.all()</code></a></h5>
+<p>There are two ways in which <code>Promise.any()</code> and <code>Promise.all()</code> can be compared:</p>
+<ul>
+  <li>
+    They are inverses of each other:
+    <ul>
+      <li>
+        <code>Promise.all()</code>: First input rejection rejects the result Promise or its fulfillment value is an Array with input fulfillment values.
+      </li>
+      <li>
+        <code>Promise.any()</code>: First input fulfillment fulfills the result Promise or its rejection value is an Array with input rejection values (inside an error object).
+      </li>
+    </ul>
+  </li>
+  <li>
+    They have different focuses:
+    <ul>
+      <li>
+        <code>Promise.all()</code> is interested in <em>all</em> fulfillments. The opposite case (at least one rejection) leads to a rejection.
+      </li>
+      <li>
+        <code>Promise.any()</code> is interested in the first fulfillment. The opposite case (only rejections) leads to a rejection.
+      </li>
+    </ul>
+  </li>
+</ul>
+<h5 id="promiseany-vs-promiserace"><a class="heading-id-link" href="#promiseany-vs-promiserace">43.5.4.4 <code>Promise.any()</code> vs. <code>Promise.race()</code></a></h5>
+<p><code>Promise.any()</code> and <code>Promise.race()</code> are also related, but interested in different things:</p>
+<ul>
+  <li>
+    <code>Promise.race()</code> is interested in settlements. The Promise which is settled first, “wins”. In other words: We want to know about the asynchronous computation that terminates first.
+  </li>
+  <li>
+    <code>Promise.any()</code> is interested in fulfillments. The Promise which is fulfilled first, “wins”. In other words: We want to know about the asynchronous computation that succeeds first.
+  </li>
+</ul>
+<p>The main – relatively rare – use case for <code>.race()</code> is timing out Promises. The use cases for <code>.any()</code> are broader. We’ll look at them next.</p>
+<h5 id="use-cases-for-promiseany"><a class="heading-id-link" href="#use-cases-for-promiseany">43.5.4.5 Use cases for <code>Promise.any()</code></a></h5>
+<p>We use <code>Promise.any()</code> if we have multiple asynchronous computations and we are only interested in the first successful one. In a way, we let the computations compete with each other and use whichever one is fastest.</p>
+<p>The following code demonstrates what that looks like when downloading resources:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> resource = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">any</span>([</code>
+<code>  <span class="hljs-title function_">fetch</span>(<span class="hljs-string">'http://example.com/first.txt'</span>)</code>
+<code>    .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> response.<span class="hljs-title function_">text</span>()),</code>
+<code>  <span class="hljs-title function_">fetch</span>(<span class="hljs-string">'http://example.com/second.txt'</span>)</code>
+<code>    .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> response.<span class="hljs-title function_">text</span>()),</code>
+<code>]);</code>
+</pre>
+<p>The same pattern enables us to use whichever module downloads more quickly:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> mylib = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">any</span>([</code>
+<code>  <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://primary.example.com/mylib'</span>),</code>
+<code>  <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://secondary.example.com/mylib'</span>),</code>
+<code>]);</code>
+</pre>
+<p>For comparison, this is the code we’d use if the secondary server is only a fallback – in case the primary server fails:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> mylib;</code>
+<code><span class="hljs-keyword">try</span> {</code>
+<code>  mylib = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://primary.example.com/mylib'</span>);</code>
+<code>} <span class="hljs-keyword">catch</span> {</code>
+<code>  mylib = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://secondary.example.com/mylib'</span>);</code>
+<code>}</code>
+</pre>
+<h5 id="how-would-we-implement-promiseany"><a class="heading-id-link" href="#how-would-we-implement-promiseany">43.5.4.6 How would we implement <code>Promise.any()</code>?</a></h5>
+<p>A simple implementation of <code>Promise.any()</code> is basically a mirror version of the implementation of <code>Promise.all()</code>.</p>
+<h4 id="Promise.allSettled"><a class="heading-id-link" href="#Promise.allSettled">43.5.5 <code>Promise.allSettled()</code><span> <sup>ES2020</sup></span></a></h4>
+<p><span id="index-entry-Promise.allSettled--"/></p>
+<p>This time, the type signatures are a little more complicated. Feel free to skip ahead to the first demo, which should be easier to understand.</p>
+<p>This is the type signature of <code>Promise.allSettled()</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">allSettled</span>&lt;T&gt;(<span class="hljs-attr">promises</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt;)</code>
+<code>  : <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">SettlementObject</span>&lt;T&gt;&gt;&gt;</code>
+</pre>
+<p>It returns a Promise for an Array whose elements have the following type signature:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">SettlementObject</span>&lt;T&gt; = <span class="hljs-title class_">FulfillmentObject</span>&lt;T&gt; | <span class="hljs-title class_">RejectionObject</span>;</code>
+<code/>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">FulfillmentObject</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>;</code>
+<code>  <span class="hljs-attr">value</span>: T;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">RejectionObject</span> {</code>
+<code>  <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>;</code>
+<code>  <span class="hljs-attr">reason</span>: <span class="hljs-built_in">unknown</span>;</code>
+<code>}</code>
+</pre>
+<p><code>Promise.allSettled()</code> returns a Promise <code>out</code>. Once all <code>promises</code> are settled, <code>out</code> is fulfilled with an Array. Each element <code>e</code> of that Array corresponds to one Promise <code>p</code> of <code>promises</code>:</p>
+<ul>
+  <li>
+    <p>If <code>p</code> is fulfilled with the fulfillment value <code>v</code>, then <code>e</code> is</p>
+<pre class="language-js">
+<code>{ <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>:  v }</code>
+</pre>
+  </li>
+  <li>
+    <p>If <code>p</code> is rejected with the rejection value <code>r</code>, then <code>e</code> is</p>
+<pre class="language-js">
+<code>{ <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>,  <span class="hljs-attr">reason</span>: r }</code>
+</pre>
+  </li>
+</ul>
+<p>Unless there is an error when iterating over <code>promises</code>, the output Promise <code>out</code> is never rejected.</p>
+<p><a href="#fig:combinator-promise-all-settled">Figure 43.5</a> illustrates how <code>Promise.allSettled()</code> works.</p>
+<figure id="fig:combinator-promise-all-settled" class="float">
+  <p><img src="../Images/3bb559e958e51edd426fc59d90d5a465.png" alt="" style="width:449.2592px; height:264.388px" data-original-src="https://exploringjs.com/js/book/img/promises/combinator-promise-all-settled.svg"/></p>
+  <figcaption>
+    <p><span class="float-label">Figure 43.5:</span> The Promise combinator <code>Promise.allSettled()</code>.</p>
+  </figcaption>
+</figure>
+<h5 id="a-first-demo-of-promiseallsettled"><a class="heading-id-link" href="#a-first-demo-of-promiseallsettled">43.5.5.1 A first demo of <code>Promise.allSettled()</code></a></h5>
+<p>This is a quick first demo of how <code>Promise.allSettled()</code> works:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">allSettled</span>([</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'value'</span>),</code>
+<code>  <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'ERROR'</span>),</code>
+<code>])</code>
+<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">arr</span> =&gt;</span> assert.<span class="hljs-title function_">deepEqual</span>(arr, [</code>
+<code>  { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'value'</span> },</code>
+<code>  { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>,  <span class="hljs-attr">reason</span>: <span class="hljs-string">'ERROR'</span> },</code>
+<code>]));</code>
+</pre>
+<h5 id="a-longer-example-of-promiseallsettled"><a class="heading-id-link" href="#a-longer-example-of-promiseallsettled">43.5.5.2 A longer example of <code>Promise.allSettled()</code></a></h5>
+<p>The next example is similar to <a href="#promise-all-download-text">the <code>.map()</code> plus <code>Promise.all()</code> example</a> (from which we are borrowing the function <code>downloadText()</code>): We are downloading multiple text files whose URLs are stored in an Array. However, this time, we don’t want to stop when there is an error, we want to keep going. <code>Promise.allSettled()</code> allows us to do that:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">downloadText</span>(<span class="hljs-params">url</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">fetch</span>(url)</code>
+<code>    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">response</span>) =&gt;</span> {</code>
+<code>      <span class="hljs-keyword">if</span> (!response.<span class="hljs-property">ok</span>) {</code>
+<code>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(response.<span class="hljs-property">statusText</span>);</code>
+<code>      }</code>
+<code>      <span class="hljs-keyword">return</span> response.<span class="hljs-title function_">text</span>();</code>
+<code>    });</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">const</span> urls = [</code>
+<code>  <span class="hljs-string">'http://example.com/exists.txt'</span>,</code>
+<code>  <span class="hljs-string">'http://example.com/missing.txt'</span>,</code>
+<code>];</code>
+<code/>
+<code><span class="hljs-keyword">const</span> result = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">allSettled</span>(</code>
+<code>  urls.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">url</span> =&gt;</span> <span class="hljs-title function_">downloadText</span>(url))</code>
+<code>);</code>
+<code>result.<span class="hljs-title function_">then</span>(</code>
+<code>  <span class="hljs-function">(<span class="hljs-params">arr</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>      arr,</code>
+<code>      [</code>
+<code>        {</code>
+<code>          <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>,</code>
+<code>          <span class="hljs-attr">value</span>: <span class="hljs-string">'Hello!'</span>,</code>
+<code>        },</code>
+<code>        {</code>
+<code>          <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>,</code>
+<code>          <span class="hljs-attr">reason</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Not Found'</span>),</code>
+<code>        },</code>
+<code>      ]</code>
+<code>    )</code>
+<code>  }</code>
+<code>);</code>
+</pre>
+<h5 id="a-simple-implementation-of-promiseallsettled"><a class="heading-id-link" href="#a-simple-implementation-of-promiseallsettled">43.5.5.3 A simple implementation of <code>Promise.allSettled()</code></a></h5>
+<p>This is a simplified implementation of <code>Promise.allSettled()</code> (e.g., it performs no safety checks):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">allSettled</span>(<span class="hljs-params">iterable</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">let</span> elementCount = <span class="hljs-number">0</span>;</code>
+<code>    <span class="hljs-keyword">let</span> result;</code>
+<code/>
+<code>    <span class="hljs-keyword">function</span> <span class="hljs-title function_">addElementToResult</span>(<span class="hljs-params">i, elem</span>) {</code>
+<code>      result[i] = elem;</code>
+<code>      elementCount++;</code>
+<code>      <span class="hljs-keyword">if</span> (elementCount === result.<span class="hljs-property">length</span>) {</code>
+<code>        <span class="hljs-title function_">resolve</span>(result);</code>
+<code>      }</code>
+<code>    }</code>
+<code/>
+<code>    <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>;</code>
+<code>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> promise <span class="hljs-keyword">of</span> iterable) {</code>
+<code>      <span class="hljs-comment">// Capture the current value of `index`</span></code>
+<code>      <span class="hljs-keyword">const</span> currentIndex = index;</code>
+<code>      promise.<span class="hljs-title function_">then</span>(</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> <span class="hljs-title function_">addElementToResult</span>(</code>
+<code>          currentIndex, {</code>
+<code>            <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>,</code>
+<code>            value</code>
+<code>          }</code>
+<code>        ),</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> <span class="hljs-title function_">addElementToResult</span>(</code>
+<code>          currentIndex, {</code>
+<code>            <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>,</code>
+<code>            reason</code>
+<code>          }</code>
+<code>        )</code>
+<code>      );</code>
+<code>      index++;</code>
+<code>    }</code>
+<code>    <span class="hljs-keyword">if</span> (index === <span class="hljs-number">0</span>) {</code>
+<code>      <span class="hljs-comment">// Resolution is normally triggered by addElementToResult()</span></code>
+<code>      <span class="hljs-title function_">resolve</span>([]);</code>
+<code>      <span class="hljs-keyword">return</span>;</code>
+<code>    }</code>
+<code>    <span class="hljs-comment">// Now we know how many Promises there are in `iterable`.</span></code>
+<code>    <span class="hljs-comment">// We can wait until now with initializing `result` because</span></code>
+<code>    <span class="hljs-comment">// the callbacks of .then() are executed asynchronously.</span></code>
+<code>    result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(index);</code>
+<code>  });</code>
+<code>}</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercises: Promise combinator methods</strong></p>
+  <div class="boxout-vspace"/>
+  <ul>
+    <li>
+      <p>Getting the highest fulfillment value of an iterable over Promises: <code>exercises/promises/get-highest-fulfillment_test.mjs</code></p>
+    </li>
+    <li>
+      <p>Implementing <code>Promise.anySettled()</code>: <code>exercises/promises/promise-any-settled_test.mjs</code></p>
+    </li>
+  </ul>
+</div>
+<h4 id="shortcircuiting-advanced"><a class="heading-id-link" href="#shortcircuiting-advanced">43.5.6 Short-circuiting<span> (advanced)</span></a></h4>
+<p>For a Promise combinator, <em>short-circuiting</em> means that the output Promise is settled early – before all input Promises are settled. The following combinators short-circuit:</p>
+<ul>
+  <li>
+    <code>Promise.all()</code>: The output Promise is rejected as soon as one input Promise is rejected.
+  </li>
+  <li>
+    <code>Promise.race()</code>: The output Promise is settled as soon as one input Promise is settled.
+  </li>
+  <li>
+    <code>Promise.any()</code>: The output Promise is fulfilled as soon as one input Promise is fulfilled.
+  </li>
+</ul>
+<p>Once again, settling early does not mean that the operations behind the ignored Promises are stopped. It just means that their settlements are ignored.</p>
+<h3 id="concurrency-and-promiseall-advanced"><a class="heading-id-link" href="#concurrency-and-promiseall-advanced">43.6 Concurrency and <code>Promise.all()</code><span> (advanced)</span></a></h3>
+<h4 id="sequential-execution-vs-concurrent-execution"><a class="heading-id-link" href="#sequential-execution-vs-concurrent-execution">43.6.1 Sequential execution vs. concurrent execution</a></h4>
+<p>Consider the following code:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title function_">asyncFunc1</span> = (<span class="hljs-params">) =&gt; <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'one'</span>);</span></code>
+<code><span class="hljs-params"><span class="hljs-keyword">const</span> <span class="hljs-title function_">asyncFunc2</span> = (<span class="hljs-params"/>) =&gt; <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'two'</span>);</span></code>
+<code/>
+<code><span class="hljs-params"><span class="hljs-title function_">asyncFunc1</span>()</span></code>
+<code><span class="hljs-params">  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">    assert.<span class="hljs-title function_">equal</span>(result1, <span class="hljs-string">'one'</span>);</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc2</span>();</span></code>
+<code><span class="hljs-params">  })</span></code>
+<code><span class="hljs-params">  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result2</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">    assert.<span class="hljs-title function_">equal</span>(result2, <span class="hljs-string">'two'</span>);</span></code>
+<code><span class="hljs-params">  });</span></code>
+</pre>
+<p>Using <code>.then()</code> in this manner executes Promise-based functions <em>sequentially</em>: only after the result of <code>asyncFunc1()</code> is settled will <code>asyncFunc2()</code> be executed.</p>
+<p><code>Promise.all()</code> helps execute Promise-based functions more concurrently:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([<span class="hljs-title function_">asyncFunc1</span>(), <span class="hljs-title function_">asyncFunc2</span>()])</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">arr</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">deepEqual</span>(arr, [<span class="hljs-string">'one'</span>, <span class="hljs-string">'two'</span>]);</code>
+<code>  });</code>
+</pre>
+<h4 id="focus-on-async-start"><a class="heading-id-link" href="#focus-on-async-start">43.6.2 Concurrency tip: focus on when operations start</a></h4>
+<p>Tip for determining how “concurrent” asynchronous code is: Focus on when asynchronous operations start, not on how their Promises are handled.</p>
+<p>For example, each of the following functions executes <code>asyncFunc1()</code> and <code>asyncFunc2()</code> concurrently because they are started at nearly the same time.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">concurrentAll</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([<span class="hljs-title function_">asyncFunc1</span>(), <span class="hljs-title function_">asyncFunc2</span>()]);</span></code>
+<code><span class="hljs-params">}</span></code>
+<code/>
+<code><span class="hljs-params"><span class="hljs-keyword">function</span> <span class="hljs-title function_">concurrentThen</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> p1 = <span class="hljs-title function_">asyncFunc1</span>();</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> p2 = <span class="hljs-title function_">asyncFunc2</span>();</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> p1.<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">r1</span> =&gt;</span> p2.<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">r2</span> =&gt;</span> [r1, r2]));</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>On the other hand, both of the following functions execute <code>asyncFunc1()</code> and <code>asyncFunc2()</code> sequentially: <code>asyncFunc2()</code> is only invoked after the Promise of <code>asyncFunc1()</code> is fulfilled.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">sequentialThen</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc1</span>()</span></code>
+<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">r1</span> =&gt;</span> <span class="hljs-title function_">asyncFunc2</span>()</span></code>
+<code><span class="hljs-params">      .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">r2</span> =&gt;</span> [r1, r2]));</span></code>
+<code><span class="hljs-params">}</span></code>
+<code/>
+<code><span class="hljs-params"><span class="hljs-keyword">function</span> <span class="hljs-title function_">sequentialAll</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> p1 = <span class="hljs-title function_">asyncFunc1</span>();</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> p2 = p1.<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">asyncFunc2</span>());</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([p1, p2]);</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h4 id="promise-all-is-fork-join"><a class="heading-id-link" href="#promise-all-is-fork-join">43.6.3 <code>Promise.all()</code> is fork-join</a></h4>
+<p><code>Promise.all()</code> is loosely related to the concurrency pattern “fork join”. Let’s revisit an example that we have encountered <a href="#promise-all-download-text">previously</a>:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([</code>
+<code>    <span class="hljs-comment">// (A) fork</span></code>
+<code>    <span class="hljs-title function_">downloadText</span>(<span class="hljs-string">'http://example.com/first.txt'</span>),</code>
+<code>    <span class="hljs-title function_">downloadText</span>(<span class="hljs-string">'http://example.com/second.txt'</span>),</code>
+<code>  ])</code>
+<code>  <span class="hljs-comment">// (B) join</span></code>
+<code>  .<span class="hljs-title function_">then</span>(</code>
+<code>    <span class="hljs-function">(<span class="hljs-params">arr</span>) =&gt;</span> assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>      arr, [<span class="hljs-string">'First!'</span>, <span class="hljs-string">'Second!'</span>]</code>
+<code>    ));</code>
+</pre>
+<ul>
+  <li>
+    Fork: In line A, we are forking two asynchronous computations and executing them concurrently.
+  </li>
+  <li>
+    Join: In line B, we are joining these computations into a single “thread” which is started once all of them are done.
+  </li>
+</ul>
+<h3 id="tips-for-chaining-promises"><a class="heading-id-link" href="#tips-for-chaining-promises">43.7 Tips for chaining Promises</a></h3>
+<p>This section gives tips for chaining Promises.</p>
+<h4 id="chaining-mistake-losing-thetail"><a class="heading-id-link" href="#chaining-mistake-losing-thetail">43.7.1 Chaining mistake: losing the tail</a></h4>
+<p>Problem:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Don’t do this</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> promise = <span class="hljs-title function_">asyncFunc</span>();</span></code>
+<code><span class="hljs-params">  promise.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">  });</span></code>
+<code/>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> promise;</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>Computation starts with the Promise returned by <code>asyncFunc()</code>. But afterward, computation continues and another Promise is created via <code>.then()</code>. <code>foo()</code> returns the former Promise, but should return the latter. This is how to fix it:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">foo</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> promise = <span class="hljs-title function_">asyncFunc</span>();</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> promise.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-comment">// ···</span></span></code>
+<code><span class="hljs-params">  });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h4 id="chaining-mistake-nesting"><a class="heading-id-link" href="#chaining-mistake-nesting">43.7.2 Chaining mistake: nesting</a></h4>
+<p>Problem:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Don’t do this</span></code>
+<code><span class="hljs-title function_">asyncFunc1</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc2</span>()</code>
+<code>    .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result2</span>) =&gt;</span> { <span class="hljs-comment">// (A)</span></code>
+<code>      <span class="hljs-comment">// ···</span></code>
+<code>    });</code>
+<code>  });</code>
+</pre>
+<p>The <code>.then()</code> in line A is nested. A flat structure would be better:</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">asyncFunc1</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc2</span>();</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result2</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  });</code>
+</pre>
+<h4 id="chaining-mistake-more-nesting-than-necessary"><a class="heading-id-link" href="#chaining-mistake-more-nesting-than-necessary">43.7.3 Chaining mistake: more nesting than necessary</a></h4>
+<p>This is another example of avoidable nesting:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Don’t do this</span></code>
+<code><span class="hljs-title function_">asyncFunc1</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">if</span> (result1 &lt; <span class="hljs-number">0</span>) {</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFuncA</span>()</code>
+<code>      .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">resultA</span> =&gt;</span> <span class="hljs-string">'Result: '</span> + resultA);</code>
+<code>    } <span class="hljs-keyword">else</span> {</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFuncB</span>()</code>
+<code>      .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">resultB</span> =&gt;</span> <span class="hljs-string">'Result: '</span> + resultB);</code>
+<code>    }</code>
+<code>  });</code>
+</pre>
+<p>We can once again get a flat structure:</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">asyncFunc1</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result1</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">return</span> result1 &lt; <span class="hljs-number">0</span> ? <span class="hljs-title function_">asyncFuncA</span>() : <span class="hljs-title function_">asyncFuncB</span>();</code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">resultAB</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-string">'Result: '</span> + resultAB;</code>
+<code>  });</code>
+</pre>
+<h4 id="not-all-nesting-is-bad"><a class="heading-id-link" href="#not-all-nesting-is-bad">43.7.4 Not all nesting is bad</a></h4>
+<p>In the following code, we actually benefit from nesting:</p>
+<pre class="language-js">
+<code>db.<span class="hljs-title function_">open</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">connection</span>) =&gt;</span> { <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-keyword">return</span> connection.<span class="hljs-title function_">select</span>({ <span class="hljs-attr">name</span>: <span class="hljs-string">'Jane'</span> })</code>
+<code>      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> { <span class="hljs-comment">// (B)</span></code>
+<code>        <span class="hljs-comment">// Process result</span></code>
+<code>        <span class="hljs-comment">// Use `connection` to make more queries</span></code>
+<code>      })</code>
+<code>      <span class="hljs-comment">// ···</span></code>
+<code>      .<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {</code>
+<code>        connection.<span class="hljs-title function_">close</span>(); <span class="hljs-comment">// (C)</span></code>
+<code>      });</code>
+<code>  })</code>
+</pre>
+<p>We are receiving an asynchronous result in line A. In line B, we are nesting so that we have access to variable <code>connection</code> inside the callback and in line C.</p>
+<h4 id="chaining-mistake-creating-promises-instead-of-chaining"><a class="heading-id-link" href="#chaining-mistake-creating-promises-instead-of-chaining">43.7.5 Chaining mistake: creating Promises instead of chaining</a></h4>
+<p>Problem:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Don’t do this</span></code>
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Model</span> {</code>
+<code>  <span class="hljs-title function_">insertInto</span>(<span class="hljs-params">db</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> { <span class="hljs-comment">// (A)</span></code>
+<code>      db.<span class="hljs-title function_">insert</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">fields</span>)</code>
+<code>        .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">resultCode</span>) =&gt;</span> {</code>
+<code>          <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">notifyObservers</span>({<span class="hljs-attr">event</span>: <span class="hljs-string">'created'</span>, <span class="hljs-attr">model</span>: <span class="hljs-variable language_">this</span>});</code>
+<code>          <span class="hljs-title function_">resolve</span>(resultCode);</code>
+<code>        }).<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {</code>
+<code>          <span class="hljs-title function_">reject</span>(err);</code>
+<code>        })</code>
+<code>    });</code>
+<code>  }</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>In line A, we are creating a Promise to deliver the result of <code>db.insert()</code>. That is unnecessarily verbose and can be simplified:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Model</span> {</code>
+<code>  <span class="hljs-title function_">insertInto</span>(<span class="hljs-params">db</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> db.<span class="hljs-title function_">insert</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">fields</span>)</code>
+<code>      .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">resultCode</span>) =&gt;</span> {</code>
+<code>        <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">notifyObservers</span>({<span class="hljs-attr">event</span>: <span class="hljs-string">'created'</span>, <span class="hljs-attr">model</span>: <span class="hljs-variable language_">this</span>});</code>
+<code>        <span class="hljs-keyword">return</span> resultCode;</code>
+<code>      });</code>
+<code>  }</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>The key idea is that we don’t need to create a Promise; we can return the result of the <code>.then()</code> call. An additional benefit is that we don’t need to catch and re-reject the failure of <code>db.insert()</code>. We simply pass its rejection on to the caller of <code>.insertInto()</code>.</p>
+<h3 id="thenables-promiselike-objects-advanced"><a class="heading-id-link" href="#thenables-promiselike-objects-advanced">43.8 Thenables (Promise-like objects)<span> (advanced)</span></a></h3>
+<p>When Promises were added to JavaScript’s standard library in ES6 (in 2015), several Promise libraries were popular and widely used. To make those libraries interoperable with the built-in API, TC39 defined a minimal interface for Promise-like objects that is compatible with most of those libraries. As often as possible, the API does not require objects to be Promises – it’s enough if they are Promise-like. If necessary, the API transparently converts Promise-like objects to API Promises.</p>
+<p>So what minimal interface describes the essence of Promises? It only needs a method <code>.then()</code> that lets us register callbacks:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promiseLikeObject = {</code>
+<code>  <span class="hljs-title function_">then</span>(<span class="hljs-params">onFulfilled, onRejected</span>) {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  },</code>
+<code>};</code>
+</pre>
+<p>This is a simplified version of TypeScript’s type for Promise-like objects:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">PromiseLike</span>&lt;T&gt; {</code>
+<code>  then&lt;<span class="hljs-title class_">TResult1</span>, <span class="hljs-title class_">TResult2</span>&gt;(</code>
+<code>    onFulfilled?: <span class="hljs-function">(<span class="hljs-params">value: T</span>) =&gt;</span> <span class="hljs-title class_">TResult1</span> | <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult1</span>&gt;,</code>
+<code>    onRejected?: <span class="hljs-function">(<span class="hljs-params">reason: <span class="hljs-built_in">any</span></span>) =&gt;</span> <span class="hljs-title class_">TResult2</span> | <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult2</span>&gt;</code>
+<code>  ): <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult1</span> | <span class="hljs-title class_">TResult2</span>&gt;;</code>
+<code>}</code>
+</pre>
+<p>This interface is sufficient because <code>.catch()</code> is actually just a convenient way of invoking <code>.then()</code> (whose second parameter we have ignored previously) – the following two invocations are equivalent:</p>
+<pre class="language-js">
+<code>promise.<span class="hljs-title function_">catch</span>(onRejected)</code>
+<code>promise.<span class="hljs-title function_">then</span>(<span class="hljs-literal">undefined</span>, onRejected)</code>
+</pre>
+<p>Because Promise-like objects only have a method <code>.then()</code>, they are also called <em>thenables</em>.</p>
+<h4 id="example-a-fulfilled-thenable"><a class="heading-id-link" href="#example-a-fulfilled-thenable">43.8.1 Example: a fulfilled thenable</a></h4>
+<p>The following object is a fulfilled thenable:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> fulfilledThenable = {</code>
+<code>  <span class="hljs-title function_">then</span>(<span class="hljs-params">onFulfilled, onRejected</span>) {</code>
+<code>    <span class="hljs-title function_">onFulfilled</span>(<span class="hljs-string">'Success!'</span>);</code>
+<code>  },</code>
+<code>};</code>
+</pre>
+<p>If we pass the thenable to <code>Promise.resolve()</code>, it converts it to a Promise:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> promise = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(fulfilledThenable);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  promise <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Promise</span>, <span class="hljs-literal">true</span></code>
+<code>);</code>
+</pre>
+<p>Returning the thenable from a callback is equivalent to returning a Promise:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> fulfilledThenable)</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(value, <span class="hljs-string">'Success!'</span>);</code>
+<code>  });</code>
+</pre>
+<p>We can also resolve a new Promise with a thenable:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> {</code>
+<code>  <span class="hljs-title function_">resolve</span>(fulfilledThenable);</code>
+<code>}).<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(value, <span class="hljs-string">'Success!'</span>);</code>
+<code>});</code>
+</pre>
+<h4 id="example-a-rejected-thenable"><a class="heading-id-link" href="#example-a-rejected-thenable">43.8.2 Example: a rejected thenable</a></h4>
+<p>The following code demonstrates a rejected thenable:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> rejectedThenable = {</code>
+<code>  <span class="hljs-title function_">then</span>(<span class="hljs-params">onFulfilled, onRejected</span>) {</code>
+<code>    <span class="hljs-title function_">onRejected</span>(<span class="hljs-string">'Error!'</span>);</code>
+<code>  },</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(rejectedThenable)</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(reason, <span class="hljs-string">'Error!'</span>);</code>
+<code>  });</code>
+<code/>
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>()</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">() =&gt;</span> rejectedThenable)</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {</code>
+<code>    assert.<span class="hljs-title function_">equal</span>(reason, <span class="hljs-string">'Error!'</span>);</code>
+<code>  });</code>
+<code/>
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve</span>) =&gt;</span> {</code>
+<code>  <span class="hljs-title function_">resolve</span>(rejectedThenable);</code>
+<code>}).<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(reason, <span class="hljs-string">'Error!'</span>);</code>
+<code>});</code>
+</pre>
+<h3 id="quickref-Promise"><a class="heading-id-link" href="#quickref-Promise">43.9 Quick reference: <code>Promise</code></a></h3>
+<h4 id="new-promise"><a class="heading-id-link" href="#new-promise">43.9.1 <code>new Promise()</code></a></h4>
+<ul>
+  <li>
+    <p><code id="qref-new-Promise">new Promise(executor)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>&lt;T&gt;(</code>
+<code>  <span class="hljs-attr">executor</span>: <span class="hljs-function">(</span></code>
+<code><span class="hljs-function"><span class="hljs-params">    resolve: (value: T | PromiseLike&lt;T&gt;) =&gt; <span class="hljs-built_in">void</span>,</span></span></code>
+<code><span class="hljs-function"><span class="hljs-params">    reject: (reason?: <span class="hljs-built_in">any</span>) =&gt; <span class="hljs-built_in">void</span></span></span></code>
+<code><span class="hljs-function"><span class="hljs-params">  </span>) =&gt;</span> <span class="hljs-built_in">void</span></code>
+<code>): <span class="hljs-title class_">Promise</span>&lt;T&gt;</code>
+</pre>
+    <p>This constructor creates a new Promise. It passes functions to its callback with which that Promise can be resolved or rejected:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Create a Promise and resolve it</span></code>
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {</code>
+<code>  <span class="hljs-title function_">resolve</span>(<span class="hljs-string">'Result'</span>);</code>
+<code>}).<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(value, <span class="hljs-string">'Result'</span>);</code>
+<code>});</code>
+<code/>
+<code><span class="hljs-comment">// Create a Promise and reject it</span></code>
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {</code>
+<code>  <span class="hljs-title function_">reject</span>(<span class="hljs-string">'Error'</span>);</code>
+<code>}).<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(reason, <span class="hljs-string">'Error'</span>);</code>
+<code>});</code>
+</pre>
+  </li>
+</ul>
+<h4 id="promise-creating-promises"><a class="heading-id-link" href="#promise-creating-promises">43.9.2 <code>Promise.*</code>: creating Promises</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-Promise.withResolvers">Promise.withResolvers()</code> <span class="ibox ibox-small" size="small">ES2024</span></p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">withResolvers</span>&lt;T&gt;(): <span class="hljs-title class_">PromiseWithResolvers</span>&lt;T&gt;;</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">PromiseWithResolvers</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-attr">promise</span>: <span class="hljs-title class_">Promise</span>&lt;T&gt;;</code>
+<code>  <span class="hljs-attr">resolve</span>: <span class="hljs-function">(<span class="hljs-params">value: T | PromiseLike&lt;T&gt;</span>) =&gt;</span> <span class="hljs-built_in">void</span>;</code>
+<code>  <span class="hljs-attr">reject</span>: <span class="hljs-function">(<span class="hljs-params">reason?: <span class="hljs-built_in">any</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>;</code>
+<code>}</code>
+</pre>
+    <p>This method creates a Promise and returns an object that contains that Promise plus functions for resolving or rejecting it.</p>
+  </li>
+  <li>
+    <p><code id="qref-Promise.resolve">Promise.resolve(value?)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Creates a Promise, resolves it with <code>value</code> and returns it:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'Yes'</span>)</code>
+<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(value, <span class="hljs-string">'Yes'</span>);</code>
+<code>});</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Promise.reject">Promise.reject(reason?)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Creates a Promise, rejects it with <code>value</code> and returns it:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'No'</span>)</code>
+<code>.<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(reason, <span class="hljs-string">'No'</span>);</code>
+<code>});</code>
+</pre>
+  </li>
+</ul>
+<h4 id="promise-miscellaneous-functionality"><a class="heading-id-link" href="#promise-miscellaneous-functionality">43.9.3 <code>Promise.*</code>: miscellaneous functionality</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-Promise.try">Promise.try(callback, ...args)</code> <span class="ibox ibox-small" size="small">ES2025</span></p>
+    <p>Creates a Promise by treating <code>callback</code> as if it were a <code>.then()</code> callback:</p>
+    <ul>
+      <li>
+        It invokes <code>callback</code> with zero or more arguments.
+      </li>
+      <li>
+        If <code>callback</code> throws an exception, <code>Promise.try()</code> turns it into a rejected Promise and returns it.
+      </li>
+      <li>
+        If <code>callback</code> returns a value, <code>Promise.try()</code> resolves it to a Promise and returns it.
+      </li>
+    </ul>
+    <p>The use case for this method is starting a Promise chain with code that is not purely asynchronous – e.g.:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">computeAsync</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">try</span>(<span class="hljs-function">() =&gt;</span> {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">const</span> value = <span class="hljs-title function_">syncFuncMightThrow</span>();</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title function_">asyncFunc</span>(value);</span></code>
+<code><span class="hljs-params">  });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+  </li>
+</ul>
+<h4 id="promise-promise-combinators"><a class="heading-id-link" href="#promise-promise-combinators">43.9.4 <code>Promise.*</code>: Promise combinators</a></h4>
+<p>Glossary:</p>
+<ul>
+  <li>
+    <em>Short-circuiting</em>: In some cases, the output Promise can be settled early (before every input Promise is settled). That is called short-circuiting.
+  </li>
+</ul>
+<p>These are the Promise combinators:</p>
+<ul>
+  <li>
+    <p><code id="qref-Promise.all">Promise.all(promises)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">all</span>&lt;T&gt;(</code>
+<code>  <span class="hljs-attr">promises</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt;</code>
+<code>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Array</span>&lt;T&gt;&gt;</code>
+</pre>
+    <ul>
+      <li>
+        <strong>Fulfillment</strong> of <code>P</code>: if all input Promises are fulfilled.
+        <ul>
+          <li>
+            Value: Array with the fulfillment values of the input Promises
+          </li>
+        </ul>
+      </li>
+      <li>
+        <strong>Rejection</strong> of <code>P</code>: if one input Promise is rejected.
+        <ul>
+          <li>
+            Value: rejection value of the input Promise
+          </li>
+        </ul>
+      </li>
+      <li>
+        Short-circuits: yes
+      </li>
+      <li>
+        Use case: processing Arrays with Promises (rejections terminate processing)
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><code id="qref-Promise.race">Promise.race(promises)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">race</span>&lt;T&gt;(</code>
+<code>  <span class="hljs-attr">promises</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt;</code>
+<code>): <span class="hljs-title class_">Promise</span>&lt;T&gt;</code>
+</pre>
+    <ul>
+      <li>
+        <strong>Settlement</strong> of <code>P</code>: if the first input Promise is settled.
+        <ul>
+          <li>
+            Value: settlement value of the input Promise
+          </li>
+        </ul>
+      </li>
+      <li>
+        Short-circuits: yes
+      </li>
+      <li>
+        Use case: reacting to the first settlement among multiple Promises
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><code id="qref-Promise.any">Promise.any(promises)</code> <span class="ibox ibox-small" size="small">ES2021</span></p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">any</span>&lt;T&gt;(</code>
+<code>  <span class="hljs-attr">promises</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt;</code>
+<code>): <span class="hljs-title class_">Promise</span>&lt;T&gt;</code>
+</pre>
+    <ul>
+      <li>
+        <strong>Fulfillment</strong> of <code>P</code>: if one input Promise is fulfilled.
+        <ul>
+          <li>
+            Value: fulfillment value of the input Promise
+          </li>
+        </ul>
+      </li>
+      <li>
+        <strong>Rejection</strong> of <code>P</code>: if all input Promises are rejected.
+        <ul>
+          <li>
+            Value: <code>AggregateError</code> that contains the rejection values of the input Promises.
+          </li>
+        </ul>
+      </li>
+      <li>
+        Short-circuits: yes
+      </li>
+      <li>
+        Use case: Among several asynchronous computations, we are only interested in the first successful one. That is, we are trying several approaches and the fastest one should win.
+      </li>
+    </ul>
+    <p>This is the type signature of <code>AggregateError</code> (a few members were omitted):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">AggregateError</span> {</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">errors: Iterable&lt;<span class="hljs-built_in">any</span>&gt;, message: <span class="hljs-built_in">string</span></span>);</code>
+<code>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">errors</span>(): <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">any</span>&gt;;</code>
+<code>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">message</span>(): <span class="hljs-built_in">string</span>;</code>
+<code>}</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Promise.allSettled">Promise.allSettled(promises)</code> <span class="ibox ibox-small" size="small">ES2020</span></p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-property">allSettled</span>&lt;T&gt;(</code>
+<code>  <span class="hljs-attr">promises</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt;</code>
+<code>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">SettlementObject</span>&lt;T&gt;&gt;&gt;</code>
+</pre>
+    <ul>
+      <li>
+        <strong>Fulfillment</strong> of <code>P</code>: if all input Promise are settled.
+        <ul>
+          <li>
+            Value: Array with one <em>settlement object</em> for each input Promise. A settlement object contains the kind of settlement and the settlement value.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <strong>Rejection</strong> of <code>P</code>: if there is an error when iterating over the input Promises.
+      </li>
+      <li>
+        Short-circuits: no
+      </li>
+      <li>
+        Use case: processing Arrays with Promises (rejections don’t terminate processing)
+      </li>
+    </ul>
+    <p>This is the type signature of <code>SettlementObject</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">SettlementObject</span>&lt;T&gt; = <span class="hljs-title class_">FulfillmentObject</span>&lt;T&gt; | <span class="hljs-title class_">RejectionObject</span>;</code>
+<code/>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">FulfillmentObject</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>;</code>
+<code>  <span class="hljs-attr">value</span>: T;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">RejectionObject</span> {</code>
+<code>  <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>;</code>
+<code>  <span class="hljs-attr">reason</span>: <span class="hljs-built_in">unknown</span>;</code>
+<code>}</code>
+</pre>
+  </li>
+</ul>
+<h4 id="promiseprototype"><a class="heading-id-link" href="#promiseprototype">43.9.5 <code>Promise.prototype.*</code></a></h4>
+<ul>
+  <li>
+    <p><code id="qref-Promise.prototype.then">Promise.prototype.then(onFulfilled?, onRejected?)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Promise</span>&lt;T&gt; {</code>
+<code>  then&lt;<span class="hljs-title class_">TResult1</span>, <span class="hljs-title class_">TResult2</span>&gt;(</code>
+<code>    onFulfilled?: <span class="hljs-function">(<span class="hljs-params">value: T</span>) =&gt;</span> <span class="hljs-title class_">TResult1</span> | <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult1</span>&gt;,</code>
+<code>    onRejected?: <span class="hljs-function">(<span class="hljs-params">reason: <span class="hljs-built_in">any</span></span>) =&gt;</span> <span class="hljs-title class_">TResult2</span> | <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult2</span>&gt;</code>
+<code>  ): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">TResult1</span> | <span class="hljs-title class_">TResult2</span>&gt;;</code>
+<code>}</code>
+</pre>
+    <p>Registers callbacks for the fulfillment value and/or the rejection value of a Promise. Usually, only the first parameter <code>onFulfilled</code> is used. <code>.catch()</code> provides a more self-descriptive alternative to using the second parameter <code>onRejected</code>.</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'Yes'</span>)</code>
+<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">value</span>) =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(value, <span class="hljs-string">'Yes'</span>);</code>
+<code>});</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Promise.prototype.catch">Promise.prototype.catch(onRejected)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Promise</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-keyword">catch</span>&lt;<span class="hljs-title class_">TResult</span>&gt;(</code>
+<code>    onrejected?: <span class="hljs-function">(<span class="hljs-params">reason: <span class="hljs-built_in">any</span></span>) =&gt;</span> <span class="hljs-title class_">TResult2</span> | <span class="hljs-title class_">PromiseLike</span>&lt;<span class="hljs-title class_">TResult2</span>&gt;</code>
+<code>  ): <span class="hljs-title class_">Promise</span>&lt;T | <span class="hljs-title class_">TResult</span>&gt;;</code>
+<code>}</code>
+</pre>
+    <p>Registers a callback for the rejection value of a Promise. A more self-descriptive alternative to using <code>.then()</code> for that purpose – the following two invocations are equivalent:</p>
+<pre class="language-js">
+<code>promise.<span class="hljs-title function_">catch</span>(onRejected)</code>
+<code>promise.<span class="hljs-title function_">then</span>(<span class="hljs-literal">undefined</span>, onRejected)</code>
+</pre>
+    <p>Example:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'No'</span>)</code>
+<code>.<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(reason, <span class="hljs-string">'No'</span>);</code>
+<code>});</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Promise.prototype.finally">Promise.prototype.finally(onFinally)</code> <span class="ibox ibox-small" size="small">ES2018</span></p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Promise</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-comment">// Returning a rejected Promise from onFinally does have an effect!</span></code>
+<code>  <span class="hljs-title function_">finally</span>(onFinally?: <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">void</span>);</code>
+<code>}</code>
+</pre>
+    <p>Often used as follows:</p>
+<pre class="language-js">
+<code>somePromise</code>
+<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  })</code>
+<code>  .<span class="hljs-title function_">finally</span>(<span class="hljs-function">() =&gt;</span> {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  })</code>
+<code>;</code>
+</pre>
+    <p>The <code>.finally()</code> callback is always executed – independently of <code>somePromise</code> and the values returned by <code>.then()</code> and/or <code>.catch()</code>. The callback only has an effect if it returns a rejected Promise or throws an exception. Then the final Promise is rejected with the rejection value or the exception.</p>
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

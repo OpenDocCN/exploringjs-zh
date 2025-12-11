@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>36 Maps (Map) ES6</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>36 Maps (Map) ES6</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_maps.html">https://exploringjs.com/js/book/ch_maps.html</a></blockquote>
+
+        
+    
+    
+    
+<p><span id="index-entry-Map"/></p>
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#using-maps">36.1 Using Maps</a>
+      <ol>
+        <li>
+          <a href="#creating-maps">36.1.1 Creating Maps</a>
+        </li>
+        <li>
+          <a href="#working-with-single-entries">36.1.2 Working with single entries</a>
+        </li>
+        <li>
+          <a href="#determining-the-size-of-a-map-and-clearing-it">36.1.3 Determining the size of a Map and clearing it</a>
+        </li>
+        <li>
+          <a href="#example-counting-characters">36.1.4 Example: Counting characters</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#iterating-over-maps">36.2 Iterating over Maps</a>
+      <ol>
+        <li>
+          <a href="#looping-over-maps">36.2.1 Looping over Maps</a>
+        </li>
+        <li>
+          <a href="#maps-insertion-order-entries">36.2.2 Listed in insertion order: entries, keys, values</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#converting-from-and-to-maps">36.3 Converting from and to Maps</a>
+      <ol>
+        <li>
+          <a href="#converting-map-entries-to-arrays">36.3.1 Converting keys, values, entries to Arrays</a>
+        </li>
+        <li>
+          <a href="#converting-between-maps-and-objects">36.3.2 Converting between Maps and Objects</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#processing-maps">36.4 Processing Maps</a>
+      <ol>
+        <li>
+          <a href="#copying-maps">36.4.1 Copying Maps</a>
+        </li>
+        <li>
+          <a href="#combining-maps">36.4.2 Combining multiple Maps into a single Map</a>
+        </li>
+        <li>
+          <a href="#mapping-filtering-maps">36.4.3 Mapping and filtering Maps via iterator methods<span> <sup>ES2025</sup></span></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#a-few-more-details-about-the-keys-of-maps-advanced">36.5 A few more details about the keys of Maps<span> (advanced)</span></a>
+      <ol>
+        <li>
+          <a href="#map-key-equality">36.5.1 What keys are considered equal?</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#quickref-maps">36.6 Quick reference: <code>Map</code></a>
+      <ol>
+        <li>
+          <a href="#new-map">36.6.1 <code>new Map()</code></a>
+        </li>
+        <li>
+          <a href="#map">36.6.2 <code>Map.*</code></a>
+        </li>
+        <li>
+          <a href="#mapprototype-handling-single-entries">36.6.3 <code>Map.prototype.*</code>: handling single entries</a>
+        </li>
+        <li>
+          <a href="#mapprototype-handling-all-entries">36.6.4 <code>Map.prototype</code>: handling all entries</a>
+        </li>
+        <li>
+          <a href="#mapprototype-iterating-and-looping">36.6.5 <code>Map.prototype</code>: iterating and looping</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#faq-maps">36.7 FAQ: Maps</a>
+      <ol>
+        <li>
+          <a href="#when-should-i-use-a-map-and-when-should-i-use-an-object">36.7.1 When should I use a Map, and when should I use an object?</a>
+        </li>
+        <li>
+          <a href="#when-would-i-use-an-object-as-a-key-in-a-map">36.7.2 When would I use an object as a key in a Map?</a>
+        </li>
+        <li>
+          <a href="#why-do-maps-preserve-the-insertion-order-of-entries">36.7.3 Why do Maps preserve the insertion order of entries?</a>
+        </li>
+        <li>
+          <a href="#collection-size-vs-length">36.7.4 Why do Maps have a <code>.size</code>, while Arrays have a <code>.length</code>?</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p>Before ES6, JavaScript didn’t have a data structure for dictionaries and (ab)used objects as dictionaries from strings to arbitrary values. ES6 brought Maps, which are dictionaries from arbitrary values to arbitrary values.</p>
+<h3 id="using-maps"><a class="heading-id-link" href="#using-maps">36.1 Using Maps</a></h3>
+<p>An instance of <code>Map</code> maps keys to values. A single key-value mapping is called an <em>entry</em>.</p>
+<h4 id="creating-maps"><a class="heading-id-link" href="#creating-maps">36.1.1 Creating Maps</a></h4>
+<p>There are three common ways of creating Maps.</p>
+<p>First, we can use the constructor without any parameters to create an empty Map:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> emptyMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();</code>
+<code>assert.<span class="hljs-title function_">equal</span>(emptyMap.<span class="hljs-property">size</span>, <span class="hljs-number">0</span>);</code>
+</pre>
+<p>Second, we can pass an iterable (e.g., an Array) over key-value “pairs” (Arrays with two elements) to the constructor:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
+<code>  [<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>],</code>
+<code>  [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>],</code>
+<code>  [<span class="hljs-number">3</span>, <span class="hljs-string">'three'</span>], <span class="hljs-comment">// trailing comma is ignored</span></code>
+<code>]);</code>
+</pre>
+<p>Third, the <code>.set()</code> method adds entries to a Map and is chainable:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'three'</span>)</code>
+<code>;</code>
+</pre>
+<h4 id="working-with-single-entries"><a class="heading-id-link" href="#working-with-single-entries">36.1.2 Working with single entries</a></h4>
+<p><code>map.set()</code> and <code>map.get()</code> are for writing and reading values (given keys).</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();</code>
+<code/>
+<code>map.<span class="hljs-title function_">set</span>(<span class="hljs-string">'foo'</span>, <span class="hljs-number">123</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">get</span>(<span class="hljs-string">'foo'</span>), <span class="hljs-number">123</span>);</code>
+<code><span class="hljs-comment">// Unknown key:</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">get</span>(<span class="hljs-string">'bar'</span>), <span class="hljs-literal">undefined</span>);</code>
+<code><span class="hljs-comment">// Use the default value '' if an entry is missing:</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">get</span>(<span class="hljs-string">'bar'</span>) ?? <span class="hljs-string">''</span>, <span class="hljs-string">''</span>);</code>
+</pre>
+<p><code>map.has()</code> checks if a Map has an entry with a given key. <code>map.delete()</code> removes entries.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-string">'foo'</span>, <span class="hljs-number">123</span>]]);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">has</span>(<span class="hljs-string">'foo'</span>), <span class="hljs-literal">true</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">delete</span>(<span class="hljs-string">'foo'</span>), <span class="hljs-literal">true</span>)</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">has</span>(<span class="hljs-string">'foo'</span>), <span class="hljs-literal">false</span>)</code>
+</pre>
+<h4 id="determining-the-size-of-a-map-and-clearing-it"><a class="heading-id-link" href="#determining-the-size-of-a-map-and-clearing-it">36.1.3 Determining the size of a Map and clearing it</a></h4>
+<p><code>map.size</code> contains the number of entries in a Map. <code>map.clear()</code> removes all entries of a Map.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-string">'foo'</span>, <span class="hljs-literal">true</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-string">'bar'</span>, <span class="hljs-literal">false</span>)</code>
+<code>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-property">size</span>, <span class="hljs-number">2</span>)</code>
+<code>map.<span class="hljs-title function_">clear</span>();</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-property">size</span>, <span class="hljs-number">0</span>)</code>
+</pre>
+<h4 id="example-counting-characters"><a class="heading-id-link" href="#example-counting-characters">36.1.4 Example: Counting characters</a></h4>
+<p><code>countChars()</code> returns a Map that maps characters to numbers of occurrences.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">countChars</span>(<span class="hljs-params">chars</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> charCounts = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> ch <span class="hljs-keyword">of</span> chars) {</code>
+<code>    ch = ch.<span class="hljs-title function_">toLowerCase</span>();</code>
+<code>    <span class="hljs-keyword">const</span> prevCount = charCounts.<span class="hljs-title function_">get</span>(ch) ?? <span class="hljs-number">0</span>;</code>
+<code>    charCounts.<span class="hljs-title function_">set</span>(ch, prevCount+<span class="hljs-number">1</span>);</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> charCounts;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">const</span> result = <span class="hljs-title function_">countChars</span>(<span class="hljs-string">'AaBccc'</span>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title function_">countChars</span>(<span class="hljs-string">'AaBccc'</span>),</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
+<code>    [<span class="hljs-string">'a'</span>, <span class="hljs-number">2</span>],</code>
+<code>    [<span class="hljs-string">'b'</span>, <span class="hljs-number">1</span>],</code>
+<code>    [<span class="hljs-string">'c'</span>, <span class="hljs-number">3</span>],</code>
+<code>  ])</code>
+<code>);</code>
+</pre>
+<h3 id="iterating-over-maps"><a class="heading-id-link" href="#iterating-over-maps">36.2 Iterating over Maps</a></h3>
+<p>This is how Maps support iteration:</p>
+<ul>
+  <li>
+    <code>new Map()</code> accepts an iterable over key-value pairs. That will be useful later when we look at processing Maps and at converting from and to Maps.
+  </li>
+  <li>
+    The following methods return iterable iterators – whose methods will be useful later when we look at processing Maps.
+    <ul>
+      <li>
+        <code>map.keys()</code>: keys of <code>map</code>
+      </li>
+      <li>
+        <code>map.values()</code>: values of <code>map</code>
+      </li>
+      <li>
+        <code>map.entries()</code>: entries (key-value pairs) of <code>map</code>
+      </li>
+      <li>
+        <code>map[Symbol.iterator]()</code>: same as <code>map.entries()</code>
+        <ul>
+          <li>
+            This method makes instances of <code>Map</code> iterable.
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h4 id="looping-over-maps"><a class="heading-id-link" href="#looping-over-maps">36.2.1 Looping over Maps</a></h4>
+<p>Maps are iterables over key-value pairs. This is a common way of iterating over them:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-literal">false</span>, <span class="hljs-string">'no'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-literal">true</span>, <span class="hljs-string">'yes'</span>)</code>
+<code>;</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [key, value] <span class="hljs-keyword">of</span> map) { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(key) + <span class="hljs-string">' = '</span> + <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(value));</code>
+<code>}</code>
+</pre>
+<p>In line A, we use destructuring to access the components of the key-value pairs returned by the iterator.</p>
+<p>Output:</p>
+<pre>
+<code>false = "no"</code>
+<code>true = "yes"</code>
+</pre>
+<p>The following example loops over the iterable iterator returned by method <code>.keys()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> key <span class="hljs-keyword">of</span> map.<span class="hljs-title function_">keys</span>()) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(key));</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>false</code>
+<code>true</code>
+</pre>
+<h4 id="maps-insertion-order-entries"><a class="heading-id-link" href="#maps-insertion-order-entries">36.2.2 Listed in insertion order: entries, keys, values</a></h4>
+<p>Maps record in which order entries were created and honor that order when listing keys, values or entries:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
+<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-number">1</span>],</code>
+<code>  [<span class="hljs-string">'b'</span>, <span class="hljs-number">2</span>],</code>
+<code>]);</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> key <span class="hljs-keyword">of</span> map1.<span class="hljs-title function_">keys</span>()) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(key));</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>"a"</code>
+<code>"b"</code>
+</pre>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
+<code>  [<span class="hljs-string">'b'</span>, <span class="hljs-number">2</span>],</code>
+<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-number">1</span>],</code>
+<code>]);</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> key <span class="hljs-keyword">of</span> map2.<span class="hljs-title function_">keys</span>()) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(key));</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>"b"</code>
+<code>"a"</code>
+</pre>
+<p>Maps listing their contents in insertion order has two benefits:</p>
+<ul>
+  <li>
+    We can use a Map when we have a use case where insertion order matters.
+  </li>
+  <li>
+    In testing, results become more deterministic and easier to check.
+  </li>
+</ul>
+<h3 id="converting-from-and-to-maps"><a class="heading-id-link" href="#converting-from-and-to-maps">36.3 Converting from and to Maps</a></h3>
+<h4 id="converting-map-entries-to-arrays"><a class="heading-id-link" href="#converting-map-entries-to-arrays">36.3.1 Converting keys, values, entries to Arrays</a></h4>
+<p>On one hand, the values returned by <code>.keys()</code>, <code>.values()</code> and <code>.entries()</code> are iterables – which enables us to use <code>Array.from()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-literal">false</span>, <span class="hljs-string">'no'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-literal">true</span>, <span class="hljs-string">'yes'</span>)</code>
+<code>;</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(map.<span class="hljs-title function_">keys</span>()),</code>
+<code>  [<span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(map.<span class="hljs-title function_">values</span>()),</code>
+<code>  [<span class="hljs-string">'no'</span>, <span class="hljs-string">'yes'</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(map.<span class="hljs-title function_">entries</span>()),</code>
+<code>  [</code>
+<code>    [<span class="hljs-literal">false</span>, <span class="hljs-string">'no'</span>],</code>
+<code>    [<span class="hljs-literal">true</span>, <span class="hljs-string">'yes'</span>],</code>
+<code>  ]</code>
+<code>);</code>
+</pre>
+<p>On the other hand, the values returned by <code>.keys()</code>, <code>.values()</code> and <code>.entries()</code> are also iterators – which enables us to use the iterator method <code>.toArray()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-literal">false</span>, <span class="hljs-string">'no'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-literal">true</span>, <span class="hljs-string">'yes'</span>)</code>
+<code>;</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  map.<span class="hljs-title function_">keys</span>().<span class="hljs-title function_">toArray</span>(),</code>
+<code>  [<span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  map.<span class="hljs-title function_">values</span>().<span class="hljs-title function_">toArray</span>(),</code>
+<code>  [<span class="hljs-string">'no'</span>, <span class="hljs-string">'yes'</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  map.<span class="hljs-title function_">entries</span>().<span class="hljs-title function_">toArray</span>(),</code>
+<code>  [</code>
+<code>    [<span class="hljs-literal">false</span>, <span class="hljs-string">'no'</span>],</code>
+<code>    [<span class="hljs-literal">true</span>, <span class="hljs-string">'yes'</span>],</code>
+<code>  ]</code>
+<code>);</code>
+</pre>
+<h4 id="converting-between-maps-and-objects"><a class="heading-id-link" href="#converting-between-maps-and-objects">36.3.2 Converting between Maps and Objects</a></h4>
+<p>As long as a Map only uses strings and symbols as keys, we can convert it to an object (via <a href="ch_objects.html#Object.fromEntries"><code>Object.fromEntries()</code></a>):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
+<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-number">1</span>],</code>
+<code>  [<span class="hljs-string">'b'</span>, <span class="hljs-number">2</span>],</code>
+<code>]);</code>
+<code><span class="hljs-keyword">const</span> obj = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(map);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  obj, {<span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>}</code>
+<code>);</code>
+</pre>
+<p>We can also convert an object to a Map with string or symbol keys (via <a href="ch_objects.html#Object.entries"><code>Object.entries()</code></a>):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> obj = {</code>
+<code>  <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>,</code>
+<code>  <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(obj));</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  map, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-string">'a'</span>, <span class="hljs-number">1</span>], [<span class="hljs-string">'b'</span>, <span class="hljs-number">2</span>]])</code>
+<code>);</code>
+</pre>
+<h3 id="processing-maps"><a class="heading-id-link" href="#processing-maps">36.4 Processing Maps</a></h3>
+<h4 id="copying-maps"><a class="heading-id-link" href="#copying-maps">36.4.1 Copying Maps</a></h4>
+<p>As we have seen, Maps are iterables over key-value pairs. Therefore, we can use the constructor to create a copy of a Map. That copy is <em>shallow</em>: keys and values are the same; they are not copied/cloned themselves.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> original = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-literal">false</span>, <span class="hljs-string">'no'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-literal">true</span>, <span class="hljs-string">'yes'</span>)</code>
+<code>;</code>
+<code><span class="hljs-keyword">const</span> copy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(original);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(original, copy);</code>
+</pre>
+<h4 id="combining-maps"><a class="heading-id-link" href="#combining-maps">36.4.2 Combining multiple Maps into a single Map</a></h4>
+<p>There are no methods for combining Maps, which is why we must use a workaround. Let’s combine the following two Maps:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'1a'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">2</span>, <span class="hljs-string">'1b'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'1c'</span>)</code>
+<code>;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> map2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">2</span>, <span class="hljs-string">'2b'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'2c'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">4</span>, <span class="hljs-string">'2d'</span>)</code>
+<code>;</code>
+</pre>
+<p>To combine <code>map1</code> and <code>map2</code>, we create a new Array and spread (<code>...</code>) the entries (key-value pairs) of <code>map1</code> and <code>map2</code> into it (via iteration). Then we convert the Array back into a Map. All of that is done in line A:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> combinedMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([...map1, ...map2]); <span class="hljs-comment">// (A)</span></code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(combinedMap), <span class="hljs-comment">// convert to Array for comparison</span></code>
+<code>  [</code>
+<code>    [ <span class="hljs-number">1</span>, <span class="hljs-string">'1a'</span> ],</code>
+<code>    [ <span class="hljs-number">2</span>, <span class="hljs-string">'2b'</span> ],</code>
+<code>    [ <span class="hljs-number">3</span>, <span class="hljs-string">'2c'</span> ],</code>
+<code>    [ <span class="hljs-number">4</span>, <span class="hljs-string">'2d'</span> ],</code>
+<code>  ]</code>
+<code>);</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Combining Maps</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/maps/combine_maps_test.mjs</code></p>
+</div>
+<h4 id="mapping-filtering-maps"><a class="heading-id-link" href="#mapping-filtering-maps">36.4.3 Mapping and filtering Maps via iterator methods<span> <sup>ES2025</sup></span></a></h4>
+<p>We can <code>.map()</code> and <code>.filter()</code> an Array, but there are no such operations for a Map. The solution is:</p>
+<ol>
+  <li>
+    Convert the Map to an iterator over [key, value] pairs.
+  </li>
+  <li>
+    Map or filter the iterator.
+  </li>
+  <li>
+    Convert the result back to a Map.
+  </li>
+</ol>
+<p>We’ll use the following Map to explore how that works.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> originalMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'a'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">2</span>, <span class="hljs-string">'b'</span>)</code>
+<code>  .<span class="hljs-title function_">set</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'c'</span>)</code>
+<code>;</code>
+</pre>
+<p>Mapping <code>originalMap</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> mappedMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>( <span class="hljs-comment">// step 3</span></code>
+<code>  originalMap.<span class="hljs-title function_">entries</span>() <span class="hljs-comment">// step 1</span></code>
+<code>  .<span class="hljs-title function_">map</span>(<span class="hljs-function">(<span class="hljs-params">[k, v]</span>) =&gt;</span> [k * <span class="hljs-number">2</span>, <span class="hljs-string">'_'</span> + v]) <span class="hljs-comment">// step 2</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  mappedMap,</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">2</span>,<span class="hljs-string">'_a'</span>], [<span class="hljs-number">4</span>,<span class="hljs-string">'_b'</span>], [<span class="hljs-number">6</span>,<span class="hljs-string">'_c'</span>]])</code>
+<code>);</code>
+</pre>
+<p>Filtering <code>originalMap</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> filteredMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>( <span class="hljs-comment">// step 3</span></code>
+<code>  originalMap.<span class="hljs-title function_">entries</span>() <span class="hljs-comment">// step 1</span></code>
+<code>  .<span class="hljs-title function_">filter</span>(<span class="hljs-function">(<span class="hljs-params">[k, v]</span>) =&gt;</span> k &lt; <span class="hljs-number">3</span>) <span class="hljs-comment">// step 2</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  filteredMap,</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>,<span class="hljs-string">'a'</span>], [<span class="hljs-number">2</span>,<span class="hljs-string">'b'</span>]])</code>
+<code>);</code>
+</pre>
+<p>What if we can’t use iterator methods? Then we can switch to Array methods, by</p>
+<ul>
+  <li>
+    replacing <code>originalMap.entries()</code>
+  </li>
+  <li>
+    with <code>Array.from(originalMap)</code>.
+  </li>
+</ul>
+<h3 id="a-few-more-details-about-the-keys-of-maps-advanced"><a class="heading-id-link" href="#a-few-more-details-about-the-keys-of-maps-advanced">36.5 A few more details about the keys of Maps<span> (advanced)</span></a></h3>
+<p>Any value can be a key, even an object:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">KEY1</span> = {};</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">KEY2</span> = {};</code>
+<code/>
+<code>map.<span class="hljs-title function_">set</span>(<span class="hljs-title class_">KEY1</span>, <span class="hljs-string">'hello'</span>);</code>
+<code>map.<span class="hljs-title function_">set</span>(<span class="hljs-title class_">KEY2</span>, <span class="hljs-string">'world'</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">get</span>(<span class="hljs-title class_">KEY1</span>), <span class="hljs-string">'hello'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">get</span>(<span class="hljs-title class_">KEY2</span>), <span class="hljs-string">'world'</span>);</code>
+</pre>
+<h4 id="map-key-equality"><a class="heading-id-link" href="#map-key-equality">36.5.1 What keys are considered equal?</a></h4>
+<p>Most Map operations need to check whether a value is equal to one of the keys. They do so via the internal operation <a href="https://tc39.es/ecma262/#sec-samevaluezero">SameValueZero</a>, which works like <code>===</code> but considers <code>NaN</code> to be equal to itself.</p>
+<p>As a consequence, we can use <code>NaN</code> as a key in Maps, just like any other value:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>();</span></code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">map.<span class="hljs-title function_">set</span>(<span class="hljs-title class_">NaN</span>, <span class="hljs-number">123</span>);</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">map.<span class="hljs-title function_">get</span>(<span class="hljs-title class_">NaN</span>)</span></code>
+<code>123</code>
+</pre>
+<p>Different objects are always considered to be different. That is something that can’t be changed (yet – configuring key equality is on TC39’s long-term roadmap).</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>().<span class="hljs-title function_">set</span>({}, <span class="hljs-number">1</span>).<span class="hljs-title function_">set</span>({}, <span class="hljs-number">2</span>).<span class="hljs-property">size</span></span></code>
+<code>2</code>
+</pre>
+<h3 id="quickref-maps"><a class="heading-id-link" href="#quickref-maps">36.6 Quick reference: <code>Map</code></a></h3>
+<p>Note: For the sake of conciseness, I’m pretending that all keys have the same type <code>K</code> and that all values have the same type <code>V</code>.</p>
+<h4 id="new-map"><a class="heading-id-link" href="#new-map">36.6.1 <code>new Map()</code></a></h4>
+<ul>
+  <li>
+    <p><code id="qref-new-Map">new Map(entries?)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;K, V&gt;(</code>
+<code>  entries?: <span class="hljs-title class_">Iterable</span>&lt;[K, V]&gt;</code>
+<code>)</code>
+</pre>
+    <p>If we don’t provide the parameter <code>entries</code>, then an empty Map is created. If we do provide an iterable over [key, value] pairs, then those pairs are added as entries to the Map. For example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
+<code>  [ <span class="hljs-number">1</span>, <span class="hljs-string">'one'</span> ],</code>
+<code>  [ <span class="hljs-number">2</span>, <span class="hljs-string">'two'</span> ],</code>
+<code>  [ <span class="hljs-number">3</span>, <span class="hljs-string">'three'</span> ], <span class="hljs-comment">// trailing comma is ignored</span></code>
+<code>]);</code>
+</pre>
+  </li>
+</ul>
+<h4 id="map"><a class="heading-id-link" href="#map">36.6.2 <code>Map.*</code></a></h4>
+<ul>
+  <li>
+    <p><code id="qref-Map.groupBy">Map.groupBy(items, computeGroupKey)</code> <span class="ibox ibox-small" size="small">ES2024</span></p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Map</span>.<span class="hljs-property">groupBy</span>&lt;K, T&gt;(</code>
+<code>  <span class="hljs-attr">items</span>: <span class="hljs-title class_">Iterable</span>&lt;T&gt;,</code>
+<code>  <span class="hljs-attr">computeGroupKey</span>: <span class="hljs-function">(<span class="hljs-params">item: T, index: <span class="hljs-built_in">number</span></span>) =&gt;</span> K,</code>
+<code>): <span class="hljs-title class_">Map</span>&lt;K, <span class="hljs-title class_">Array</span>&lt;T&gt;&gt;;</code>
+</pre>
+    <ul>
+      <li>
+        The callback <code>computeGroupKey</code> returns a <em>group key</em> for each of the <code>items</code>.
+      </li>
+      <li>
+        The result of <code>Map.groupBy()</code> is a Map where:
+        <ul>
+          <li>
+            The key of each entry is a group key and
+          </li>
+          <li>
+            its value is an Array with all items that have that group key.
+          </li>
+        </ul>
+      </li>
+    </ul>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Map</span>.<span class="hljs-title function_">groupBy</span>(</code>
+<code>    [<span class="hljs-string">'orange'</span>, <span class="hljs-string">'apricot'</span>, <span class="hljs-string">'banana'</span>, <span class="hljs-string">'apple'</span>, <span class="hljs-string">'blueberry'</span>],</code>
+<code>    <span class="hljs-function">(<span class="hljs-params">str</span>) =&gt;</span> str[<span class="hljs-number">0</span>] <span class="hljs-comment">// compute group key</span></code>
+<code>  ),</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>()</code>
+<code>    .<span class="hljs-title function_">set</span>(<span class="hljs-string">'o'</span>, [<span class="hljs-string">'orange'</span>])</code>
+<code>    .<span class="hljs-title function_">set</span>(<span class="hljs-string">'a'</span>, [<span class="hljs-string">'apricot'</span>, <span class="hljs-string">'apple'</span>])</code>
+<code>    .<span class="hljs-title function_">set</span>(<span class="hljs-string">'b'</span>, [<span class="hljs-string">'banana'</span>, <span class="hljs-string">'blueberry'</span>])</code>
+<code>);</code>
+</pre>
+  </li>
+</ul>
+<h4 id="mapprototype-handling-single-entries"><a class="heading-id-link" href="#mapprototype-handling-single-entries">36.6.3 <code>Map.prototype.*</code>: handling single entries</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-Map.prototype.get">Map.prototype.get(key)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns the <code>value</code> that <code>key</code> is mapped to in this Map. If there is no key <code>key</code> in this Map, <code>undefined</code> is returned.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">get</span>(<span class="hljs-number">1</span>), <span class="hljs-string">'one'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">get</span>(<span class="hljs-number">5</span>), <span class="hljs-literal">undefined</span>);</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Map.prototype.set">Map.prototype.set(key, value)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <ul>
+      <li>
+        Maps the given key to the given value.
+      </li>
+      <li>
+        If there is already an entry whose key is <code>key</code>, it is updated. Otherwise, a new entry is created.
+      </li>
+      <li>
+        This method returns <code>this</code>, which means that we can chain it.
+      </li>
+    </ul>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code>map.<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, <span class="hljs-string">'ONE!'</span>) <span class="hljs-comment">// update an existing entry</span></code>
+<code>   .<span class="hljs-title function_">set</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'THREE!'</span>) <span class="hljs-comment">// create a new entry</span></code>
+<code>;</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(map.<span class="hljs-title function_">entries</span>()),</code>
+<code>  [[<span class="hljs-number">1</span>, <span class="hljs-string">'ONE!'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>], [<span class="hljs-number">3</span>, <span class="hljs-string">'THREE!'</span>]]</code>
+<code>);</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Map.prototype.has">Map.prototype.has(key)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns whether the given key exists in this Map.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">has</span>(<span class="hljs-number">1</span>), <span class="hljs-literal">true</span>); <span class="hljs-comment">// key exists</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">has</span>(<span class="hljs-number">5</span>), <span class="hljs-literal">false</span>); <span class="hljs-comment">// key does not exist</span></code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Map.prototype.delete">Map.prototype.delete(key)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>If there is an entry whose key is <code>key</code>, it is removed and <code>true</code> is returned. Otherwise, nothing happens and <code>false</code> is returned.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">delete</span>(<span class="hljs-number">1</span>), <span class="hljs-literal">true</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-title function_">delete</span>(<span class="hljs-number">5</span>), <span class="hljs-literal">false</span>); <span class="hljs-comment">// nothing happens</span></code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(map.<span class="hljs-title function_">entries</span>()),</code>
+<code>  [[<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]</code>
+<code>);</code>
+</pre>
+  </li>
+</ul>
+<h4 id="mapprototype-handling-all-entries"><a class="heading-id-link" href="#mapprototype-handling-all-entries">36.6.4 <code>Map.prototype</code>: handling all entries</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-get-Map.prototype.size">get Map.prototype.size</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns how many entries this Map has.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-property">size</span>, <span class="hljs-number">2</span>);</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Map.prototype.clear">Map.prototype.clear()</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Removes all entries from this Map.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-property">size</span>, <span class="hljs-number">2</span>);</code>
+<code>map.<span class="hljs-title function_">clear</span>();</code>
+<code>assert.<span class="hljs-title function_">equal</span>(map.<span class="hljs-property">size</span>, <span class="hljs-number">0</span>);</code>
+</pre>
+  </li>
+</ul>
+<h4 id="mapprototype-iterating-and-looping"><a class="heading-id-link" href="#mapprototype-iterating-and-looping">36.6.5 <code>Map.prototype</code>: iterating and looping</a></h4>
+<p>Both iterating and looping happen in the order in which entries were added to a Map.</p>
+<ul>
+  <li>
+    <p><code id="qref-Map.prototype.entries">Map.prototype.entries()</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns an iterable with one [key, value] pair for each entry in this Map. The pairs are Arrays of length 2.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> entry <span class="hljs-keyword">of</span> map.<span class="hljs-title function_">entries</span>()) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(entry);</code>
+<code>}</code>
+</pre>
+    <p>Output:</p>
+<pre>
+<code>[ 1, 'one' ]</code>
+<code>[ 2, 'two' ]</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Map.prototype.forEach">Map.prototype.forEach(callback, thisArg?)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Map</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">forEach</span>(</code>
+<code>  <span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">value: V, key: K, theMap: <span class="hljs-built_in">Map</span>&lt;K,V&gt;</span>) =&gt;</span> <span class="hljs-built_in">void</span>,</code>
+<code>  thisArg?: <span class="hljs-built_in">any</span></code>
+<code>): <span class="hljs-built_in">void</span></code>
+</pre>
+    <ul>
+      <li>
+        The first parameter is a callback that is invoked once for each entry in this Map.
+      </li>
+      <li>
+        If <code>thisArg</code> is provided, <code>this</code> is set to it for each invocation. Otherwise, <code>this</code> is set to <code>undefined</code>.
+      </li>
+    </ul>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code>map.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">value, key</span>) =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(value, key));</code>
+</pre>
+    <p>Output:</p>
+<pre>
+<code>one 1</code>
+<code>two 2</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Map.prototype.keys">Map.prototype.keys()</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns an iterable over all keys in this Map.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> key <span class="hljs-keyword">of</span> map.<span class="hljs-title function_">keys</span>()) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(key);</code>
+<code>}</code>
+</pre>
+    <p>Output:</p>
+<pre>
+<code>1</code>
+<code>2</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Map.prototype.values">Map.prototype.values()</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns an iterable over all values in this Map.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> value <span class="hljs-keyword">of</span> map.<span class="hljs-title function_">values</span>()) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(value);</code>
+<code>}</code>
+</pre>
+    <p>Output:</p>
+<pre>
+<code>one</code>
+<code>two</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-Map.prototype-Symbol.iterator-">Map.prototype[Symbol.iterator]()</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>The default way of iterating over Maps. Same as <code>map.entries()</code>.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([[<span class="hljs-number">1</span>, <span class="hljs-string">'one'</span>], [<span class="hljs-number">2</span>, <span class="hljs-string">'two'</span>]]);</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [key, value] <span class="hljs-keyword">of</span> map) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(key, value);</code>
+<code>}</code>
+</pre>
+    <p>Output:</p>
+<pre>
+<code>1 one</code>
+<code>2 two</code>
+</pre>
+  </li>
+</ul>
+<h3 id="faq-maps"><a class="heading-id-link" href="#faq-maps">36.7 FAQ: Maps</a></h3>
+<h4 id="when-should-i-use-a-map-and-when-should-i-use-an-object"><a class="heading-id-link" href="#when-should-i-use-a-map-and-when-should-i-use-an-object">36.7.1 When should I use a Map, and when should I use an object?</a></h4>
+<p><span id="index-entry-Map-vs.-object"/><span id="index-entry-object-vs.-Map"/></p>
+<p>If we need a dictionary-like data structure with keys that are neither strings nor symbols, we have no choice: we must use a Map.</p>
+<p>If, however, our keys are either strings or symbols, we must decide whether or not to use an object. A rough general guideline is:</p>
+<ul>
+  <li>
+    <p>Is there a fixed set of keys (known at development time)?</p>
+    <p>Then use an object <code>obj</code> and access the values via fixed keys:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> value = obj.<span class="hljs-property">key</span>;</code>
+</pre>
+  </li>
+  <li>
+    <p>Can the set of keys change at runtime?</p>
+    <p>Then use a Map <code>map</code> and access the values via keys stored in variables:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> theKey = <span class="hljs-number">123</span>;</code>
+<code>map.<span class="hljs-title function_">get</span>(theKey);</code>
+</pre>
+  </li>
+</ul>
+<h4 id="when-would-i-use-an-object-as-a-key-in-a-map"><a class="heading-id-link" href="#when-would-i-use-an-object-as-a-key-in-a-map">36.7.2 When would I use an object as a key in a Map?</a></h4>
+<p>We normally want Map keys to be compared by value (two keys are considered equal if they have the same content). That excludes objects. However, there is one use case for objects as keys: externally attaching data to objects. But that use case is served better by WeakMaps, where entries don’t prevent keys from being garbage-collected (for details, see <a href="ch_weakmaps.html#ch_weakmaps">the next chapter</a>).</p>
+<h4 id="why-do-maps-preserve-the-insertion-order-of-entries"><a class="heading-id-link" href="#why-do-maps-preserve-the-insertion-order-of-entries">36.7.3 Why do Maps preserve the insertion order of entries?</a></h4>
+<p>In principle, Maps entries are unordered. The main reason for ordering entries is so that operations that list entries, keys, or values are deterministic. That helps, for example, with testing.</p>
+<h4 id="collection-size-vs-length"><a class="heading-id-link" href="#collection-size-vs-length">36.7.4 Why do Maps have a <code>.size</code>, while Arrays have a <code>.length</code>?</a></h4>
+<p>In JavaScript, indexable sequences (such as Arrays and strings) have a <code>.length</code>, while unindexed collections (such as Maps and Sets) have a <code>.size</code>:</p>
+<ul>
+  <li>
+    <code>.length</code> is based on indices; it is always the highest index plus one.
+  </li>
+  <li>
+    <code>.size</code> counts the number of elements in a collection.
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

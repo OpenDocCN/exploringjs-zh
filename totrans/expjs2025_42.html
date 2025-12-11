@@ -1,0 +1,1525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>35 Typed Arrays: handling binary data ES6 (advanced)</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>35 Typed Arrays: handling binary data ES6 (advanced)</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_typed-arrays.html">https://exploringjs.com/js/book/ch_typed-arrays.html</a></blockquote>
+
+        
+    
+    
+    
+<p><span id="index-entry-Typed-Array"/></p>
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#the-typed-array-api-containers-for-binary-data">35.1 The Typed Array API: containers for binary data</a>
+      <ol>
+        <li>
+          <a href="#use-cases-for-typed-arrays">35.1.1 Use cases for Typed Arrays</a>
+        </li>
+        <li>
+          <a href="#typed-array-api-classes">35.1.2 The core classes: <code>ArrayBuffer</code>, Typed Arrays, <code>DataView</code></a>
+        </li>
+        <li>
+          <a href="#SharedArrayBuffer">35.1.3 <code>SharedArrayBuffer</code><span> <sup>ES2017</sup></span></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#using-typed-arrays">35.2 Using Typed Arrays</a>
+      <ol>
+        <li>
+          <a href="#creating-typed-arrays">35.2.1 Creating Typed Arrays</a>
+        </li>
+        <li>
+          <a href="#the-wrapped-arraybuffer">35.2.2 The wrapped ArrayBuffer</a>
+        </li>
+        <li>
+          <a href="#getting-and-setting-elements">35.2.3 Getting and setting elements</a>
+        </li>
+        <li>
+          <a href="#concatenating-typed-arrays">35.2.4 Concatenating Typed Arrays</a>
+        </li>
+        <li>
+          <a href="#typed-arrays-vs-arrays">35.2.5 Typed Arrays vs. normal Arrays</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#using-dataviews">35.3 Using DataViews</a>
+    </li>
+    <li>
+      <a href="#typed-array-element-types">35.4 Element types</a>
+      <ol>
+        <li>
+          <a href="#handling-overflow-underflow">35.4.1 Handling overflow and underflow</a>
+        </li>
+        <li>
+          <a href="#typed-arrays-endianness">35.4.2 Endianness</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#converting-to-and-from-typed-arrays">35.5 Converting to and from Typed Arrays</a>
+      <ol>
+        <li>
+          <a href="#the-static-method-elementtypearrayfrom">35.5.1 The static method <code>«ElementType»Array.from()</code></a>
+        </li>
+        <li>
+          <a href="#typed-arrays-are-iterable">35.5.2 Typed Arrays are iterable</a>
+        </li>
+        <li>
+          <a href="#converting-typed-arrays-to-and-from-normal-arrays">35.5.3 Converting Typed Arrays to and from normal Arrays</a>
+        </li>
+        <li>
+          <a href="#uint8array-to-from-string">35.5.4 Converting a <code>Uint8Array</code> (UTF-8) to and from a string</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#resizing-array-buffers">35.6 Resizing ArrayBuffers<span> <sup>ES2024</sup></span></a>
+      <ol>
+        <li>
+          <a href="#new-features-for-arraybuffers">35.6.1 New features for ArrayBuffers</a>
+        </li>
+        <li>
+          <a href="#how-typed-arrays-react-to-changing-arraybuffer-sizes">35.6.2 How Typed Arrays react to changing ArrayBuffer sizes</a>
+        </li>
+        <li>
+          <a href="#guidelines-given-by-the-ecmascript-specification">35.6.3 Guidelines given by the ECMAScript specification</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#transferring-detaching-array-buffers">35.7 Transferring and detaching ArrayBuffers<span> <sup>ES2024</sup></span></a>
+      <ol>
+        <li>
+          <a href="#preparation-transferring-data-and-detaching">35.7.1 Preparation: transferring data and detaching</a>
+        </li>
+        <li>
+          <a href="#methods-related-to-transferring-and-detaching">35.7.2 Methods related to transferring and detaching</a>
+        </li>
+        <li>
+          <a href="#transferring-arraybuffers-via-structuredclone">35.7.3 Transferring ArrayBuffers via <code>structuredClone()</code></a>
+        </li>
+        <li>
+          <a href="#transferring-an-arraybuffer-within-the-same-agent">35.7.4 Transferring an ArrayBuffer within the same agent</a>
+        </li>
+        <li>
+          <a href="#how-does-detaching-an-arraybuffer-affect-its-wrappers">35.7.5 How does detaching an ArrayBuffer affect its wrappers?</a>
+        </li>
+        <li>
+          <a href="#arraybufferprototypetransfertofixedlength">35.7.6 <code>ArrayBuffer.prototype.transferToFixedLength()</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#typed-arrays-indices-offsets">35.8 Quick references: indices vs. offsets</a>
+    </li>
+    <li>
+      <a href="#quick-reference-arraybuffers">35.9 Quick reference: ArrayBuffers</a>
+      <ol>
+        <li>
+          <a href="#new-arraybuffer">35.9.1 <code>new ArrayBuffer()</code></a>
+        </li>
+        <li>
+          <a href="#arraybuffer">35.9.2 <code>ArrayBuffer.*</code></a>
+        </li>
+        <li>
+          <a href="#arraybufferprototype-getting-and-slicing">35.9.3 <code>ArrayBuffer.prototype.*</code>: getting and slicing</a>
+        </li>
+        <li>
+          <a href="#arraybufferprototype-resizing">35.9.4 <code>ArrayBuffer.prototype.*</code>: resizing</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#quick-reference-typed-arrays">35.10 Quick reference: Typed Arrays</a>
+      <ol>
+        <li>
+          <a href="#typedarray">35.10.1 <code>TypedArray.*</code></a>
+        </li>
+        <li>
+          <a href="#typedarrayprototype">35.10.2 <code>TypedArray.prototype.*</code></a>
+        </li>
+        <li>
+          <a href="#new-elementtypearray">35.10.3 <code>new «ElementType»Array()</code></a>
+        </li>
+        <li>
+          <a href="#elementtypearray">35.10.4 <code>«ElementType»Array.*</code></a>
+        </li>
+        <li>
+          <a href="#elementtypearrayprototype">35.10.5 <code>«ElementType»Array.prototype.*</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#quick-reference-dataviews">35.11 Quick reference: DataViews</a>
+      <ol>
+        <li>
+          <a href="#new-dataview">35.11.1 <code>new DataView()</code></a>
+        </li>
+        <li>
+          <a href="#dataviewprototype">35.11.2 <code>DataView.prototype.*</code></a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<h3 id="the-typed-array-api-containers-for-binary-data"><a class="heading-id-link" href="#the-typed-array-api-containers-for-binary-data">35.1 The Typed Array API: containers for binary data</a></h3>
+<p>Much data on the web is text: JSON files, HTML files, CSS files, JavaScript code, etc. JavaScript handles such data well via its built-in strings.</p>
+<p>However, before 2011, it did not handle binary data well. <a href="https://web.archive.org/web/20160529225618/https://www.khronos.org/registry/typedarray/specs/1.0/">The Typed Array Specification 1.0</a> was introduced on February 8, 2011 and provides tools for working with binary data. With ECMAScript 6, Typed Arrays were added to the core language and gained methods that were previously only available for normal Arrays (<code>.map()</code>, <code>.filter()</code>, etc.).</p>
+<h4 id="use-cases-for-typed-arrays"><a class="heading-id-link" href="#use-cases-for-typed-arrays">35.1.1 Use cases for Typed Arrays</a></h4>
+<p>The main uses cases for Typed Arrays are:</p>
+<ul>
+  <li>
+    <p>Processing binary data: managing image data, manipulating binary files, handling binary network protocols, etc.</p>
+  </li>
+  <li>
+    <p>Interacting with native APIs: Native APIs often receive and return data in a binary format, which we could neither store nor manipulate well in pre-ES6 JavaScript. That meant that whenever we were communicating with such an API, data had to be converted from JavaScript to binary and back for every call. Typed Arrays eliminate this bottleneck. Examples include:</p>
+    <ul>
+      <li>
+        <p><a href="https://www.khronos.org/webgl/">WebGL</a>, “a low-level 3D graphics API based on OpenGL ES, exposed to ECMAScript via the HTML5 Canvas element”. Typed Arrays were initially created for WebGL. Section <a href="https://web.dev/articles/webgl-typed-arrays#toc-history">“History of Typed Arrays”</a> of the article <a href="https://web.dev/articles/webgl-typed-arrays#toc-history">“Typed Arrays: Binary Data in the Browser”</a> (by Ilmari Heikkinen for HTML5 Rocks) has more information.</p>
+      </li>
+      <li>
+        <p><a href="https://www.w3.org/TR/webgpu/">WebGPU</a>, “an API for performing operations, such as rendering and computation, on a Graphics Processing Unit”. For example, WebGPU uses ArrayBuffers as wrappers for backing stores.</p>
+      </li>
+      <li>
+        <p><a href="https://webassembly.org">WebAssembly</a> (short: “Wasm”), “a binary instruction format for a stack-based virtual machine. Wasm is designed as a portable compilation target for programming languages, enabling deployment on the web for client and server applications.” For example, the memory of WebAssembly code is stored in an ArrayBuffer or a SharedArrayBuffer (<a href="https://developer.mozilla.org/en-US/docs/WebAssembly/JavaScript_interface/Memory">details</a>).</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h4 id="typed-array-api-classes"><a class="heading-id-link" href="#typed-array-api-classes">35.1.2 The core classes: <code>ArrayBuffer</code>, Typed Arrays, <code>DataView</code></a></h4>
+<p><span id="index-entry-ArrayBuffer"/>
+<span id="index-entry-DataView"/></p>
+<p><span id="index-entry-Int8Array"/>
+<span id="index-entry-Uint8Array"/>
+<span id="index-entry-Uint8ClampedArray"/>
+<span id="index-entry-Int16Array"/>
+<span id="index-entry-Uint16Array"/>
+<span id="index-entry-Int32Array"/>
+<span id="index-entry-Uint32Array"/>
+<span id="index-entry-BigInt64Array"/>
+<span id="index-entry-BigUint64Array"/></p>
+<p><span id="index-entry-Float16Array"/>
+<span id="index-entry-Float32Array"/>
+<span id="index-entry-Float64Array"/></p>
+<p>The Typed Array API stores binary data in instances of <code>ArrayBuffer</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">4</span>); <span class="hljs-comment">// length in bytes</span></code>
+<code>  <span class="hljs-comment">// buf is initialized with zeros</span></code>
+</pre>
+<p>An ArrayBuffer itself is a black box: if we want to access its data, we must wrap it in another object – a <em>view object</em>. Two kinds of view objects are available:</p>
+<ul>
+  <li>
+    <p><em>Typed Arrays</em> work similarly to normal Arrays and let us access the data as an indexed sequence of elements that all have the same type. Examples include:</p>
+    <ul>
+      <li>
+        <code>Uint8Array</code>: Elements are unsigned 8-bit integers. <em>Unsigned</em> means that their ranges start at zero.
+      </li>
+      <li>
+        <code>Int16Array</code>: Elements are signed 16-bit integers. <em>Signed</em> means that they have a sign and can be negative, zero, or positive.
+      </li>
+      <li>
+        <code>Float16Array</code>: Elements are 16-bit floating point numbers.
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><em>DataViews</em> let us interpret the data as various types (<code>Uint8</code>, <code>Int16</code>, <code>Float16</code>, etc.) that we can read and write at any byte offset.</p>
+  </li>
+</ul>
+<p><a href="#fig:typed_arrays_class_diagram">Figure 35.1</a> shows a class diagram of the API.</p>
+<figure id="fig:typed_arrays_class_diagram" class="float">
+  <p><img src="../Images/a115834d4de67018f7d77365cf61bfce.png" width="493" height="394" alt="" data-original-src="https://exploringjs.com/js/book/img/typed-arrays/typed_arrays_class_diagram.svg"/></p>
+  <figcaption>
+    <p><span class="float-label">Figure 35.1:</span> The classes of the Typed Array API.</p>
+  </figcaption>
+</figure>
+<h4 id="SharedArrayBuffer"><a class="heading-id-link" href="#SharedArrayBuffer">35.1.3 <code>SharedArrayBuffer</code><span> <sup>ES2017</sup></span></a></h4>
+<p>SharedArrayBuffer is an ArrayBuffer whose memory can be accessed by multiple <em>agents</em> (an agent being the main thread or a web worker) concurrently.</p>
+<ul>
+  <li>
+    Where ArrayBuffers can be <a href="#transferring-detaching-array-buffers"><em>transferred</em></a> (moved, not copied) between agents, SharedArrayBuffers are not transferable and must be cloned. However, that only clones their outer parts. The data storage itself is shared.
+  </li>
+  <li>
+    SharedArrayBuffers can be <a href="#resizing-array-buffers">resized</a> but they can only grow not shrink because shrinking shared memory is too complicated.
+  </li>
+  <li>
+    <code>Atomics</code> is a global namespace for an API that complements SharedArrayBuffers. The ECMAScript specification <a href="https://tc39.es/ecma262/#sec-atomics-object">describes it</a> as “functions that operate indivisibly (atomically) on shared memory array cells as well as functions that let agents wait for and dispatch primitive events. When used with discipline, the Atomics functions allow multi-agent programs that communicate through shared memory to execute in a well-understood order even on parallel CPUs.”
+  </li>
+</ul>
+<p>See MDN Web Docs for more information on <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer"><code>SharedArrayBuffer</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics"><code>Atomics</code></a>.</p>
+<h3 id="using-typed-arrays"><a class="heading-id-link" href="#using-typed-arrays">35.2 Using Typed Arrays</a></h3>
+<p>Typed Arrays are used much like normal Arrays.</p>
+<h4 id="creating-typed-arrays"><a class="heading-id-link" href="#creating-typed-arrays">35.2.1 Creating Typed Arrays</a></h4>
+<p>The following code shows three different ways of creating the same Typed Array:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Argument: Typed Array or Array-like object</span></code>
+<code><span class="hljs-keyword">const</span> ta1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> ta2 = <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(ta2, ta1);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> ta3 = <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">from</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(ta3, ta1);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> ta4 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(<span class="hljs-number">3</span>); <span class="hljs-comment">// length of Typed Array</span></code>
+<code>ta4[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;</code>
+<code>ta4[<span class="hljs-number">1</span>] = <span class="hljs-number">1</span>;</code>
+<code>ta4[<span class="hljs-number">2</span>] = <span class="hljs-number">2</span>;</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(ta4, ta1);</code>
+</pre>
+<h4 id="the-wrapped-arraybuffer"><a class="heading-id-link" href="#the-wrapped-arraybuffer">35.2.2 The wrapped ArrayBuffer</a></h4>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> typedArray = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Int16Array</span>(<span class="hljs-number">2</span>); <span class="hljs-comment">// 2 elements</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(typedArray.<span class="hljs-property">length</span>, <span class="hljs-number">2</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  typedArray.<span class="hljs-property">buffer</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">4</span>)); <span class="hljs-comment">// 4 bytes</span></code>
+</pre>
+<h4 id="getting-and-setting-elements"><a class="heading-id-link" href="#getting-and-setting-elements">35.2.3 Getting and setting elements</a></h4>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> typedArray = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Int16Array</span>(<span class="hljs-number">2</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(typedArray[<span class="hljs-number">1</span>], <span class="hljs-number">0</span>); <span class="hljs-comment">// initialized with 0</span></code>
+<code>typedArray[<span class="hljs-number">1</span>] = <span class="hljs-number">72</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(typedArray[<span class="hljs-number">1</span>], <span class="hljs-number">72</span>);</code>
+</pre>
+<h4 id="concatenating-typed-arrays"><a class="heading-id-link" href="#concatenating-typed-arrays">35.2.4 Concatenating Typed Arrays</a></h4>
+<p>Typed Arrays don’t have a method <code>.concat()</code>, like normal Arrays do. The workaround is to use their overloaded method <code>.set()</code>:</p>
+<pre class="language-ts">
+<code>.<span class="hljs-title function_">set</span>(<span class="hljs-attr">typedArray</span>: <span class="hljs-title class_">TypedArray</span>, offset=<span class="hljs-number">0</span>): <span class="hljs-built_in">void</span></code>
+<code>.<span class="hljs-title function_">set</span>(<span class="hljs-attr">arrayLike</span>: <span class="hljs-title class_">ArrayLike</span>&lt;<span class="hljs-built_in">number</span>&gt;, offset=<span class="hljs-number">0</span>): <span class="hljs-built_in">void</span></code>
+</pre>
+<p>It copies the existing <code>typedArray</code> or <code>arrayLike</code> into the receiver, at index <code>offset</code>. <code>TypedArray</code> is an internal abstract superclass of all concrete Typed Array classes (that doesn’t actually have a global name).</p>
+<p>The following function uses that method to copy zero or more Typed Arrays (or Array-like objects) into an instance of <code>resultConstructor</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">concatenate</span>(<span class="hljs-params">resultConstructor, ...arrays</span>) {</code>
+<code>  <span class="hljs-keyword">let</span> totalLength = <span class="hljs-number">0</span>;</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> arr <span class="hljs-keyword">of</span> arrays) {</code>
+<code>    totalLength += arr.<span class="hljs-property">length</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">new</span> <span class="hljs-title function_">resultConstructor</span>(totalLength);</code>
+<code>  <span class="hljs-keyword">let</span> offset = <span class="hljs-number">0</span>;</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> arr <span class="hljs-keyword">of</span> arrays) {</code>
+<code>    result.<span class="hljs-title function_">set</span>(arr, offset);</code>
+<code>    offset += arr.<span class="hljs-property">length</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> result;</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title function_">concatenate</span>(<span class="hljs-title class_">Uint8Array</span>, <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>), [<span class="hljs-number">3</span>, <span class="hljs-number">4</span>]),</code>
+<code>  <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>));</code>
+</pre>
+<h4 id="typed-arrays-vs-arrays"><a class="heading-id-link" href="#typed-arrays-vs-arrays">35.2.5 Typed Arrays vs. normal Arrays</a></h4>
+<p>Typed Arrays are much like normal Arrays: they have a <code>.length</code>, elements can be accessed via the bracket operator <code>[]</code>, and they have most of the standard Array methods. They differ from normal Arrays in the following ways:</p>
+<ul>
+  <li>
+    <p>Typed Arrays have buffers. The elements of a Typed Array <code>ta</code> are not stored in <code>ta</code>, they are stored in an associated ArrayBuffer that can be accessed via <code>ta.buffer</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> ta = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint16Array</span>(<span class="hljs-number">2</span>); <span class="hljs-comment">// 2 elements</span></code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  ta.<span class="hljs-property">buffer</span>, <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">4</span>)); <span class="hljs-comment">// 4 bytes</span></code>
+</pre>
+  </li>
+  <li>
+    <p>Typed Arrays are initialized with zeros:</p>
+    <ul>
+      <li>
+        <code>new Array(4)</code> creates a normal Array without any elements. It only has four <em>holes</em> (indices less than the <code>.length</code> that have no associated elements).
+      </li>
+      <li>
+        <code>new Uint8Array(4)</code> creates a Typed Array whose four elements are all 0.
+      </li>
+    </ul>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(<span class="hljs-number">4</span>), <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>));</code>
+</pre>
+  </li>
+  <li>
+    <p>All of the elements of a Typed Array have the same type:</p>
+    <ul>
+      <li>
+        <p>Setting elements converts values to that type.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> ta = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(<span class="hljs-number">1</span>);</code>
+<code/>
+<code>ta[<span class="hljs-number">0</span>] = <span class="hljs-number">257</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(ta[<span class="hljs-number">0</span>], <span class="hljs-number">1</span>); <span class="hljs-comment">// 257 % 256 (overflow)</span></code>
+<code/>
+<code>ta[<span class="hljs-number">0</span>] = <span class="hljs-string">'2'</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(ta[<span class="hljs-number">0</span>], <span class="hljs-number">2</span>);</code>
+</pre>
+      </li>
+      <li>
+        <p>Getting elements returns numbers or bigints.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> ta = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(<span class="hljs-number">1</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(ta[<span class="hljs-number">0</span>], <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-keyword">typeof</span> ta[<span class="hljs-number">0</span>], <span class="hljs-string">'number'</span>);</code>
+</pre>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The <code>.length</code> of a Typed Array is derived from its ArrayBuffer and never changes (unless we switch to a different ArrayBuffer).</p>
+  </li>
+  <li>
+    <p>Normal Arrays can have holes; Typed Arrays can’t.</p>
+  </li>
+</ul>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Converting between strings and UTF-16</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/typed-arrays/utf-16-conversion_test.mjs</code></p>
+</div>
+<h3 id="using-dataviews"><a class="heading-id-link" href="#using-dataviews">35.3 Using DataViews</a></h3>
+<p>This is how DataViews are used:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> dataView = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DataView</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">4</span>));</code>
+<code>assert.<span class="hljs-title function_">equal</span>(dataView.<span class="hljs-title function_">getInt16</span>(<span class="hljs-number">0</span>), <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(dataView.<span class="hljs-title function_">getUint8</span>(<span class="hljs-number">0</span>), <span class="hljs-number">0</span>);</code>
+<code>dataView.<span class="hljs-title function_">setUint8</span>(<span class="hljs-number">0</span>, <span class="hljs-number">5</span>);</code>
+</pre>
+<h3 id="typed-array-element-types"><a class="heading-id-link" href="#typed-array-element-types">35.4 Element types</a></h3>
+<figure id="tbl:typed-array-element-types" class="float">
+  <table class="framed">
+    <style>
+      th:nth-child(1), td:nth-child(1) {
+        text-align: left;
+      }
+      th:nth-child(2), td:nth-child(2) {
+        text-align: left;
+      }
+      th:nth-child(3), td:nth-child(3) {
+        text-align: left;
+      }
+      th:nth-child(4), td:nth-child(4) {
+        text-align: left;
+      }
+      th:nth-child(5), td:nth-child(5) {
+        text-align: left;
+      }
+      th:nth-child(6), td:nth-child(6) {
+        text-align: left;
+      }
+    </style>
+    <thead>
+      <tr>
+        <th>Element</th><th>Typed Array</th><th>Bytes</th><th>Description</th><th>Get/Set</th><th/>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Int8</code></td><td><code>Int8Array</code></td><td>1</td><td>8-bit signed integer</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+      <tr>
+        <td><code>Uint8</code></td><td><code>Uint8Array</code></td><td>1</td><td>8-bit unsigned int</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+      <tr>
+        <td>(<code>Uint8C</code>)</td><td><code>Uint8ClampedArray</code></td><td>1</td><td>8-bit unsigned int</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+      <tr>
+        <td><code>Int16</code></td><td><code>Int16Array</code></td><td>2</td><td>16-bit signed int</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+      <tr>
+        <td><code>Uint16</code></td><td><code>Uint16Array</code></td><td>2</td><td>16-bit unsigned int</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+      <tr>
+        <td><code>Int32</code></td><td><code>Int32Array</code></td><td>4</td><td>32-bit signed int</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+      <tr>
+        <td><code>Uint32</code></td><td><code>Uint32Array</code></td><td>4</td><td>32-bit unsigned int</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+      <tr>
+        <td><code>BigInt64</code></td><td><code>BigInt64Array</code></td><td>8</td><td>64-bit signed int</td><td><code>bigint</code></td><td>ES2020</td>
+      </tr>
+      <tr>
+        <td><code>BigUint64</code></td><td><code>BigUint64Array</code></td><td>8</td><td>64-bit unsigned int</td><td><code>bigint</code></td><td>ES2020</td>
+      </tr>
+      <tr>
+        <td><code>Float16</code></td><td><code>Float16Array</code></td><td>2</td><td>16-bit floating point</td><td><code>number</code></td><td>ES2025</td>
+      </tr>
+      <tr>
+        <td><code>Float32</code></td><td><code>Float32Array</code></td><td>4</td><td>32-bit floating point</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+      <tr>
+        <td><code>Float64</code></td><td><code>Float64Array</code></td><td>8</td><td>64-bit floating point</td><td><code>number</code></td><td>ES6</td>
+      </tr>
+    </tbody>
+  </table>
+  <figcaption>
+    <p><span class="float-label">Table 35.1:</span> Element types supported by the Typed Array API.</p>
+  </figcaption>
+</figure>
+<p><a href="#tbl:typed-array-element-types">Table 35.1</a> lists the available element types. These types (e.g., <code>Int32</code>) show up in two locations:</p>
+<ul>
+  <li>
+    <p>In Typed Arrays, they specify the types of the elements. For example, all elements of a <code>Int32Array</code> have the type <code>Int32</code>. The element type is the only aspect of Typed Arrays that differs.</p>
+  </li>
+  <li>
+    <p>In DataViews, they are the lenses through which they access their ArrayBuffers when we use methods such as <code>.getInt32()</code> and <code>.setInt32()</code>.</p>
+  </li>
+</ul>
+<p>The element type <code>Uint8C</code> is special: it is not supported by <code>DataView</code> and only exists to enable <code>Uint8ClampedArray</code>. This Typed Array is used by the <code>canvas</code> element (where it replaces <code>CanvasPixelArray</code>) and should otherwise be avoided. The only difference between <code>Uint8C</code> and <code>Uint8</code> is how overflow is handled (as explained next).</p>
+<p>Typed Arrays and Array Buffers use numbers and bigints to import and export values:</p>
+<ul>
+  <li>
+    <p>The types <code>BigInt64</code> and <code>BigUint64</code> are handled via bigints. For example, setters accept bigints and getters return bigints.</p>
+  </li>
+  <li>
+    <p>All other element types are handled via numbers.</p>
+  </li>
+</ul>
+<h4 id="handling-overflow-underflow"><a class="heading-id-link" href="#handling-overflow-underflow">35.4.1 Handling overflow and underflow</a></h4>
+<h5 id="handling-overflow-for-integers"><a class="heading-id-link" href="#handling-overflow-for-integers">35.4.1.1 Handling overflow for integers</a></h5>
+<p>Normally, when a value is out of the range of the element type, modulo arithmetic is used to convert it to a value within range. For signed and unsigned integers that means that:</p>
+<ul>
+  <li>
+    The highest value plus one is converted to the lowest value (0 for unsigned integers).
+  </li>
+  <li>
+    The lowest value minus one is converted to the highest value.
+  </li>
+</ul>
+<p>The following function helps illustrate how conversion works:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">setAndGet</span>(<span class="hljs-params">typedArray, value</span>) {</code>
+<code>  typedArray[<span class="hljs-number">0</span>] = value;</code>
+<code>  <span class="hljs-keyword">return</span> typedArray[<span class="hljs-number">0</span>];</code>
+<code>}</code>
+</pre>
+<p>Modulo conversion for unsigned 8-bit integers:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> uint8 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(<span class="hljs-number">1</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Highest value of range</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(uint8, <span class="hljs-number">255</span>), <span class="hljs-number">255</span>);</code>
+<code><span class="hljs-comment">// Positive overflow</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(uint8, <span class="hljs-number">256</span>), <span class="hljs-number">0</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Lowest value of range</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(uint8, <span class="hljs-number">0</span>), <span class="hljs-number">0</span>);</code>
+<code><span class="hljs-comment">// Negative overflow</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(uint8, -<span class="hljs-number">1</span>), <span class="hljs-number">255</span>);</code>
+</pre>
+<p>Modulo conversion for signed 8-bit integers:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> int8 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Int8Array</span>(<span class="hljs-number">1</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Highest value of range</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(int8, <span class="hljs-number">127</span>), <span class="hljs-number">127</span>);</code>
+<code><span class="hljs-comment">// Positive overflow</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(int8, <span class="hljs-number">128</span>), -<span class="hljs-number">128</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Lowest value of range</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(int8, -<span class="hljs-number">128</span>), -<span class="hljs-number">128</span>);</code>
+<code><span class="hljs-comment">// Negative overflow</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(int8, -<span class="hljs-number">129</span>), <span class="hljs-number">127</span>);</code>
+</pre>
+<p>Clamped conversion is different:</p>
+<ul>
+  <li>
+    All negatively overflowing values are converted to the lowest value.
+  </li>
+  <li>
+    All positively overflowing values are converted to the highest value.
+  </li>
+</ul>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> uint8c = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8ClampedArray</span>(<span class="hljs-number">1</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Highest value of range</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(uint8c, <span class="hljs-number">255</span>), <span class="hljs-number">255</span>);</code>
+<code><span class="hljs-comment">// Positive overflow</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(uint8c, <span class="hljs-number">256</span>), <span class="hljs-number">255</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Lowest value of range</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(uint8c, <span class="hljs-number">0</span>), <span class="hljs-number">0</span>);</code>
+<code><span class="hljs-comment">// Negative overflow</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">setAndGet</span>(uint8c, -<span class="hljs-number">1</span>), <span class="hljs-number">0</span>);</code>
+</pre>
+<h5 id="handling-overflow-and-underflow-for-floats"><a class="heading-id-link" href="#handling-overflow-and-underflow-for-floats">35.4.1.2 Handling overflow and underflow for floats</a></h5>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> float16 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Float16Array</span>(<span class="hljs-number">1</span>);</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">setAndGet</span>(<span class="hljs-params">typedArray, value</span>) {</code>
+<code>  typedArray[<span class="hljs-number">0</span>] = value;</code>
+<code>  <span class="hljs-keyword">return</span> typedArray[<span class="hljs-number">0</span>];</code>
+<code>}</code>
+</pre>
+<p>If there is positive overflow (positive numbers being too far away from zero), the result is positive infinity:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">setAndGet</span>(float16, <span class="hljs-number">2</span>**<span class="hljs-number">15</span>),</code>
+<code>  <span class="hljs-number">32768</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">setAndGet</span>(float16, <span class="hljs-number">2</span>**<span class="hljs-number">16</span>),</code>
+<code>  <span class="hljs-title class_">Infinity</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-number">2</span>**<span class="hljs-number">16</span>,</code>
+<code>  <span class="hljs-number">65536</span> <span class="hljs-comment">// float64</span></code>
+<code>);</code>
+</pre>
+<p>If there is negative overflow (negative numbers being too far away from zero), the result is negative infinity:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">setAndGet</span>(float16, -(<span class="hljs-number">2</span>**<span class="hljs-number">15</span>)),</code>
+<code>  -<span class="hljs-number">32768</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">setAndGet</span>(float16, -(<span class="hljs-number">2</span>**<span class="hljs-number">16</span>)),</code>
+<code>  -<span class="hljs-title class_">Infinity</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  -(<span class="hljs-number">2</span>**<span class="hljs-number">16</span>),</code>
+<code>  -<span class="hljs-number">65536</span> <span class="hljs-comment">// float64</span></code>
+<code>);</code>
+</pre>
+<p>Arithmetic underflow means that a number has too many digits after a binary point (it is too close to an integer). If that happens, digits that can’t be represented are omitted:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">setAndGet</span>(float16, <span class="hljs-number">2</span>**-<span class="hljs-number">24</span>),</code>
+<code>  <span class="hljs-number">5.960464477539063e-8</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">setAndGet</span>(float16, <span class="hljs-number">2</span>**-<span class="hljs-number">25</span>),</code>
+<code>  <span class="hljs-number">0</span>,</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-number">2</span>**-<span class="hljs-number">25</span>,</code>
+<code>  <span class="hljs-number">2.9802322387695312e-8</span> <span class="hljs-comment">// float64</span></code>
+<code>);</code>
+</pre>
+<p>Useful related function: <a href="ch_math.html#qref-Math.f16round"><code>Math.f16round(x)</code></a> rounds <code>x</code> to 16 bits (within a 64-bit float).</p>
+<h4 id="typed-arrays-endianness"><a class="heading-id-link" href="#typed-arrays-endianness">35.4.2 Endianness</a></h4>
+<p><span id="index-entry-endianness--Typed-Arrays-"/>
+<span id="index-entry-big-endian"/>
+<span id="index-entry-little-endian"/></p>
+<p>Whenever a type (such as <code>Uint16</code>) is stored as a sequence of multiple bytes, <em>endianness</em> matters:</p>
+<ul>
+  <li>
+    Big endian: the most significant byte comes first. For example, the <code>Uint16</code> value 0x4321 is stored as two bytes – first 0x43, then 0x21.
+  </li>
+  <li>
+    Little endian: the least significant byte comes first. For example, the <code>Uint16</code> value 0x4321 is stored as two bytes – first 0x21, then 0x43.
+  </li>
+</ul>
+<p>Endianness tends to be fixed per CPU architecture and consistent across native APIs. Typed Arrays are used to communicate with those APIs, which is why their endianness follows the endianness of the platform and can’t be changed.</p>
+<p>On the other hand, the endianness of protocols and binary files varies, but is fixed per format, across platforms. Therefore, we must be able to access data with either endianness. DataViews serve this use case and let us specify endianness when we get or set a value.</p>
+<p><a href="https://en.wikipedia.org/wiki/Endianness">Quoting Wikipedia on Endianness</a>:</p>
+<ul>
+  <li>
+    Big-endian representation is the most common convention in data networking; fields in the protocols of the Internet protocol suite, such as IPv4, IPv6, TCP, and UDP, are transmitted in big-endian order. For this reason, big-endian byte order is also referred to as network byte order.
+  </li>
+  <li>
+    Little-endian storage is popular for microprocessors in part due to significant historical influence on microprocessor designs by Intel Corporation.
+  </li>
+</ul>
+<p>Other orderings are also possible. Those are generically called <em>middle-endian</em> or <em>mixed-endian</em>.</p>
+<h3 id="converting-to-and-from-typed-arrays"><a class="heading-id-link" href="#converting-to-and-from-typed-arrays">35.5 Converting to and from Typed Arrays</a></h3>
+<p>In this section, <code>«ElementType»Array</code> stands for <code>Int8Array</code>, <code>Uint8Array</code>, etc. <code>ElementType</code> is <code>Int8</code>, <code>Uint8</code>, etc.</p>
+<h4 id="the-static-method-elementtypearrayfrom"><a class="heading-id-link" href="#the-static-method-elementtypearrayfrom">35.5.1 The static method <code>«ElementType»Array.from()</code></a></h4>
+<p>This method has the type signature:</p>
+<pre class="language-ts">
+<code>.<span class="hljs-property">from</span>&lt;S&gt;(</code>
+<code>  <span class="hljs-attr">source</span>: <span class="hljs-title class_">Iterable</span>&lt;S&gt;|<span class="hljs-title class_">ArrayLike</span>&lt;S&gt;,</code>
+<code>  mapfn?: <span class="hljs-function"><span class="hljs-params">S</span> =&gt;</span> <span class="hljs-title class_">ElementType</span>, thisArg?: <span class="hljs-built_in">any</span>)</code>
+<code>  : «<span class="hljs-title class_">ElementType</span>»<span class="hljs-title class_">Array</span></code>
+</pre>
+<p><code>.from()</code> converts <code>source</code> into an instance of <code>this</code> (a Typed Array).</p>
+<p>For example, normal Arrays are iterable and can be converted with this method:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Uint16Array</span>.<span class="hljs-title function_">from</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]),</code>
+<code>  <span class="hljs-title class_">Uint16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>));</code>
+</pre>
+<p>Typed Arrays are also iterable:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Uint16Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>)),</code>
+<code>  <span class="hljs-title class_">Uint16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>));</code>
+</pre>
+<p><code>source</code> can also be <a href="ch_arrays.html#array-like-objects">an <em>Array-like object</em></a>:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Uint16Array</span>.<span class="hljs-title function_">from</span>({<span class="hljs-number">0</span>:<span class="hljs-number">0</span>, <span class="hljs-number">1</span>:<span class="hljs-number">1</span>, <span class="hljs-number">2</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">length</span>: <span class="hljs-number">3</span>}),</code>
+<code>  <span class="hljs-title class_">Uint16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>));</code>
+</pre>
+<p>The optional <code>mapfn</code> lets us transform the elements of <code>source</code> before they become elements of the result. Why perform the two steps <em>mapping</em> and <em>conversion</em> in one go? Compared to mapping separately via <code>.map()</code>, there are two advantages:</p>
+<ol>
+  <li>
+    No intermediate Array or Typed Array is needed.
+  </li>
+  <li>
+    When converting between Typed Arrays with different precisions, less can go wrong.
+  </li>
+</ol>
+<p>Read on for an explanation of the second advantage.</p>
+<h5 id="pitfall-mapping-while-converting-between-typed-array-types"><a class="heading-id-link" href="#pitfall-mapping-while-converting-between-typed-array-types">35.5.1.1 Pitfall: mapping while converting between Typed Array types</a></h5>
+<p>The static method <code>.from()</code> can optionally both map and convert between Typed Array types. Less can go wrong if we use that method.</p>
+<p>To see why that is, let us first convert a Typed Array to a Typed Array with a higher precision. If we use <code>.from()</code> to map, the result is automatically correct. Otherwise, we must first convert and then map.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> typedArray = <span class="hljs-title class_">Int8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">127</span>, <span class="hljs-number">126</span>, <span class="hljs-number">125</span>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">from</span>(typedArray, <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x * <span class="hljs-number">2</span>),</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">254</span>, <span class="hljs-number">252</span>, <span class="hljs-number">250</span>));</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">from</span>(typedArray).<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x * <span class="hljs-number">2</span>),</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">254</span>, <span class="hljs-number">252</span>, <span class="hljs-number">250</span>)); <span class="hljs-comment">// OK</span></code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">from</span>(typedArray.<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x * <span class="hljs-number">2</span>)),</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">of</span>(-<span class="hljs-number">2</span>, -<span class="hljs-number">4</span>, -<span class="hljs-number">6</span>)); <span class="hljs-comment">// wrong</span></code>
+</pre>
+<p>If we go from a Typed Array to a Typed Array with a lower precision, mapping via <code>.from()</code> produces the correct result. Otherwise, we must first map and then convert.</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Int8Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">254</span>, <span class="hljs-number">252</span>, <span class="hljs-number">250</span>), <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x / <span class="hljs-number">2</span>),</code>
+<code>  <span class="hljs-title class_">Int8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">127</span>, <span class="hljs-number">126</span>, <span class="hljs-number">125</span>));</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Int8Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">254</span>, <span class="hljs-number">252</span>, <span class="hljs-number">250</span>).<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x / <span class="hljs-number">2</span>)),</code>
+<code>  <span class="hljs-title class_">Int8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">127</span>, <span class="hljs-number">126</span>, <span class="hljs-number">125</span>)); <span class="hljs-comment">// OK</span></code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Int8Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">254</span>, <span class="hljs-number">252</span>, <span class="hljs-number">250</span>)).<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x / <span class="hljs-number">2</span>),</code>
+<code>  <span class="hljs-title class_">Int8Array</span>.<span class="hljs-title function_">of</span>(-<span class="hljs-number">1</span>, -<span class="hljs-number">2</span>, -<span class="hljs-number">3</span>)); <span class="hljs-comment">// wrong</span></code>
+</pre>
+<p>The problem is that if we map via <code>.map()</code>, then input type and output type are the same. In contrast, <code>.from()</code> goes from an arbitrary input type to an output type that we specify via its receiver.</p>
+<h4 id="typed-arrays-are-iterable"><a class="heading-id-link" href="#typed-arrays-are-iterable">35.5.2 Typed Arrays are iterable</a></h4>
+<p>Typed Arrays are <a href="ch_sync-iteration.html#ch_sync-iteration">iterable</a>. That means that we can use the <code>for-of</code> loop and other iteration-based mechanisms:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> ui8 = <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>);</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> byte <span class="hljs-keyword">of</span> ui8) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(byte);</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>0</code>
+<code>1</code>
+<code>2</code>
+</pre>
+<p>ArrayBuffers and DataViews are not iterable.</p>
+<h4 id="converting-typed-arrays-to-and-from-normal-arrays"><a class="heading-id-link" href="#converting-typed-arrays-to-and-from-normal-arrays">35.5.3 Converting Typed Arrays to and from normal Arrays</a></h4>
+<p>To convert a normal Array to a Typed Array, we pass it to:</p>
+<ul>
+  <li>
+    A Typed Array constructor – which accepts Typed Arrays, iterable values and Array-like objects.
+  </li>
+  <li>
+    <code>«ElementType»Array.from()</code> – which accepts iterable values and Array-like values.
+  </li>
+</ul>
+<p>For example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> ta1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]);</code>
+<code><span class="hljs-keyword">const</span> ta2 = <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">from</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(ta1, ta2);</code>
+</pre>
+<p>To convert a Typed Array to a normal Array, we can use <code>Array.from()</code> or spreading (because Typed Arrays are iterable):</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  [...<span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>)], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>)), [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]</code>
+<code>);</code>
+</pre>
+<h4 id="uint8array-to-from-string"><a class="heading-id-link" href="#uint8array-to-from-string">35.5.4 Converting a <code>Uint8Array</code> (UTF-8) to and from a string</a></h4>
+<p>The class <code>TextEncoder</code> and <code>TextDecoder</code> are not part of ECMAScript proper but supported by all major JavaScript platforms (browsers, Node.js, etc.). Therefore, we can use them to convert between <code>Uint8Array</code> and string.</p>
+<p>Converting a string to UTF-8-encoded bytes:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> textEncoder = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TextEncoder</span>();</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">stringToUtf8</span>(<span class="hljs-params">str</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> textEncoder.<span class="hljs-title function_">encode</span>(str);</code>
+<code>}</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title function_">stringToUtf8</span>(<span class="hljs-string">'abc'</span>),</code>
+<code>  <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">97</span>, <span class="hljs-number">98</span>, <span class="hljs-number">99</span>)</code>
+<code>);</code>
+</pre>
+<p>Converting UTF-8-encoded bytes to a string:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> textDecoder = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TextDecoder</span>();</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">utf8ToString</span>(<span class="hljs-params">bytes</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> textDecoder.<span class="hljs-title function_">decode</span>(bytes);</code>
+<code>}</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title function_">utf8ToString</span>(<span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">97</span>, <span class="hljs-number">98</span>, <span class="hljs-number">99</span>)),</code>
+<code>  <span class="hljs-string">'abc'</span></code>
+<code>);</code>
+</pre>
+<h3 id="resizing-array-buffers"><a class="heading-id-link" href="#resizing-array-buffers">35.6 Resizing ArrayBuffers<span> <sup>ES2024</sup></span></a></h3>
+<p>Before ArrayBuffers became resizable, they had fixed sizes. If we wanted one to grow or shrink, we had to allocate a new one and copy the old one over. That costs time and can fragment the address space on 32-bit systems.</p>
+<h4 id="new-features-for-arraybuffers"><a class="heading-id-link" href="#new-features-for-arraybuffers">35.6.1 New features for ArrayBuffers</a></h4>
+<p>These are the changes introduced by resizing:</p>
+<ul>
+  <li>
+    <p>The existing constructor gets one more parameter:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-attr">byteLength</span>: <span class="hljs-built_in">number</span>, options?: {maxByteLength?: <span class="hljs-built_in">number</span>})</code>
+</pre>
+  </li>
+  <li>
+    <p>There is one new method and two new getters:</p>
+    <ul>
+      <li>
+        <code>ArrayBuffer.prototype.resize(newByteLength: number)</code>
+        <ul>
+          <li>
+            Resizes the ArrayBuffer.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <code>get ArrayBuffer.prototype.resizable</code>
+        <ul>
+          <li>
+            Returns a boolean indicating if this ArrayBuffer is resizable.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <code>get ArrayBuffer.prototype.maxByteLength</code>
+        <ul>
+          <li>
+            Returns <code>options.maxByteLength</code> if it was provided to the constructor. Otherwise, it returns <code>this.byteLength</code>.
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The existing method <code>.slice()</code> always returns non-resizable ArrayBuffers.</p>
+  </li>
+</ul>
+<p>The <code>options</code> object of the constructor determines whether or not an ArrayBuffer is resizable:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> resizableArrayBuffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">16</span>, {<span class="hljs-attr">maxByteLength</span>: <span class="hljs-number">32</span>});</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  resizableArrayBuffer.<span class="hljs-property">resizable</span>, <span class="hljs-literal">true</span></code>
+<code>);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> fixedArrayBuffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">16</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  fixedArrayBuffer.<span class="hljs-property">resizable</span>, <span class="hljs-literal">false</span></code>
+<code>);</code>
+</pre>
+<h4 id="how-typed-arrays-react-to-changing-arraybuffer-sizes"><a class="heading-id-link" href="#how-typed-arrays-react-to-changing-arraybuffer-sizes">35.6.2 How Typed Arrays react to changing ArrayBuffer sizes</a></h4>
+<p>This is what constructors of Typed Arrays look like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">new</span> «<span class="hljs-title class_">TypedArray</span>»(</code>
+<code>  <span class="hljs-attr">buffer</span>: <span class="hljs-title class_">ArrayBuffer</span> | <span class="hljs-title class_">SharedArrayBuffer</span>,</code>
+<code>  byteOffset?: <span class="hljs-built_in">number</span>,</code>
+<code>  length?: <span class="hljs-built_in">number</span></code>
+<code>)</code>
+</pre>
+<p>If <code>length</code> is <code>undefined</code> then the <code>.length</code> and <code>.byteLength</code> of the Typed Array instance automatically tracks the length of a resizable <code>buffer</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">2</span>, {<span class="hljs-attr">maxByteLength</span>: <span class="hljs-number">4</span>});</code>
+<code><span class="hljs-comment">// `tarr1` starts at offset 0 (`length` is undefined)</span></code>
+<code><span class="hljs-keyword">const</span> tarr1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(buf);</code>
+<code><span class="hljs-comment">// `tarr2` starts at offset 2 (`length` is undefined)</span></code>
+<code><span class="hljs-keyword">const</span> tarr2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(buf, <span class="hljs-number">2</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr1.<span class="hljs-property">length</span>, <span class="hljs-number">2</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr2.<span class="hljs-property">length</span>, <span class="hljs-number">0</span></code>
+<code>);</code>
+<code/>
+<code>buf.<span class="hljs-title function_">resize</span>(<span class="hljs-number">4</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr1.<span class="hljs-property">length</span>, <span class="hljs-number">4</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr2.<span class="hljs-property">length</span>, <span class="hljs-number">2</span></code>
+<code>);</code>
+</pre>
+<p>If an ArrayBuffer is resized then a wrapper with a fixed length can <em>go out of bounds</em>: The wrapper’s range isn’t covered by the ArrayBuffer anymore. That is treated by JavaScript as if the ArrayBuffer were <a href="#transferring-detaching-array-buffers"><em>detached</em></a>:</p>
+<ul>
+  <li>
+    <code>.length</code>, <code>.byteLength</code> and <code>.byteOffset</code> are zero.
+  </li>
+  <li>
+    Getting elements returns <code>undefined</code>.
+  </li>
+  <li>
+    Setting elements is silently ignored.
+  </li>
+  <li>
+    All element-related methods throw errors.
+  </li>
+</ul>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> buf = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">4</span>, {<span class="hljs-attr">maxByteLength</span>: <span class="hljs-number">4</span>});</code>
+<code><span class="hljs-keyword">const</span> tarr = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(buf, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr.<span class="hljs-property">length</span>, <span class="hljs-number">2</span></code>
+<code>);</code>
+<code>buf.<span class="hljs-title function_">resize</span>(<span class="hljs-number">3</span>);</code>
+<code><span class="hljs-comment">// `tarr` is now partially out of bounds</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr.<span class="hljs-property">length</span>, <span class="hljs-number">0</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr.<span class="hljs-property">byteLength</span>, <span class="hljs-number">0</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr.<span class="hljs-property">byteOffset</span>, <span class="hljs-number">0</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  tarr[<span class="hljs-number">0</span>], <span class="hljs-literal">undefined</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> tarr.<span class="hljs-title function_">at</span>(<span class="hljs-number">0</span>),</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">name</span>: <span class="hljs-string">'TypeError'</span>,</code>
+<code>    <span class="hljs-attr">message</span>: <span class="hljs-string">'Cannot perform %TypedArray%.prototype.at '</span></code>
+<code>      + <span class="hljs-string">'on a detached ArrayBuffer'</span>,</code>
+<code>  }</code>
+<code>);</code>
+</pre>
+<h4 id="guidelines-given-by-the-ecmascript-specification"><a class="heading-id-link" href="#guidelines-given-by-the-ecmascript-specification">35.6.3 Guidelines given by the ECMAScript specification</a></h4>
+<p>The ECMAScript specification gives <a href="https://tc39.es/ecma262/#sec-resizable-arraybuffer-guidelines">the following guidelines</a> for working with resizable ArrayBuffers:</p>
+<ul>
+  <li>
+    <p>We recommend that programs be tested in their deployment environments where possible. The amount of available physical memory differs greatly between hardware devices. Similarly, virtual memory subsystems also differ greatly between hardware devices as well as operating systems. An application that runs without out-of-memory errors on a 64-bit desktop web browser could run out of memory on a 32-bit mobile web browser.</p>
+  </li>
+  <li>
+    <p>When choosing a value for the <code>maxByteLength</code> option for resizable ArrayBuffer, we recommend that the smallest possible size for the application be chosen. We recommend that <code>maxByteLength</code> does not exceed 1,073,741,824 (2<sup>30</sup> bytes or 1 GiB).</p>
+  </li>
+  <li>
+    <p>Please note that successfully constructing a resizable ArrayBuffer for a particular maximum size does not guarantee that future resizes will succeed.</p>
+  </li>
+</ul>
+<h3 id="transferring-detaching-array-buffers"><a class="heading-id-link" href="#transferring-detaching-array-buffers">35.7 Transferring and detaching ArrayBuffers<span> <sup>ES2024</sup></span></a></h3>
+<h4 id="preparation-transferring-data-and-detaching"><a class="heading-id-link" href="#preparation-transferring-data-and-detaching">35.7.1 Preparation: transferring data and detaching</a></h4>
+<p>The web API (not the ECMAScript standard) has long supported <a href="https://html.spec.whatwg.org/multipage/structured-data.html#safe-passing-of-structured-data"><em>structured cloning</em></a> for safely moving values across realms (<code>globalThis</code>, iframes, web workers, etc.). Some objects can also be <em>transferred</em>: After cloning, the original becomes <em>detached</em> (inaccessible) and ownership switches from the original to the clone. Transferring is usually faster than copying, especially if large amounts of memory are involved. These are the most common classes of <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Transferable_objects"><em>transferable objects</em></a>:</p>
+<ul>
+  <li>
+    <code>ArrayBuffer</code>
+  </li>
+  <li>
+    Streams:
+    <ul>
+      <li>
+        <code>ReadableStream</code>
+      </li>
+      <li>
+        <code>TransformStream</code>
+      </li>
+      <li>
+        <code>WritableStream</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    DOM-related data:
+    <ul>
+      <li>
+        <code>ImageBitmap</code>
+      </li>
+      <li>
+        <code>OffscreenCanvas</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Miscellaneous communication:
+    <ul>
+      <li>
+        <code>MessagePort</code>
+      </li>
+      <li>
+        <code>RTCDataChannel</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h4 id="methods-related-to-transferring-and-detaching"><a class="heading-id-link" href="#methods-related-to-transferring-and-detaching">35.7.2 Methods related to transferring and detaching</a></h4>
+<ul>
+  <li>
+    Two methods let us explicitly transfer an ArrayBuffer to a new object (we’ll see soon why that is useful):
+    <ul>
+      <li>
+        <code>ArrayBuffer.prototype.transfer(newLength?: number)</code>
+      </li>
+      <li>
+        <code>ArrayBuffer.prototype.transferToFixedLength(newLength?: number)</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    One getter tells us if an ArrayBuffer is detached:
+    <ul>
+      <li>
+        <code>get ArrayBuffer.prototype.detached</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h4 id="transferring-arraybuffers-via-structuredclone"><a class="heading-id-link" href="#transferring-arraybuffers-via-structuredclone">35.7.3 Transferring ArrayBuffers via <code>structuredClone()</code></a></h4>
+<p>The broadly supported <a href="ch_objects.html#structuredClone"><code>structuredClone()</code></a> also lets us transfer (and therefore detach) ArrayBuffers:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> original = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">16</span>);</code>
+<code><span class="hljs-keyword">const</span> clone = <span class="hljs-title function_">structuredClone</span>(original, {<span class="hljs-attr">transfer</span>: [original]});</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  original.<span class="hljs-property">byteLength</span>, <span class="hljs-number">0</span></code>
+<code>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  clone.<span class="hljs-property">byteLength</span>, <span class="hljs-number">16</span></code>
+<code>);</code>
+</pre>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  original.<span class="hljs-property">detached</span>, <span class="hljs-literal">true</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  clone.<span class="hljs-property">detached</span>, <span class="hljs-literal">false</span></code>
+<code>);</code>
+</pre>
+<p>The ArrayBuffer method <code>.transfer()</code> simply gives us a more concise way to detach an ArrayBuffer:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> original = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">16</span>);</code>
+<code><span class="hljs-keyword">const</span> transferred = original.<span class="hljs-title function_">transfer</span>();</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  original.<span class="hljs-property">detached</span>, <span class="hljs-literal">true</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  transferred.<span class="hljs-property">detached</span>, <span class="hljs-literal">false</span></code>
+<code>);</code>
+</pre>
+<h4 id="transferring-an-arraybuffer-within-the-same-agent"><a class="heading-id-link" href="#transferring-an-arraybuffer-within-the-same-agent">35.7.4 Transferring an ArrayBuffer within the same agent</a></h4>
+<p>Transferring is most often used between two <em>agents</em> (an agent being the main thread or a web worker). However, transferring within the same agent can make sense too: If a function gets a (potentially shared) ArrayBuffer as a parameter, it can transfer it so that no external code can interfere with what it does. Example (taken from <a href="https://github.com/tc39/proposal-arraybuffer-transfer?tab=readme-ov-file#ownership">the ECMAScript proposal</a> and slightly edited):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">validateAndWriteSafeAndFast</span>(<span class="hljs-params">arrayBuffer</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> owned = arrayBuffer.<span class="hljs-title function_">transfer</span>();</code>
+<code/>
+<code>  <span class="hljs-comment">// We have `owned` and no one can access its data via</span></code>
+<code>  <span class="hljs-comment">// `arrayBuffer` now because the latter is detached:</span></code>
+<code>  assert.<span class="hljs-title function_">equal</span>(</code>
+<code>    arrayBuffer.<span class="hljs-property">detached</span>, <span class="hljs-literal">true</span></code>
+<code>  );</code>
+<code/>
+<code>  <span class="hljs-comment">// `await` pauses this function – which gives external</span></code>
+<code>  <span class="hljs-comment">// code the opportunity to access `arrayBuffer`.</span></code>
+<code>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">validate</span>(owned);</code>
+<code>  <span class="hljs-keyword">await</span> fs.<span class="hljs-title function_">writeFile</span>(<span class="hljs-string">"data.bin"</span>, owned);</code>
+<code>}</code>
+</pre>
+<h4 id="how-does-detaching-an-arraybuffer-affect-its-wrappers"><a class="heading-id-link" href="#how-does-detaching-an-arraybuffer-affect-its-wrappers">35.7.5 How does detaching an ArrayBuffer affect its wrappers?</a></h4>
+<h5 id="typed-arrays-with-detached-arraybuffers"><a class="heading-id-link" href="#typed-arrays-with-detached-arraybuffers">35.7.5.1 Typed Arrays with detached ArrayBuffers</a></h5>
+<p>Preparation:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> arrayBuffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">16</span>);</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> typedArray = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(arrayBuffer);</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">arrayBuffer.<span class="hljs-title function_">transfer</span>();</span></code>
+</pre>
+<p>Lengths and offsets are all zero:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">typedArray.<span class="hljs-property">length</span></span></code>
+<code>0</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">typedArray.<span class="hljs-property">byteLength</span></span></code>
+<code>0</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">typedArray.<span class="hljs-property">byteOffset</span></span></code>
+<code>0</code>
+</pre>
+<p>Getting elements returns <code>undefined</code>; setting elements fails silently:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">typedArray[<span class="hljs-number">0</span>]</span></code>
+<code>undefined</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">typedArray[<span class="hljs-number">0</span>] = <span class="hljs-number">128</span></span></code>
+<code>128</code>
+</pre>
+<p>All element-related methods throw exceptions:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">typedArray.<span class="hljs-title function_">at</span>(<span class="hljs-number">0</span>)</span></code>
+<code>TypeError: Cannot perform %TypedArray%.prototype.at</code>
+<code>on a detached ArrayBuffer</code>
+</pre>
+<h5 id="dataviews-with-detached-arraybuffers"><a class="heading-id-link" href="#dataviews-with-detached-arraybuffers">35.7.5.2 DataViews with detached ArrayBuffers</a></h5>
+<p>All data-related methods of DataViews throw:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> arrayBuffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">16</span>);</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> dataView = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DataView</span>(arrayBuffer);</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">arrayBuffer.<span class="hljs-title function_">transfer</span>();</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">dataView.<span class="hljs-property">byteLength</span></span></code>
+<code>TypeError: Cannot perform get DataView.prototype.byteLength</code>
+<code>on a detached ArrayBuffer</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">dataView.<span class="hljs-title function_">getUint8</span>(<span class="hljs-number">0</span>)</span></code>
+<code>TypeError: Cannot perform DataView.prototype.getUint8</code>
+<code>on a detached ArrayBuffer</code>
+</pre>
+<h5 id="we-cant-create-new-wrappers-with-detached-arraybuffers"><a class="heading-id-link" href="#we-cant-create-new-wrappers-with-detached-arraybuffers">35.7.5.3 We can’t create new wrappers with detached ArrayBuffers</a></h5>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> arrayBuffer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">16</span>);</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">arrayBuffer.<span class="hljs-title function_">transfer</span>();</span></code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>(arrayBuffer)</span></code>
+<code>TypeError: Cannot perform Construct on a detached ArrayBuffer</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">DataView</span>(arrayBuffer)</span></code>
+<code>TypeError: Cannot perform DataView constructor on a detached ArrayBuffer</code>
+</pre>
+<h4 id="arraybufferprototypetransfertofixedlength"><a class="heading-id-link" href="#arraybufferprototypetransfertofixedlength">35.7.6 <code>ArrayBuffer.prototype.transferToFixedLength()</code></a></h4>
+<p>This method rounds out the API: It transfers and converts a resizable ArrayBuffer to one with a fixed length. That may free up memory that was held in preparation for growth.</p>
+<h3 id="typed-arrays-indices-offsets"><a class="heading-id-link" href="#typed-arrays-indices-offsets">35.8 Quick references: indices vs. offsets</a></h3>
+<p>In preparation for the quick references on ArrayBuffers, Typed Arrays, and DataViews, we need learn the differences between indices and offsets:</p>
+<ul>
+  <li>
+    <p>Indices for the bracket operator <code>[ ]</code>: We can only use non-negative indices (starting at 0).</p>
+    <p>In normal Arrays, writing to negative indices creates properties:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-number">6</span>, <span class="hljs-number">7</span>];</code>
+<code>arr[-<span class="hljs-number">1</span>] = <span class="hljs-number">5</span>;</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(arr), [<span class="hljs-string">'0'</span>, <span class="hljs-string">'1'</span>, <span class="hljs-string">'-1'</span>]);</code>
+</pre>
+    <p>In Typed Arrays, writing to negative indices is ignored:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> tarr = <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">6</span>, <span class="hljs-number">7</span>);</code>
+<code>tarr[-<span class="hljs-number">1</span>] = <span class="hljs-number">5</span>;</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(tarr), [<span class="hljs-string">'0'</span>, <span class="hljs-string">'1'</span>]);</code>
+</pre>
+  </li>
+  <li>
+    <p>Indices for methods of ArrayBuffers, Typed Arrays, and DataViews: Every index can be negative. If it is, it is added to the length of the entity to produce the actual index. Therefore, <code>-1</code> refers to the last element, <code>-2</code> to the second-last, etc. Methods of normal Arrays work the same way.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> ui8 = <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(ui8.<span class="hljs-title function_">slice</span>(-<span class="hljs-number">1</span>), <span class="hljs-title class_">Uint8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">2</span>));</code>
+</pre>
+  </li>
+  <li>
+    <p>Offsets passed to methods of Typed Arrays and DataViews: must be non-negative – for example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> dataView = <span class="hljs-keyword">new</span> <span class="hljs-title class_">DataView</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">4</span>));</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> dataView.<span class="hljs-title function_">getUint8</span>(-<span class="hljs-number">1</span>),</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">name</span>: <span class="hljs-string">'RangeError'</span>,</code>
+<code>    <span class="hljs-attr">message</span>: <span class="hljs-string">'Offset is outside the bounds of the DataView'</span>,</code>
+<code>  });</code>
+</pre>
+  </li>
+</ul>
+<p>Whether a parameter is an index or an offset can only be determined by looking at documentation; there is no simple rule.</p>
+<h3 id="quick-reference-arraybuffers"><a class="heading-id-link" href="#quick-reference-arraybuffers">35.9 Quick reference: ArrayBuffers</a></h3>
+<p>ArrayBuffers store binary data, which is meant to be accessed via Typed Arrays and DataViews.</p>
+<h4 id="new-arraybuffer"><a class="heading-id-link" href="#new-arraybuffer">35.9.1 <code>new ArrayBuffer()</code></a></h4>
+<ul>
+  <li>
+    <p><code id="qref-new-ArrayBuffer">new ArrayBuffer(byteLength, options?)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(</code>
+<code>  <span class="hljs-attr">byteLength</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  options?: { <span class="hljs-comment">// ES2024</span></code>
+<code>    maxByteLength?: <span class="hljs-built_in">number</span></code>
+<code>  }</code>
+<code>)</code>
+</pre>
+    <p>Invoking this constructor via <code>new</code> creates an instance whose capacity is <code>length</code> bytes. Each of those bytes is initially 0.</p>
+    <p>If <code>options.maxByteLength</code> is provided, the ArrayBuffer can be resized. Otherwise, it has a fixed length.</p>
+  </li>
+</ul>
+<h4 id="arraybuffer"><a class="heading-id-link" href="#arraybuffer">35.9.2 <code>ArrayBuffer.*</code></a></h4>
+<ul>
+  <li>
+    <p><code id="qref-ArrayBuffer.isView">ArrayBuffer.isView(arg)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns <code>true</code> if <code>arg</code> is a <em>view</em> for an ArrayBuffer (i.e., if it is a Typed Array or a DataView).</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">ArrayBuffer</span>.<span class="hljs-title function_">isView</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint8Array</span>())</span></code>
+<code>true</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">ArrayBuffer</span>.<span class="hljs-title function_">isView</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">DataView</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>()))</span></code>
+<code>true</code>
+</pre>
+  </li>
+</ul>
+<h4 id="arraybufferprototype-getting-and-slicing"><a class="heading-id-link" href="#arraybufferprototype-getting-and-slicing">35.9.3 <code>ArrayBuffer.prototype.*</code>: getting and slicing</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-get-ArrayBuffer.prototype.byteLength">get ArrayBuffer.prototype.byteLength</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns the capacity of this ArrayBuffer in bytes.</p>
+  </li>
+  <li>
+    <p><code id="qref-ArrayBuffer.prototype.slice">ArrayBuffer.prototype.slice(startIndex=0, endIndex=this.byteLength)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Creates a new ArrayBuffer that contains the bytes of this ArrayBuffer whose indices are greater than or equal to <code>startIndex</code> and less than <code>endIndex</code>. <code>start</code> and <code>endIndex</code> can be negative (see <a href="#typed-arrays-indices-offsets">“Quick references: indices vs. offsets” (§35.8)</a>).</p>
+  </li>
+</ul>
+<h4 id="arraybufferprototype-resizing"><a class="heading-id-link" href="#arraybufferprototype-resizing">35.9.4 <code>ArrayBuffer.prototype.*</code>: resizing</a></h4>
+<ul>
+  <li>
+    <p><code id="qref-ArrayBuffer.prototype.resize">ArrayBuffer.prototype.resize(newByteLength)</code> <span class="ibox ibox-small" size="small">ES2024</span></p>
+    <p>Changes the size of this ArrayBuffer. For more information, see <a href="#resizing-array-buffers">“Resizing ArrayBuffers<span> <sup>ES2024</sup></span>” (§35.6)</a>.</p>
+  </li>
+  <li>
+    <p><code id="qref-get-ArrayBuffer.prototype.resizable">get ArrayBuffer.prototype.resizable</code> <span class="ibox ibox-small" size="small">ES2024</span></p>
+    <p>Returns <code>true</code> if this ArrayBuffer is resizable and <code>false</code> if it is not.</p>
+  </li>
+  <li>
+    <p><code id="qref-get-ArrayBuffer.prototype.maxByteLength">get ArrayBuffer.prototype.maxByteLength</code> <span class="ibox ibox-small" size="small">ES2024</span></p>
+    <p>Returns <code>options.maxByteLength</code> if it was provided to the constructor. Otherwise, it returns <code>this.byteLength</code>.</p>
+  </li>
+</ul>
+<h3 id="quick-reference-typed-arrays"><a class="heading-id-link" href="#quick-reference-typed-arrays">35.10 Quick reference: Typed Arrays</a></h3>
+<p>The properties of the various Typed Array objects are introduced in two steps:</p>
+<ol>
+  <li>
+    <p><code>TypedArray</code>: First, we look at the abstract superclass of all Typed Array classes (which was shown in the class diagram <a href="#fig:typed_arrays_class_diagram">at the beginning of this chapter</a>). That superclass is called <code>TypedArray</code> but it does not have a global name in JavaScript:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getPrototypeOf</span>(<span class="hljs-title class_">Uint8Array</span>).<span class="hljs-property">name</span></span></code>
+<code>'TypedArray'</code>
+</pre>
+  </li>
+  <li>
+    <p><code>«ElementType»Array</code>: The concrete Typed Array classes are called <code>Uint8Array</code>, <code>Int16Array</code>, <code>Float16Array</code>, etc. These are the classes that we use via <code>new</code>, <code>.of</code>, and <code>.from()</code>.</p>
+  </li>
+</ol>
+<h4 id="typedarray"><a class="heading-id-link" href="#typedarray">35.10.1 <code>TypedArray.*</code></a></h4>
+<p>Both static <code>TypedArray</code> methods are inherited by its subclasses (<code>Uint8Array</code>, etc.). Therefore, we can use these methods via the subclasses, which are concrete and can have direct instances.</p>
+<ul>
+  <li>
+    <p><code id="qref-TypedArray.from">TypedArray.from(iterableOrArrayLike, mapFunc?)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// BigInt64Array: bigint instead of number</span></code>
+<code><span class="hljs-title class_">TypedArray</span>.<span class="hljs-property">from</span>&lt;T&gt;(</code>
+<code>  <span class="hljs-attr">iterableOrArrayLike</span>: <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-built_in">number</span>&gt; | <span class="hljs-title class_">ArrayLike</span>&lt;<span class="hljs-built_in">number</span>&gt;</code>
+<code>): <span class="hljs-title class_">TypedArray</span>&lt;T&gt;</code>
+<code><span class="hljs-title class_">TypedArray</span>.<span class="hljs-property">from</span>&lt;S, T&gt;(</code>
+<code>  <span class="hljs-attr">iterableOrArrayLike</span>: <span class="hljs-title class_">Iterable</span>&lt;S&gt; | <span class="hljs-title class_">ArrayLike</span>&lt;S&gt;,</code>
+<code>  <span class="hljs-attr">mapFunc</span>: <span class="hljs-function">(<span class="hljs-params">v: S, k: <span class="hljs-built_in">number</span></span>) =&gt;</span> T, thisArg?: <span class="hljs-built_in">any</span></code>
+<code>): <span class="hljs-title class_">TypedArray</span>&lt;T&gt;</code>
+</pre>
+    <p>Converts an iterable (including Arrays and Typed Arrays) or <a href="ch_arrays.html#array-like-objects">an Array-like object</a> to an instance of the Typed Array class.</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Uint16Array</span>.<span class="hljs-title function_">from</span>([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>]),</code>
+<code>  <span class="hljs-title class_">Uint16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>));</code>
+</pre>
+    <p>The optional <code>mapFunc</code> lets us transform the elements of <code>source</code> before they become elements of the result.</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title class_">Int8Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">127</span>, <span class="hljs-number">126</span>, <span class="hljs-number">125</span>), <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x * <span class="hljs-number">2</span>),</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">of</span>(<span class="hljs-number">254</span>, <span class="hljs-number">252</span>, <span class="hljs-number">250</span>));</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-TypedArray.of">TypedArray.of(...items)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// BigInt64Array: bigint instead of number</span></code>
+<code><span class="hljs-title class_">TypedArray</span>.<span class="hljs-property">of</span>&lt;T&gt;(</code>
+<code>  ...<span class="hljs-attr">items</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;</code>
+<code>): <span class="hljs-title class_">TypedArray</span>&lt;T&gt;</code>
+</pre>
+    <p>Creates a new instance of the Typed Array class whose elements are <code>items</code> (coerced to the element type).</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Int16Array</span>.<span class="hljs-title function_">of</span>(-<span class="hljs-number">1234</span>, <span class="hljs-number">5</span>, <span class="hljs-number">67</span>),</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Int16Array</span>([-<span class="hljs-number">1234</span>, <span class="hljs-number">5</span>, <span class="hljs-number">67</span>]) );</code>
+</pre>
+  </li>
+</ul>
+<h4 id="typedarrayprototype"><a class="heading-id-link" href="#typedarrayprototype">35.10.2 <code>TypedArray.prototype.*</code></a></h4>
+<p>Indices accepted by Typed Array methods can be negative (they work like traditional Array methods that way). Offsets must be non-negative. For details, see <a href="#typed-arrays-indices-offsets">“Quick references: indices vs. offsets” (§35.8)</a>.</p>
+<h5 id="properties-specific-to-typed-arrays"><a class="heading-id-link" href="#properties-specific-to-typed-arrays">35.10.2.1 Properties specific to Typed Arrays</a></h5>
+<p>The following properties are specific to Typed Arrays; normal Arrays don’t have them:</p>
+<ul>
+  <li>
+    <p><code id="qref-get-TypedArray.prototype.buffer">get TypedArray.prototype.buffer</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns the ArrayBuffer backing this Typed Array.</p>
+  </li>
+  <li>
+    <p><code id="qref-get-TypedArray.prototype.length">get TypedArray.prototype.length</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns the length in elements of this Typed Array’s buffer.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint32Array</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">4</span>)).<span class="hljs-property">length</span></span></code>
+<code>1</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-get-TypedArray.prototype.byteLength">get TypedArray.prototype.byteLength</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns the size in bytes of this Typed Array’s buffer.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Uint32Array</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ArrayBuffer</span>(<span class="hljs-number">4</span>)).<span class="hljs-property">byteLength</span></span></code>
+<code>4</code>
+</pre>
+  </li>
+  <li>
+    <p><code id="qref-get-TypedArray.prototype.byteOffset">get TypedArray.prototype.byteOffset</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns the offset where this Typed Array “starts” inside its ArrayBuffer.</p>
+  </li>
+  <li>
+    <p><code id="qref-TypedArray.prototype.set">TypedArray.prototype.set(typedArrayOrArrayLike, offset=0)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Copies all elements of the first parameter to this Typed Array. The element at index 0 of the parameter is written to index <code>offset</code> of this Typed Array (etc.). For more information on Array-like objects, see <a href="ch_arrays.html#array-like-objects">“Array-like objects” (§34.5)</a>.</p>
+  </li>
+  <li>
+    <p><code id="qref-TypedArray.prototype.subarray">TypedArray.prototype.subarray(startIndex=0, endIndex=this.length)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns a new Typed Array that has the same buffer as this Typed Array, but a (generally) smaller range. If <code>startIndex</code> is non-negative then the first element of the resulting Typed Array is <code>this[startIndex]</code>, the second <code>this[startIndex+1]</code> (etc.). If <code>startIndex</code> in negative, it is converted appropriately.</p>
+  </li>
+</ul>
+<h5 id="array-methods"><a class="heading-id-link" href="#array-methods">35.10.2.2 Array methods</a></h5>
+<p>The following methods are basically the same as the methods of normal Arrays (the ECMAScript versions specify when the methods were added to Arrays – Typed Arrays didn’t exist in ECMAScript before ES6):</p>
+<ul>
+  <li>
+    <code>TypedArray.prototype.at(index)</code> <sup>ES2022, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.copyWithin(target, start, end=this.length)</code> <sup>ES6, W</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.entries()</code> <sup>ES6, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.every(predicate, thisArg?)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.fill(start=0, end=this.length)</code> <sup>ES6, W</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.filter(predicate, thisArg?)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.find(predicate, thisArg?)</code> <sup>ES6, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.findIndex(predicate, thisArg?)</code> <sup>ES6, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.findLast(predicate, thisArg?)</code> <sup>ES2023, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.findLastIndex(predicate, thisArg?)</code> <sup>ES2023, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.forEach(callback)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.includes(searchElement, fromIndex)</code> <sup>ES2016, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.indexOf(searchElement, fromIndex)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.join(separator = ',')</code> <sup>ES1, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.keys()</code> <sup>ES6, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.lastIndexOf(searchElement, fromIndex)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.map(callback, thisArg?)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.reduce(callback, initialValue?)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.reduceRight(callback, initialValue?)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.reverse()</code> <sup>ES1, W</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.slice(start?, end?)</code> <sup>ES3, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.some(predicate, thisArg?)</code> <sup>ES5, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.sort(compareFunc?)</code> <sup>ES1, W</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.toLocaleString()</code> <sup>ES3, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.toReversed()</code> <sup>ES2023, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.toSorted(compareFunc?)</code> <sup>ES2023, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.toSpliced(start?, deleteCount?, ...items)</code> <sup>ES2023, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.toString()</code> <sup>ES1, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.values()</code> <sup>ES6, R</sup>
+  </li>
+  <li>
+    <code>TypedArray.prototype.with(index, value)</code> <sup>ES2023, R</sup>
+  </li>
+</ul>
+<p>For details on how these methods work, see <a href="ch_arrays.html#quickref-Array">“Quick reference: <code>Array</code>” (§34.18)</a>.</p>
+<h4 id="new-elementtypearray"><a class="heading-id-link" href="#new-elementtypearray">35.10.3 <code>new «ElementType»Array()</code></a></h4>
+<p>Each Typed Array constructor has a name that follows the pattern <code>«ElementType»Array</code>, where <code>«ElementType»</code> is one of the element types listed in <a href="#tbl:typed-array-element-types">Table 35.1</a>. That means there are 12 constructors for Typed Arrays:</p>
+<ul>
+  <li>
+    <code>Int8Array</code>, <code>Uint8Array</code>, <code>Uint8ClampedArray</code>
+  </li>
+  <li>
+    <code>Int16Array</code>, <code>Uint16Array</code>
+  </li>
+  <li>
+    <code>Int32Array</code>, <code>Uint32Array</code>
+  </li>
+  <li>
+    <code>BigInt64Array</code>, <code>BigUint64Array</code>
+  </li>
+  <li>
+    <code>Float16Array</code>, <code>Float32Array</code>, <code>Float64Array</code>
+  </li>
+</ul>
+<p>Each constructor has several <em>overloaded</em> versions – it behaves differently depending on how many arguments it receives and what their types are:</p>
+<ul>
+  <li>
+    <p><code>new «ElementType»Array(length=0)</code></p>
+    <p>Creates a new <code>«ElementType»Array</code> with the given <code>length</code> and the appropriate buffer. The buffer’s size in bytes is:</p>
+<pre class="language-js">
+<code>length * «<span class="hljs-title class_">ElementType</span>»<span class="hljs-title class_">Array</span>.<span class="hljs-property">BYTES_PER_ELEMENT</span></code>
+</pre>
+  </li>
+  <li>
+    <p><code>new «ElementType»Array(source: TypedArray)</code></p>
+    <p>Creates a new instance of <code>«ElementType»Array</code> whose elements have the same values as the elements of <code>source</code>, but coerced to <code>ElementType</code>.</p>
+  </li>
+  <li>
+    <p><code>new «ElementType»Array(source: Iterable&lt;number&gt;)</code></p>
+    <ul>
+      <li>
+        <p><code>BigInt64Array</code>, <code>BigUint64Array</code>: <code>bigint</code> instead of <code>number</code></p>
+      </li>
+      <li>
+        <p>Creates a new instance of <code>«ElementType»Array</code> whose elements have the same values as the items of <code>source</code>, but coerced to <code>ElementType</code>. For more information on iterables, see <a href="ch_sync-iteration.html#ch_sync-iteration">“Synchronous iteration<span> <sup>ES6</sup></span>” (§32)</a>.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><code>new «ElementType»Array(source: ArrayLike&lt;number&gt;)</code></p>
+    <ul>
+      <li>
+        <p><code>BigInt64Array</code>, <code>BigUint64Array</code>: <code>bigint</code> instead of <code>number</code></p>
+      </li>
+      <li>
+        <p>Creates a new instance of <code>«ElementType»Array</code> whose elements have the same values as the elements of <code>source</code>, but coerced to <code>ElementType</code>. For more information on Array-like objects, see <a href="ch_arrays.html#array-like-objects">“Array-like objects” (§34.5)</a>.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><code>new «ElementType»Array(buffer: ArrayBuffer, byteOffset=0, length=0)</code></p>
+    <p>Creates a new <code>«ElementType»Array</code> whose buffer is <code>buffer</code>. It starts accessing the buffer at the given <code>byteOffset</code> and will have the given <code>length</code>. Note that <code>length</code> counts elements of the Typed Array (with 1–8 bytes each), not bytes.</p>
+  </li>
+</ul>
+<h4 id="elementtypearray"><a class="heading-id-link" href="#elementtypearray">35.10.4 <code>«ElementType»Array.*</code></a></h4>
+<ul>
+  <li>
+    <p><code>«ElementType»Array.BYTES_PER_ELEMENT: number</code></p>
+    <p>Counts how many bytes are needed to store a single element:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Uint8Array</span>.<span class="hljs-property">BYTES_PER_ELEMENT</span></span></code>
+<code>1</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Int16Array</span>.<span class="hljs-property">BYTES_PER_ELEMENT</span></span></code>
+<code>2</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Float64Array</span>.<span class="hljs-property">BYTES_PER_ELEMENT</span></span></code>
+<code>8</code>
+</pre>
+  </li>
+</ul>
+<h4 id="elementtypearrayprototype"><a class="heading-id-link" href="#elementtypearrayprototype">35.10.5 <code>«ElementType»Array.prototype.*</code></a></h4>
+<ul>
+  <li>
+    <p><code>«ElementType»Array.prototype.BYTES_PER_ELEMENT: number</code></p>
+    <p>The same as <code>«ElementType»Array.BYTES_PER_ELEMENT</code>.</p>
+  </li>
+</ul>
+<h3 id="quick-reference-dataviews"><a class="heading-id-link" href="#quick-reference-dataviews">35.11 Quick reference: DataViews</a></h3>
+<h4 id="new-dataview"><a class="heading-id-link" href="#new-dataview">35.11.1 <code>new DataView()</code></a></h4>
+<ul>
+  <li>
+    <p><code id="qref-new-DataView">new DataView(arrayBuffer, byteOffset?, byteLength?)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Creates a new DataView whose data is stored in the ArrayBuffer <code>buffer</code>. By default, the new DataView can access all of <code>buffer</code>. The last two parameters allow us to change that.</p>
+  </li>
+</ul>
+<h4 id="dataviewprototype"><a class="heading-id-link" href="#dataviewprototype">35.11.2 <code>DataView.prototype.*</code></a></h4>
+<p>In the remainder of this section, <code>«ElementType»</code> refers to either:</p>
+<ul>
+  <li>
+    <code>Int8</code>, <code>Uint8</code>
+  </li>
+  <li>
+    <code>Int16</code>, <code>Uint16</code>
+  </li>
+  <li>
+    <code>Int32</code>, <code>Uint32</code>
+  </li>
+  <li>
+    <code>BigInt64</code>, <code>BigUint64</code>
+  </li>
+  <li>
+    <code>Float16</code>, <code>Float32</code>, <code>Float64</code>
+  </li>
+</ul>
+<p>These are the properties of <code>DataView.prototype</code>:</p>
+<ul>
+  <li>
+    <p><code id="qref-get-DataView.prototype.buffer">get DataView.prototype.buffer</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns the ArrayBuffer of this DataView.</p>
+  </li>
+  <li>
+    <p><code id="qref-get-DataView.prototype.byteLength">get DataView.prototype.byteLength</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns how many bytes can be accessed by this DataView.</p>
+  </li>
+  <li>
+    <p><code id="qref-get-DataView.prototype.byteOffset">get DataView.prototype.byteOffset</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns at which offset this DataView starts accessing the bytes in its buffer.</p>
+  </li>
+  <li>
+    <p><code id="qref-DataView.prototype.get">DataView.prototype.get«ElementType»(byteOffset, littleEndian=false)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Returns:</p>
+    <ul>
+      <li>
+        <code>BigInt64</code>, <code>BigUint64</code>: <code>bigint</code>
+      </li>
+      <li>
+        All other element types: <code>number</code>
+      </li>
+    </ul>
+    <p>Reads a value from the buffer of this DataView.</p>
+  </li>
+  <li>
+    <p><code id="qref-DataView.prototype.set">DataView.prototype.set«ElementType»(byteOffset, value, littleEndian=false)</code> <span class="ibox ibox-small" size="small">ES6</span></p>
+    <p>Type of <code>value</code>:</p>
+    <ul>
+      <li>
+        <code>BigInt64</code>, <code>BigUint64</code>: <code>bigint</code>
+      </li>
+      <li>
+        All other element types: <code>number</code>
+      </li>
+    </ul>
+    <p>Writes <code>value</code> to the buffer of this DataView.</p>
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

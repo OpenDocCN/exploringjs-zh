@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>45 Asynchronous iteration ES2018</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>45 Asynchronous iteration ES2018</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_async-iteration.html">https://exploringjs.com/js/book/ch_async-iteration.html</a></blockquote>
+
+        
+    
+    
+    
+<p><span id="index-entry-asynchronous-iteration"/><span id="index-entry-iteration--asynchronous"/></p>
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#basic-asynchronous-iteration">45.1 Basic asynchronous iteration</a>
+      <ol>
+        <li>
+          <a href="#async-iteration-protocol">45.1.1 Protocol: async iteration</a>
+        </li>
+        <li>
+          <a href="#using-async-iteration-directly">45.1.2 Using async iteration directly</a>
+        </li>
+        <li>
+          <a href="#for-await-of">45.1.3 Using async iteration via <code>for-await-of</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#async-generators">45.2 Asynchronous generators</a>
+      <ol>
+        <li>
+          <a href="#example-creating-an-async-iterable-via-an-async-generator">45.2.1 Example: creating an async iterable via an async generator</a>
+        </li>
+        <li>
+          <a href="#example-converting-a-sync-iterable-to-an-async-iterable">45.2.2 Example: converting a sync iterable to an async iterable</a>
+        </li>
+        <li>
+          <a href="#asyncIterableToArray">45.2.3 Example: converting an async iterable to an Array</a>
+        </li>
+        <li>
+          <a href="#example-transforming-an-async-iterable">45.2.4 Example: transforming an async iterable</a>
+        </li>
+        <li>
+          <a href="#example-mapping-over-asynchronous-iterables">45.2.5 Example: mapping over asynchronous iterables</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#async-iteration-over-nodejs-streams">45.3 Async iteration over Node.js streams</a>
+      <ol>
+        <li>
+          <a href="#nodejs-streams-async-via-callbacks-push">45.3.1 Node.js streams: async via callbacks (push)</a>
+        </li>
+        <li>
+          <a href="#nodejs-streams-async-via-async-iteration-pull">45.3.2 Node.js streams: async via async iteration (pull)</a>
+        </li>
+        <li>
+          <a href="#example-from-chunks-to-lines">45.3.3 Example: from chunks to lines</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<div class="boxout">
+  <p><img src="../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png" class="boxout-icon" height="24" alt="Icon “reading”" data-original-src="https://exploringjs.com/js/book/icon/reading.svg"/> <strong>Required knowledge</strong></p>
+  <div class="boxout-vspace"/>
+  <p>For this chapter, you should be familiar with:</p>
+  <ul>
+    <li>
+      <a href="ch_promises.html#ch_promises">Promises</a>
+    </li>
+    <li>
+      <a href="ch_async-functions.html#ch_async-functions">Async functions</a>
+    </li>
+  </ul>
+</div>
+<h3 id="basic-asynchronous-iteration"><a class="heading-id-link" href="#basic-asynchronous-iteration">45.1 Basic asynchronous iteration</a></h3>
+<h4 id="async-iteration-protocol"><a class="heading-id-link" href="#async-iteration-protocol">45.1.1 Protocol: async iteration</a></h4>
+<p><span id="index-entry-asynchronous-iterable"/><span id="index-entry-iterable--asynchronous-"/>
+<span id="index-entry-asynchronous-iterator"/><span id="index-entry-iterator--asynchronous-"/></p>
+<p>To understand how asynchronous iteration works, let’s first revisit <a href="ch_sync-iteration.html#ch_sync-iteration">synchronous iteration</a>. It comprises the following interfaces:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Iterable</span>&lt;T&gt; {</code>
+<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() : <span class="hljs-title class_">Iterator</span>&lt;T&gt;;</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Iterator</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-title function_">next</span>() : <span class="hljs-title class_">IteratorResult</span>&lt;T&gt;;</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">IteratorResult</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-attr">value</span>: T;</code>
+<code>  <span class="hljs-attr">done</span>: <span class="hljs-built_in">boolean</span>;</code>
+<code>}</code>
+</pre>
+<ul>
+  <li>
+    An <code>Iterable</code> is a data structure whose contents can be accessed via iteration. It is a factory for iterators.
+  </li>
+  <li>
+    An <code>Iterator</code> is a factory for iteration results that we retrieve by calling the method <code>.next()</code>.
+  </li>
+  <li>
+    Each <code>IterationResult</code> contains the iterated <code>.value</code> and a boolean <code>.done</code> that is <code>true</code> after the last element and <code>false</code> before.
+  </li>
+</ul>
+<p>For the protocol for asynchronous iteration, we only want to change one thing: the values produced by <code>.next()</code> should be delivered asynchronously. There are two conceivable options:</p>
+<ul>
+  <li>
+    The <code>.value</code> could contain a <code>Promise&lt;T&gt;</code>.
+  </li>
+  <li>
+    <code>.next()</code> could return <code>Promise&lt;IteratorResult&lt;T&gt;&gt;</code>.
+  </li>
+</ul>
+<p>In other words, the question is whether to wrap just values or whole iterator results in Promises.</p>
+<p>It has to be the latter because when <code>.next()</code> returns a result, it starts an asynchronous computation. Whether or not that computation produces a value or signals the end of the iteration can only be determined after it is finished. Therefore, both <code>.done</code> and <code>.value</code> need to be wrapped in a Promise.</p>
+<p>The interfaces for async iteration look as follows.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">AsyncIterable</span>&lt;T&gt; {</code>
+<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">asyncIterator</span>]() : <span class="hljs-title class_">AsyncIterator</span>&lt;T&gt;;</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">AsyncIterator</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-title function_">next</span>() : <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">IteratorResult</span>&lt;T&gt;&gt;; <span class="hljs-comment">// (A)</span></code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">IteratorResult</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-attr">value</span>: T;</code>
+<code>  <span class="hljs-attr">done</span>: <span class="hljs-built_in">boolean</span>;</code>
+<code>}</code>
+</pre>
+<p>The only difference to the synchronous interfaces is the return type of <code>.next()</code> (line A).</p>
+<h4 id="using-async-iteration-directly"><a class="heading-id-link" href="#using-async-iteration-directly">45.1.2 Using async iteration directly</a></h4>
+<p>The following code uses the asynchronous iteration protocol directly:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> asyncIterable = <span class="hljs-title function_">syncToAsyncIterable</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]); <span class="hljs-comment">// (A)</span></code>
+<code><span class="hljs-keyword">const</span> asyncIterator = asyncIterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">asyncIterator</span>]();</code>
+<code/>
+<code><span class="hljs-comment">// Call .next() until .done is true:</span></code>
+<code>asyncIterator.<span class="hljs-title function_">next</span>() <span class="hljs-comment">// (B)</span></code>
+<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">iteratorResult</span> =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    iteratorResult,</code>
+<code>    { <span class="hljs-attr">value</span>: <span class="hljs-string">'a'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> });</code>
+<code>  <span class="hljs-keyword">return</span> asyncIterator.<span class="hljs-title function_">next</span>(); <span class="hljs-comment">// (C)</span></code>
+<code>})</code>
+<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">iteratorResult</span> =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    iteratorResult,</code>
+<code>    { <span class="hljs-attr">value</span>: <span class="hljs-string">'b'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> });</code>
+<code>  <span class="hljs-keyword">return</span> asyncIterator.<span class="hljs-title function_">next</span>(); <span class="hljs-comment">// (D)</span></code>
+<code>})</code>
+<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">iteratorResult</span> =&gt;</span> {</code>
+<code>  assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    iteratorResult,</code>
+<code>     { <span class="hljs-attr">value</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">true</span> });</code>
+<code>})</code>
+<code>;</code>
+</pre>
+<p>In line A, we create an asynchronous iterable over the value <code>'a'</code> and <code>'b'</code>. We’ll see an implementation of <code>syncToAsyncIterable()</code> later.</p>
+<p>We call <code>.next()</code> in line B, line C and line D. Each time, we use <code>.then()</code> to unwrap the Promise and <code>assert.deepEqual()</code> to check the unwrapped value.</p>
+<p>We can simplify this code if we use an async function. Now we unwrap Promises via <code>await</code> and the code looks almost like we are doing synchronous iteration:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> asyncIterable = <span class="hljs-title function_">syncToAsyncIterable</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]);</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> asyncIterator = asyncIterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">asyncIterator</span>]();</span></code>
+<code><span class="hljs-params">  </span></code>
+<code><span class="hljs-params">  <span class="hljs-comment">// Call .next() until .done is true:</span></span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> asyncIterator.<span class="hljs-title function_">next</span>(),</span></code>
+<code><span class="hljs-params">    { <span class="hljs-attr">value</span>: <span class="hljs-string">'a'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> });</span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> asyncIterator.<span class="hljs-title function_">next</span>(),</span></code>
+<code><span class="hljs-params">    { <span class="hljs-attr">value</span>: <span class="hljs-string">'b'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> });</span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> asyncIterator.<span class="hljs-title function_">next</span>(),</span></code>
+<code><span class="hljs-params">    { <span class="hljs-attr">value</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">true</span> });</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h4 id="for-await-of"><a class="heading-id-link" href="#for-await-of">45.1.3 Using async iteration via <code>for-await-of</code></a></h4>
+<p><span id="index-entry-for-await-of"/></p>
+<p>The asynchronous iteration protocol is not meant to be used directly. One of the language constructs that supports it is the <code>for-await-of</code> loop, which is an asynchronous version of the <code>for-of</code> loop. It can be used in async functions and <em>async generators</em> (which are introduced later in this chapter). This is an example of <code>for-await-of</code> in use:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> <span class="hljs-title function_">syncToAsyncIterable</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>])) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x);</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>a</code>
+<code>b</code>
+</pre>
+<p><code>for-await-of</code> is relatively flexible. In addition to asynchronous iterables, it also supports synchronous iterables:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x);</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>a</code>
+<code>b</code>
+</pre>
+<p>And it supports synchronous iterables over values that are wrapped in Promises:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'a'</span>), <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'b'</span>)];</code>
+<code><span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> arr) {</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x);</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>a</code>
+<code>b</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercises: Asynchronous iteration</strong></p>
+  <div class="boxout-vspace"/>
+  <ul>
+    <li>
+      Converting an async iterable to an Array: <code>exercises/async-iteration/async_iterable_to_array_test.mjs</code>
+      <ul>
+        <li>
+          Warning: We’ll soon see the solution for this exercise in this chapter.
+        </li>
+      </ul>
+    </li>
+    <li>
+      Implementing an asynchronously iterable queue: <code>exercises/async-iteration/async-iter-queue_test.mjs</code>
+    </li>
+  </ul>
+</div>
+<h3 id="async-generators"><a class="heading-id-link" href="#async-generators">45.2 Asynchronous generators</a></h3>
+<p><span id="index-entry-asynchronous-generator"/><span id="index-entry-generator--asynchronous"/>
+<span id="index-entry-async-function-"/></p>
+<p>Asynchronous generators are very similar to synchronous generators; especially the operators <code>yield</code> and <code>yield*</code>. Therefore, those are not explained here. See <a href="ch_sync-generators.html#ch_sync-generators">the chapter on synchronous generators</a> for more information.</p>
+<p>An asynchronous generator is two things at the same time:</p>
+<ul>
+  <li>
+    An async function (input): We can use <code>await</code> and <code>for-await-of</code> to retrieve data.
+  </li>
+  <li>
+    A generator that returns an asynchronous iterable (output): We can use <code>yield</code> and <code>yield*</code> to produce data.
+  </li>
+</ul>
+<p>Therefore, the input and output of an asynchronous generator are:</p>
+<ul>
+  <li>
+    The input can be:
+    <ul>
+      <li>
+        synchronous (single values, sync iterables)
+      </li>
+      <li>
+        asynchronous (Promises, async iterables)
+      </li>
+    </ul>
+  </li>
+  <li>
+    The output is an asynchronous iterator (that is also iterable).
+  </li>
+</ul>
+<p>This looks as follows:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Input: Promise and async iterable</span></code>
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">asyncGen</span>(<span class="hljs-params">somePromise, someAsyncIterable</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> x = <span class="hljs-keyword">await</span> somePromise;</code>
+<code>  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> y <span class="hljs-keyword">of</span> someAsyncIterable) {</code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  }</code>
+<code/>
+<code>  <span class="hljs-comment">// Output: iterable async iterator</span></code>
+<code>  <span class="hljs-keyword">yield</span> someValue;</code>
+<code>  <span class="hljs-keyword">yield</span>* <span class="hljs-title function_">otherAsyncGen</span>();</code>
+<code>}</code>
+</pre>
+<p><span id="index-entry-await--asynchronous-generator-"/>
+<span id="index-entry-yield--asynchronous-generator-"/>
+<span id="index-entry-yield---asynchronous-generator-"/></p>
+<h4 id="example-creating-an-async-iterable-via-an-async-generator"><a class="heading-id-link" href="#example-creating-an-async-iterable-via-an-async-generator">45.2.1 Example: creating an async iterable via an async generator</a></h4>
+<p>Let’s look at an example. The following code creates an async iterable with three numbers:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">yield123</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">1</span>; i&lt;=<span class="hljs-number">3</span>; i++) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">yield</span> i;</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>Does the result of <code>yield123()</code> conform to the async iteration protocol?</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">check</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> asyncIterable = <span class="hljs-title function_">yield123</span>();</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> asyncIterator = asyncIterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">asyncIterator</span>]();</span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> asyncIterator.<span class="hljs-title function_">next</span>(),</span></code>
+<code><span class="hljs-params">    { <span class="hljs-attr">value</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> });</span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> asyncIterator.<span class="hljs-title function_">next</span>(),</span></code>
+<code><span class="hljs-params">    { <span class="hljs-attr">value</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> });</span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> asyncIterator.<span class="hljs-title function_">next</span>(),</span></code>
+<code><span class="hljs-params">    { <span class="hljs-attr">value</span>: <span class="hljs-number">3</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> });</span></code>
+<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">await</span> asyncIterator.<span class="hljs-title function_">next</span>(),</span></code>
+<code><span class="hljs-params">    { <span class="hljs-attr">value</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">true</span> });</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-title function_">check</span>();</span></code>
+</pre>
+<h4 id="example-converting-a-sync-iterable-to-an-async-iterable"><a class="heading-id-link" href="#example-converting-a-sync-iterable-to-an-async-iterable">45.2.2 Example: converting a sync iterable to an async iterable</a></h4>
+<p>The following asynchronous generator converts a synchronous iterable to an asynchronous iterable. It implements the function <code>syncToAsyncIterable()</code> that we have used previously.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">syncToAsyncIterable</span>(<span class="hljs-params">syncIterable</span>) {</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> elem <span class="hljs-keyword">of</span> syncIterable) {</code>
+<code>    <span class="hljs-keyword">yield</span> elem;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Note: The input is synchronous in this case (no <code>await</code> is needed).</p>
+<h4 id="asyncIterableToArray"><a class="heading-id-link" href="#asyncIterableToArray">45.2.3 Example: converting an async iterable to an Array</a></h4>
+<p>The following function is a solution to a previous exercise. It converts an async iterable to an Array (think spreading, but for async iterables instead of sync iterables).</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncIterableToArray</span>(<span class="hljs-params">asyncIterable</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> result = [];</code>
+<code>  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> value <span class="hljs-keyword">of</span> asyncIterable) {</code>
+<code>    result.<span class="hljs-title function_">push</span>(value);</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> result;</code>
+<code>}</code>
+</pre>
+<p>Note that we can’t use an async generator in this case: We get our input via <code>for-await-of</code> and return an Array wrapped in a Promise. The latter requirement rules out async generators.</p>
+<p>This is a test for <code>asyncIterableToArray()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">createAsyncIterable</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-keyword">const</span> asyncIterable = <span class="hljs-title function_">createAsyncIterable</span>();</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncIterableToArray</span>(asyncIterable), <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]</span></code>
+<code><span class="hljs-params">);</span></code>
+</pre>
+<p>Note the <code>await</code> in line A, which is needed to unwrap the Promise returned by <code>asyncIterableToArray()</code>. In order for <code>await</code> to work, this code fragment must be run inside an async function.</p>
+<h4 id="example-transforming-an-async-iterable"><a class="heading-id-link" href="#example-transforming-an-async-iterable">45.2.4 Example: transforming an async iterable</a></h4>
+<p>Let’s implement an async generator that produces a new async iterable by transforming an existing async iterable.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">timesTwo</span>(<span class="hljs-params">asyncNumbers</span>) {</code>
+<code>  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> asyncNumbers) {</code>
+<code>    <span class="hljs-keyword">yield</span> x * <span class="hljs-number">2</span>;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>To test this function, we use <code>asyncIterableToArray()</code> from the previous section.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">createAsyncIterable</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i=<span class="hljs-number">1</span>; i&lt;=<span class="hljs-number">3</span>; i++) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-keyword">yield</span> i;</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncIterableToArray</span>(<span class="hljs-title function_">timesTwo</span>(<span class="hljs-title function_">createAsyncIterable</span>())),</span></code>
+<code><span class="hljs-params">  [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>]</span></code>
+<code><span class="hljs-params">);</span></code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Async generators</strong></p>
+  <div class="boxout-vspace"/>
+  <p>Warning: We’ll soon see the solution for this exercise in this chapter.</p>
+  <ul>
+    <li>
+      <code>exercises/async-iteration/number_lines_test.mjs</code>
+    </li>
+  </ul>
+</div>
+<h4 id="example-mapping-over-asynchronous-iterables"><a class="heading-id-link" href="#example-mapping-over-asynchronous-iterables">45.2.5 Example: mapping over asynchronous iterables</a></h4>
+<p>As a reminder, this is how to map over synchronous iterables:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">mapSync</span>(<span class="hljs-params">iterable, func</span>) {</code>
+<code>  <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>;</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {</code>
+<code>    <span class="hljs-keyword">yield</span> <span class="hljs-title function_">func</span>(x, index);</code>
+<code>    index++;</code>
+<code>  }</code>
+<code>}</code>
+<code><span class="hljs-keyword">const</span> syncIterable = <span class="hljs-title function_">mapSync</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>], <span class="hljs-function"><span class="hljs-params">s</span> =&gt;</span> s.<span class="hljs-title function_">repeat</span>(<span class="hljs-number">3</span>));</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(syncIterable),</code>
+<code>  [<span class="hljs-string">'aaa'</span>, <span class="hljs-string">'bbb'</span>, <span class="hljs-string">'ccc'</span>]);</code>
+</pre>
+<p>The asynchronous version looks as follows:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">mapAsync</span>(<span class="hljs-params">asyncIterable, func</span>) { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>;</code>
+<code>  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> asyncIterable) { <span class="hljs-comment">// (B)</span></code>
+<code>    <span class="hljs-keyword">yield</span> <span class="hljs-title function_">func</span>(x, index);</code>
+<code>    index++;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Note how similar the sync implementation and the async implementation are. The only two differences are the <code>async</code> in line A and the <code>await</code> in line B. That is comparable to going from a synchronous function to an asynchronous function – we only need to add the keyword <code>async</code> and the occasional <code>await</code>.</p>
+<p>To test <code>mapAsync()</code>, we use the helper function <code>asyncIterableToArray()</code> <a href="#asyncIterableToArray" remove-prefix="shown ">(shown earlier in this chapter)</a>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">createAsyncIterable</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-keyword">const</span> mapped = <span class="hljs-title function_">mapAsync</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-title function_">createAsyncIterable</span>(), <span class="hljs-function"><span class="hljs-params">s</span> =&gt;</span> s.<span class="hljs-title function_">repeat</span>(<span class="hljs-number">3</span>));</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncIterableToArray</span>(mapped), <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">  [<span class="hljs-string">'aaa'</span>, <span class="hljs-string">'bbb'</span>]);</span></code>
+</pre>
+<p>Once again, we <code>await</code> to unwrap a Promise (line A) and this code fragment must run inside an async function.</p>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: <code>filterAsyncIter()</code></strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/async-iteration/filter_async_iter_test.mjs</code></p>
+</div>
+<h3 id="async-iteration-over-nodejs-streams"><a class="heading-id-link" href="#async-iteration-over-nodejs-streams">45.3 Async iteration over Node.js streams</a></h3>
+<p>Due to the asynchronous nature of data streams, asynchronous iteration works well as an abstraction for them. In particular, async generators are an elegant tool for <em>transforming</em> data streams (where both input and output are streams).</p>
+<h4 id="nodejs-streams-async-via-callbacks-push"><a class="heading-id-link" href="#nodejs-streams-async-via-callbacks-push">45.3.1 Node.js streams: async via callbacks (push)</a></h4>
+<p>Traditionally, reading asynchronously from Node.js streams is done via callbacks:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">inputFilePath</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> readStream = fs.<span class="hljs-title function_">createReadStream</span>(inputFilePath,</code>
+<code>    { <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span>, <span class="hljs-attr">highWaterMark</span>: <span class="hljs-number">1024</span> });</code>
+<code>  readStream.<span class="hljs-title function_">on</span>(<span class="hljs-string">'data'</span>, <span class="hljs-function">(<span class="hljs-params">chunk</span>) =&gt;</span> {</code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'&gt;&gt;&gt; '</span>+chunk);</code>
+<code>  });</code>
+<code>  readStream.<span class="hljs-title function_">on</span>(<span class="hljs-string">'end'</span>, <span class="hljs-function">() =&gt;</span> {</code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'### DONE ###'</span>);</code>
+<code>  });</code>
+<code>}</code>
+</pre>
+<p>That is, the stream is in control and pushes data to the reader.</p>
+<h4 id="nodejs-streams-async-via-async-iteration-pull"><a class="heading-id-link" href="#nodejs-streams-async-via-async-iteration-pull">45.3.2 Node.js streams: async via async iteration (pull)</a></h4>
+<p>Starting with Node.js 10, we can also use asynchronous iteration to read from streams:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">inputFilePath</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> readStream = fs.<span class="hljs-title function_">createReadStream</span>(inputFilePath,</code>
+<code>    { <span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span>, <span class="hljs-attr">highWaterMark</span>: <span class="hljs-number">1024</span> });</code>
+<code/>
+<code>  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> chunk <span class="hljs-keyword">of</span> readStream) {</code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'&gt;&gt;&gt; '</span>+chunk);</code>
+<code>  }</code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'### DONE ###'</span>);</code>
+<code>}</code>
+</pre>
+<p>This time, the reader is in control and pulls data from the stream.</p>
+<h4 id="example-from-chunks-to-lines"><a class="heading-id-link" href="#example-from-chunks-to-lines">45.3.3 Example: from chunks to lines</a></h4>
+<p>Node.js streams contain <em>chunks</em> (arbitrarily long pieces) of data. The following asynchronous generator converts an async iterable over chunks to an async iterable over lines:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> chunkIterable An asynchronous or synchronous iterable</span></code>
+<code><span class="hljs-comment"> * over “chunks” (arbitrary strings)</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> An asynchronous iterable over “lines”</span></code>
+<code><span class="hljs-comment"> * (strings with at most one newline that always appears at the end)</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">chunksToLines</span>(<span class="hljs-params">chunkIterable</span>) {</code>
+<code>  <span class="hljs-keyword">let</span> previous = <span class="hljs-string">''</span>;</code>
+<code>  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> chunk <span class="hljs-keyword">of</span> chunkIterable) {</code>
+<code>    <span class="hljs-keyword">let</span> startSearch = previous.<span class="hljs-property">length</span>;</code>
+<code>    previous += chunk;</code>
+<code>    <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {</code>
+<code>      <span class="hljs-comment">// Works for EOL === '\n' and EOL === '\r\n'</span></code>
+<code>      <span class="hljs-keyword">const</span> eolIndex = previous.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'\n'</span>, startSearch);</code>
+<code>      <span class="hljs-keyword">if</span> (eolIndex &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">break</span>;</code>
+<code>      <span class="hljs-comment">// Line includes the EOL</span></code>
+<code>      <span class="hljs-keyword">const</span> line = previous.<span class="hljs-title function_">slice</span>(<span class="hljs-number">0</span>, eolIndex+<span class="hljs-number">1</span>);</code>
+<code>      <span class="hljs-keyword">yield</span> line;</code>
+<code>      previous = previous.<span class="hljs-title function_">slice</span>(eolIndex+<span class="hljs-number">1</span>);</code>
+<code>      startSearch = <span class="hljs-number">0</span>;</code>
+<code>    }</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">if</span> (previous.<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) {</code>
+<code>    <span class="hljs-keyword">yield</span> previous;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Let’s apply <code>chunksToLines()</code> to an async iterable over chunks (as produced by <code>chunkIterable()</code>):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">chunkIterable</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'First\nSec'</span>;</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'ond\nThird\nF'</span>;</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'ourth'</span>;</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-keyword">const</span> linesIterable = <span class="hljs-title function_">chunksToLines</span>(<span class="hljs-title function_">chunkIterable</span>());</span></code>
+<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncIterableToArray</span>(linesIterable),</span></code>
+<code><span class="hljs-params">  [</span></code>
+<code><span class="hljs-params">    <span class="hljs-string">'First\n'</span>,</span></code>
+<code><span class="hljs-params">    <span class="hljs-string">'Second\n'</span>,</span></code>
+<code><span class="hljs-params">    <span class="hljs-string">'Third\n'</span>,</span></code>
+<code><span class="hljs-params">    <span class="hljs-string">'Fourth'</span>,</span></code>
+<code><span class="hljs-params">  ]);</span></code>
+</pre>
+<p>Now that we have an asynchronous iterable over lines, we can use the solution of a previous exercise, <code>numberLines()</code>, to number those lines:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span>* <span class="hljs-title function_">numberLines</span>(<span class="hljs-params">linesAsync</span>) {</code>
+<code>  <span class="hljs-keyword">let</span> lineNumber = <span class="hljs-number">1</span>;</code>
+<code>  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> line <span class="hljs-keyword">of</span> linesAsync) {</code>
+<code>    <span class="hljs-keyword">yield</span> lineNumber + <span class="hljs-string">': '</span> + line;</code>
+<code>    lineNumber++;</code>
+<code>  }</code>
+<code>}</code>
+<code><span class="hljs-keyword">const</span> numberedLines = <span class="hljs-title function_">numberLines</span>(<span class="hljs-title function_">chunksToLines</span>(<span class="hljs-title function_">chunkIterable</span>()));</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">asyncIterableToArray</span>(numberedLines),</code>
+<code>  [</code>
+<code>    <span class="hljs-string">'1: First\n'</span>,</code>
+<code>    <span class="hljs-string">'2: Second\n'</span>,</code>
+<code>    <span class="hljs-string">'3: Third\n'</span>,</code>
+<code>    <span class="hljs-string">'4: Fourth'</span>,</code>
+<code>  ]);</code>
+</pre>
+
+    
+      
+</body>
+</html>

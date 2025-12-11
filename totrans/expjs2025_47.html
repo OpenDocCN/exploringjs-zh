@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>40 Destructuring ES6</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>40 Destructuring ES6</h1>
+<blockquote>原文：<a href="https://exploringjs.com/js/book/ch_destructuring.html">https://exploringjs.com/js/book/ch_destructuring.html</a></blockquote>
+
+        
+    
+    
+    
+<p><span id="index-entry-destructuring"/></p>
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#a-first-taste-of-destructuring">40.1 A first taste of destructuring</a>
+    </li>
+    <li>
+      <a href="#constructing-vs-extracting">40.2 Constructing vs. extracting</a>
+    </li>
+    <li>
+      <a href="#destructuring-locations">40.3 Where can we destructure?</a>
+    </li>
+    <li>
+      <a href="#object-destructuring">40.4 Object-destructuring</a>
+      <ol>
+        <li>
+          <a href="#property-value-shorthands">40.4.1 Property value shorthands</a>
+        </li>
+        <li>
+          <a href="#rest-properties">40.4.2 Rest properties</a>
+        </li>
+        <li>
+          <a href="#assigning-via-object-destructuring">40.4.3 Syntax pitfall: assigning via object destructuring</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#array-destructuring">40.5 Array-destructuring</a>
+      <ol>
+        <li>
+          <a href="#arraydestructuring-works-with-any-iterable">40.5.1 Array-destructuring works with any iterable</a>
+        </li>
+        <li>
+          <a href="#rest-elements">40.5.2 Rest elements</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#examples-of-destructuring">40.6 Examples of destructuring</a>
+      <ol>
+        <li>
+          <a href="#arraydestructuring-swapping-variable-values">40.6.1 Array-destructuring: swapping variable values</a>
+        </li>
+        <li>
+          <a href="#arraydestructuring-operations-that-return-arrays">40.6.2 Array-destructuring: operations that return Arrays</a>
+        </li>
+        <li>
+          <a href="#objectdestructuring-multiple-return-values">40.6.3 Object-destructuring: multiple return values</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#what-happens-if-a-pattern-part-does-not-match-anything">40.7 What happens if a pattern part does not match anything?</a>
+      <ol>
+        <li>
+          <a href="#objectdestructuring-and-missing-properties">40.7.1 Object-destructuring and missing properties</a>
+        </li>
+        <li>
+          <a href="#arraydestructuring-and-missing-elements">40.7.2 Array-destructuring and missing elements</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#what-values-cant-be-destructured">40.8 What values can’t be destructured?</a>
+      <ol>
+        <li>
+          <a href="#values-that-cannot-be-object-destructured">40.8.1 We can’t object-destructure <code>undefined</code> and <code>null</code></a>
+        </li>
+        <li>
+          <a href="#values-that-cannot-be-array-destructured">40.8.2 We can’t Array-destructure non-iterable values</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#advanced-3">40.9 (Advanced)</a>
+    </li>
+    <li>
+      <a href="#default-values">40.10 Default values</a>
+      <ol>
+        <li>
+          <a href="#default-values-in-arraydestructuring">40.10.1 Default values in Array-destructuring</a>
+        </li>
+        <li>
+          <a href="#default-values-in-objectdestructuring">40.10.2 Default values in object-destructuring</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#parameter-definitions-are-similar-to-destructuring">40.11 Parameter definitions are similar to destructuring</a>
+    </li>
+    <li>
+      <a href="#nested-destructuring">40.12 Nested destructuring</a>
+    </li>
+  </ol>
+</nav>
+<h3 id="a-first-taste-of-destructuring"><a class="heading-id-link" href="#a-first-taste-of-destructuring">40.1 A first taste of destructuring</a></h3>
+<p>With normal assignment, we extract one piece of data at a time – for example:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>];</code>
+<code><span class="hljs-keyword">const</span> x = arr[<span class="hljs-number">0</span>]; <span class="hljs-comment">// extract</span></code>
+<code><span class="hljs-keyword">const</span> y = arr[<span class="hljs-number">1</span>]; <span class="hljs-comment">// extract</span></code>
+</pre>
+<p>With destructuring, we can extract multiple pieces of data at the same time via patterns in locations that receive data. The left-hand side of <code>=</code> in the previous code is one such location. In the following code, the square brackets in line A are a destructuring pattern:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>];</code>
+<code><span class="hljs-keyword">const</span> [x, y] = arr; <span class="hljs-comment">// (A)</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-string">'a'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(y, <span class="hljs-string">'b'</span>);</code>
+</pre>
+<p>This code does the same as the previous code.</p>
+<p>Note that the pattern is “smaller” than the data: we are only extracting what we need.</p>
+<h3 id="constructing-vs-extracting"><a class="heading-id-link" href="#constructing-vs-extracting">40.2 Constructing vs. extracting</a></h3>
+<p>In order to understand what destructuring is, consider that JavaScript has two kinds of operations that are opposites:</p>
+<ul>
+  <li>
+    We can <em>construct</em> compound data, for example, by setting properties and via object literals.
+  </li>
+  <li>
+    We can <em>extract</em> data out of compound data, for example, by getting properties.
+  </li>
+</ul>
+<p>Constructing data looks as follows:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Constructing: one property at a time</span></code>
+<code><span class="hljs-keyword">const</span> jane1 = {};</code>
+<code>jane1.<span class="hljs-property">first</span> = <span class="hljs-string">'Jane'</span>;</code>
+<code>jane1.<span class="hljs-property">last</span> = <span class="hljs-string">'Doe'</span>;</code>
+<code/>
+<code><span class="hljs-comment">// Constructing: multiple properties</span></code>
+<code><span class="hljs-keyword">const</span> jane2 = {</code>
+<code>  <span class="hljs-attr">first</span>: <span class="hljs-string">'Jane'</span>,</code>
+<code>  <span class="hljs-attr">last</span>: <span class="hljs-string">'Doe'</span>,</code>
+<code>};</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(jane1, jane2);</code>
+</pre>
+<p>Extracting data looks as follows:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> jane = {</code>
+<code>  <span class="hljs-attr">first</span>: <span class="hljs-string">'Jane'</span>,</code>
+<code>  <span class="hljs-attr">last</span>: <span class="hljs-string">'Doe'</span>,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-comment">// Extracting: one property at a time</span></code>
+<code><span class="hljs-keyword">const</span> f1 = jane.<span class="hljs-property">first</span>;</code>
+<code><span class="hljs-keyword">const</span> l1 = jane.<span class="hljs-property">last</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(f1, <span class="hljs-string">'Jane'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(l1, <span class="hljs-string">'Doe'</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Extracting: multiple properties (NEW!)</span></code>
+<code><span class="hljs-keyword">const</span> {<span class="hljs-attr">first</span>: f2, <span class="hljs-attr">last</span>: l2} = jane; <span class="hljs-comment">// (A)</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(f2, <span class="hljs-string">'Jane'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(l2, <span class="hljs-string">'Doe'</span>);</code>
+</pre>
+<p>The operation in line A is new: we declare two variables <code>f2</code> and <code>l2</code> and initialize them via <em>destructuring</em> (multivalue extraction).</p>
+<p>The following part of line A is a <em>destructuring pattern</em>:</p>
+<pre class="language-js">
+<code>{<span class="hljs-attr">first</span>: f2, <span class="hljs-attr">last</span>: l2}</code>
+</pre>
+<p>Destructuring patterns are syntactically similar to the literals that are used for multivalue construction. But they appear where data is received (e.g., at the left-hand sides of assignments), not where data is created (e.g., at the right-hand sides of assignments).</p>
+<h3 id="destructuring-locations"><a class="heading-id-link" href="#destructuring-locations">40.3 Where can we destructure?</a></h3>
+<p>Destructuring patterns can be used at “data sink locations” such as:</p>
+<ul>
+  <li>
+    <p>Variable declarations:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> [a] = [<span class="hljs-string">'x'</span>];</code>
+<code>assert.<span class="hljs-title function_">equal</span>(a, <span class="hljs-string">'x'</span>);</code>
+<code/>
+<code><span class="hljs-keyword">let</span> [b] = [<span class="hljs-string">'y'</span>];</code>
+<code>assert.<span class="hljs-title function_">equal</span>(b, <span class="hljs-string">'y'</span>);</code>
+</pre>
+  </li>
+  <li>
+    <p>Assignments:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> b;</code>
+<code>[b] = [<span class="hljs-string">'z'</span>];</code>
+<code>assert.<span class="hljs-title function_">equal</span>(b, <span class="hljs-string">'z'</span>);</code>
+</pre>
+  </li>
+  <li>
+    <p>Parameter definitions:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title function_">f</span> = (<span class="hljs-params">[x]</span>) =&gt; x;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">f</span>([<span class="hljs-string">'a'</span>]), <span class="hljs-string">'a'</span>);</code>
+</pre>
+  </li>
+</ul>
+<p>Note that variable declarations include <code>const</code> and <code>let</code> declarations in <code>for-of</code> loops:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</code>
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [index, element] <span class="hljs-keyword">of</span> arr.<span class="hljs-title function_">entries</span>()) {</code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(index, element);</code>
+<code>}</code>
+</pre>
+<p>Output:</p>
+<pre>
+<code>0 a</code>
+<code>1 b</code>
+</pre>
+<p>In <span refcheck="#object-destructuring #array-destructuring">the next two sections</span>, we’ll look deeper into the two kinds of destructuring: object-destructuring and Array-destructuring.</p>
+<h3 id="object-destructuring"><a class="heading-id-link" href="#object-destructuring">40.4 Object-destructuring</a></h3>
+<p><span id="index-entry-destructuring-an-object"/><span id="index-entry-object-destructuring"/></p>
+<p><em>Object-destructuring</em> lets us batch-extract values of properties via patterns that look like object literals:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> address = {</code>
+<code>  <span class="hljs-attr">street</span>: <span class="hljs-string">'Evergreen Terrace'</span>,</code>
+<code>  <span class="hljs-attr">number</span>: <span class="hljs-string">'742'</span>,</code>
+<code>  <span class="hljs-attr">city</span>: <span class="hljs-string">'Springfield'</span>,</code>
+<code>  <span class="hljs-attr">state</span>: <span class="hljs-string">'NT'</span>,</code>
+<code>  <span class="hljs-attr">zip</span>: <span class="hljs-string">'49007'</span>,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">const</span> { <span class="hljs-attr">street</span>: s, <span class="hljs-attr">city</span>: c } = address;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(s, <span class="hljs-string">'Evergreen Terrace'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(c, <span class="hljs-string">'Springfield'</span>);</code>
+</pre>
+<p>We can think of the pattern as a transparent sheet that we place over the data: the pattern key <code>'street'</code> has a match in the data. Therefore, the data value <code>'Evergreen Terrace'</code> is assigned to the pattern variable <code>s</code>.</p>
+<p>We can also object-destructure primitive values:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> {<span class="hljs-attr">length</span>: len} = <span class="hljs-string">'abc'</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(len, <span class="hljs-number">3</span>);</code>
+</pre>
+<p>And we can object-destructure Arrays:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> {<span class="hljs-number">0</span>:x, <span class="hljs-number">2</span>:y} = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>];</code>
+<code>assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-string">'a'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(y, <span class="hljs-string">'c'</span>);</code>
+</pre>
+<p>Why does that work? <a href="ch_arrays.html#array-indices">Array indices are also properties</a>.</p>
+<h4 id="property-value-shorthands"><a class="heading-id-link" href="#property-value-shorthands">40.4.1 Property value shorthands</a></h4>
+<p>Object literals support property value shorthands and so do object patterns:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> { street, city } = address;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(street, <span class="hljs-string">'Evergreen Terrace'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(city, <span class="hljs-string">'Springfield'</span>);</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Object-destructuring</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>exercises/destructuring/object_destructuring_exrc.mjs</code></p>
+</div>
+<h4 id="rest-properties"><a class="heading-id-link" href="#rest-properties">40.4.2 Rest properties</a></h4>
+<p><span id="index-entry-rest-property--object-destructuring-"/></p>
+<p>In object literals, we can have spread properties. In object patterns, we can have rest properties (which must come last):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> obj = { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">c</span>: <span class="hljs-number">3</span> };</code>
+<code><span class="hljs-keyword">const</span> { <span class="hljs-attr">a</span>: propValue, ...remaining } = obj; <span class="hljs-comment">// (A)</span></code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(propValue, <span class="hljs-number">1</span>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(remaining, {<span class="hljs-attr">b</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">c</span>:<span class="hljs-number">3</span>});</code>
+</pre>
+<p>A rest property variable, such as <code>remaining</code> (line A), is assigned an object with all data properties whose keys are not mentioned in the pattern.</p>
+<p><code>remaining</code> can also be viewed as the result of non-destructively removing property <code>a</code> from <code>obj</code>.</p>
+<h4 id="assigning-via-object-destructuring"><a class="heading-id-link" href="#assigning-via-object-destructuring">40.4.3 Syntax pitfall: assigning via object destructuring</a></h4>
+<p>If we object-destructure in an assignment, we are facing a pitfall caused by <a href="ch_syntax.html#ambiguous-syntax">syntactic ambiguity</a> – we can’t start a statement with a curly brace because then JavaScript thinks we are starting a block:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> prop;</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">eval</span>(<span class="hljs-string">"{prop} = { prop: 'hello' };"</span>),</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">name</span>: <span class="hljs-string">'SyntaxError'</span>,</code>
+<code>    <span class="hljs-attr">message</span>: <span class="hljs-string">"Unexpected token '='"</span>,</code>
+<code>  });</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/38ba63de820aae6f94a019538ae0f222.png" class="boxout-icon" height="24" alt="Icon “details”" data-original-src="https://exploringjs.com/js/book/icon/details.svg"/> <strong>Why <code>eval()</code>?</strong></p>
+  <div class="boxout-vspace"/>
+  <p><a href="ch_dynamic-code-evaluation.html#eval"><code>eval()</code></a> delays parsing (and therefore the <code>SyntaxError</code>) until the callback of <code>assert.throws()</code> is executed. If we didn’t use it, we’d already get an error when this code is parsed and <code>assert.throws()</code> wouldn’t even be executed.</p>
+</div>
+<p>The workaround is to put the whole assignment in parentheses:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> prop;</code>
+<code>({prop} = { <span class="hljs-attr">prop</span>: <span class="hljs-string">'hello'</span> });</code>
+<code>assert.<span class="hljs-title function_">equal</span>(prop, <span class="hljs-string">'hello'</span>);</code>
+</pre>
+<h3 id="array-destructuring"><a class="heading-id-link" href="#array-destructuring">40.5 Array-destructuring</a></h3>
+<p><span id="index-entry-destructuring-an-Array"/><span id="index-entry-Array-destructuring"/></p>
+<p><em>Array-destructuring</em> lets us batch-extract values of Array elements via patterns that look like Array literals:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> [x, y] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</code>
+<code>assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-string">'a'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(y, <span class="hljs-string">'b'</span>);</code>
+</pre>
+<p>We can skip elements by putting holes in Array patterns:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> [, x, y] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]; <span class="hljs-comment">// (A)</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-string">'b'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(y, <span class="hljs-string">'c'</span>);</code>
+</pre>
+<p>The Array pattern in line A starts with a hole, which is why the Array element at index 0 is ignored.</p>
+<h4 id="arraydestructuring-works-with-any-iterable"><a class="heading-id-link" href="#arraydestructuring-works-with-any-iterable">40.5.1 Array-destructuring works with any iterable</a></h4>
+<p>Array-destructuring can be applied to any value that is iterable, not just to Arrays:</p>
+<pre class="language-js">
+<code>{ <span class="hljs-comment">// Sets are iterable</span></code>
+<code>  <span class="hljs-keyword">const</span> [a, b] = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>().<span class="hljs-title function_">add</span>(<span class="hljs-string">'fee'</span>).<span class="hljs-title function_">add</span>(<span class="hljs-string">'fi'</span>).<span class="hljs-title function_">add</span>(<span class="hljs-string">'fo'</span>);</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(a, <span class="hljs-string">'fee'</span>);</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(b, <span class="hljs-string">'fi'</span>);</code>
+<code>}</code>
+<code/>
+<code>{ <span class="hljs-comment">// Maps are iterable</span></code>
+<code>  <span class="hljs-keyword">const</span> [a, b] = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>().<span class="hljs-title function_">set</span>(<span class="hljs-string">'one'</span>, <span class="hljs-number">1</span>).<span class="hljs-title function_">set</span>(<span class="hljs-string">'two'</span>, <span class="hljs-number">2</span>);</code>
+<code>  assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    a, [<span class="hljs-string">'one'</span>,<span class="hljs-number">1</span>]</code>
+<code>  );</code>
+<code>  assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    b, [<span class="hljs-string">'two'</span>,<span class="hljs-number">2</span>]</code>
+<code>  );</code>
+<code>}</code>
+<code/>
+<code>{ <span class="hljs-comment">// Strings are iterable</span></code>
+<code>  <span class="hljs-keyword">const</span> [a, b] = <span class="hljs-string">'hello'</span>;</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(a, <span class="hljs-string">'h'</span>);</code>
+<code>  assert.<span class="hljs-title function_">equal</span>(b, <span class="hljs-string">'e'</span>);</code>
+<code>}</code>
+</pre>
+<h4 id="rest-elements"><a class="heading-id-link" href="#rest-elements">40.5.2 Rest elements</a></h4>
+<p><span id="index-entry-rest-element--Array-destructuring-"/></p>
+<p>In Array literals, we can have spread elements. In Array patterns, we can have rest elements (which must come last):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> [x, y, ...remaining] = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]; <span class="hljs-comment">// (A)</span></code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-string">'a'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(y, <span class="hljs-string">'b'</span>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(remaining, [<span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]);</code>
+</pre>
+<p>A rest element variable, such as <code>remaining</code> (line A), is assigned an Array with all elements of the destructured value that were not mentioned yet.</p>
+<h3 id="examples-of-destructuring"><a class="heading-id-link" href="#examples-of-destructuring">40.6 Examples of destructuring</a></h3>
+<h4 id="arraydestructuring-swapping-variable-values"><a class="heading-id-link" href="#arraydestructuring-swapping-variable-values">40.6.1 Array-destructuring: swapping variable values</a></h4>
+<p>We can use Array-destructuring to swap the values of two variables without needing a temporary variable:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">let</span> x = <span class="hljs-string">'a'</span>;</code>
+<code><span class="hljs-keyword">let</span> y = <span class="hljs-string">'b'</span>;</code>
+<code/>
+<code>[x,y] = [y,x]; <span class="hljs-comment">// swap</span></code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-string">'b'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(y, <span class="hljs-string">'a'</span>);</code>
+</pre>
+<h4 id="arraydestructuring-operations-that-return-arrays"><a class="heading-id-link" href="#arraydestructuring-operations-that-return-arrays">40.6.2 Array-destructuring: operations that return Arrays</a></h4>
+<p>Array-destructuring is useful when operations return Arrays, as does, for example, the regular expression method <code>.exec()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-comment">// Skip the element at index 0 (the whole match):</span></code>
+<code><span class="hljs-keyword">const</span> [, year, month, day] =</code>
+<code>  <span class="hljs-regexp">/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/</span></code>
+<code>  .<span class="hljs-title function_">exec</span>(<span class="hljs-string">'2999-12-31'</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(year, <span class="hljs-string">'2999'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(month, <span class="hljs-string">'12'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(day, <span class="hljs-string">'31'</span>);</code>
+</pre>
+<h4 id="objectdestructuring-multiple-return-values"><a class="heading-id-link" href="#objectdestructuring-multiple-return-values">40.6.3 Object-destructuring: multiple return values</a></h4>
+<p><span id="index-entry-multiple-return-values"/><span id="index-entry-return-values--multiple"/></p>
+<p>Destructuring is very useful if a function returns multiple values – either packaged as an Array or packaged as an object.</p>
+<p>Consider a function <code>findElement()</code> that finds elements in an Array:</p>
+<pre class="language-js">
+<code><span class="hljs-title function_">findElement</span>(array, <span class="hljs-function">(<span class="hljs-params">value, index</span>) =&gt;</span> «boolean expression»)</code>
+</pre>
+<p>Its second parameter is a function that receives the value and index of an element and returns a boolean indicating if this is the element the caller is looking for.</p>
+<p>We are now faced with a dilemma: Should <code>findElement()</code> return the value of the element it found or the index? One solution would be to create two separate functions, but that would result in duplicated code because both functions would be very similar.</p>
+<p>The following implementation avoids duplication by returning an object that contains both index and value of the element that is found:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">findElement</span>(<span class="hljs-params">arr, predicate</span>) {</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> index=<span class="hljs-number">0</span>; index &lt; arr.<span class="hljs-property">length</span>; index++) {</code>
+<code>    <span class="hljs-keyword">const</span> value = arr[index];</code>
+<code>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">predicate</span>(value)) {</code>
+<code>      <span class="hljs-comment">// We found something:</span></code>
+<code>      <span class="hljs-keyword">return</span> { value, index };</code>
+<code>    }</code>
+<code>  }</code>
+<code>  <span class="hljs-comment">// We didn’t find anything:</span></code>
+<code>  <span class="hljs-keyword">return</span> { <span class="hljs-attr">value</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-attr">index</span>: -<span class="hljs-number">1</span> };</code>
+<code>}</code>
+</pre>
+<p>Destructuring helps us with processing the result of <code>findElement()</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">6</span>];</code>
+<code/>
+<code><span class="hljs-keyword">const</span> {value, index} = <span class="hljs-title function_">findElement</span>(arr, <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(value, <span class="hljs-number">8</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(index, <span class="hljs-number">1</span>);</code>
+</pre>
+<p>As we are working with property keys, the order in which we mention <code>value</code> and <code>index</code> doesn’t matter:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> {index, value} = <span class="hljs-title function_">findElement</span>(arr, <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>);</code>
+</pre>
+<p>The kicker is that destructuring also serves us well if we are only interested in one of the two results:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">6</span>];</code>
+<code/>
+<code><span class="hljs-keyword">const</span> {value} = <span class="hljs-title function_">findElement</span>(arr, <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(value, <span class="hljs-number">8</span>);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> {index} = <span class="hljs-title function_">findElement</span>(arr, <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x % <span class="hljs-number">2</span> === <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(index, <span class="hljs-number">1</span>);</code>
+</pre>
+<p>All of these conveniences combined make this way of handling multiple return values quite versatile.</p>
+<h3 id="what-happens-if-a-pattern-part-does-not-match-anything"><a class="heading-id-link" href="#what-happens-if-a-pattern-part-does-not-match-anything">40.7 What happens if a pattern part does not match anything?</a></h3>
+<p>What happens if there is no match for part of a pattern? The same thing that happens if we use non-batch operators: We get <code>undefined</code>.</p>
+<h4 id="objectdestructuring-and-missing-properties"><a class="heading-id-link" href="#objectdestructuring-and-missing-properties">40.7.1 Object-destructuring and missing properties</a></h4>
+<p>If a property in an object pattern has no match on the right-hand side, we get <code>undefined</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> {<span class="hljs-attr">prop</span>: p} = {};</code>
+<code>assert.<span class="hljs-title function_">equal</span>(p, <span class="hljs-literal">undefined</span>);</code>
+</pre>
+<h4 id="arraydestructuring-and-missing-elements"><a class="heading-id-link" href="#arraydestructuring-and-missing-elements">40.7.2 Array-destructuring and missing elements</a></h4>
+<p>If an element in an Array pattern has no match on the right-hand side, we get <code>undefined</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> [x] = [];</code>
+<code>assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-literal">undefined</span>);</code>
+</pre>
+<h3 id="what-values-cant-be-destructured"><a class="heading-id-link" href="#what-values-cant-be-destructured">40.8 What values can’t be destructured?</a></h3>
+<h4 id="values-that-cannot-be-object-destructured"><a class="heading-id-link" href="#values-that-cannot-be-object-destructured">40.8.1 We can’t object-destructure <code>undefined</code> and <code>null</code></a></h4>
+<p>Object-destructuring only fails if the value to be destructured is either <code>undefined</code> or <code>null</code>. That is, it fails whenever accessing a property via the dot operator would fail too.</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> {prop} = <span class="hljs-literal">undefined</span></span></code>
+<code>TypeError: Cannot destructure property 'prop' of 'undefined'</code>
+<code>as it is undefined.</code>
+<code/>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> {prop} = <span class="hljs-literal">null</span></span></code>
+<code>TypeError: Cannot destructure property 'prop' of 'null'</code>
+<code>as it is null.</code>
+</pre>
+<p>Therefore, destructuring a value with an empty object pattern means “throw an exception if the value is <code>undefined</code> or <code>null</code>”:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">throwIfUndefinedOrNull</span>(<span class="hljs-params">value</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> {} = value;</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">throwIfUndefinedOrNull</span>(<span class="hljs-literal">undefined</span>),</code>
+<code>  <span class="hljs-title class_">TypeError</span></code>
+<code>);</code>
+<code><span class="hljs-title function_">throwIfUndefinedOrNull</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// OK</span></code>
+</pre>
+<h4 id="values-that-cannot-be-array-destructured"><a class="heading-id-link" href="#values-that-cannot-be-array-destructured">40.8.2 We can’t Array-destructure non-iterable values</a></h4>
+<p>Array-destructuring demands that the destructured value be iterable. Therefore, we can’t Array-destructure <code>undefined</code> and <code>null</code>. But we can’t Array-destructure non-iterable primitives and objects either:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> [x] = <span class="hljs-number">123</span></span></code>
+<code>TypeError: 123 is not iterable</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> [y] = {}</span></code>
+<code>TypeError: {} is not iterable</code>
+</pre>
+<p>Therefore, destructuring a value with an empty Array pattern means “throw an exception if the value is not iterable”:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">throwIfNotIterable</span>(<span class="hljs-params">value</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> [] = value;</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">throwIfNotIterable</span>(<span class="hljs-literal">null</span>),</code>
+<code>  <span class="hljs-title class_">TypeError</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">throwIfNotIterable</span>(<span class="hljs-literal">true</span>),</code>
+<code>  <span class="hljs-title class_">TypeError</span></code>
+<code>);</code>
+<code><span class="hljs-title function_">throwIfNotIterable</span>(<span class="hljs-string">'abc'</span>); <span class="hljs-comment">// OK: iterable primitive</span></code>
+<code><span class="hljs-title function_">throwIfNotIterable</span>([]); <span class="hljs-comment">// OK: iterable object</span></code>
+</pre>
+<h3 id="advanced-3"><a class="heading-id-link" href="#advanced-3">40.9 (Advanced)</a></h3>
+<p>All of the remaining sections are advanced.</p>
+<h3 id="default-values"><a class="heading-id-link" href="#default-values">40.10 Default values</a></h3>
+<p><span id="index-entry-default-value--destructuring-"/></p>
+<p>Normally, if a pattern has no match, the corresponding variable is set to <code>undefined</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> {<span class="hljs-attr">prop</span>: p} = {};</code>
+<code>assert.<span class="hljs-title function_">equal</span>(p, <span class="hljs-literal">undefined</span>);</code>
+</pre>
+<p>If we want a different value to be used, we need to specify a <em>default value</em> (via <code>=</code>):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> {<span class="hljs-attr">prop</span>: p = <span class="hljs-number">123</span>} = {}; <span class="hljs-comment">// (A)</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(p, <span class="hljs-number">123</span>);</code>
+</pre>
+<p>In line A, we specify the default value for <code>p</code> to be <code>123</code>. That default is used because the data that we are destructuring has no property named <code>prop</code>.</p>
+<h4 id="default-values-in-arraydestructuring"><a class="heading-id-link" href="#default-values-in-arraydestructuring">40.10.1 Default values in Array-destructuring</a></h4>
+<p>Here, we have two default values that are assigned to the variables <code>x</code> and <code>y</code> because the corresponding elements don’t exist in the Array that is destructured.</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> [x=<span class="hljs-number">1</span>, y=<span class="hljs-number">2</span>] = [];</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(x, <span class="hljs-number">1</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(y, <span class="hljs-number">2</span>);</code>
+</pre>
+<p>The default value for the first element of the Array pattern is <code>1</code>; the default value for the second element is <code>2</code>.</p>
+<h4 id="default-values-in-objectdestructuring"><a class="heading-id-link" href="#default-values-in-objectdestructuring">40.10.2 Default values in object-destructuring</a></h4>
+<p>We can also specify default values for object-destructuring:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> {<span class="hljs-attr">first</span>: f=<span class="hljs-string">''</span>, <span class="hljs-attr">last</span>: l=<span class="hljs-string">''</span>} = {};</code>
+<code>assert.<span class="hljs-title function_">equal</span>(f, <span class="hljs-string">''</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(l, <span class="hljs-string">''</span>);</code>
+</pre>
+<p>Neither property key <code>first</code> nor property key <code>last</code> exist in the object that is destructured. Therefore, the default values are used.</p>
+<p>With property value shorthands, this code becomes simpler:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> {first=<span class="hljs-string">''</span>, last=<span class="hljs-string">''</span>} = {};</code>
+<code>assert.<span class="hljs-title function_">equal</span>(first, <span class="hljs-string">''</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(last, <span class="hljs-string">''</span>);</code>
+</pre>
+<h3 id="parameter-definitions-are-similar-to-destructuring"><a class="heading-id-link" href="#parameter-definitions-are-similar-to-destructuring">40.11 Parameter definitions are similar to destructuring</a></h3>
+<p>Considering what we have learned in this chapter, parameter definitions have much in common with an Array pattern (rest elements, default values, etc.). In fact, the following two function declarations are equivalent:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params">«pattern1», «pattern2»</span>) {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f2</span>(<span class="hljs-params">...args</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> [«pattern1», «pattern2»] = args;</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<h3 id="nested-destructuring"><a class="heading-id-link" href="#nested-destructuring">40.12 Nested destructuring</a></h3>
+<p>Until now, we have only used variables as <em>assignment targets</em> (data sinks) inside destructuring patterns. But we can also use patterns as assignment targets, which enables us to nest patterns to arbitrary depths:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> arr = [</code>
+<code>  { <span class="hljs-attr">first</span>: <span class="hljs-string">'Jane'</span>, <span class="hljs-attr">last</span>: <span class="hljs-string">'Bond'</span> },</code>
+<code>  { <span class="hljs-attr">first</span>: <span class="hljs-string">'Lars'</span>, <span class="hljs-attr">last</span>: <span class="hljs-string">'Croft'</span> },</code>
+<code>];</code>
+<code><span class="hljs-keyword">const</span> [, {first}] = arr; <span class="hljs-comment">// (A)</span></code>
+<code>assert.<span class="hljs-title function_">equal</span>(first, <span class="hljs-string">'Lars'</span>);</code>
+</pre>
+<p>Inside the Array pattern in line A, there is a nested object pattern at index 1.</p>
+<p>Nested patterns can become difficult to understand, so they are best used in moderation.</p>
+
+    
+      
+</body>
+</html>
