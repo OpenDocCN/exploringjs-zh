@@ -1,928 +1,1397 @@
 - en: 13 Variables and assignment
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 13 变量和赋值
 - en: 原文：[https://exploringjs.com/js/book/ch_variables-assignment.html](https://exploringjs.com/js/book/ch_variables-assignment.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_variables-assignment.html](https://exploringjs.com/js/book/ch_variables-assignment.html)
 - en: '[13.1 `let`](#let)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.1 `let`](#let)'
 - en: '[13.2 `const`](#const)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.2 `const`](#const)'
 - en: '[13.2.1 `const` and immutability](#const-creates-immutable-bindings)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.2.1 `const`和不可变性](#const-creates-immutable-bindings)'
 - en: '[13.2.2 `const` and loops](#const-and-loops)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.2.2 `const`和循环](#const-and-loops)'
 - en: '[13.3 Deciding between `const` and `let`](#deciding-between-const-and-let)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.3 在`const`和`let`之间做出选择](#deciding-between-const-and-let)'
 - en: '[13.4 The scope of a variable](#variable-scope)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.4 变量的作用域](#variable-scope)'
 - en: '[13.4.1 Shadowing variables](#shadowing-variables)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.4.1 变量的遮蔽](#shadowing-variables)'
 - en: '[13.5 (Advanced)](#advanced-1)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.5 (高级)](#advanced-1)'
 - en: '[13.6 Terminology: static vs. dynamic](#programming-languages-static-vs-dynamic)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.6 术语：静态与动态](#programming-languages-static-vs-dynamic)'
 - en: '[13.6.1 Static phenomenon: scopes of variables](#static-phenomenon-scopes-of-variables)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.6.1 静态现象：变量的作用域](#static-phenomenon-scopes-of-variables)'
 - en: '[13.6.2 Dynamic phenomenon: function calls](#dynamic-phenomenon-function-calls)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.6.2 动态现象：函数调用](#dynamic-phenomenon-function-calls)'
 - en: '[13.7 The scopes of JavaScript’s global variables](#global-variable-scopes)'
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.7 JavaScript全局变量的作用域](#global-variable-scopes)'
 - en: '[13.7.1 `globalThis` ^(ES2020)](#globalThis)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.7.1 `globalThis` (ES2020)](#globalThis)'
 - en: '[13.8 Declarations: scope and activation](#declarations-scope-activation)'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.8 声明：作用域和激活](#declarations-scope-activation)'
 - en: '[13.8.1 `const` and `let`: temporal dead zone](#temporal-dead-zone)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.8.1 `const`和`let`：临时死区](#temporal-dead-zone)'
 - en: '[13.8.2 Function declarations and early activation](#early-activation)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.8.2 函数声明和早期激活](#early-activation)'
 - en: '[13.8.3 Class declarations are not activated early](#class-declarations-are-not-activated-early)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.8.3 类声明不会早期激活](#class-declarations-are-not-activated-early)'
 - en: '[13.8.4 `var`: hoisting (partial early activation)](#hoisting)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.8.4 `var`：提升（部分早期激活）](#hoisting)'
 - en: '[13.9 Closures](#closures)'
+  id: totrans-20
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.9 闭包](#closures)'
 - en: '[13.9.1 Bound variables vs. free variables](#bound-variables-vs-free-variables)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.9.1 绑定变量与自由变量](#bound-variables-vs-free-variables)'
 - en: '[13.9.2 What is a closure?](#what-is-a-closure)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.9.2 什么是闭包？](#what-is-a-closure)'
 - en: '[13.9.3 Example: A factory for incrementors](#example-a-factory-for-incrementors)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.9.3 示例：增量器工厂](#example-a-factory-for-incrementors)'
 - en: '[13.9.4 Use cases for closures](#use-cases-for-closures)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[13.9.4 闭包的使用场景](#use-cases-for-closures)'
 - en: 'These are JavaScript’s main ways of declaring variables:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是JavaScript声明变量的主要方式：
 - en: '`let` declares mutable variables.'
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`let`声明可变变量。'
 - en: '`const` declares *constants* (immutable variables).'
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`const`声明*常量*（不可变变量）。'
 - en: Before ES6, there was also `var`. But it has several quirks, so it’s best to
     avoid it in modern JavaScript. You can read more about it in [*Speaking JavaScript*](http://exploringjs.com/es5/ch16.html).
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 在ES6之前，也存在`var`。但它有几个怪癖，所以在现代JavaScript中最好避免使用它。你可以在[*Speaking JavaScript*](http://exploringjs.com/es5/ch16.html)中了解更多相关信息。
 - en: '[13.1 `let`](#let)'
+  id: totrans-29
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.1 `let`](#let)'
 - en: 'Variables declared via `let` are mutable:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过`let`声明的变量是可变的：
 - en: '[PRE0]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'We can also declare and assign at the same time:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以同时声明和赋值：
 - en: '[PRE1]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[13.2 `const`](#const)'
+  id: totrans-34
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.2 `const`](#const)'
 - en: 'Variables declared via `const` are immutable. We must always initialize immediately:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过`const`声明的变量是不可变的。我们必须始终立即初始化：
 - en: '[PRE2]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[13.2.1 `const` and immutability](#const-creates-immutable-bindings)'
+  id: totrans-37
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.2.1 `const`和不可变性](#const-creates-immutable-bindings)'
 - en: In JavaScript, `const` only means that the *binding* (the association between
     variable name and variable value) is immutable. The value itself may be mutable,
     like `obj` in the following example.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript中，`const`仅意味着*绑定*（变量名与变量值之间的关联）是不可变的。值本身可能是可变的，如下面的示例中的`obj`。
 - en: '[PRE3]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[13.2.2 `const` and loops](#const-and-loops)'
+  id: totrans-40
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.2.2 `const`和循环](#const-and-loops)'
 - en: 'We can use `const` with `for-of` loops, where a fresh binding is created for
     each iteration:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以在`for-of`循环中使用`const`，其中为每次迭代创建一个新的绑定：
 - en: '[PRE4]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Output:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE5]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'In plain `for` loops, we must use `let`, however:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 在普通的`for`循环中，我们必须使用`let`，然而：
 - en: '[PRE6]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[13.3 Deciding between `const` and `let`](#deciding-between-const-and-let)'
+  id: totrans-47
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.3 在`const`和`let`之间做出选择](#deciding-between-const-and-let)'
 - en: 'I recommend the following rules to decide between `const` and `let`:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 我推荐以下规则来决定使用`const`还是`let`：
 - en: '`const` indicates an immutable binding and that a variable never changes its
     value. Prefer it.'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`const`表示不可变的绑定，即变量永远不会改变其值。优先选择它。'
 - en: '`let` indicates that the value of a variable changes. Use it only when you
     can’t use `const`.'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`let`表示变量的值会改变。只有在你不能使用`const`时才使用它。'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     `const`**'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: '![“练习”图标](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：`const`**'
 - en: '`exercises/variables-assignment/const_exrc.mjs`'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/variables-assignment/const_exrc.mjs`'
 - en: '[13.4 The scope of a variable](#variable-scope)'
+  id: totrans-53
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.4 变量的作用域](#variable-scope)'
 - en: The *scope* of a variable is the region of a program where it can be accessed.
     Consider the following code.
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 变量的**作用域**是指程序中可以访问该变量的区域。考虑以下代码。
 - en: '[PRE7]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: Scope A is the *(direct) scope* of `x`.
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作用域A是`x`的**（直接）作用域**。
 - en: Scopes B and C are *inner scopes* of scope A.
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作用域B和C是作用域A的**内部作用域**。
 - en: Scope A is an *outer scope* of scope B and scope C.
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作用域A是作用域B和作用域C的**外部作用域**。
 - en: Each variable is accessible in its direct scope and all scopes nested within
     that scope.
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个变量在其直接作用域以及该作用域嵌套的所有作用域中都是可访问的。
 - en: The variables declared via `const` and `let` are called *block-scoped* because
     their scopes are always the innermost surrounding blocks.
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过`const`和`let`声明的变量被称为**块级作用域**，因为它们的作用域始终是最近的包围块。
 - en: '[13.4.1 Shadowing variables](#shadowing-variables)'
+  id: totrans-61
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.4.1 遮蔽变量](#shadowing-variables)'
 - en: 'We can’t declare the same variable twice at the same level:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不能在同一级别上声明相同的变量两次：
 - en: '[PRE8]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **Why `eval()`?**'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“详情”](../Images/38ba63de820aae6f94a019538ae0f222.png) **为什么使用`eval()`？**'
 - en: '[`eval()`](ch_dynamic-code-evaluation.html#eval) delays parsing (and therefore
     the `SyntaxError`), until the callback of `assert.throws()` is executed. If we
     didn’t use it, we’d already get an error when this code is parsed and `assert.throws()`
     wouldn’t even be executed.'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`eval()`](ch_dynamic-code-evaluation.html#eval) 延迟解析（因此`SyntaxError`），直到`assert.throws()`的回调执行。如果我们没有使用它，当解析此代码时，我们就会得到错误，而`assert.throws()`甚至不会执行。'
 - en: 'We can, however, nest a block and use the same variable name `x` that we used
     outside the block:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，我们可以嵌套一个块并使用与块外相同的变量名`x`：
 - en: '[PRE9]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: Inside the block, the inner `x` is the only accessible variable with that name.
     The inner `x` is said to *shadow* the outer `x`. Once we leave the block, we can
     access the old value again.
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 在块内部，内层的`x`是唯一可访问的具有该名称的变量。内层的`x`被称为*遮蔽*外层的`x`。一旦我们离开块，我们就可以再次访问旧值。
 - en: '[13.5 (Advanced)](#advanced-1)'
+  id: totrans-69
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.5 (高级)](#advanced-1)'
 - en: All remaining sections are advanced.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有剩余的部分都是高级内容。
 - en: '[13.6 Terminology: static vs. dynamic](#programming-languages-static-vs-dynamic)'
+  id: totrans-71
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.6 术语：静态与动态](#programming-languages-static-vs-dynamic)'
 - en: 'These two adjectives describe phenomena in programming languages:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 这两个形容词描述了编程语言中的现象：
 - en: '*Static* means that something is related to source code and can be determined
     without executing code.'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**静态**意味着某物与源代码相关，并且可以在不执行代码的情况下确定。'
 - en: '*Dynamic* means at runtime.'
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**动态**意味着在运行时。'
 - en: Let’s look at examples of these two terms.
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看这两个术语的例子。
 - en: '[13.6.1 Static phenomenon: scopes of variables](#static-phenomenon-scopes-of-variables)'
+  id: totrans-76
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.6.1 静态现象：变量的作用域](#static-phenomenon-scopes-of-variables)'
 - en: 'Variable scopes are a static phenomenon. Consider the following code:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 变量作用域是一种静态现象。考虑以下代码：
 - en: '[PRE10]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '`x` is *statically* (or *lexically*) *scoped*. That is, its scope is fixed
     and doesn’t change at runtime.'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: '`x`是**静态地**（或**词法地**）**作用域**。也就是说，其作用域是固定的，并且在运行时不改变。'
 - en: Variable scopes form a static tree (via static nesting).
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 变量作用域形成一个静态树（通过静态嵌套）。
 - en: '[13.6.2 Dynamic phenomenon: function calls](#dynamic-phenomenon-function-calls)'
+  id: totrans-81
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.6.2 动态现象：函数调用](#dynamic-phenomenon-function-calls)'
 - en: 'Function calls are a dynamic phenomenon. Consider the following code:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数调用是一种动态现象。考虑以下代码：
 - en: '[PRE11]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: Whether or not the function call in line A happens, can only be decided at runtime.
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 行A中的函数调用是否发生，只能在运行时决定。
 - en: Function calls form a dynamic tree (via dynamic calls).
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数调用形成一个动态树（通过动态调用）。
 - en: '[13.7 The scopes of JavaScript’s global variables](#global-variable-scopes)'
+  id: totrans-86
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.7 JavaScript的全局变量作用域](#global-variable-scopes)'
 - en: 'JavaScript’s variable scopes are nested. They form a tree:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript的作用域是嵌套的。它们形成一个树：
 - en: The outermost scope is the root of the tree.
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最外层的作用域是树的根。
 - en: The scopes directly contained in that scope are the children of the root.
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 直接包含在该作用域中的作用域是根的子节点。
 - en: And so on.
+  id: totrans-90
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: 'The root is also called the *global scope*. In web browsers, the only location
     where one is directly in that scope is at the top level of a script. The variables
     of the global scope are called *global variables* and accessible everywhere. There
     are two kinds of global variables:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 根也被称为**全局作用域**。在网页浏览器中，唯一直接处于该作用域的位置是脚本的最顶层。全局作用域的变量被称为**全局变量**，在所有地方都可以访问。有两种类型的全局变量：
 - en: '*Global declarative variables* are normal variables:'
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**全局声明变量**是普通变量：'
 - en: They can only be created while at the top level of a script, via `const`, `let`,
     and class declarations.
+  id: totrans-93
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们只能在脚本的顶层通过 `const`、`let` 和类声明创建。
 - en: '*Global object variables* are stored in properties of the so-called *global
     object*:'
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*全局对象变量*存储在所谓的 *全局对象* 的属性中：'
 - en: They are created in the top level of a script, via `var` and function declarations.
+  id: totrans-95
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们在脚本的顶层通过 `var` 和函数声明创建。
 - en: The global object can be accessed via the global variable `globalThis`. It can
     be used to create, read, and delete global object variables.
+  id: totrans-96
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可以通过全局变量 `globalThis` 访问全局对象。它可以用来创建、读取和删除全局对象变量。
 - en: Other than that, global object variables work like normal variables.
+  id: totrans-97
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 除了这些，全局对象变量像普通变量一样工作。
 - en: The following HTML fragment demonstrates `globalThis` and the two kinds of global
     variables.
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下 HTML 片段演示了 `globalThis` 和两种类型的全局变量。
 - en: '[PRE12]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: Each module has its own variable scope that is a direct child of the global
     scope. Therefore, variables that exist at the top level of a module are not global.
     [Figure 13.1](#fig:global-scope) illustrates how the various scopes are related.
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个模块都有自己的变量作用域，它是全局作用域的直接子级。因此，存在于模块顶层的变量不是全局的。[图 13.1](#fig:global-scope) 展示了各种作用域之间的关系。
 - en: '![](../Images/52eed01843eedb709d2fd13429ec233c.png)'
+  id: totrans-101
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/52eed01843eedb709d2fd13429ec233c.png)'
 - en: 'Figure 13.1: The global scope is JavaScript’s outermost scope. It has two kinds
     of variables: *object variables* (managed via the *global object*) and normal
     *declarative variables*. Each ECMAScript module has its own scope which is contained
     in the global scope.'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 图 13.1：全局作用域是 JavaScript 的最外层作用域。它有两种类型的变量：*对象变量*（通过 *全局对象* 管理）和正常的 *声明性变量*。每个
+    ECMAScript 模块都有自己的作用域，该作用域包含在全局作用域中。
 - en: '[13.7.1 `globalThis` ^(ES2020)](#globalThis)'
+  id: totrans-103
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.7.1 `globalThis` (ES2020)](#globalThis)'
 - en: The global variable `globalThis` is the standard way of accessing the global
     object. It got its name from the fact that it has the same value as `this` in
     global scope (script scope, not module scope).
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 全局变量 `globalThis` 是访问全局对象的标准方式。它的名字来源于它在全局作用域（脚本作用域，不是模块作用域）中与 `this` 的值相同。
 - en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **`globalThis`
     does not always directly point to the global object**'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“详情”](../Images/38ba63de820aae6f94a019538ae0f222.png) **`globalThis` 并不总是直接指向全局对象**'
 - en: For example, in browsers, [there is an indirection](https://exploringjs.com/deep-js/ch_global-scope.html#window-proxy).
     That indirection is normally not noticable, but it is there and can be observed.
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，在浏览器中，[存在一个间接引用](https://exploringjs.com/deep-js/ch_global-scope.html#window-proxy)。这种间接引用通常不明显，但它确实存在，并且可以被观察到。
 - en: '[13.7.1.1 Alternatives to `globalThis`](#alternatives-to-globalthis)'
+  id: totrans-107
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[13.7.1.1 `globalThis` 的替代方案](#alternatives-to-globalthis)'
 - en: 'The following global variables let us access the global object on *some* platforms:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下全局变量让我们可以在 *某些* 平台上访问全局对象：
 - en: '`window`: The classic way of referring to the global object. But it doesn’t
     work in Node.js and in Web Workers.'
+  id: totrans-109
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`window`：引用全局对象的经典方式。但在 Node.js 和 Web Workers 中不起作用。'
 - en: '`self`: Available in Web Workers and browsers in general. But it isn’t supported
     by Node.js.'
+  id: totrans-110
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`self`：在 Web Workers 和浏览器中普遍可用。但 Node.js 不支持。'
 - en: '`global`: Only available in Node.js.'
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`global`：仅在 Node.js 中可用。'
 - en: '|  | Main browser thread | Web Workers | Node.js |'
+  id: totrans-112
   prefs: []
   type: TYPE_TB
+  zh: '|  | 主浏览器线程 | Web Workers | Node.js |'
 - en: '| --- | --- | --- | --- |'
+  id: totrans-113
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- |'
 - en: '| `globalThis` | ✔ | ✔ | ✔ |'
+  id: totrans-114
   prefs: []
   type: TYPE_TB
+  zh: '| `globalThis` | ✔ | ✔ | ✔ |'
 - en: '| `window` | ✔ |  |  |'
+  id: totrans-115
   prefs: []
   type: TYPE_TB
+  zh: '| `window` | ✔ |  |  |'
 - en: '| `self` | ✔ | ✔ |  |'
+  id: totrans-116
   prefs: []
   type: TYPE_TB
+  zh: '| `self` | ✔ | ✔ |  |'
 - en: '| `global` |  |  | ✔ |'
+  id: totrans-117
   prefs: []
   type: TYPE_TB
+  zh: '| `global` |  |  | ✔ |'
 - en: '[13.7.1.2 Use cases for `globalThis`](#use-cases-for-globalthis)'
+  id: totrans-118
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[13.7.1.2 `globalThis` 的用例](#use-cases-for-globalthis)'
 - en: The global object is now considered a mistake that JavaScript can’t get rid
     of, due to backward compatibility. It affects performance negatively and is generally
     confusing.
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于向后兼容性，全局对象现在被认为是一个错误，JavaScript 无法摆脱。它对性能产生负面影响，并且通常令人困惑。
 - en: 'ECMAScript 6 introduced several features that make it easier to avoid the global
     object – for example:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: ECMAScript 6 引入了一些特性，使得避免全局对象变得更加容易——例如：
 - en: '`const`, `let`, and class declarations don’t create global object properties
     when used in global scope.'
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`const`、`let` 和类声明在全局作用域中使用时不会创建全局对象属性。'
 - en: Each ECMAScript module has its own local scope.
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个ECMAScript模块都有自己的局部作用域。
 - en: It is usually better to access global object variables via variables and not
     via properties of `globalThis`. The former has always worked the same on all JavaScript
     platforms.
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常，通过变量而不是通过 `globalThis` 的属性访问全局对象变量会更好。前者在所有 JavaScript 平台上始终表现一致。
 - en: 'Tutorials on the web occasionally access global variables `globVar` via `window.globVar`.
     But the prefix “`window.`” is not necessary and I recommend to omit it:'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 网上的教程偶尔会通过 `window.globVar` 访问全局变量 `globVar`。但前缀 “`window.`” 是不必要的，我建议省略它：
 - en: '[PRE13]'
+  id: totrans-125
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Therefore, there are relatively few use cases for `globalThis` – for example:'
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，`globalThis` 的使用案例相对较少——例如：
 - en: '[*Polyfills*](ch_modules.html#polyfills) that add new features to old JavaScript
     engines.'
+  id: totrans-127
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[**Polyfills**](ch_modules.html#polyfills) 为旧版 JavaScript 引擎添加新功能。'
 - en: Feature detection, to find out what features a JavaScript engine supports.
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 功能检测，用于找出 JavaScript 引擎支持哪些功能。
 - en: '[13.8 Declarations: scope and activation](#declarations-scope-activation)'
+  id: totrans-129
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.8 声明：作用域和激活](#declarations-scope-activation)'
 - en: 'These are two key aspects of declarations:'
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是声明的两个关键方面：
 - en: 'Scope: Where can a declared entity be seen? This is a static trait.'
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作用域：声明的实体在哪里可见？这是一个静态特性。
 - en: 'Activation: When can I access an entity? This is a dynamic trait. Some entities
     can be accessed as soon as we enter their scopes. For others, we have to wait
     until execution reaches their declarations.'
+  id: totrans-132
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 激活：我何时可以访问一个实体？这是一个动态特性。某些实体在我们进入它们的作用域时就可以访问。对于其他实体，我们必须等待执行到达它们的声明。
 - en: 'The following table summarizes how various declarations handle these aspects:'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 下表总结了各种声明如何处理这些方面：
 - en: '|  | Scope | Activation | Duplicates | Global prop. |'
+  id: totrans-134
   prefs: []
   type: TYPE_TB
+  zh: '|  | 作用域 | 激活 | 重复 | 全局属性 |'
 - en: '| --- | --- | --- | --- | --- |'
+  id: totrans-135
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- | --- |'
 - en: '| `const` | Block | decl. (TDZ) | ✘ | ✘ |'
+  id: totrans-136
   prefs: []
   type: TYPE_TB
+  zh: '| `const` | 块 | 声明（TDZ） | ✘ | ✘ |'
 - en: '| `let` | Block | decl. (TDZ) | ✘ | ✘ |'
+  id: totrans-137
   prefs: []
   type: TYPE_TB
+  zh: '| `let` | 块 | 声明（TDZ） | ✘ | ✘ |'
 - en: '| `function` | Block (*) | start | ✔ | ✔ |'
+  id: totrans-138
   prefs: []
   type: TYPE_TB
+  zh: '| `function` | 块 (*) | 开始 | ✔ | ✔ |'
 - en: '| `class` | Block | decl. (TDZ) | ✘ | ✘ |'
+  id: totrans-139
   prefs: []
   type: TYPE_TB
+  zh: '| `class` | 块 | 声明（TDZ） | ✘ | ✘ |'
 - en: '| `import` | Module | start | ✘ | ✘ |'
+  id: totrans-140
   prefs: []
   type: TYPE_TB
+  zh: '| `import` | 模块 | 开始 | ✘ | ✘ |'
 - en: '| `var` | Function | start (partially) | ✔ | ✔ |'
+  id: totrans-141
   prefs: []
   type: TYPE_TB
+  zh: '| `var` | 函数 | 开始（部分） | ✔ | ✔ |'
 - en: (*) Function declarations are normally block-scoped, but function-scoped in
     [non-strict mode](ch_syntax.html#strict-mode).
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: (*) 函数声明通常是块级作用域，但在非严格模式下是函数级作用域。
 - en: 'Aspects of declarations:'
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 声明的方面：
 - en: 'For most constructs, their scope is the innermost surrounding block. There
     are two exceptions:'
+  id: totrans-144
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于大多数构造，它们的作用域是最内层的周围块。有两个例外：
 - en: '`import` can only be used at the top level of a module.'
+  id: totrans-145
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`import` 只能在模块的最顶层使用。'
 - en: The scope of a variable declared via `var` is its innermost surrounding function
     (not block).
+  id: totrans-146
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过 `var` 声明的变量的作用域是其最内层的周围函数（不是块）。
 - en: The activation of the constructs (when we can access them) varies and is described
     in more detail later – e.g., *TDZ* means *temporal dead zone*.
+  id: totrans-147
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 构造函数的激活（当我们能够访问它们时）是变化的，将在稍后进行更详细的描述——例如，*TDZ* 表示 *时间死区*。
 - en: “Duplicates” describes if a declaration can be used twice with the same name
     (per scope).
+  id: totrans-148
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “重复”描述了声明是否可以使用相同的名称（在每个作用域内）使用两次。
 - en: “Global prop.” describes if a declaration adds a property to the global object,
     when it is executed in the global scope of a script.
+  id: totrans-149
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “全局属性”描述了当声明在脚本的全球作用域中执行时，它是否向全局对象添加属性。
 - en: '`import` is described in [“ECMAScript modules” (§29.5)](ch_modules.html#ecmascript-modules).
     The following subsections describe the other constructs and phenomena in more
     detail.'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: '`import` 在 [“ECMAScript 模块” (§29.5)](ch_modules.html#ecmascript-modules) 中进行了描述。以下小节将更详细地描述其他构造和现象。'
 - en: '[13.8.1 `const` and `let`: temporal dead zone](#temporal-dead-zone)'
+  id: totrans-151
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.8.1 `const` 和 `let`：时间死区](#temporal-dead-zone)'
 - en: '[13.8.1.1 What to do when a variable is accessed before its declaration?](#what-to-do-when-a-variable-is-accessed-before-its-declaration)'
+  id: totrans-152
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[13.8.1.1 在变量声明之前访问变量时应该做什么？](#what-to-do-when-a-variable-is-accessed-before-its-declaration)'
 - en: 'For JavaScript, TC39 needed to decide what happens if we access a constant
     in its direct scope, before its declaration:'
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于 JavaScript，TC39 需要决定如果我们直接访问一个常量，在它的声明之前会发生什么：
 - en: '[PRE14]'
+  id: totrans-154
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Some possible approaches are:'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些可能的方法是：
 - en: The name is resolved in the scope surrounding the current scope.
+  id: totrans-156
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 名称在当前作用域周围的范围内解析。
 - en: We get `undefined`.
+  id: totrans-157
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 我们得到 `undefined`。
 - en: There is an error.
+  id: totrans-158
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 存在一个错误。
 - en: Approach 1 was rejected because there is no precedent in the language for this
     approach. It would therefore not be intuitive to JavaScript programmers.
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 第一种方法被拒绝，因为没有语言中的先例，因此这对 JavaScript 程序员来说可能不直观。
 - en: Approach 2 was rejected because then `x` wouldn’t be a constant – it would have
     different values before and after its declaration.
+  id: totrans-160
   prefs: []
   type: TYPE_NORMAL
+  zh: 第二种方法被拒绝，因为这样 `x` 就不会是一个常量——它在声明前后会有不同的值。
 - en: '`let` uses the same approach 3 as `const`, so that both work similarly and
     it’s easy to switch between them.'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: '`let`使用与`const`相同的方法3，因此它们的工作方式相似，并且很容易在它们之间切换。'
 - en: '[13.8.1.2 The temporal dead zone](#the-temporal-dead-zone)'
+  id: totrans-162
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[13.8.1.2 时间死区](#the-temporal-dead-zone)'
 - en: 'The time between entering the scope of a variable and executing its declaration
     is called the *temporal dead zone* (TDZ) of that variable:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 变量进入其作用域和执行其声明之间的时间被称为该变量的*时间死区* (TDZ)：
 - en: During this time, the variable is considered to be uninitialized (as if that
     were a special value it has).
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在这段时间内，变量被认为是未初始化的（就像它有一个特殊值一样）。
 - en: If we access an uninitialized variable, we get a `ReferenceError`.
+  id: totrans-165
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们访问一个未初始化的变量，我们会得到一个`ReferenceError`。
 - en: Once we reach a variable declaration, the variable is set to either the value
     of the initializer (specified via the assignment symbol) or `undefined` – if there
     is no initializer.
+  id: totrans-166
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一旦我们到达变量声明，该变量将被设置为初始化器的值（通过赋值符号指定）或`undefined`——如果没有初始化器。
 - en: 'The following code illustrates the temporal dead zone:'
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码说明了时间死区：
 - en: '[PRE15]'
+  id: totrans-168
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'The next example shows that the temporal dead zone is truly *temporal* (related
     to time):'
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一个例子表明时间死区确实是*时间的*（与时间相关）：
 - en: '[PRE16]'
+  id: totrans-170
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: Even though `func()` is located before the declaration of `myVar` and uses that
     variable, we can call `func()`. But we have to wait until the temporal dead zone
     of `myVar` is over.
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使`func()`位于`myVar`声明之前并使用该变量，我们也可以调用`func()`。但我们必须等待`myVar`的时间死区结束。
 - en: '[13.8.2 Function declarations and early activation](#early-activation)'
+  id: totrans-172
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.8.2 函数声明和早期激活](#early-activation)'
 - en: '![Icon “reading”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **More information
     on functions**'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: '![“阅读”图标](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **更多关于函数的信息**'
 - en: In this section, we are using functions – before we had a chance to learn them
     properly. Hopefully, everything still makes sense. Whenever it doesn’t, please
     see [“Callable values” (§27)](ch_callables.html#ch_callables).
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们正在使用函数——在我们有机会正确学习它们之前。希望一切仍然有意义。如果它没有，请参阅[“可调用值” (§27)](ch_callables.html#ch_callables)。
 - en: A function declaration is always executed when entering its scope, regardless
     of where it is located within that scope. That enables us to call a function `funcDecl()`
     before it is declared.
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数声明总是在进入其作用域时执行，无论它在作用域内的位置如何。这使得我们可以在声明函数`funcDecl()`之前调用它。
 - en: '[PRE17]'
+  id: totrans-176
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'The early activation of `funcDecl()` means that the previous code is equivalent
     to:'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: '`funcDecl()`的早期激活意味着前面的代码等同于：'
 - en: '[PRE18]'
+  id: totrans-178
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: If we declare a function via `const` or `let`, then it is not activated early.
     In the following example, we can only use `arrowFunc()` after its declaration.
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们通过`const`或`let`声明一个函数，那么它不会早期激活。在下面的例子中，我们只能在声明之后使用`arrowFunc()`。
 - en: '[PRE19]'
+  id: totrans-180
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '[13.8.2.1 Calling ahead without early activation](#calling-ahead-without-early-activation)'
+  id: totrans-181
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[13.8.2.1 无早期激活的提前调用](#calling-ahead-without-early-activation)'
 - en: 'A function `f()` can call a function `g()` that is declared later and not activated
     early – as long as we invoke `f()` after the declaration of `g()`:'
+  id: totrans-182
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数`f()`可以调用后来声明且未早期激活的函数`g()`——只要我们在`g()`声明之后调用`f()`：
 - en: '[PRE20]'
+  id: totrans-183
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: The functions of a module are usually invoked after its complete body is executed.
     Therefore, in modules, we rarely need to worry about the order of functions (even
     if they are not function declarations).
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块中的函数通常在其主体完全执行后调用。因此，在模块中，我们很少需要担心函数的顺序（即使它们不是函数声明）。
 - en: '[13.8.2.2 A pitfall of early activation](#a-pitfall-of-early-activation)'
+  id: totrans-185
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[13.8.2.2 早期激活的陷阱](#a-pitfall-of-early-activation)'
 - en: If we rely on early activation to call a function before its declaration, then
     we need to be careful that it doesn’t access data that isn’t activated early.
+  id: totrans-186
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们依赖于早期激活在声明之前调用一个函数，那么我们需要小心它不会访问未早期激活的数据。
 - en: '[PRE21]'
+  id: totrans-187
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: The problem goes away if we make the call to `funcDecl()` after the declaration
     of `MY_STR`.
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在`MY_STR`声明之后调用`funcDecl()`，问题就会消失。
 - en: '[13.8.2.3 The pros and cons of early activation](#the-pros-and-cons-of-early-activation)'
+  id: totrans-189
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[13.8.2.3 早期激活的优缺点](#the-pros-and-cons-of-early-activation)'
 - en: We have seen that early activation has a pitfall and that we can get most of
     its benefits without using it. Therefore, it is better to avoid early activation.
     But I don’t feel strongly about this and, as mentioned before, often use function
     declarations because I like their syntax.
+  id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到早期激活有一个陷阱，并且我们可以在不使用它的情况下获得其大部分好处。因此，最好避免早期激活。但我不对此有强烈的看法，并且如前所述，我经常使用函数声明，因为我喜欢它们的语法。
 - en: '[13.8.3 Class declarations are not activated early](#class-declarations-are-not-activated-early)'
+  id: totrans-191
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.8.3 类声明不会提前激活](#class-declarations-are-not-activated-early)'
 - en: 'Even though they are similar to function declarations in some ways, [class
     declarations](ch_classes.html#classes) are not activated early:'
+  id: totrans-192
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管它们在某些方面与函数声明相似，但[类声明](ch_classes.html#classes)不会提前激活：
 - en: '[PRE22]'
+  id: totrans-193
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'Why is that? Consider the following class declaration:'
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么会这样？考虑以下类声明：
 - en: '[PRE23]'
+  id: totrans-195
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'The operand of `extends` is an expression. Therefore, we can do things like
     this:'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: '`extends`运算符的操作数是一个表达式。因此，我们可以这样做：'
 - en: '[PRE24]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: Evaluating such an expression must be done at the location where it is mentioned.
     Anything else would be confusing. That explains why class declarations are not
     activated early.
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 评估这样的表达式必须在它被提及的位置进行。其他任何地方都会造成混淆。这也解释了为什么类声明不会提前激活。
 - en: '[13.8.4 `var`: hoisting (partial early activation)](#hoisting)'
+  id: totrans-199
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.8.4 `var`：提升（部分提前激活）](#hoisting)'
 - en: '`var` is an older way of declaring variables that predates `const` and `let`
     (which are preferred now). Consider the following `var` declaration.'
+  id: totrans-200
   prefs: []
   type: TYPE_NORMAL
+  zh: '`var`是声明变量的一种较老的方式，它早于`const`和`let`（现在是首选）。考虑以下`var`声明。'
 - en: '[PRE25]'
+  id: totrans-201
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'This declaration has two parts:'
+  id: totrans-202
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个声明有两个部分：
 - en: 'Declaration `var x`: The scope of a `var`-declared variable is the innermost
     surrounding function and not the innermost surrounding block, as for most other
     declarations. Such a variable is already active at the beginning of its scope
     and initialized with `undefined`.'
+  id: totrans-203
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 声明`var x`：`var`声明的变量的作用域是最近的周围函数，而不是最近的周围块，就像大多数其他声明一样。这样的变量在其作用域的开始就已经激活，并使用`undefined`初始化。
 - en: 'Assignment `x = 123`: The assignment is always executed in place.'
+  id: totrans-204
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 赋值`x = 123`：赋值始终在原地执行。
 - en: 'The following code demonstrates the effects of `var`:'
+  id: totrans-205
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了`var`的效果：
 - en: '[PRE26]'
+  id: totrans-206
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[13.9 Closures](#closures)'
+  id: totrans-207
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[13.9 闭包](#closures)'
 - en: Before we can explore closures, we need to learn about bound variables and free
     variables.
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们探索闭包之前，我们需要了解绑定变量和自由变量。
 - en: '[13.9.1 Bound variables vs. free variables](#bound-variables-vs-free-variables)'
+  id: totrans-209
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.9.1 绑定变量与自由变量](#bound-variables-vs-free-variables)'
 - en: 'Per scope, there is a set of variables that are mentioned. Among these variables
     we distinguish:'
+  id: totrans-210
   prefs: []
   type: TYPE_NORMAL
+  zh: 在每个作用域中，都有一组提到的变量。在这些变量中，我们区分：
 - en: '*Bound variables* are declared within the scope. They are parameters and local
     variables.'
+  id: totrans-211
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**绑定变量**是在作用域内声明的。它们是参数和局部变量。'
 - en: '*Free variables* are declared externally. They are also called *non-local variables*.'
+  id: totrans-212
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**自由变量**是在外部声明的。它们也被称为**非局部变量**。'
 - en: 'Consider the following code:'
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下代码：
 - en: '[PRE27]'
+  id: totrans-214
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: In the body of `func()`, `x` and `y` are bound variables. `z` is a free variable.
+  id: totrans-215
   prefs: []
   type: TYPE_NORMAL
+  zh: 在`func()`的主体中，`x`和`y`是绑定变量。`z`是自由变量。
 - en: '[13.9.2 What is a closure?](#what-is-a-closure)'
+  id: totrans-216
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.9.2 什么是闭包？](#what-is-a-closure)'
 - en: What is a closure then? A *closure* is a function plus a connection to the variables
     that exist at its “birth place”.
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 那么闭包是什么呢？一个**闭包**是一个函数加上对其“出生地”存在的变量的连接。
 - en: 'What is the point of keeping this connection? It provides the values for the
     free variables of the function – for example:'
+  id: totrans-218
   prefs: []
   type: TYPE_NORMAL
+  zh: 保持这种连接有什么意义？它为函数的自由变量提供值——例如：
 - en: '[PRE28]'
+  id: totrans-219
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: '`funcFactory` returns a closure that is assigned to `func`. Because `func`
     has the connection to the variables at its birth place, it can still access the
     free variable `value` when it is called in line A (even though it “escaped” its
     scope).'
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: '`funcFactory`返回一个闭包，并将其分配给`func`。因为`func`与其出生地处的变量有连接，所以当它在行A中被调用时，它仍然可以访问自由变量`value`（即使它“逃离”了其作用域”）。'
 - en: '![Icon “tip”](../Images/8440b17bb8219cda9f9405ac83c36db0.png) **All functions
     in JavaScript are closures**'
+  id: totrans-221
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“提示”](../Images/8440b17bb8219cda9f9405ac83c36db0.png) **所有JavaScript函数都是闭包**'
 - en: Static scoping is supported via closures in JavaScript. Therefore, every function
     is a closure.
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript通过闭包支持静态作用域。因此，每个函数都是一个闭包。
 - en: '[13.9.3 Example: A factory for incrementors](#example-a-factory-for-incrementors)'
+  id: totrans-223
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.9.3 示例：增量器工厂](#example-a-factory-for-incrementors)'
 - en: The following function returns *incrementors* (a name that I just made up).
     An incrementor is a function that internally stores a number. When it is called,
     it updates that number by adding the argument to it and returns the new value.
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数返回**增量器**（这是我刚刚想出的一个名字）。增量器是一个内部存储数字的函数。当它被调用时，它会通过添加参数来更新那个数字，并返回新的值。
 - en: '[PRE29]'
+  id: totrans-225
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: We can see that the function created in line A keeps its internal number in
     the free variable `startValue`. This time, we don’t just read from the birth scope,
     we use it to store data that we change and that persists across function calls.
+  id: totrans-226
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以看到，在行A中创建的函数在自由变量`startValue`中保留了其内部编号。这次，我们不仅从出生作用域中读取，还用它来存储我们更改的数据，这些数据在函数调用之间持续存在。
 - en: 'We can create more storage slots in the birth scope, via local variables:'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过局部变量在出生作用域中创建更多的存储槽位：
 - en: '[PRE30]'
+  id: totrans-228
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[13.9.4 Use cases for closures](#use-cases-for-closures)'
+  id: totrans-229
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[13.9.4 使用闭包的场景](#use-cases-for-closures)'
 - en: What are closures good for?
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: 闭包有什么好处？
 - en: For starters, they are simply an implementation of static scoping. As such,
     they provide context data for callbacks.
+  id: totrans-231
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 首先，它们只是静态作用域的一种实现。因此，它们为回调提供了上下文数据。
 - en: They can also be used by functions to store state that persists across function
     calls. `createInc()` is an example of that.
+  id: totrans-232
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们还可以被函数用来存储在函数调用之间持续存在的状态。`createInc()`就是这样一个例子。
 - en: And they can provide private data for objects (produced via literals or classes).
     The details of how that works are explained in [*Exploring ES6*](https://exploringjs.com/es6/ch_classes.html#_private-data-via-constructor-environments).
+  id: totrans-233
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们还可以为对象（通过字面量或类产生）提供私有数据。这一机制的具体工作原理在[*探索ES6*](https://exploringjs.com/es6/ch_classes.html#_private-data-via-constructor-environments)中有详细解释。

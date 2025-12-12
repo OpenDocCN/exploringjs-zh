@@ -1,430 +1,643 @@
 - en: 21 Unicode – a brief introduction (advanced)
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 21 Unicode – 简要介绍（高级）
 - en: 原文：[https://exploringjs.com/js/book/ch_unicode.html](https://exploringjs.com/js/book/ch_unicode.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_unicode.html](https://exploringjs.com/js/book/ch_unicode.html)
 - en: '[21.1 Code points vs. code units](#unicode-code-points-vs-code-units)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.1 码点与码位](#unicode-code-points-vs-code-units)'
 - en: '[21.1.1 Code points](#unicode-code-points)'
+  id: totrans-3
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.1.1 码点](#unicode-code-points)'
 - en: '[21.1.2 Encoding Unicode code points: UTF-32, UTF-16, UTF-8](#encoding-unicode-code-points-utf32-utf16-utf8)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.1.2 编码 Unicode 码点：UTF-32，UTF-16，UTF-8](#encoding-unicode-code-points-utf32-utf16-utf8)'
 - en: '[21.2 Encodings used in web development: UTF-16 and UTF-8](#utf-in-web-dev)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.2 网络开发中使用的编码：UTF-16 和 UTF-8](#utf-in-web-dev)'
 - en: '[21.2.1 Source code internally: UTF-16](#source-code-internally-utf16)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.2.1 内部源代码：UTF-16](#source-code-internally-utf16)'
 - en: '[21.2.2 Strings: UTF-16](#strings-utf16)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.2.2 字符串：UTF-16](#strings-utf16)'
 - en: '[21.2.3 Source code in files: UTF-8](#source-code-in-files-utf8)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.2.3 源代码在文件中：UTF-8](#source-code-in-files-utf8)'
 - en: '[21.3 Grapheme clusters – the real characters](#grapheme-clusters)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.3 图形群组 – 真正的字符](#grapheme-clusters)'
 - en: '[21.3.1 Grapheme clusters vs. glyphs](#grapheme-clusters-vs-glyphs)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[21.3.1 图形群组与符号](#grapheme-clusters-vs-glyphs)'
 - en: Unicode is a standard for representing and managing text in most of the world’s
     writing systems. Virtually all modern software that works with text, supports
     Unicode. The standard is maintained by the Unicode Consortium. A new version of
     the standard is published every year (with new emojis, etc.). Unicode version
     1.0.0 was published in October 1991.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: Unicode 是一个用于表示和管理世界上大多数书写系统的标准。几乎所有处理文本的现代软件都支持 Unicode。该标准由 Unicode 联盟维护。每年发布一个新的标准版本（包括新的表情符号等）。Unicode
+    1.0.0 版本于 1991 年 10 月发布。
 - en: '[21.1 Code points vs. code units](#unicode-code-points-vs-code-units)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[21.1 码点与码位](#unicode-code-points-vs-code-units)'
 - en: 'Two concepts are crucial for understanding Unicode:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个概念对于理解 Unicode 至关重要：
 - en: '*Code points* are numbers that represent the atomic parts of Unicode text.
     Most of them represent visible symbols but they can also have other meanings such
     as specifying an aspect of a symbol (the accent of a letter, the skin tone of
     an emoji, etc.).'
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*码点*是代表 Unicode 文本原子部分的数字。其中大部分代表可见符号，但它们也可以有其他含义，例如指定符号的某个方面（字母的重音，表情符号的肤色等）。'
 - en: '*Code units* are numbers that encode code points, to store or transmit Unicode
     text. One or more code units encode a single code point. Each code unit has the
     same size, which depends on the *encoding format* that is used. The most popular
     format, UTF-8, has 8-bit code units.'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*码位*是编码码点的数字，用于存储或传输 Unicode 文本。一个或多个码位编码一个单一的码点。每个码位具有相同的大小，这取决于所使用的*编码格式*。最流行的格式，UTF-8，具有
+    8 位码位。'
 - en: '[21.1.1 Code points](#unicode-code-points)'
+  id: totrans-16
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[21.1.1 码点](#unicode-code-points)'
 - en: 'The first version of Unicode had 16-bit code points. Since then, the number
     of characters has grown considerably and the size of code points was extended
     to 21 bits. These 21 bits are partitioned in 17 planes, with 16 bits each:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: Unicode 的第一个版本有 16 位码点。从那时起，字符的数量大幅增长，码点的大小扩展到 21 位。这 21 位被分为 17 个平面，每个平面 16
+    位：
 - en: 'Plane 0: **Basic Multilingual Plane (BMP)**, 0x0000–0xFFFF'
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 平面 0：**基本多语言平面 (BMP)**，0x0000–0xFFFF
 - en: Contains characters for almost all modern languages (Latin characters, Asian
     characters, etc.) and many symbols.
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包含几乎所有现代语言的字符（拉丁字符、亚洲字符等）以及许多符号。
 - en: 'Plane 1: Supplementary Multilingual Plane (SMP), 0x10000–0x1FFFF'
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 平面 1：补充多语言平面 (SMP)，0x10000–0x1FFFF
 - en: Supports historic writing systems (e.g., Egyptian hieroglyphs and cuneiform)
     and additional modern writing systems.
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 支持历史书写系统（例如，埃及象形文字和楔形文字）以及额外的现代书写系统。
 - en: Supports emojis and many other symbols.
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 支持表情符号和许多其他符号。
 - en: 'Plane 2: Supplementary Ideographic Plane (SIP), 0x20000–0x2FFFF'
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 平面 2：补充表意文字平面 (SIP)，0x20000–0x2FFFF
 - en: Contains additional CJK (Chinese, Japanese, Korean) ideographs.
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包含额外的 CJK（中文、日文、韩文）表意文字。
 - en: 'Plane 3–13: Unassigned'
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 平面 3–13：未分配
 - en: 'Plane 14: Supplementary Special-Purpose Plane (SSP), 0xE0000–0xEFFFF'
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 平面 14：补充特殊用途平面 (SSP)，0xE0000–0xEFFFF
 - en: Contains non-graphical characters such as tag characters and glyph variation
     selectors.
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 包含非图形字符，如标签字符和符号变体选择器。
 - en: 'Plane 15–16: Supplementary Private Use Area (S PUA A/B), 0x0F0000–0x10FFFF'
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 平面 15–16：补充专用区 (S PUA A/B)，0x0F0000–0x10FFFF
 - en: Available for character assignment by parties outside the ISO and the Unicode
     Consortium. Not standardized.
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可供 ISO 和 Unicode 联盟以外的各方进行字符分配。未标准化。
 - en: Planes 1-16 are called supplementary planes or **astral planes**.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 平面 1-16 被称为补充平面或**天体平面**。
 - en: 'Let’s check the code points of a few characters:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们检查几个字符的代码点：
 - en: '[PRE0]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The hexadecimal numbers of the code points tell us that the first three characters
     reside in plane 0 (within 16 bits), while the emoji resides in plane 1.
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 代码点的十六进制数告诉我们，前三个字符位于平面0（16位以内），而表情符号位于平面1。
 - en: '[21.1.2 Encoding Unicode code points: UTF-32, UTF-16, UTF-8](#encoding-unicode-code-points-utf32-utf16-utf8)'
+  id: totrans-34
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[21.1.2 编码Unicode代码点：UTF-32、UTF-16、UTF-8](#encoding-unicode-code-points-utf32-utf16-utf8)'
 - en: 'The main ways of encoding code points are three *Unicode Transformation Formats*
     (UTFs): UTF-32, UTF-16, UTF-8\. The number at the end of each format indicates
     the size (in bits) of its code units.'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 编码代码点的三种主要方式是三种*Unicode转换格式*（UTFs）：UTF-32、UTF-16、UTF-8。每个格式的结尾数字表示其代码单元的大小（以位为单位）。
 - en: '[21.1.2.1 UTF-32 (Unicode Transformation Format 32)](#utf32-unicode-transformation-format-32)'
+  id: totrans-36
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[21.1.2.1 UTF-32 (Unicode转换格式32)](#utf32-unicode-transformation-format-32)'
 - en: UTF-32 uses 32 bits to store code units, resulting in one code unit per code
     point. This format is the only one with *fixed-length encoding*; all others use
     a varying number of code units to encode a single code point.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: UTF-32使用32位来存储代码单元，每个代码点一个代码单元。这是唯一具有*固定长度编码*的格式；所有其他格式都使用不同数量的代码单元来编码单个代码点。
 - en: '[21.1.2.2 UTF-16 (Unicode Transformation Format 16)](#utf-16)'
+  id: totrans-38
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[21.1.2.2 UTF-16 (Unicode转换格式16)](#utf-16)'
 - en: 'UTF-16 uses 16-bit code units. It encodes code points as follows:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: UTF-16使用16位代码单元。它按以下方式编码代码点：
 - en: The BMP (first 16 bits of Unicode) is stored in single code units.
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: BMP（Unicode的第一个16位）存储在单个代码单元中。
 - en: 'Astral planes: The BMP comprises 0x10_000 code points. Given that Unicode has
     a total of 0x110_000 code points, we still need to encode the remaining 0x100_000
     code points (20 bits). The BMP has two ranges of unassigned code points that provide
     the necessary storage:'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 阿斯特拉尔平面：BMP包含0x10_000个代码点。鉴于Unicode总共有0x110_000个代码点，我们还需要编码剩余的0x100_000个代码点（20位）。BMP有两个未分配的代码点范围，提供了必要的存储空间：
 - en: 'Most significant 10 bits (*leading surrogate*, *high surrogate*): 0xD800-0xDBFF'
+  id: totrans-42
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最显著的10位（*前导代理*，*高代理*）：0xD800-0xDBFF
 - en: 'Least significant 10 bits (*trailing surrogate*, *low surrogate*): 0xDC00-0xDFFF'
+  id: totrans-43
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最不显著的10位（*后缀代理*，*低代理*）：0xDC00-0xDFFF
 - en: 'As a consequence, each UTF-16 code unit is either:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，每个UTF-16代码单元要么：
 - en: A BMP code point (a *scalar*)
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: BMP代码点（一个*标量*）
 - en: A leading surrogate
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个前导代理
 - en: A trailing surrogate
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个后缀代理
 - en: If a surrogate appears on its own, without its partner, it is called a *lone
     surrogate*.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果代理单独出现，没有其伙伴，则称为*孤代理*。
 - en: 'This is how the bits of the code points are distributed among the surrogates:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是代码点的位如何分布在代理之间的：
 - en: '[PRE1]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Each character of a JavaScript string is a UTF-16 code unit. As an example,
     consider code point 0x1F642 (🙂) that is represented by two UTF-16 code units –
     0xD83D and 0xDE42:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript字符串中的每个字符都是一个UTF-16代码单元。例如，考虑代码点0x1F642（🙂），它由两个UTF-16代码单元表示 – 0xD83D和0xDE42：
 - en: '[PRE2]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Let’s derive the code units from the code point:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们从代码点推导出代码单元：
 - en: '[PRE3]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'In contrast, code point 0x03C0 (π) is part of the BMP and therefore represented
     by a single UTF-16 code unit – 0x03C0:'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 相比之下，代码点0x03C0（π）是BMP的一部分，因此由单个UTF-16代码单元表示 – 0x03C0：
 - en: '[PRE4]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[21.1.2.3 UTF-8 (Unicode Transformation Format 8)](#utf8-unicode-transformation-format-8)'
+  id: totrans-57
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[21.1.2.3 UTF-8 (Unicode转换格式8)](#utf8-unicode-transformation-format-8)'
 - en: 'UTF-8 has 8-bit code units. It uses 1–4 code units to encode a code point:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: UTF-8有8位代码单元。它使用1-4个代码单元来编码一个代码点：
 - en: '| Code points | Code units |'
+  id: totrans-59
   prefs: []
   type: TYPE_TB
+  zh: '| 代码点 | 代码单元 |'
 - en: '| --- | --- |'
+  id: totrans-60
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| 0000–007F | 0bbbbbbb (7 bits) |'
+  id: totrans-61
   prefs: []
   type: TYPE_TB
+  zh: '| 0000–007F | 0bbbbbbb (7 bits) |'
 - en: '| 0080–07FF | 110bbbbb, 10bbbbbb (5+6 bits) |'
+  id: totrans-62
   prefs: []
   type: TYPE_TB
+  zh: '| 0080–07FF | 110bbbbb, 10bbbbbb (5+6 bits) |'
 - en: '| 0800–FFFF | 1110bbbb, 10bbbbbb, 10bbbbbb (4+6+6 bits) |'
+  id: totrans-63
   prefs: []
   type: TYPE_TB
+  zh: '| 0800–FFFF | 1110bbbb, 10bbbbbb, 10bbbbbb (4+6+6 bits) |'
 - en: '| 10000–1FFFFF | 11110bbb, 10bbbbbb, 10bbbbbb, 10bbbbbb (3+6+6+6 bits) |'
+  id: totrans-64
   prefs: []
   type: TYPE_TB
+  zh: '| 10000–1FFFFF | 11110bbb, 10bbbbbb, 10bbbbbb, 10bbbbbb (3+6+6+6 bits) |'
 - en: 'Notes:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：
 - en: 'The bit prefix of each code unit tells us:'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个代码单元的位前缀告诉我们：
 - en: Is it first in a series of code units? If yes, how many code units will follow?
+  id: totrans-67
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它是代码单元系列中的第一个吗？如果是，将跟随多少个代码单元？
 - en: Is it second or later in a series of code units?
+  id: totrans-68
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它是代码单元系列中的第二个或后续的吗？
 - en: The character mappings in the 0000–007F range are the same as ASCII, which leads
     to a degree of backward compatibility with older software.
+  id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 0000–007F范围内的字符映射与ASCII相同，这导致与旧软件有一定的向后兼容性。
 - en: 'Three examples:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 三个示例：
 - en: '| Character | Code point | Code units |'
+  id: totrans-71
   prefs: []
   type: TYPE_TB
+  zh: '| 字符 | 代码点 | 代码单元 |'
 - en: '| --- | --- | --- |'
+  id: totrans-72
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- |'
 - en: '| A | 0x0041 | 01000001 |'
+  id: totrans-73
   prefs: []
   type: TYPE_TB
+  zh: '| A | 0x0041 | 01000001 |'
 - en: '| π | 0x03C0 | 11001111, 10000000 |'
+  id: totrans-74
   prefs: []
   type: TYPE_TB
+  zh: '| π | 0x03C0 | 11001111, 10000000 |'
 - en: '| 🙂 | 0x1F642 | 11110000, 10011111, 10011001, 10000010 |'
+  id: totrans-75
   prefs: []
   type: TYPE_TB
+  zh: '| 🙂 | 0x1F642 | 11110000, 10011111, 10011001, 10000010 |'
 - en: '[21.2 Encodings used in web development: UTF-16 and UTF-8](#utf-in-web-dev)'
+  id: totrans-76
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[21.2 网络开发中使用的编码：UTF-16 和 UTF-8](#utf-in-web-dev)'
 - en: 'The Unicode encoding formats that are used in web development are: UTF-16 and
     UTF-8.'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 在网络开发中使用的 Unicode 编码格式是：UTF-16 和 UTF-8。
 - en: '[21.2.1 Source code internally: UTF-16](#source-code-internally-utf16)'
+  id: totrans-78
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[21.2.1 源代码内部：UTF-16](#source-code-internally-utf16)'
 - en: The ECMAScript specification internally represents source code as UTF-16.
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: ECMAScript 规范在内部将源代码表示为 UTF-16。
 - en: '[21.2.2 Strings: UTF-16](#strings-utf16)'
+  id: totrans-80
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[21.2.2 字符串：UTF-16](#strings-utf16)'
 - en: 'The characters in JavaScript strings are based on UTF-16 code units:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript 字符串中的字符基于 UTF-16 代码单元：
 - en: '[PRE5]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'For more information on Unicode and strings, see [“Atoms of text: code points,
     JavaScript characters, grapheme clusters” (§22.7)](ch_strings.html#atoms-of-text).'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于 Unicode 和字符串的更多信息，请参阅[“文本的原子：码点、JavaScript 字符、图形群” (§22.7)](ch_strings.html#atoms-of-text)。
 - en: '[21.2.3 Source code in files: UTF-8](#source-code-in-files-utf8)'
+  id: totrans-84
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[21.2.3 文件中的源代码：UTF-8](#source-code-in-files-utf8)'
 - en: HTML and JavaScript files are almost always encoded as UTF-8 now.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，HTML 和 JavaScript 文件几乎总是以 UTF-8 编码。
 - en: 'For example, this is how HTML files usually start now:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，这是现在 HTML 文件通常开始的格式：
 - en: '[PRE6]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[21.3 Grapheme clusters – the real characters](#grapheme-clusters)'
+  id: totrans-88
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[21.3 图形群——真正的字符](#grapheme-clusters)'
 - en: 'The concept of a character becomes remarkably complex once we consider the
     various writing systems of the world. That’s why there are several different Unicode
     terms that all mean “character” in some way: *code point*, *grapheme cluster*,
     *glyph*, etc.'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦我们考虑世界上的各种书写系统，字符的概念就会变得非常复杂。这就是为什么有几个不同的 Unicode 术语，它们都以某种方式意味着“字符”：*码点*、*图形群*、*符号*等。
 - en: In Unicode, a *code point* is an atomic part of text stored in a computer.
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Unicode 中，一个 *码点* 是存储在计算机中的文本的原子部分。
 - en: However, a *grapheme cluster* corresponds most closely to a symbol displayed
     on screen or paper. It is defined as “a horizontally segmentable unit of text”.
     Therefore, [official Unicode documents](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
     also call it a *user-perceived character*. One or more code points are needed
     to encode a grapheme cluster.
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，一个 *图形群* 最接近于屏幕或纸张上显示的符号。它被定义为“一个水平可分割的文本单位”。因此，[官方 Unicode 文档](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)也将其称为*用户感知字符*。编码一个图形群需要一个或多个码点。
 - en: 'For example, the Devanagari *kshi* is encoded by 4 code points. We use `Array.from()`
     to split the string into an Array with code points:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，德文那加里语中的 *kshi* 被编码为 4 个码点。我们使用 `Array.from()` 将字符串拆分为一个包含码点的数组：
 - en: '![](../Images/327b7f8b4b4d9c9c757e133802a9ace0.png)'
+  id: totrans-93
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![](../Images/327b7f8b4b4d9c9c757e133802a9ace0.png)'
 - en: 'Many emojis are composed of multiple code points:'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 许多表情符号由多个码点组成：
 - en: '![](../Images/a968a426ee730ce9975413b34be1f93a.png)'
+  id: totrans-95
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![](../Images/a968a426ee730ce9975413b34be1f93a.png)'
 - en: 'Flag emojis are grapheme clusters and composed of two code points – for example,
     the flag of Japan:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 国旗表情符号是图形群，由两个码点组成——例如，日本的国旗：
 - en: '![](../Images/0a7ad977809c49e13a21283b6356d9cb.png)'
+  id: totrans-97
   prefs:
   - PREF_BQ
   type: TYPE_IMG
+  zh: '![](../Images/0a7ad977809c49e13a21283b6356d9cb.png)'
 - en: '[21.3.1 Grapheme clusters vs. glyphs](#grapheme-clusters-vs-glyphs)'
+  id: totrans-98
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[21.3.1 图形群与符号](#grapheme-clusters-vs-glyphs)'
 - en: 'A symbol is an abstract concept and part of written language:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 符号是一个抽象概念，也是书面语言的一部分：
 - en: It is represented in computer memory by a *grapheme cluster* – a sequence of
     one or more code points (numbers).
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它在计算机内存中通过一个 *图形群* 表示——一个由一个或多个码点（数字）组成的序列。
 - en: It is drawn on screen via *glyphs*. A glyph is an image and usually stored in
     a font. More than one glyph may be used to draw a single symbol – for example,
     the symbol “é” may be drawn by combining the glyph “e” with the glyph “´”.
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它通过 *符号* 在屏幕上绘制。符号是一个图像，通常存储在字体中。可能需要多个符号来绘制单个符号——例如，符号“é”可能通过将“e”符号与“´”符号组合来绘制。
 - en: The distinction between a concept and its representation is subtle and can blur
     when talking about Unicode.
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 在谈论 Unicode 时，概念与其表示之间的区别是微妙的，并且可能会变得模糊。
 - en: '![Icon “external”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png) **More information
     on grapheme clusters**'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“外部”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png) **关于图形群体的更多信息**'
 - en: For more information, see [“Let’s Stop Ascribing Meaning to Code Points”](https://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/)
     by Manish Goregaokar.
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息，请参阅 Manish Goregaokar 撰写的[“让我们停止将意义归因于码点”](https://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/)。

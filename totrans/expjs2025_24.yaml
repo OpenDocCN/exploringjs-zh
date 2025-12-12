@@ -1,871 +1,1327 @@
 - en: 20 Bigints – arbitrary-precision integers ES2020 (advanced)
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 20 大整数 – ES2020 的任意精度整数（高级）
 - en: 原文：[https://exploringjs.com/js/book/ch_bigints.html](https://exploringjs.com/js/book/ch_bigints.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_bigints.html](https://exploringjs.com/js/book/ch_bigints.html)
 - en: '[20.1 Why bigints?](#why-bigints)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.1 为什么使用大整数?](#why-bigints)'
 - en: '[20.2 Bigints](#bigints-overview)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.2 大整数](#bigints-overview)'
 - en: '[20.2.1 Going beyond 53 bits for integers](#going-beyond-53-bits-for-integers)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.2.1 超过 53 位整数的范围](#going-beyond-53-bits-for-integers)'
 - en: '[20.2.2 Example: using bigints](#example-using-bigints)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.2.2 示例：使用大整数](#example-using-bigints)'
 - en: '[20.3 Bigint literals](#bigint-literals)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.3 大整数字面量](#bigint-literals)'
 - en: '[20.3.1 Underscores (`_`) as separators in bigint literals ^(ES2021)](#numeric-separator-bigint-literals)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.3.1 大整数字面量中的下划线（`_`）作为分隔符（ES2021）](#numeric-separator-bigint-literals)'
 - en: '[20.4 Reusing number operators for bigints (overloading)](#reusing-number-operators-for-bigints-overloading)'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.4 重用数字运算符用于大整数（重载）](#reusing-number-operators-for-bigints-overloading)'
 - en: '[20.4.1 Arithmetic operators](#arithmetic-operators-1)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.4.1 算术运算符](#arithmetic-operators-1)'
 - en: '[20.4.2 Loose equality (`==`) and inequality (`!=`)](#loose-equality--and-inequality-)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.4.2 松散相等（`==`）和不相等（`!=`）](#loose-equality--and-inequality-)'
 - en: '[20.4.3 Strict equality (`===`) and inequality (`!==`)](#strict-equality--and-inequality-)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.4.3 严格相等（`===`）和不相等（`!==`）](#strict-equality--and-inequality-)'
 - en: '[20.4.4 Ordering operators](#ordering-operators-1)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.4.4 排序运算符](#ordering-operators-1)'
 - en: '[20.4.5 Bitwise operators (advanced)](#bitwise-operators-advanced-1)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.4.5 位运算符（高级）](#bitwise-operators-advanced-1)'
 - en: '[20.5 The wrapper constructor `BigInt`](#the-wrapper-constructor-bigint)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.5 包装构造函数 `BigInt`](#the-wrapper-constructor-bigint)'
 - en: '[20.5.1 `BigInt` as a constructor and as a function](#bigint-as-a-constructor-and-as-a-function)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.5.1 `BigInt` 作为构造函数和函数](#bigint-as-a-constructor-and-as-a-function)'
 - en: '[20.5.2 `BigInt.prototype.*` methods](#bigintprototype-methods)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.5.2 `BigInt.prototype.*` 方法](#bigintprototype-methods)'
 - en: '[20.5.3 `BigInt.*` methods: casting](#bigint-methods-casting)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.5.3 `BigInt.*` 方法：类型转换](#bigint-methods-casting)'
 - en: '[20.6 Coercing bigints to other primitive types](#coercing-bigints-to-other-primitive-types)'
+  id: totrans-18
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.6 将大整数强制转换为其他原始类型](#coercing-bigints-to-other-primitive-types)'
 - en: '[20.7 Typed Array and DataView operations for 64-bit values](#typed-array-and-dataview-operations-for-64bit-values)'
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.7 64 位值的 Typed Array 和 DataView 操作](#typed-array-and-dataview-operations-for-64bit-values)'
 - en: '[20.8 Bigints and JSON](#bigints-and-json)'
+  id: totrans-20
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.8 大整数与 JSON](#bigints-and-json)'
 - en: '[20.8.1 Stringifying bigints](#stringifying-bigints)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.8.1 将大整数转换为字符串](#stringifying-bigints)'
 - en: '[20.8.2 Parsing bigints](#parsing-bigints)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.8.2 解析大整数](#parsing-bigints)'
 - en: '[20.9 FAQ: Bigints](#faq-bigints)'
+  id: totrans-23
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.9 常见问题：大整数](#faq-bigints)'
 - en: '[20.9.1 How do I decide when to use numbers and when to use bigints?](#how-do-i-decide-when-to-use-numbers-and-when-to-use-bigints)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.9.1 我如何决定何时使用数字和何时使用大整数？](#how-do-i-decide-when-to-use-numbers-and-when-to-use-bigints)'
 - en: '[20.9.2 Why not just increase the precision of numbers in the same manner as
     is done for bigints?](#why-not-just-increase-the-precision-of-numbers-in-the-same-manner-as-is-done-for-bigints)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[20.9.2 为什么不能像大整数那样简单地增加数字的精度？](#why-not-just-increase-the-precision-of-numbers-in-the-same-manner-as-is-done-for-bigints)'
 - en: In this chapter, we take a look at *bigints*, JavaScript’s integers whose storage
     space grows and shrinks as needed.
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将探讨 *大整数*，JavaScript 中的整数，其存储空间根据需要增长和缩小。
 - en: '[20.1 Why bigints?](#why-bigints)'
+  id: totrans-27
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.1 为什么使用大整数?](#why-bigints)'
 - en: 'Before ECMAScript 2020, JavaScript handled integers as follows:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 ECMAScript 2020 之前，JavaScript 处理整数的方式如下：
 - en: 'There only was a single type for floating point numbers and integers: 64-bit
     floating point numbers (IEEE 754 double precision).'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在那时，只有一种浮点数和整数的类型：64 位浮点数（IEEE 754 双精度）。
 - en: 'Under the hood, most JavaScript engines transparently supported integers: If
     a number has no decimal digits and is within a certain range, it can internally
     be stored as a genuine integer. This representation is called *small integer*
     and usually fits into 32 bits. For example, the range of small integers on the
     64-bit version of the V8 engine is from −2^(31) to 2^(31)−1 ([source](https://medium.com/fhinkel/v8-internals-how-small-is-a-small-integer-e0badc18b6da)).'
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在底层，大多数 JavaScript 引擎透明地支持整数：如果一个数字没有小数位并且在一个特定的范围内，它可以在内部作为一个真正的整数存储。这种表示称为
+    *小整数*，通常适合 32 位。例如，V8 引擎 64 位版本的整数范围是从 −2^(31) 到 2^(31)−1 ([来源](https://medium.com/fhinkel/v8-internals-how-small-is-a-small-integer-e0badc18b6da))。
 - en: JavaScript numbers could also represent integers beyond the small integer range,
     as floating point numbers. Here, the safe range is plus/minus 53 bits. For more
     information on this topic, see [“Safe integers” (§18.9.4)](ch_numbers.html#safe-integers).
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript 数字也可以表示小整数范围之外的整数，作为浮点数。在这里，安全范围是±53位。有关此主题的更多信息，请参阅[“安全整数”（§18.9.4）](ch_numbers.html#safe-integers)。
 - en: 'Sometimes, we need more than signed 53 bits – for example:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，我们需要比有符号的53位更多的位数 – 例如：
 - en: X (formerly Twitter) uses 64-bit integers as IDs for posts ([source](https://developer.x.com/en/docs/twitter-ids)).
     In JavaScript, these IDs had to be stored in strings.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: X（以前是Twitter）使用64位整数作为帖子的ID（[来源](https://developer.x.com/en/docs/twitter-ids)）。在JavaScript中，这些ID必须以字符串的形式存储。
 - en: Financial technology uses so-called *big integers* (integers with arbitrary
     precision) to represent amounts of money. Internally, the amounts are multiplied
     so that the decimal numbers disappear. For example, USD amounts are multiplied
     by 100 so that the cents disappear.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 金融技术使用所谓的*大整数*（任意精度的整数）来表示货币金额。内部，金额被乘以，使得小数点消失。例如，美元金额乘以100，使得美分消失。
 - en: '[20.2 Bigints](#bigints-overview)'
+  id: totrans-35
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.2 大整数](#bigints-overview)'
 - en: '*Bigint* is a primitive data type for integers. Bigints don’t have a fixed
     storage size in bits; their sizes adapt to the integers they represent:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '*大整数*是整数的一个原始数据类型。大整数没有固定的位存储大小；它们的大小适应于它们所表示的整数：'
 - en: Small integers are represented with fewer bits than large integers.
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 小整数用比大整数更少的位表示。
 - en: There is no negative lower limit or positive upper limit for the integers that
     can be represented.
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可表示的整数没有负的下限或正的上限。
 - en: 'A bigint literal is a sequence of one or more digits, suffixed with an `n`
     – for example:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 大整数字面量是一系列一个或多个数字，后跟一个 `n` – 例如：
 - en: '[PRE0]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Operators such as `-` and `*` are overloaded and work with bigints:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '`-` 和 `*` 等运算符被重载，并可以与大整数一起使用：'
 - en: '[PRE1]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Bigints are primitive values. `typeof` returns a distinct result for them:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 大整数是原始值。`typeof` 对它们返回一个不同的结果：
 - en: '[PRE2]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[20.2.1 Going beyond 53 bits for integers](#going-beyond-53-bits-for-integers)'
+  id: totrans-45
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.2.1 整数超过53位](#going-beyond-53-bits-for-integers)'
 - en: 'JavaScript numbers are internally represented as a fraction multiplied by an
     exponent (see [“Background: floating point precision” (§18.8)](ch_numbers.html#floating-point-precision)
     for details). As a consequence, if we go beyond the highest [*safe integer*](ch_numbers.html#safe-integers)
     2^(53)−1, there are still *some* integers that can be represented, but with gaps
     between them:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript 数字在内部表示为一个分数乘以一个指数（有关详细信息，请参阅[“背景：浮点精度”（§18.8）](ch_numbers.html#floating-point-precision)）。因此，如果我们超过最高的[*安全整数*](ch_numbers.html#safe-integers)
+    2^(53)−1，仍然还有*一些*整数可以表示，但它们之间有间隔：
 - en: '[PRE3]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Bigints enable us to go beyond 53 bits:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 大整数使我们能够超过53位：
 - en: '[PRE4]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[20.2.2 Example: using bigints](#example-using-bigints)'
+  id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.2.2 示例：使用大整数](#example-using-bigints)'
 - en: 'This is what using bigints looks like (code based on an example in the proposal):'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是使用大整数的样子（基于提案中的示例的代码）：
 - en: '[PRE5]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[20.3 Bigint literals](#bigint-literals)'
+  id: totrans-53
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.3 大整数字面量](#bigint-literals)'
 - en: 'Like number literals, bigint literals support several bases:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 与数字字面量类似，大整数字面量支持多种基数：
 - en: 'Decimal: `123n`'
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 十进制：`123n`
 - en: 'Hexadecimal: `0xFFn`'
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 十六进制：`0xFFn`
 - en: 'Binary: `0b1101n`'
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 二进制：`0b1101n`
 - en: 'Octal: `0o777n`'
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 八进制：`0o777n`
 - en: 'Negative bigints are produced by prefixing the unary minus operator: `-0123n`'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 负大整数通过在前面加一元减号运算符产生：`-0123n`
 - en: '[20.3.1 Underscores (`_`) as separators in bigint literals ^(ES2021)](#numeric-separator-bigint-literals)'
+  id: totrans-60
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.3.1 大整数字面量中的下划线（`_`）作为分隔符（ES2021）](#numeric-separator-bigint-literals)'
 - en: '[Just like in number literals](ch_numbers.html#numeric-separator-number-literals),
     we can use underscores (`_`) as separators in bigint literals:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: '[与数字字面量类似](ch_numbers.html#numeric-separator-number-literals)，我们可以在大整数字面量中使用下划线（`_`）作为分隔符：'
 - en: '[PRE6]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Bigints are often used to represent money in the financial technical sector.
     Separators can help here, too:'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 大整数常用于金融技术领域表示货币。分隔符在这里也有帮助：
 - en: '[PRE7]'
+  id: totrans-64
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'As with number literals, two restrictions apply:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 与数字字面量一样，有两个限制：
 - en: We can only put an underscore between two digits.
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们只能在两个数字之间放置一个下划线。
 - en: We can use at most one underscore in a row.
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们在一行中最多只能使用一个下划线。
 - en: '[20.4 Reusing number operators for bigints (overloading)](#reusing-number-operators-for-bigints-overloading)'
+  id: totrans-68
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.4 为大整数重用数字运算符（重载）](#reusing-number-operators-for-bigints-overloading)'
 - en: 'With most operators, we are not allowed to mix bigints and numbers. If we do,
     exceptions are thrown:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于大多数运算符，我们不允许混合大整数和数字。如果我们这样做，会抛出异常：
 - en: '[PRE8]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'The reason for this rule is that there is no general way of coercing a number
     and a bigint to a common type: numbers can’t represent bigints beyond 53 bits,
     bigints can’t represent fractions. Therefore, the exceptions warn us about typos
     that may lead to unexpected results.'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 这条规则的原因是，没有一种通用的方法可以将数字和大整数强制转换为同一类型：数字无法表示超过53位的整数，大整数无法表示分数。因此，这些异常警告我们注意可能引起意外结果的错误。
 - en: 'Consider the following expression:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下表达式：
 - en: '[PRE9]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: Should the result be `9007199254740993n` or `9007199254740992`?
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 结果应该是 `9007199254740993n` 还是 `9007199254740992`？
 - en: 'It is also not clear what the result of the following expression should be:'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 也不清楚以下表达式的结果应该是什么：
 - en: '[PRE10]'
+  id: totrans-76
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[20.4.1 Arithmetic operators](#arithmetic-operators-1)'
+  id: totrans-77
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.4.1 算术运算符](#arithmetic-operators-1)'
 - en: 'Binary `+`, binary `-`, `*`, `**` work as expected:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 二进制 `+`、二进制 `-`、`*`、`**` 的工作方式符合预期：
 - en: '[PRE11]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'It is OK to mix bigints and strings:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 混合大整数和字符串是可以的：
 - en: '[PRE12]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '`/` and `%` round towards zero by removing the fraction (like `Math.trunc()`):'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: '`/` 和 `%` 通过去除小数部分进行四舍五入（类似于 `Math.trunc()`）：'
 - en: '[PRE13]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Unary `-` works as expected:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 一元 `-` 的工作方式符合预期：
 - en: '[PRE14]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Unary `+` is not supported for bigints because much code relies on it coercing
     its operand to number:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 一元 `+` 不支持大整数，因为许多代码依赖于它将操作数强制转换为数字：
 - en: '[PRE15]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '[20.4.2 Loose equality (`==`) and inequality (`!=`)](#loose-equality--and-inequality-)'
+  id: totrans-88
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.4.2 宽松相等（`==`）和不相等（`!=`）](#loose-equality--and-inequality-)'
 - en: 'Loose equality (`==`) and inequality (`!=`) coerce values:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 宽松相等（`==`）和不相等（`!=`）强制转换值：
 - en: '[PRE16]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '[20.4.3 Strict equality (`===`) and inequality (`!==`)](#strict-equality--and-inequality-)'
+  id: totrans-91
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.4.3 严格相等（`===`）和不相等（`!==`）](#strict-equality--and-inequality-)'
 - en: 'Strict equality (`===`) and inequality (`!==`) only consider values to be equal
     if they have the same type:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 严格相等（`===`）和不相等（`!==`）只有在它们具有相同类型时才认为值相等：
 - en: '[PRE17]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[20.4.4 Ordering operators](#ordering-operators-1)'
+  id: totrans-94
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.4.4 排序运算符](#ordering-operators-1)'
 - en: 'Ordering operators `<`, `>`, `>=`, `<=` work as expected:'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 排序运算符 `<`、`>`、`>=`、`<=` 的工作方式符合预期：
 - en: '[PRE18]'
+  id: totrans-96
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'Comparing bigints and numbers does not pose any risks. Therefore, we can mix
     bigints and numbers:'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较大整数和数字不会造成任何风险。因此，我们可以混合大整数和数字：
 - en: '[PRE19]'
+  id: totrans-98
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Converting numbers-based code to bigints**'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: '![“练习”图标](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：将基于数字的代码转换为大整数**'
 - en: '`exercises/bigints/gcd-bigint_test.mjs`'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/bigints/gcd-bigint_test.mjs`'
 - en: '[20.4.5 Bitwise operators (advanced)](#bitwise-operators-advanced-1)'
+  id: totrans-101
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.4.5 位运算符（高级）](#bitwise-operators-advanced-1)'
 - en: '[20.4.5.1 Bitwise operators for numbers](#bitwise-operators-for-numbers)'
+  id: totrans-102
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.4.5.1 数字的位运算符](#bitwise-operators-for-numbers)'
 - en: 'Bitwise operators interpret numbers as 32-bit integers. These integers are
     either unsigned or signed. If they are signed, the negative of an integer is its
     *two’s complement*: If we add an integer to its two’s complement and ignore overflow
     (digits beyond 32 bits) then the result is zero.'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 位运算符将数字解释为32位整数。这些整数要么是无符号的，要么是有符号的。如果它们是有符号的，整数的负数是其二进制补码：如果我们将其整数与其二进制补码相加并忽略溢出（32位之外的数字），则结果是零。
 - en: '[PRE20]'
+  id: totrans-104
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: If we add `1` to the binary number consisting of 32 ones, we get a one followed
     by 32 zeros. Everything beyond 32 bits is overflow, which means that that number
     is zero.
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将由32个1组成的二进制数加1，我们得到一个1后面跟着32个0。超过32位的所有内容都是溢出，这意味着那个数字是零。
 - en: 'We used signed right shift operator (`>>`): We shifted the left operand by
     zero bits, which converted it to Int32 (which is signed) and back to number.'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用了有符号右移运算符（`>>`）：我们将左操作数左移了0位，将其转换为Int32（有符号）并再次转换为数字。
 - en: 'Due to these integers having a fixed size, their highest bits indicate their
     signs:'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于这些整数具有固定的大小，它们的最高位表示它们的符号：
 - en: '[PRE21]'
+  id: totrans-108
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '[20.4.5.2 Bitwise operators for bigints](#bitwise-operators-for-bigints)'
+  id: totrans-109
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.4.5.2 大整数的位运算符](#bitwise-operators-for-bigints)'
 - en: 'For bigints, bitwise operators interpret a negative sign as an infinite two’s
     complement – for example:'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于大整数，位运算符将负号解释为无限大的二进制补码 – 例如：
 - en: '`-1` is `···111111` (ones extend infinitely to the left)'
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`-1` 是 `···111111`（1无限向左扩展）'
 - en: '`-2` is `···111110`'
+  id: totrans-112
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`-2` 是 `···111110`'
 - en: '`-3` is `···111101`'
+  id: totrans-113
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`-3` 是 `···111101`'
 - en: '`-4` is `···111100`'
+  id: totrans-114
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`-4` 是 `···111100`'
 - en: That is, a negative sign is more of an external flag and not represented as
     an actual bit.
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说，负号更像是一个外部标志，而不是作为实际的位来表示。
 - en: '[20.4.5.3 Bitwise Not (`~`)](#bitwise-not-)'
+  id: totrans-116
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.4.5.3 位非运算符（`~`）](#bitwise-not-)'
 - en: 'Bitwise Not (`~`) inverts all bits:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 位非运算符（`~`）反转所有位：
 - en: '[PRE22]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: '[20.4.5.4 Binary bitwise operators (`&`, `|`, `^`)](#binary-bitwise-operators---)'
+  id: totrans-119
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.4.5.4 二进制位运算符（`&`、`|`、`^`）](#binary-bitwise-operators---)'
 - en: 'Applying binary bitwise operators to bigints works analogously to applying
     them to numbers:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 将二进制位运算符应用于大整数的工作方式与应用于数字类似：
 - en: '[PRE23]'
+  id: totrans-121
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: '[20.4.5.5 Bitwise signed shift operators (`<<` and `>>`)](#bitwise-signed-shift-operators--and-)'
+  id: totrans-122
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.4.5.5 位有符号移位运算符 (`<<` 和 `>>`)](#bitwise-signed-shift-operators--and-)'
 - en: 'The signed shift operators for bigints preserve the sign of a number:'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 大整数的有符号移位运算符保留数字的符号：
 - en: '[PRE24]'
+  id: totrans-124
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'Recall that `-1n` is a sequence of ones that extends infinitely to the left.
     That’s why shifting it left doesn’t change it:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 回想一下，`-1n` 是一个无限向左延伸的 1 的序列。这就是为什么左移它不会改变它的原因：
 - en: '[PRE25]'
+  id: totrans-126
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '[20.4.5.6 Bitwise unsigned right shift operator (`>>>`)](#bitwise-unsigned-right-shift-operator-)'
+  id: totrans-127
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.4.5.6 位无符号右移运算符 (`>>>`)](#bitwise-unsigned-right-shift-operator-)'
 - en: 'There is no unsigned right shift operator for bigints:'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 大整数没有无符号右移运算符：
 - en: '[PRE26]'
+  id: totrans-129
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: Why? The idea behind unsigned right shifting is that a zero is shifted in “from
     the left”. In other words, the assumption is that there is a finite amount of
     binary digits.
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么？无符号右移位背后的想法是将一个零从“左边”移入。换句话说，假设二进制位是有限数量的。
 - en: However, with negative bigints (especially negative ones), there is no “left”;
     their binary digits extend infinitely.
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，对于负大整数（尤其是负数），没有“左边”；它们的二进制位无限延伸。
 - en: Signed right shift works even with an infinite number of digits because the
     highest digit is preserved. Therefore, it can be adapted to bigints.
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 有符号右移位即使对于无限数量的数字也能正常工作，因为最高位被保留。因此，它可以适应大整数。
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Implementing a bit set via bigints**'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：通过大整数实现位集**'
 - en: '`exercises/bigints/bit-set_test.mjs`'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/bigints/bit-set_test.mjs`'
 - en: '[20.5 The wrapper constructor `BigInt`](#the-wrapper-constructor-bigint)'
+  id: totrans-135
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.5 大整数包装构造函数 `BigInt`](#the-wrapper-constructor-bigint)'
 - en: Analogously to numbers, bigints have the associated wrapper constructor `BigInt`.
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 与数字类似，大整数有相关的包装构造函数 `BigInt`。
 - en: '[20.5.1 `BigInt` as a constructor and as a function](#bigint-as-a-constructor-and-as-a-function)'
+  id: totrans-137
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.5.1 大整数作为构造函数和函数](#bigint-as-a-constructor-and-as-a-function)'
 - en: '`new BigInt()`: throws a `TypeError`.'
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new BigInt()`：抛出 `TypeError`。'
 - en: '`BigInt(x)` converts arbitrary values `x` to bigint. This works similarly to
     `Number()`, with several differences which are summarized in [table 20.1](#tbl:converting-values-to-bigints)
     and explained in more detail in the following subsections.'
+  id: totrans-139
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt(x)` 将任意值 `x` 转换为大整数。这与 `Number()` 类似，但有几个不同之处，这些不同之处在表 20.1 中总结，并在以下小节中详细解释。'
 - en: '| `x` | `BigInt(x)` |'
+  id: totrans-140
   prefs: []
   type: TYPE_TB
+  zh: '| `x` | `BigInt(x)` |'
 - en: '| --- | --- |'
+  id: totrans-141
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| `undefined` | Throws `TypeError` |'
+  id: totrans-142
   prefs: []
   type: TYPE_TB
+  zh: '| `undefined` | 抛出 `TypeError` |'
 - en: '| `null` | Throws `TypeError` |'
+  id: totrans-143
   prefs: []
   type: TYPE_TB
+  zh: '| `null` | 抛出 `TypeError` |'
 - en: '| boolean | `false` → `0n`, `true` → `1n` |'
+  id: totrans-144
   prefs: []
   type: TYPE_TB
+  zh: '| 布尔值 | `false` → `0n`，`true` → `1n` |'
 - en: '| number | Example: `123` → `123n` |'
+  id: totrans-145
   prefs: []
   type: TYPE_TB
+  zh: '| 数字 | 示例：`123` → `123n` |'
 - en: '|  | Non-integer → throws `RangeError` |'
+  id: totrans-146
   prefs: []
   type: TYPE_TB
+  zh: '|  | 非整数 → 抛出 `RangeError` |'
 - en: '| bigint | `x` (no change) |'
+  id: totrans-147
   prefs: []
   type: TYPE_TB
+  zh: '| 大整数 | `x`（无变化）|'
 - en: '| string | Example: `''123''` → `123n` |'
+  id: totrans-148
   prefs: []
   type: TYPE_TB
+  zh: '| 字符串 | 示例：`''123''` → `123n` |'
 - en: '|  | Unparsable → throws `SyntaxError` |'
+  id: totrans-149
   prefs: []
   type: TYPE_TB
+  zh: '|  | 不可解析 → 抛出 `SyntaxError` |'
 - en: '| symbol | Throws `TypeError` |'
+  id: totrans-150
   prefs: []
   type: TYPE_TB
+  zh: '| 符号 | 抛出 `TypeError` |'
 - en: '| object | Configurable (e.g. via `.valueOf()`) |'
+  id: totrans-151
   prefs: []
   type: TYPE_TB
+  zh: '| 对象 | 可配置（例如，通过 `.valueOf()`） |'
 - en: 'Table 20.1: Converting values to bigints.'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 表 20.1：将值转换为大整数。
 - en: '[20.5.1.1 Converting `undefined` and `null`](#converting-undefined-and-null)'
+  id: totrans-153
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.5.1.1 转换 `undefined` 和 `null`](#converting-undefined-and-null)'
 - en: 'A `TypeError` is thrown if `x` is either `undefined` or `null`:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 `x` 是 `undefined` 或 `null`，则抛出 `TypeError`：
 - en: '[PRE27]'
+  id: totrans-155
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: '[20.5.1.2 Converting strings](#converting-strings)'
+  id: totrans-156
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.5.1.2 转换字符串](#converting-strings)'
 - en: 'If a string does not represent an integer, `BigInt()` throws a `SyntaxError`
     (whereas `Number()` returns the error value `NaN`):'
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个字符串不表示整数，`BigInt()` 抛出 `SyntaxError`（而 `Number()` 返回错误值 `NaN`）：
 - en: '[PRE28]'
+  id: totrans-158
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'The suffix `''n''` is not allowed:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 不允许使用后缀 `'n'`：
 - en: '[PRE29]'
+  id: totrans-160
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'All bases of bigint literals are allowed:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 大整数字面量的所有基数都是允许的：
 - en: '[PRE30]'
+  id: totrans-162
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[20.5.1.3 Non-integer numbers produce exceptions](#noninteger-numbers-produce-exceptions)'
+  id: totrans-163
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.5.1.3 非整数数字产生异常](#noninteger-numbers-produce-exceptions)'
 - en: '[PRE31]'
+  id: totrans-164
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: '[20.5.1.4 Converting objects](#converting-objects)'
+  id: totrans-165
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.5.1.4 转换对象](#converting-objects)'
 - en: 'How objects are converted to bigints can be configured – for example, by overriding
     `.valueOf()`:'
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 对象转换为大整数的转换方式可以配置——例如，通过重写 `.valueOf()`：
 - en: '[PRE32]'
+  id: totrans-167
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: '[20.5.2 `BigInt.prototype.*` methods](#bigintprototype-methods)'
+  id: totrans-168
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.5.2 `BigInt.prototype.*` 方法](#bigintprototype-methods)'
 - en: '`BigInt.prototype` holds the methods “inherited” by primitive bigints:'
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
+  zh: '`BigInt.prototype` 包含原始大整数“继承”的方法：'
 - en: '`BigInt.prototype.toLocaleString(locales?, options?)`'
+  id: totrans-170
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt.prototype.toLocaleString(locales?, options?)`'
 - en: '`BigInt.prototype.toString(radix?)`'
+  id: totrans-171
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt.prototype.toString(radix?)`'
 - en: '`BigInt.prototype.valueOf()`'
+  id: totrans-172
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt.prototype.valueOf()`'
 - en: '[20.5.3 `BigInt.*` methods: casting](#bigint-methods-casting)'
+  id: totrans-173
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.5.3 `BigInt.*` 方法：类型转换](#bigint-methods-casting)'
 - en: '`BigInt.asIntN(width, theInt)`'
+  id: totrans-174
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt.asIntN(width, theInt)`'
 - en: Casts `theInt` to `width` bits (signed). This influences how the value is represented
     internally.
+  id: totrans-175
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 将`theInt`转换为`width`位的整数（有符号）。这会影响值在内部如何表示。
 - en: '`BigInt.asUintN(width, theInt)`'
+  id: totrans-176
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt.asUintN(width, theInt)`'
 - en: Casts `theInt` to `width` bits (unsigned).
+  id: totrans-177
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 将`theInt`转换为`width`位的整数（无符号）。
 - en: '[20.5.3.1 Example: using 64-bit integers](#example-using-64bit-integers)'
+  id: totrans-178
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[20.5.3.1 示例：使用64位整数](#example-using-64bit-integers)'
 - en: 'Casting allows us to create integer values with a specific number of bits –
     e.g., if we want to restrict ourselves to 64-bit integers, we always have to cast:'
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 转换允许我们创建具有特定位数的大整数值 - 例如，如果我们想限制自己使用64位整数，我们总是必须进行转换：
 - en: '[PRE33]'
+  id: totrans-180
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Implementing the analog of `Number.parseInt()` for bigints**'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: '![练习图标](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png)　**练习：为大整数实现`Number.parseInt()`的类似功能**'
 - en: '`exercises/bigints/parse-bigint_test.mjs`'
+  id: totrans-182
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/bigints/parse-bigint_test.mjs`'
 - en: '[20.6 Coercing bigints to other primitive types](#coercing-bigints-to-other-primitive-types)'
+  id: totrans-183
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.6 将大整数转换为其他原始类型](#coercing-bigints-to-other-primitive-types)'
 - en: 'This table show what happens if we convert bigints to other primitive types:'
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 此表显示了如果我们将大整数转换为其他原始类型会发生什么：
 - en: '| Convert to | Explicit conversion | Coercion (implicit conversion) |'
+  id: totrans-185
   prefs: []
   type: TYPE_TB
+  zh: '| 转换为 | 显式转换 | 诱导（隐式转换） |'
 - en: '| --- | --- | --- |'
+  id: totrans-186
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- |'
 - en: '| boolean | `Boolean(0n)` → `false` | `!0n` → `true` |'
+  id: totrans-187
   prefs: []
   type: TYPE_TB
+  zh: '| 布尔值 | `Boolean(0n)` → `false` | `!0n` → `true` |'
 - en: '|  | `Boolean(int)` → `true` | `!int` → `false` |'
+  id: totrans-188
   prefs: []
   type: TYPE_TB
+  zh: '|  | `Boolean(int)` → `true` | `!int` → `false` |'
 - en: '| number | `Number(7n)` → `7` (example) | `+int` → `TypeError` (1) |'
+  id: totrans-189
   prefs: []
   type: TYPE_TB
+  zh: '| 数字 | `Number(7n)` → `7` (示例) | `+int` → `TypeError` (1) |'
 - en: '| string | `String(7n)` → `''7''` (example) | `''''+7n` → `''7''` (example)
     |'
+  id: totrans-190
   prefs: []
   type: TYPE_TB
+  zh: '| 字符串 | `String(7n)` → `''7''` (示例) | `''''+7n` → `''7''` (示例) |'
 - en: 'Footnote:'
+  id: totrans-191
   prefs: []
   type: TYPE_NORMAL
+  zh: 脚注：
 - en: (1) Unary `+` is not supported for bigints, because much code relies on it coercing
     its operand to number.
+  id: totrans-192
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: (1) 一元`+`不支持大整数，因为许多代码依赖于它将操作数强制转换为数字。
 - en: '[20.7 Typed Array and DataView operations for 64-bit values](#typed-array-and-dataview-operations-for-64bit-values)'
+  id: totrans-193
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.7 类型化数组和数据视图的64位值操作](#typed-array-and-dataview-operations-for-64bit-values)'
 - en: 'Thanks to bigints, Typed Arrays and DataViews can support 64-bit values:'
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: 多亏了大整数，类型化数组和数据视图可以支持64位值：
 - en: 'Typed Array constructors:'
+  id: totrans-195
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型化数组构造函数：
 - en: '`BigInt64Array`'
+  id: totrans-196
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt64Array`'
 - en: '`BigUint64Array`'
+  id: totrans-197
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigUint64Array`'
 - en: 'DataView methods:'
+  id: totrans-198
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数据视图方法：
 - en: '`DataView.prototype.getBigInt64()`'
+  id: totrans-199
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`DataView.prototype.getBigInt64()`'
 - en: '`DataView.prototype.setBigInt64()`'
+  id: totrans-200
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`DataView.prototype.setBigInt64()`'
 - en: '`DataView.prototype.getBigUint64()`'
+  id: totrans-201
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`DataView.prototype.getBigUint64()`'
 - en: '`DataView.prototype.setBigUint64()`'
+  id: totrans-202
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`DataView.prototype.setBigUint64()`'
 - en: '[20.8 Bigints and JSON](#bigints-and-json)'
+  id: totrans-203
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.8 大整数和JSON](#bigints-and-json)'
 - en: The JSON standard is fixed and won’t change. The upside is that old JSON parsing
     code will never be outdated. The downside is that JSON can’t be extended to contain
     bigints.
+  id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: JSON标准是固定的，不会改变。好处是旧的JSON解析代码永远不会过时。坏处是JSON不能扩展以包含大整数。
 - en: 'Stringifying bigints throws exceptions:'
+  id: totrans-205
   prefs: []
   type: TYPE_NORMAL
+  zh: 将大整数转换为字符串会抛出异常：
 - en: '[PRE34]'
+  id: totrans-206
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '[20.8.1 Stringifying bigints](#stringifying-bigints)'
+  id: totrans-207
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.8.1 将大整数转换为字符串](#stringifying-bigints)'
 - en: 'Therefore, our best option is to store bigints in strings:'
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们最好的选择是将大整数存储为字符串：
 - en: '[PRE35]'
+  id: totrans-209
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '[20.8.2 Parsing bigints](#parsing-bigints)'
+  id: totrans-210
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.8.2 解析大整数](#parsing-bigints)'
 - en: The following code shows how to parse strings such as the one that we have produced
     in the previous example.
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码展示了如何解析类似于我们在上一个示例中产生的字符串。
 - en: '[PRE36]'
+  id: totrans-212
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '[20.9 FAQ: Bigints](#faq-bigints)'
+  id: totrans-213
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[20.9 常见问题解答：大整数](#faq-bigints)'
 - en: '[20.9.1 How do I decide when to use numbers and when to use bigints?](#how-do-i-decide-when-to-use-numbers-and-when-to-use-bigints)'
+  id: totrans-214
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.9.1 我该如何决定何时使用数字和何时使用大整数？](#how-do-i-decide-when-to-use-numbers-and-when-to-use-bigints)'
 - en: 'My recommendations:'
+  id: totrans-215
   prefs: []
   type: TYPE_NORMAL
+  zh: 我的建议：
 - en: 'Use numbers for up to 53 bits and for Array indices. Rationale: They already
     appear everywhere and are handled efficiently by most engines (especially if they
     fit into 31 bits). Appearances include:'
+  id: totrans-216
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用数字表示最多53位和数组索引。理由：它们已经无处不在，并且大多数引擎（尤其是如果它们适合31位）可以有效地处理它们。出现的情况包括：
 - en: '`Array.prototype.forEach()`'
+  id: totrans-217
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array.prototype.forEach()`'
 - en: '`Array.prototype.entries()`'
+  id: totrans-218
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array.prototype.entries()`'
 - en: 'Use bigints for large numeric values: If your fraction-less values don’t fit
     into 53 bits, you have no choice but to move to bigints.'
+  id: totrans-219
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用大整数表示大数值：如果你的无小数值不适合53位，你除了转向大整数别无选择。
 - en: All existing web APIs return and accept only numbers and will only upgrade to
     bigint on a case-by-case basis.
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有现有的Web API都只返回和接受数字，并且仅在特定情况下升级到大整数。
 - en: '[20.9.2 Why not just increase the precision of numbers in the same manner as
     is done for bigints?](#why-not-just-increase-the-precision-of-numbers-in-the-same-manner-as-is-done-for-bigints)'
+  id: totrans-221
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[20.9.2 为什么不就像处理大整数（bigints）那样增加数字的精度？](#why-not-just-increase-the-precision-of-numbers-in-the-same-manner-as-is-done-for-bigints)'
 - en: One could conceivably split `number` into `integer` and `double`, but that would
     add many new complexities to the language (several integer-only operators etc.).
     I’ve sketched the consequences in [a Gist](https://gist.github.com/rauschma/13d48d1c49615ce2396ce7c9e45d4cd1).
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: 理论上可以将`number`分为`integer`和`double`，但这会给语言增加许多新的复杂性（例如，几个仅限整数的运算符等）。我在[一个Gist](https://gist.github.com/rauschma/13d48d1c49615ce2396ce7c9e45d4cd1)中概述了这些后果。
 - en: '* * *'
+  id: totrans-223
   prefs: []
   type: TYPE_NORMAL
+  zh: '* * *'
 - en: '**Acknowledgements:**'
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: '**致谢：**'
 - en: Thanks to Daniel Ehrenberg for reviewing an earlier version of this content.
+  id: totrans-225
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 感谢丹尼尔·埃伦伯格（Daniel Ehrenberg）审阅了此内容的早期版本。
 - en: Thanks to Dan Callahan for reviewing an earlier version of this content.
+  id: totrans-226
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 感谢丹·卡拉汉（Dan Callahan）审阅了此内容的早期版本。
