@@ -1,0 +1,222 @@
+- en: 13 What is a type in TypeScript? Two perspectives
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_what-is-a-type.html](https://exploringjs.com/ts/book/ch_what-is-a-type.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[13.1 Two questions for each perspective](#two-questions-for-each-perspective)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[13.2 Dynamic perspective: a type is a set of values](#dynamic-perspective-a-type-is-a-set-of-values)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[13.3 Static perspective: relationships between types](#static-perspective-relationships-between-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[13.4 Nominal type systems vs. structural type systems](#nominal-vs-structural-type-systems)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[13.5 Further reading](#further-reading-5)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: What are types in TypeScript? This chapter describes two perspectives that help
+    with understanding them. Both are useful; they complement each other.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[13.1 Two questions for each perspective](#two-questions-for-each-perspective)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The following two questions are important for understanding how types work and
+    need to be answered from each of the two perspectives.
+  prefs: []
+  type: TYPE_NORMAL
+- en: What does it mean for `arg` to have the type `MyType`?
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: How is `UnionType` derived from `Type1` and `Type2`?
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[13.2 Dynamic perspective: a type is a set of values](#dynamic-perspective-a-type-is-a-set-of-values)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'From this perspective, we are interested in values and a type is a set of values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can pass a given value to `myFunc()` if it is included in `MyType`.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`UnionType` (a set) is defined as the set-theoretic union of `Type1` and `Type2`.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[13.3 Static perspective: relationships between types](#static-perspective-relationships-between-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'From this perspective:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The source code has locations and each location has a static type. In a TypeScript-aware
+    editor, we can see the static type of a location if we hover above it with the
+    cursor.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Types are defined via their relationships with other types.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The most important type relationship is *assignment compatibility*: Can a location
+    whose type is `Src` be assigned to a location whose type is `Trg`? The answer
+    is yes if:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Src` and `Trg` are identical types.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Src` or `Trg` is the type `any`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Src` is a string literal type and `Trg` is the primitive type `string`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Src` is a union type and each constituent type of `Src` is assignable to `Trg`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Src` is an intersection type and at least one constituent type of `Src` is
+    assignable to `Trg`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Trg` is a union type and `Src` is assignable to at least one constituent type
+    of `Trg`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Trg` is an intersection type and `Src` is assignable to each constituent type
+    of `Trg`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let’s consider the questions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Parameter `arg` having type `MyType` means that we can only pass a value to
+    `myFunc()` whose type is assignable to `MyType`.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`UnionType` is defined by the relationships it has with other types. Above,
+    we have seen two rules for union types.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[13.4 Nominal type systems vs. structural type systems](#nominal-vs-structural-type-systems)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'One of the responsibilities of a static type system is to determine if two
+    static types are compatible – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The static type `Src` of an actual parameter (e.g., provided via a function
+    call)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The static type `Trg` of the corresponding formal parameter (e.g., specified
+    as part of a function definition)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The type system needs to check if `Src` is assignable to `Trg`. Two approaches
+    for this check are (roughly):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In a *nominal* or *nominative* type system, two static types are equal if they
+    have the same identity (“name”). `Src` is only assignable to `Trg` if they are
+    equal or if a relationship between them was specified explicitly – e.g., an inheritance
+    relationship (`extends`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Languages with nominal type systems include C++, Java and C#.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In a *structural* type system, a type `Src` is assignable to a type `Trg` if
+    `Trg` has a structure that can receive what’s in `Src` — e.g.: For each field
+    `Src.F`, there must be a field `Trg.F` such that `Src.F` is assignable to `Trg.F`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Languages with structural type systems include TypeScript, Go (interfaces) and
+    OCaml (objects).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code produces a type error in the last line with a nominal type
+    system, but is legal with TypeScript’s structural type system because class `A`
+    and class `B` have the same structure:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'TypeScript’s interfaces also work structurally – they don’t have to be implemented
+    in order to match:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[13.5 Further reading](#further-reading-5)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Chapter “Type Compatibility” in the TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/type-compatibility.html)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'TypeScript Language Specification 1.8: TypeScript originally had a formal language
+    specification but it was discontinued after TypeScript 1.8 (which came out in
+    2016). It has since been [removed](https://github.com/microsoft/TypeScript/pull/51791)
+    from TypeScript’s repositories, but [a PDF file](https://github.com/microsoft/TypeScript/blob/3c99d50da5a579d9fa92d02664b1b66d4ff55944/doc/TypeScript%20Language%20Specification%20-%20ARCHIVED.pdf)
+    can still be downloaded from an old commit. Especially helpful: section “3.11
+    Type Relationships”.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

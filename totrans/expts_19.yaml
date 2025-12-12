@@ -1,0 +1,254 @@
+- en: 15 The bottom type never
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_never.html](https://exploringjs.com/ts/book/ch_never.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.1 `never` is a bottom type](#never-is-a-bottom-type)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.2 `never` is the empty set](#never-is-the-empty-set)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.3 Use case for `never`: filtering union types](#use-case-for-never-filtering-union-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.4 Use case for `never`: exhaustiveness checks at compile time](#exhaustiveness-checks)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.4.1 Exhaustiveness checks and `if`](#exhaustiveness-checks-and-if)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.5 Use case for `never`: forbidding properties](#use-case-for-never-forbidding-properties)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.6 Functions that return `never`](#functions-that-return-never)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.7 Sources of this chapter](#sources-of-this-chapter-1)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In this chapter, we look at the special TypeScript type `never` which, roughly,
+    is the type of things that never happen. As we’ll see, it has a surprising number
+    of applications.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.1 `never` is a bottom type](#never-is-a-bottom-type)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'If we interpret types as sets of values then:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Type `Sub` is a subtype of type `Sup` (`Sub <: Sup`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: if `Sub` is a subset of `Sup` (`Sub ⊂ Sup`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Two kinds of types are special:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A top type `T` includes all values and all types are subtypes of `T`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A bottom type `B` is the empty set and a subtype of all types.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In TypeScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`any` and `unknown` are top types and explained in [“The top types `any` and
+    `unknown`” (§14)](ch_any-unknown.html#ch_any-unknown).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`never` is a bottom type.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[15.2 `never` is the empty set](#never-is-the-empty-set)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'When computing with types, type unions are sometimes used to represent sets
+    of (type-level) values. Then the empty set is represented by `never`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Similarly, if we use the type operator `&` to intersect two types that have
+    no elements in common, we get the empty set:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we use the type operator `|` to compute the union of a type `T` and `never`
+    then the result is `T`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.3 Use case for `never`: filtering union types](#use-case-for-never-filtering-union-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We can use conditional types to filter union types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We use two phenomena to make this work:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: When we apply a conditional type to a union type, it is *distributed* – applied
+    to each element of the union.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In the resulting union of types, the `never` types returned in the false branch
+    of `KeepStrings` disappear (see previous section).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'More information: [“Filtering union types by conditionally returning `never`”
+    (§34.3)](ch_conditional-types.html#filtering-union-types)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.4 Use case for `never`: exhaustiveness checks at compile time](#exhaustiveness-checks)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'With type inference, TypeScript keeps track of what values a variable still
+    can have – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, `x` can still have the value `false` and `true`. After we return
+    if `x` has the value `true`, it can still have the value `false` (line B). After
+    we return if `x` has the value `false`, there are no more values this variable
+    can have, which is why it has the type `never` (line C).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This behavior is especially useful for enums and unions used like enums because
+    it enables *exhaustiveness checks* (checking if we have exhaustively handled all
+    cases):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following pattern works well for JavaScript because it checks at runtime
+    if `color` has an unexpected value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: How can we support this pattern at the type level so that we get a warning if
+    we accidentally don’t consider all member of the enum `Color`? (The return type
+    `string` also keeps us safe but with the technique we are about to see, we even
+    get protection if there is no return time. Additionally, we are also protected
+    from illegal values at runtime.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s first examine how the inferred value of `color` changes as we add cases:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: Once again, the type records what values `color` still can have.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following implementation of the class `UnexpectedValueError` requires that
+    the type of its actual argument be `never`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now we get a compile-time warning if we forget a case because we have not eliminated
+    all values that `color` can have:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.4.1 Exhaustiveness checks and `if`](#exhaustiveness-checks-and-if)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The exhaustiveness check also works if we handle cases via `if`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.5 Use case for `never`: forbidding properties](#use-case-for-never-forbidding-properties)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Given that no other type is assignable to `never`, we can use it to forbid
+    properties – e.g. those with string keys:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information, see [“Forbidding properties via `never`” (§18.6)](ch_typing-objects.html#forbidding-properties-via-never).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.6 Functions that return `never`](#functions-that-return-never)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`never` also serves as a marker for functions that never return – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we call such functions, TypeScript knows that execution ends and adjusts
+    inferred types accordingly. For more information, see [“Return type `never`: functions
+    that don’t return” (§27.4)](ch_typing-functions.html#return-type-never).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.7 Sources of this chapter](#sources-of-this-chapter-1)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Section [“Better Support for `never`-Returning Functions”](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#better-support-for-never-returning-functions)
+    in “Announcing TypeScript 3.7” by Daniel Rosenwasser for Microsoft
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Blog post [“The `never` type and error handling in TypeScript”](https://oida.dev/typescript-never-and-error-handling/)
+    by Stefan Baumgartner
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

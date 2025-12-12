@@ -1,0 +1,437 @@
+- en: 29 The satisfies operator
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_satisfies.html](https://exploringjs.com/ts/book/ch_satisfies.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[29.1 What is the `satisfies` operator?](#what-is-the-satisfies-operator)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.1.1 Syntax: no line terminator before `satisfies`](#syntax-no-line-terminator-before-satisfies)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.1.2 A first example](#a-first-example)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.1.3 Example: optional object properties](#example-optional-object-properties)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.2 Type-checking object property values](#type-checking-object-property-values)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.2.1 Improvement: a type for property values](#improvement-a-type-for-property-values)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.2.2 Improvement: checking property values via `satisfies`](#improvement-checking-property-values-via-satisfies)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.3 Type-checking object property keys](#type-checking-object-property-keys)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.4 Constraining literal values](#constraining-literal-values)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.4.1 Example: posting JSON via `fetch()`](#example-posting-json-via-fetch)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.4.2 Example: `export default`](#example-export-default)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.5 `satisfies` isn’t always needed](#satisfies-isn-t-always-needed)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.5.1 Example: union of `string` and `number`](#example-union-of-string-and-number)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.5.2 Example: discriminated union](#example-discriminated-union)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.6 `satisfies` can change inferred types](#satisfies-can-change-inferred-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.6.1 From type to literal type](#from-type-to-literal-type)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.6.2 From Array to tuple](#from-array-to-tuple)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.6.3 `satisfies` does not change explicit types](#satisfies-does-not-change-explicit-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.7 Type-level satisfaction check](#type-level-satisfaction-check)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[29.8 Further reading](#further-reading-9)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The `satisfies` operator lets us check the type of a value (mostly) without
+    influencing it. In this chapter, we examine how exactly it works and where it’s
+    useful.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[29.1 What is the `satisfies` operator?](#what-is-the-satisfies-operator)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The `satisfies` operator enforces at compile time that a given `value` is assignable
+    to a given `Type`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: The result is still `value`. This operator has no effect at runtime.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The type of `value` is usually unchanged. There are a few exceptions, though,
+    which we’ll look at later.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[29.1.1 Syntax: no line terminator before `satisfies`](#syntax-no-line-terminator-before-satisfies)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is not allowed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Parentheses can help:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.1.2 A first example](#a-first-example)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s examine how various annotations affect the type of an object literal.
+    We start without any annotations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'TypeScript generalizes the types of `.x` and `.y` to `number`. That changes
+    if we use the `as const` annotation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: Now both properties are read-only and have narrow types. What happens if we
+    want to check that the shape of our point is correct, via a new type `Point`?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`point3` once again has a broader type. TypeScript infers the type name `Point`,
+    which is an alias for the type that `point1` had. We declared that variable without
+    any type-level annotations.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`satisfies` lets us check that our point has the correct shape without discarding
+    the narrow type that `as const` gives us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'How is `satisfies` different from `as`? On one hand, `as` generally changes
+    the type of its left-hand side. On the other hand, it doesn’t type-check as thoroughly
+    as `satisfies`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In contrast, `satisfies` warns us if we omit property `.y`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why do we want the type of a point to be narrow? Actually, often we are perfectly
+    fine with broader types. But there are use cases that require them to be narrow.
+    We’ll look at those next.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[29.1.3 Example: optional object properties](#example-optional-object-properties)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates that `partialPoint1` having the broader type
+    `PartialPoint` makes it less pleasant to work with:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens if we use `satisfies`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.2 Type-checking object property values](#type-checking-object-property-values)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following object implements an enum for text styles:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: On one hand, it’s neat that we can derive a type `TextStyleKeys` with property
+    keys.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On the other hand, we forgot property `TextStyle.Italics.latex` and TypeScript
+    didn’t warn us.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[29.2.1 Improvement: a type for property values](#improvement-a-type-for-property-values)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s use the following type to check property values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Our first attempt looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Upside: We get a warning that a property is missing.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Downside: We can’t extract the property keys anymore – `TextStyleKeys` is now
+    `string`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[29.2.2 Improvement: checking property values via `satisfies`](#improvement-checking-property-values-via-satisfies)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Once again, `satisfies` can help us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: Now we get a warning for the missing property and a useful type `TextStyleKeys`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[29.3 Type-checking object property keys](#type-checking-object-property-keys)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In the previous example, we checked the shapes of property values. Sometimes
+    we are additionally dealing with a limited set of property keys and would like
+    to check those – to avoid typos etc.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following example is inspired by [the pull request for `satisfies`](https://github.com/microsoft/TypeScript/issues/47920)
+    and uses the type `ColorName` to check property keys and the type `Color` to check
+    property values. We get an error because they key `''blue''` is missing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'What if we don’t want to use all of the keys but still get checks for typos?
+    That can be achieved by making the record for the object partial (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also extract the property keys:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.4 Constraining literal values](#constraining-literal-values)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider the following function call:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The parameter of `JSON.stringify()` has the type `any`. How can we ensure on
+    our end that the object we pass to it has the right shape (no typos in the property
+    keys etc.)? One option is to create a variable for the object:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Another option is to use `satisfies`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: The following subsections demonstrate this technique for several use cases.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[29.4.1 Example: posting JSON via `fetch()`](#example-posting-json-via-fetch)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code was inspired by [an article by Matt Pocock](https://www.totaltypescript.com/how-to-use-satisfies-operator#strongly-typed-post-request-with-satisfies):
+    We are using `fetch()` to post data to an API.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.4.2 Example: `export default`](#example-export-default)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Inline named exports can have type annotations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With a default export, there is no way to add one but we can use `satisfies`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.5 `satisfies` isn’t always needed](#satisfies-isn-t-always-needed)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In this section, we look at code where it seems like we would need `satisfies`,
+    but TypeScript already correctly narrows the code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[29.5.1 Example: union of `string` and `number`](#example-union-of-string-and-number)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the following code, we don’t need to use `satisfies` for `str1` and `str2`
+    – they are already narrowed to `string`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.5.2 Example: discriminated union](#example-discriminated-union)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the next example, `linkToIntro` is also narrowed to one element of the discriminated
+    union `LinkHref`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.6 `satisfies` can change inferred types](#satisfies-can-change-inferred-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: While `satisfies` usually does not change the inferred type of a value, there
+    are exceptions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[29.6.1 From type to literal type](#from-type-to-literal-type)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.6.2 From Array to tuple](#from-array-to-tuple)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.6.3 `satisfies` does not change explicit types](#satisfies-does-not-change-explicit-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.7 Type-level satisfaction check](#type-level-satisfaction-check)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'TypeScript does have an operation at the type level that is similar to `satisfies`,
+    but we can implement it ourselves:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[29.8 Further reading](#further-reading-9)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Pull request [“`satisfies` operator to ensure an expression matches some type”](https://github.com/microsoft/TypeScript/issues/47920)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

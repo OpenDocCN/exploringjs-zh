@@ -1,0 +1,466 @@
+- en: 19 Unions of object types
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_unions-object-types.html](https://exploringjs.com/ts/book/ch_unions-object-types.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[19.1 From unions of object types to discriminated unions](#discriminated-unions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.1.1 Example: a union of objects](#example-a-union-of-objects)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.1.2 `FileEntry` as a discriminated union](#fileentry-as-a-discriminated-union)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.1.3 Discriminated unions are related to algebraic data types](#discriminated-unions-are-related-to-algebraic-data-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.1.4 `readFile()` for the new `FileEnty`](#readfile-for-the-new-fileenty)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.1.5 Pros and cons of discriminated unions](#pros-and-cons-of-discriminated-unions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.2 Deriving types from discriminated unions](#deriving-types-from-discriminated-unions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.2.1 Extracting the values of the discriminant (the type tags)](#extracting-discriminant-values)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.2.2 Maps for the elements of discriminated unions](#maps-for-the-elements-of-discriminated-unions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.2.3 Extracting a subtype of a discriminated union](#extracting-subtype-of-discriminated-union)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.3 Class hierarchies vs. discriminated unions](#class-hierarchies-vs-discriminated-unions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.3.1 A class hierarchy for syntax trees](#a-class-hierarchy-for-syntax-trees)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.3.2 A discriminated union for syntax trees](#a-discriminated-union-for-syntax-trees)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.3.3 Comparing classes and discriminated unions](#comparing-classes-and-discriminated-unions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[19.4 Defining discriminated unions via classes](#defining-discriminated-unions-via-classes)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In this chapter, we explore what unions of object types can be used for in TypeScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In this chapter, *object type* means:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Object literal type
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Interface type
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Mapped type (such as `Record`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[19.1 From unions of object types to discriminated unions](#discriminated-unions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Unions of object types are often a good choice if a single type has multiple
+    representations – e.g. a type `Shape` that can be either a `Triangle`, a `Rectangle`
+    or a `Circle`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.1.1 Example: a union of objects](#example-a-union-of-objects)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following types define a simple virtual file system:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A function `readFile()` for `VirtualFileSystem` would work as follows (line
+    A and line B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is an implementation of `readFile()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Initially, the type of `fileEntry` is `FileEntry` and therefore:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: We have to narrow its type to one of the elements of this union type before
+    we can access properties. And TypeScript lets us do that via the `in` operator
+    (line A, line B, line C).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Additionally, we check statically if we covered all possible cases, by checking
+    if `fileEntry` is assignable to the type `never` (line D). That is done via the
+    following class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For more information on this technique and a longer and better implementation
+    of `UnexpectedValueError`, see [“Use case for `never`: exhaustiveness checks at
+    compile time” (§15.4)](ch_never.html#exhaustiveness-checks).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[19.1.2 `FileEntry` as a discriminated union](#fileentry-as-a-discriminated-union)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'A *discriminated union* is a union of object types that all have one property
+    in common – whose value indicates the type of a union element. Let’s convert `FileEntry`
+    to a discriminated union:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: The property of a discriminated union that has the type information is called
+    a *discriminant* or a *type tag*. The discriminant of `FileEntry` is `.kind`.
+    Other common names are `.tag`, `.key` and `.type`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: On one hand, `FileEntry` is more verbose now. On the other hand, discriminants
+    give us several benefits – as we’ll see soon.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[19.1.3 Discriminated unions are related to algebraic data types](#discriminated-unions-are-related-to-algebraic-data-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: As an aside, [discriminated unions](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions)
+    are related to [algebraic data types](https://wiki.haskell.org/Algebraic_data_type)
+    in functional programming languages. This is what `FileEntry` looks like as an
+    algebraic data type in Haskell (if the TypeScript union elements had more properties,
+    we’d probably use records in Haskell).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.1.4 `readFile()` for the new `FileEnty`](#readfile-for-the-new-fileenty)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s adapt `readFile()` to the new shape of `FileEnty`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This brings us to a first advantage of discriminated unions: We can use `switch`
+    statements. And it’s immediately clear that `.kind` distinguishes the type union
+    elements – we don’t have to look for property names that are unique to elements.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note that narrowing works as it did before: Once we have checked `.kind`, we
+    can access all relevant properties.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[19.1.5 Pros and cons of discriminated unions](#pros-and-cons-of-discriminated-unions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Con: Discriminating a union of object types makes it more verbose.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Pro: We can handle cases via a `switch` statement.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Pro: It’s immediately clear which property distinguishes the elements of the
+    union.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[19.1.5.1 Pro: Inline union type elements come with descriptions](#pro-inline-union-type-elements-come-with-descriptions)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Another benefit is that, if the union elements are inlined (and not defined
+    externally via types with names) then we can still see what each element does:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.1.5.2 Pro: Union elements are not required to have unique properties](#pro-union-elements-are-not-required-to-have-unique-properties)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Discriminated unions work even if all normal properties of union elements are
+    the same:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.1.5.3 General benefit of unions of object types: descriptiveness](#general-benefit-of-unions-of-object-types-descriptiveness)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The following type definition is terse; but can you tell how it works?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we use a discriminated union, the code becomes much more self-descriptive:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is a function that uses `OutputPathDef`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.2 Deriving types from discriminated unions](#deriving-types-from-discriminated-unions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In this section, we explore how we can derive types from discriminated unions.
+    As an example, we work with the following discriminated union:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.2.1 Extracting the values of the discriminant (the type tags)](#extracting-discriminant-values)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To extract the values of the discriminant, we can use [an indexed access type](ch_computing-with-types-overview.html#indexed-access-types)
+    (`T[K]`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: Because indexed access types are [distributive](ch_computing-with-types-overview.html#distributivity-of-indexed-access-types)
+    over unions, `T['kind']` is applied to each element of `Content` and the result
+    is a union of string literal types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[19.2.2 Maps for the elements of discriminated unions](#maps-for-the-elements-of-discriminated-unions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we use the type `ContentKind` from the previous subsection, we can define
+    an exhaustive map for the elements of `Content`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If the map should not be exhaustive, we can use the utility type `Partial`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.2.3 Extracting a subtype of a discriminated union](#extracting-subtype-of-discriminated-union)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Sometimes, we don’t need all of a discriminated union. We can write out own
+    utility type for extracting a subtype of `Content`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We use [a conditional type](ch_conditional-types.html#ch_conditional-types)
+    to loop over the union type `U`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Line B: If property `.kind` of a union element has a type that is assignable
+    to `SubKinds` then we keep the element. If not then we omit it (by returning `never`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The `extends` in line A ensures that we don’t make a typo when we extract:
+    Our discriminant values `SubKinds` must be a subset of `GetKind<Union>` (see earlier
+    subsection).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let’s use `ExtractSubtype`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'As an alternative to our own `ExtractSubtype`, we can also use the built-in
+    utility type `Extract`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Extract` returns all elements of the union `Content` that are assignable to
+    the following type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.3 Class hierarchies vs. discriminated unions](#class-hierarchies-vs-discriminated-unions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'To compare class hierarchies with discriminated unions, we use both to define
+    syntax trees for representing expressions such as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A syntax tree is either:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A number value
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The addition of two syntax trees
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[19.3.1 A class hierarchy for syntax trees](#a-class-hierarchy-for-syntax-trees)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code uses an abstract class and two subclasses to represent syntax
+    trees:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The operation `evaluate` handles the two cases “number value” and “addition”
+    in the corresponding classes – via polymorphism. Here it is in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[19.3.2 A discriminated union for syntax trees](#a-discriminated-union-for-syntax-trees)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code uses a discriminated union with two elements to represent
+    syntax trees:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The operation `evaluate` handles the two cases “number value” and “addition”
+    in a single location, via `switch`. Here it is in action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: We don’t need the type annotation in line A, but it helps ensure that the data
+    has the correct structure. If we don’t do it here, we’ll find out about problems
+    later.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[19.3.3 Comparing classes and discriminated unions](#comparing-classes-and-discriminated-unions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: With classes, we check the types of instances via `instanceof`. With discriminated
+    unions, we use discriminants to do so. In a way, they are runtime type information.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Each approach does one kind of extensibility well:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: With classes, we have to modify each class if we want to add a new operation.
+    However, adding a new type does not require any changes to existing code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: With discriminated unions, we have to modify each function if we want to add
+    a new type. In contrast, adding new operations is simple.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[19.4 Defining discriminated unions via classes](#defining-discriminated-unions-via-classes)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'It’s also possible to define a discriminated union via classes – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why would we want to do that? We can define and inherit methods for the elements
+    of the union.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The abstract class `AbstractColor` is only needed if we want to share methods
+    between the union classes.
+  prefs: []
+  type: TYPE_NORMAL

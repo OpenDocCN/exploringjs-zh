@@ -1,0 +1,766 @@
+- en: 9 Publishing npm packages with TypeScript
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_typescript-npm-packages.html](https://exploringjs.com/ts/book/ch_typescript-npm-packages.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.1 File system layout](#file-system-layout)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.1.1 `.gitignore`](#gitignore)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.1.2 Unit tests](#unit-tests)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.2 `tsconfig.json`](#tsconfig.json)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.2.1 Where does the output go?](#where-does-the-output-go)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.2.2 Output](#output)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.3 `package.json`](#package.json)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.3.1 Using `.js` for ESM modules](#using-js-for-esm-modules)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.3.2 Which files should be uploaded to the npm registry?](#which-files-should-be-uploaded-to-the-npm-registry)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.3.3 Package exports](#package-exports)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.3.4 Package imports](#package-imports)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.3.5 Package scripts](#package-scripts)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.3.6 Development dependencies](#development-dependencies)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.3.7 Bin scripts: shell commands written in JavaScript](#bin-scripts)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.4 Linting npm packages](#linting-npm-packages)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[9.5 Further reading](#further-reading-3)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'In this chapter, we’ll create an ESM-based library package for npm via TypeScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The described setup has worked well for me since TypeScript 4.7 (2022-05-24).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We’ll only use tsc, but the setup is ready for other tools. For more information,
+    see [“Compiling TypeScript with tools other than tsc” (§8.8)](ch_tsconfig-json.html#compiling-without-tsc).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If you want to create a package with an executable and not a library, check
+    out [“Bin scripts: shell commands written in JavaScript” (§9.3.7)](#bin-scripts).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![Icon “GitHub”](../Images/25fa4b537bb7b3fd4dddaa93103f1bda.png) **Example
+    package:** [`@rauschma/helpers`](https://github.com/rauschma/helpers)'
+  prefs: []
+  type: TYPE_IMG
+- en: This package uses the setup described in this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.1 File system layout](#file-system-layout)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Our npm package has the following file system layout:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Comments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It’s usually a good idea to include a `README.md` and a `LICENSE`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`package.json` describes the package and is described [later](#package.json).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`tsconfig.json` configures TypeScript and is described [later](#tsconfig.json).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`docs/api/` is for API documentation generated via TypeDoc. See [“Documenting
+    TypeScript APIs via doc comments and TypeDoc” (§11)](ch_jsdoc.html#ch_jsdoc).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`src/` is for the TypeScript source code.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`src/test/` is for integration tests – tests that span multiple modules. More
+    on unit tests soon.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Why don’t we put `src/` and `test/` next to each other? That would have the
+    negative consequence that output files would be more deeply nested in the project
+    directory than input files ([more information](ch_tsconfig-json.html#src-test-siblings)).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`dist/` is where TypeScript writes its output.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.1.1 `.gitignore`](#gitignore)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: I’m using Git for version control. This is my `.gitignore` (located inside `my-package/`)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why these entries?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`node_modules`: The most common practice currently seems to be *not* to check
+    in the `node_modules` directory.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`dist`: The compilation output of TypeScript is not checked into Git, but it
+    is uploaded to the npm registry. More on that later.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.DS_Store`: This entry is about me being lazy as a macOS user. Since it’s
+    only need on that operating system, you can argue that Mac people should add it
+    via a global configuration setting and keep it out of project-specific gitignores.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.1.2 Unit tests](#unit-tests)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'I have started to put the unit tests for a particular module next to that module:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: Given that unit tests help with understanding how a module works, it’s useful
+    if they are easy to find.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.1.2.1 Tip for tests: self-reference the package](#self-referencing-exports)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If an npm package has `"exports"`, it can *self-reference* them via its package
+    name:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The Node.js documentation has [more information](https://nodejs.org/api/packages.html#self-referencing-a-package-using-its-name)
+    on self-referencing and notes: “Self-referencing is available only if `package.json`
+    has `"exports"`, and will allow importing only what that `"exports"` (in the `package.json`)
+    allows.”'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Benefits of self-referencing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It is useful for tests (which can demonstrate how importing packages would use
+    the code).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It checks if your package exports are set up properly.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.2 `tsconfig.json`](#tsconfig.json)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[“Summary: Assemble your `tsconfig.json` by answering four questions” (§8.12)](ch_tsconfig-json.html#tsconfig-summary)
+    helps us with creating a `tsconfig.json` file by asking us four questions. Let’s
+    answer these questions for our npm package:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Q: Do you want to transpile new JavaScript to older JavaScript?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A: No. If we can constrain ourselves to JavaScript features supported by our
+    target platforms then the output is simpler and more similar to the input.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Q: Should TypeScript only allow JavaScript features at the non-type level?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A: Yes because that keeps things simple and lets us use [type stripping](ch_tsconfig-json.html#type-stripping)
+    should we want to. It’s a forward-looking way of writing TypeScript.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Q: Which filename extension do you want to use in local imports?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A: ESM requires filename extensions and TypeScript traditionally does not change
+    module specifiers during transpilation. Therefore, TypeScript ESM code initially
+    used `.js`. Now TypeScript transpilation can change `.ts` to `.js`. Therefore,
+    we can use `.ts` – with the benefit that the same code also runs without transpilation
+    on some platforms (Node.js, Deno, Bun, etc.). The only caveat is that we still
+    have to use `.js` when we self-reference modules (see previous section) or use
+    `import()`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Q: What files should tsc emit?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A: `.js`, `.js.map`, `.d.ts`, `.d.ts.map` (more information on that soon)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.2.1 Where does the output go?](#where-does-the-output-go)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`tsconfig.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Consequences of these settings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Input: `src/util.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Output: `dist/util.js`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Input: `src/test/integration_test.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Output: `dist/test/integration_test.js`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: What if we want `src/` and `test/` to sit next to each other? See [“Putting
+    `src/` and `test/` next to each other” (§8.4.1.1)](ch_tsconfig-json.html#src-test-siblings)
+    for more information.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.2.2 Output](#output)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Given a TypeScript file `util.ts`, tsc writes the following output to `dist/`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Purposes of these files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`util.js`: JavaScript code contained in `util.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`util.js.map`: *source map* for the JavaScript code. It enables the following
+    functionality when running `util.js`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In a debugger, we see the TypeScript code.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Stack traces contain TypeScript source code locations.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`util.d.ts`: types defined in `util.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`util.d.ts.map`: *declaration map* – a source map for `util.d.ts`. It enables
+    TypeScript editors that support it to (e.g.) jump to the TypeScript source code
+    of the definition of a type. I find that useful for libraries. It’s why I include
+    the TypeScript source in their packages.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.3 `package.json`](#package.json)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Some settings in `package.json` also affect TypeScript. We’ll look at those
+    next. Related material:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Chapter [“Packages: JavaScript’s units for software distribution”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
+    of “Shell scripting with Node.js” provides a comprehensive look at npm packages.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: You can also take a look the the [`package.json`](https://github.com/rauschma/helpers/blob/main/package.json)
+    of `@rauschma/helpers`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.3.1 Using `.js` for ESM modules](#using-js-for-esm-modules)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'By default, `.js` files are interpreted as CommonJS modules. The following
+    setting lets us use that filename extension for ESM modules:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[9.3.2 Which files should be uploaded to the npm registry?](#which-files-should-be-uploaded-to-the-npm-registry)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We have to specify which files should be uploaded to the npm registry. While
+    there is also the `.npmignore` file, explicitly listing what’s *included* is safer.
+    That is done via the `package.json` property `"files"`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: In `.gitignore`, we have ignored directory `dist/` because it contains information
+    that can be generated automatically. However, here it is explicitly included because
+    most of its contents have to be in the npm package.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Patterns that start with exclamation marks (`!`) define which files to exclude.
+    In this case, we exclude the tests:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Some of them sit next to modules in `src/`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The remaining tests are located in `src/test/`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.3.3 Package exports](#package-exports)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we want a package to support old code, there are several `package.json`
+    properties, we have to take into consideration:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`"main"`: previously used by Node.js'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"module"`: previously used by bundlers'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"types"`: previously used by TypeScript'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"typesVersions"`: previously used by TypeScript'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In contrast, for modern code, we only need:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Before we get into details, there are two questions we have to consider:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Is our package only going to be imported via a bare import or is it going to
+    support subpath imports?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'If we export subpaths: Are they going to have filename extensions or not?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Tips for answering the latter question:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The extensionless style has a long tradition. That hasn’t changed much with
+    ESM, even though it requires filename extensions for local imports.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Downside of the extensionless style (quoting [the Node.js documentation](https://nodejs.org/api/packages.html#extensions-in-subpaths)):
+    “With import maps now providing a standard for package resolution in browsers
+    and other JavaScript runtimes, using the extensionless style can result in bloated
+    import map definitions. Explicit file extensions can avoid this issue by enabling
+    the import map to utilize a packages folder mapping to map multiple subpaths where
+    possible instead of a separate map entry per package subpath export. This also
+    mirrors the requirement of using the full specifier path in relative and absolute
+    import specifiers.”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is how I currently decide:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Most of my packages don’t have any subpaths at all.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the package is a collection of modules, I export them with extensions.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the modules are more like different versions of the package (think synchronous
+    vs. asynchronous) then I export them without extensions.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: However, I don’t have strong preferences and may change my mind in the future.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.3.3.1 Specifying package exports](#specifying-package-exports)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Notes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If there aren’t many modules then multiple single-file entries are more self-explanatory
+    than one subtree entry.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: By default, `.d.ts` files must sit next to `.js` files. But that can be changed
+    via [the `types` import condition](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#packagejson-exports-imports-and-self-referencing).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For more information on this topic, see section [“Package exports: controlling
+    what other packages see”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html#package-exports-controlling-what-other-packages-see)
+    in “Exploring JavaScript”.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.3.4 Package imports](#package-imports)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Node’s package imports are also supported by TypeScript. They let us define
+    aliases for paths. Those aliases have the benefit that they start at the top level
+    of the package. This is an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can use this package import as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: Package imports are especially helpful when the JavaScript output files are
+    more deeply nested than the TypeScript input files. In that case we can’t use
+    relative paths to access files at the top level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: For more information on package imports, see [the Node.js documentation](https://nodejs.org/api/packages.html#imports).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.3.5 Package scripts](#package-scripts)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[Package scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts) lets us
+    define aliases such as `build` for shell commands and execute them via `npm run
+    build`. We can get a list of those aliases via `npm run` (without a script name).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'These are commands I find useful for my library projects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`build`: I clear directory `dist/` before each build. Why? When renaming TypeScript
+    files, the old output files are not deleted. That is especially problematic with
+    test files and regularly bites me. Whenever that happens, I can fix things via
+    `npm run build`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`test`, `testall`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`--enable-source-maps` enables source map support in Node.js and therefore
+    accurate line numbers in stack traces.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The test runner [Mocha](https://mochajs.org) supports several testing styles.
+    I prefer `--ui qunit` ([example](https://github.com/rauschma/helpers/blob/main/src/string/string_test.ts)).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`publishd`: We publish an npm package via `npm publish`. `npm run publishd`
+    invokes the “dry run” version of that command that doesn’t make any changes but
+    provides helpful feedback – e.g., it shows which files are going to be part of
+    the package.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`prepublishOnly`: Before `npm publish` uploads files to the npm registry, it
+    invokes this script. By building before publishing, we ensure that no stale files
+    and no old files are uploaded.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Why the named separators? The make the output of `npm run` easier to read.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.3.6 Development dependencies](#development-dependencies)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Even if a package of mine has no normal dependencies, it tends to have the
+    following development dependencies:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`@types/node`: In unit tests, I’m using `node:assert` for assertions such as
+    `assert.deepEqual()`. This dependency provides types for that and other Node modules.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`shx`: provides cross-platform versions of Unix shell commands. I’m often using:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: I also install the following two command line tools locally inside my projects
+    so that they are guaranteed to be there. The neat thing about `npm run` is that
+    it adds locally installed commands to the shell path – which means that they can
+    be used in package scripts as if they were installed globally.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`mocha` and `@types/mocha`: I still prefer [Mocha](https://mochajs.org)’s API
+    and CLI user experience but [Node’s built-in test runner](https://nodejs.org/api/test.html)
+    has become an interesting alternative.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`typedoc`: I’m using [TypeDoc](ch_jsdoc.html#ch_jsdoc) to generate API documentation.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.3.7 Bin scripts: shell commands written in JavaScript](#bin-scripts)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'A `package.json` can contain the property `"bin"` which sets up executables.
+    Check out my project [TSConfigurator](https://github.com/rauschma/tsconfigurator)
+    for a full example. That project has the following property in `package.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can constrain the Node.js versions with which the bin scripts can be used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following package script is useful (invoked from `"build"`, after `"tsc"`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: If a package provides an executable and not a library, we don’t need to emit
+    `.d.ts` files. If we use type stripping for `.js`, we may not need `.js.map` files
+    either.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[9.4 Linting npm packages](#linting-npm-packages)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Linting the public interfaces of packages:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[publint](https://publint.dev): “Lints npm packages to ensure the widest compatibility
+    across environments, such as Vite, Webpack, Rollup, Node.js, etc.”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[arethetypeswrong](https://github.com/arethetypeswrong/arethetypeswrong.github.io):
+    “This project attempts to analyze npm package contents for issues with their TypeScript
+    types, particularly ESM-related module resolution issues.”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[npm-package-json-lint](https://npmpackagejsonlint.org): “Configurable linter
+    for `package.json` files”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[vitest-package-exports](https://github.com/antfu/vitest-package-exports):
+    “[…] get all exported APIs of a package and prevent unintended breaking changes”.
+    Despite its name, this tool [does not require Vitest](https://github.com/antfu/vitest-package-exports?tab=readme-ov-file#does-this-requires-vitest).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Linting npm packages internally:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[installed-check](https://github.com/voxpelli/node-installed-check): “Verifies
+    that installed modules comply with the requirements [the Node.js [`"engines"`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json#engines)
+    version range] specified in `package.json`.”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Knip](https://knip.dev): “Finds and fixes unused files, dependencies and exports.”
+    Supports JavaScript and TypeScript.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Node Modules Inspector](https://github.com/antfu/node-modules-inspector):
+    “Visualize your `node_modules`, inspect dependencies, and more.”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Madge](https://www.npmjs.com/package/madge): create a visual graph of module
+    dependencies, find circular dependencies, and more.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[9.5 Further reading](#further-reading-3)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'JavaScript modules (ESM): Chapter [“Modules”](https://exploringjs.com/js/book/ch_modules.html)
+    in “Exploring JavaScript”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'npm packages: Chapter [“Packages: JavaScript’s units for software distribution”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
+    in “Shell scripting with Node.js”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Also useful:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Chapter [“Modules: Packages”](https://nodejs.org/api/packages.html) of the
+    Node.js documentation'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Section [“`package.json "exports"`”](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports)
+    of the TypeScript Handbook
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

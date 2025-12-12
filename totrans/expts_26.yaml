@@ -1,0 +1,870 @@
+- en: 21 Class definitions in TypeScript
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_class-definitions.html](https://exploringjs.com/ts/book/ch_class-definitions.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.1 Cheat sheet: classes in plain JavaScript](#cheat-sheet-classes-in-plain-javascript)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.1 Basic members of classes](#basic-members-of-classes)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.2 Modifier: `static`](#modifier-static)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.3 Modifier-like name prefix: `#` (private)](#modifier-like-name-prefix-private)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.4 Modifiers for accessors: `get` (getter) and `set` (setter)](#modifiers-for-accessors-get-getter-and-set-setter)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.5 Modifier for methods: `*` (generator)](#modifier-for-methods-generator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.6 Modifier for methods: `async`](#modifier-for-methods-async)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.7 Computed class member names](#computed-class-member-names)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.8 Combinations of modifiers](#combinations-of-modifiers)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.9 Under the hood](#under-the-hood)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.10 More information on class definitions in plain JavaScript](#more-information-on-class-definitions-in-plain-javascript)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2 Non-public data slots in TypeScript](#non-public-data-slots-in-typescript)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2.1 Private properties](#private-properties)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2.2 Private fields](#private-fields)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2.3 Private properties vs. private fields](#private-properties-vs-private-fields)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2.4 Protected properties](#protected-properties)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.3 Private constructors](#private-constructors)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.4 Initializing instance properties](#initializing-instance-properties)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.4.1 Strict property initialization](#strictPropertyInitialization)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.5 Convenience features we should avoid](#convenience-features-we-should-avoid)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.5.1 Inferred member types](#inferred-member-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.5.2 Making constructor parameters `public`, `private` or `protected`](#making-constructor-parameters-public-private-or-protected)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.6 Abstract classes](#abstract-classes)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.7 Keyword `override` for methods](#override)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.8 Classes vs. object types](#classes-vs-object-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.8.1 Class `Counter`](#class-counter)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.8.2 Object type `Counter`](#object-type-counter)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.8.3 Which one to choose: class or object type?](#which-one-to-choose-class-or-object-type)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'In this chapter, we examine how class definitions work in TypeScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: First, we take a quick look at the features of class definitions in plain JavaScript.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then we explore what additions TypeScript brings to the table.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[21.1 Cheat sheet: classes in plain JavaScript](#cheat-sheet-classes-in-plain-javascript)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This section is a cheat sheet for class definitions in plain JavaScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.1.1 Basic members of classes](#basic-members-of-classes)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “reading”](../Images/00b0d6029a045810b908b88d1a6733d2.png) **The next
+    sections are about modifiers**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: At the end, there is a table that shows how modifiers can be combined.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.1.2 Modifier: `static`](#modifier-static)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.1.3 Modifier-like name prefix: `#` (private)](#modifier-like-name-prefix-private)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.1.4 Modifiers for accessors: `get` (getter) and `set` (setter)](#modifiers-for-accessors-get-getter-and-set-setter)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Roughly, accessors are prototype methods that are inherited by instances and
+    invoked by accessing properties. There are two kinds of accessors: getters and
+    setters.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.1.5 Modifier for methods: `*` (generator)](#modifier-for-methods-generator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.1.6 Modifier for methods: `async`](#modifier-for-methods-async)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.1.7 Computed class member names](#computed-class-member-names)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Comments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The main use case for this feature is symbols such as `Symbol.iterator`. But
+    any expression can be used inside the square brackets.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can compute the names of fields, methods, and accessors.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We cannot compute the names of private members (which are always fixed).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[21.1.8 Combinations of modifiers](#combinations-of-modifiers)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Fields:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Level | Private | Code |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (instance) |  | `field` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (instance) | `#` | `#field` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  | `static field` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` | `#` | `static #field` |'
+  prefs: []
+  type: TYPE_TB
+- en: 'Methods (columns: Level, Accessor, Async, Generator, Private, Code – without
+    body):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Level | Acc | Async | Gen | Priv | Code |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype) |  |  |  |  | `m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype) | `get` |  |  |  | `get p()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype) | `set` |  |  |  | `set p(x)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype) |  | `async` |  |  | `async m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype) |  |  | `*` |  | `* m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype) |  | `async` | `*` |  | `async * m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype-ish) |  |  |  | `#` | `#m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype-ish) | `get` |  |  | `#` | `get #p()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype-ish) | `set` |  |  | `#` | `set #p(x)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype-ish) |  | `async` |  | `#` | `async #m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype-ish) |  |  | `*` | `#` | `* #m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| (prototype-ish) |  | `async` | `*` | `#` | `async * #m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  |  |  |  | `static m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` | `get` |  |  |  | `static get p()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` | `set` |  |  |  | `static set p(x)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  | `async` |  |  | `static async m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  |  | `*` |  | `static * m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  | `async` | `*` |  | `static async * m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  |  |  | `#` | `static #m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` | `get` |  |  | `#` | `static get #p()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` | `set` |  |  | `#` | `static set #p(x)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  | `async` |  | `#` | `static async #m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  |  | `*` | `#` | `static * #m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `static` |  | `async` | `*` | `#` | `static async * #m()` |'
+  prefs: []
+  type: TYPE_TB
+- en: '[21.1.9 Under the hood](#under-the-hood)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'It’s important to keep in mind that with classes, there are two chains of prototype
+    objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The instance chain which starts with an instance.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The static chain which starts with the class of that instance.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Consider the following plain JavaScript example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Figure 21.1](#fig:class-prototype-chains) shows what the prototype chains
+    look like that are created by `ClassA` and `ClassB`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/820493c8f187cebea74380b7ced1d6f2.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 21.1: The classes `ClassA` and `ClassB` create two prototype chains:
+    One for classes (left-hand side) and one for instances (right-hand side).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.1.10 More information on class definitions in plain JavaScript](#more-information-on-class-definitions-in-plain-javascript)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[Chapter “Classes”](https://exploringjs.com/js/book/ch_classes.html) in “Exploring
+    JavaScript”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[21.2 Non-public data slots in TypeScript](#non-public-data-slots-in-typescript)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'By default, all data slots in TypeScript are public properties. There are two
+    ways of keeping data private:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Private properties
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Private fields
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We’ll look at both next.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that TypeScript does not currently support private methods.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.2.1 Private properties](#private-properties)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Private properties are a TypeScript-only (static) feature. Any property can
+    be made private by prefixing it with the keyword `private` (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We now get compile-time errors if we access that property in the wrong scope
+    (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, `private` doesn’t change anything at runtime. There, property `.name`
+    is indistinguishable from a public property:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also see that private properties aren’t protected at runtime when we
+    look at the JavaScript code that the class is compiled to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.2.2 Private fields](#private-fields)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Private fields are a new JavaScript feature that TypeScript has supported since
+    version 3.8:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This version of `Person` is mostly used the same way as the private property
+    version:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, this time, the data is completely encapsulated. Using the private
+    field syntax outside classes is even a JavaScript syntax error. That’s why we
+    have to use `eval()` in line A so that we can execute this code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Compiled to JavaScript, `PersonPrivateField` looks more or less the same:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.2.3 Private properties vs. private fields](#private-properties-vs-private-fields)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Downsides of private properties:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can’t reuse the names of private properties in subclasses (because the properties
+    aren’t private at runtime).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: No encapsulation at runtime.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Upsides of private properties:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Clients can circumvent the encapsulation and access private properties. This
+    can be useful if someone needs to work around a bug. In other words: Data being
+    completely encapsulated has pros and cons.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Some JavaScript helper functions, e.g. for cloning or for serialization to JSON,
+    don’t work with private fields.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[21.2.4 Protected properties](#protected-properties)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Private fields and private properties can’t be accessed in subclasses (line
+    B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: The keyword `override` is explained [later](#override) – it’s for methods that
+    override super-methods.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can fix the previous example by switching from `private` to `protected`
+    in line A (we also switch in line B, for consistency’s sake):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.3 Private constructors](#private-constructors)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: At the moment, JavaScript does not support hash-private constructors. However,
+    TypeScript supports `private` for them. That is useful when we have static factory
+    methods and want clients to always use those methods, never the constructor directly.
+    Static methods can access private class members, which is why the factory methods
+    can still use the constructor.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the following code, there is one static factory method `DataContainer.create()`.
+    It sets up instances via asynchronously loaded data. Keeping the asynchronous
+    code in the factory method enables the actual class to be completely synchronous:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: In real-world code, we would use `fetch()` or a similar Promise-based API to
+    load data asynchronously in line A.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The private constructor prevents `DataContainer` from being subclassed. If we
+    want to allow subclasses, we have to make it `protected`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.4 Initializing instance properties](#initializing-instance-properties)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[21.4.1 Strict property initialization](#strictPropertyInitialization)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If the compiler setting `--strictPropertyInitialization` is switched on (which
+    is the case if we use `--strict`), then TypeScript checks if all declared instance
+    properties are correctly initialized:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Either via assignments in the constructor:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Or via initializers for the property declarations:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'However, sometimes we initialize properties in a manner that TypeScript doesn’t
+    recognize. Then we can use exclamation marks (*definite assignment assertions*)
+    to switch off TypeScript’s warnings (line A and line B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.4.1.1 Example: setting up instance properties via objects](#example-setting-up-instance-properties-via-objects)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the following example, we also need definite assignment assertions. Here,
+    we set up instance properties via the constructor parameter `props`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Notes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In line B, we initialize all properties: We use `Object.assign()` to copy the
+    properties of parameter `props` into `this`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In line A, the `implements` ensures that the class declares all properties that
+    are part of interface `CompilerErrorProps`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[21.5 Convenience features we should avoid](#convenience-features-we-should-avoid)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[21.5.1 Inferred member types](#inferred-member-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`tsc` can infer the type of the member `.str` because we assign to it in line
+    A. However, that is not compatible with the compiler option [`isolatedDeclarations`](ch_tsconfig-json.html#isolatedDeclarations)
+    (which enables external tools to generate declarations without doing inference):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.5.2 Making constructor parameters `public`, `private` or `protected`](#making-constructor-parameters-public-private-or-protected)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: JavaScript currently has no equivalent to the TypeScript feature described in
+    this subsection – which is why it is illegal if the compiler option [`erasableSyntaxOnly`](ch_tsconfig-json.html#erasableSyntaxOnly)
+    is active.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we use the modifier `public` for a constructor parameter `prop`, then TypeScript
+    does two things for us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It declares a public instance property `.prop`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It assigns the parameter `prop` to that instance property.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: If we use `private` or `protected` instead of `public`, then the corresponding
+    instance properties are private or protected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The TypeScript class `Point` is compiled to the following JavaScript code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.6 Abstract classes](#abstract-classes)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Two constructs can be abstract in TypeScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An abstract class can’t be instantiated. Only its subclasses can – if they are
+    not abstract, themselves.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An abstract method has no implementation, only a type signature. Each concrete
+    subclass must have a concrete method with the same name and a compatible type
+    signature.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a class has any abstract methods, it must be abstract, too.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The following code demonstrates abstract classes and methods.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'On one hand, there is the abstract superclass `Printable` and its helper class
+    `StringBuilder`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On the other hand, there are the concrete subclasses `Entries` and `Entry`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'And finally, this is us using `Entries` and `Entry`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Notes about abstract classes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An abstract class can be seen as an interface where some members already have
+    implementations.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: While a class can implement multiple interfaces, it can only extend at most
+    one abstract class.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: “Abstractness” only exists at compile time. At runtime, abstract classes are
+    normal classes and abstract methods don’t exist (due to them only providing compile-time
+    information).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Abstract classes can be seen as templates where each abstract method is a blank
+    that has to be filled in (implemented) by subclasses.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[21.7 Keyword `override` for methods](#override)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The keyword `override` is for methods that override methods in superclasses
+    – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: If the compiler option [`noImplicitOverride`](ch_tsconfig-json.html#noImplicitOverride)
+    is active then TypeScript complains if there is no `override` in line A.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can also use `override` when we implement an abstract method. That’s not
+    required but I find it useful information:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.8 Classes vs. object types](#classes-vs-object-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In JavaScript, we don’t have to use classes, we can also use objects directly.
+    TypeScript supports both approaches.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.8.1 Class `Counter`](#class-counter)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is a class that implements a counter:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.8.2 Object type `Counter`](#object-type-counter)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In TypeScript, a class defines both a type and a factory for instances. In
+    the following code, both are separate: We have the object type `Counter` and the
+    factory `createCounter()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.8.3 Which one to choose: class or object type?](#which-one-to-choose-class-or-object-type)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Benefits of classes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Everything is specified compactly in one place:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Type
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Instance factory
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Operations such as `inc`
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The default value of a property being specified close to the definition of that
+    property is something I find useful – e.g., `.count` has the default value 0.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can check the type of a value via `instanceof` – e.g. to narrow a type.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can use private fields.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Benefits of object types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'They work better if objects are cloned: Library functions for cloning can’t
+    handle private fields and [`structuredClone()`](https://2ality.com/2022/01/structured-clone.html)
+    does not preserve the class of an instance.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They work better if objects are moved between realms: Each realm has its own
+    version of a given class and that makes moving class instances problematic.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Serializing and deserializing (to/from JSON etc.) is an interesting use case:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: With object types, deserialization is easier because we can immediate work with
+    the result of `JSON.parse()` (potentially after [validating the type via Zod](ch_validating-external-data.html#ch_validating-external-data)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Things get more complicated if not all data can be easily serialized and deserialized
+    – e.g. if a property contains a `Map`. Then classes have one benefit: We can customize
+    serialization by implementing the method `.toJSON()`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Apart from these criteria, which one to choose depends on whether you prefer
+    code that is more object-oriented or code that is more functional.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We have not covered inheritance – where you also have a choice between an object-oriented
+    coding style (classes) and a functional coding style (discriminated unions). For
+    more information, see [“Class hierarchies vs. discriminated unions” (§19.3)](ch_unions-object-types.html#class-hierarchies-vs-discriminated-unions).
+  prefs: []
+  type: TYPE_NORMAL

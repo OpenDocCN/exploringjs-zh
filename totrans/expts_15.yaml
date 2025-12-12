@@ -1,0 +1,295 @@
+- en: 12 Strategies for migrating to TypeScript
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_migrating-to-typescript.html](https://exploringjs.com/ts/book/ch_migrating-to-typescript.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[12.1 Strategy: mixed JavaScript/TypeScript code bases](#strategy-mixed-javascript-typescript-code-bases)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[12.2 Strategy: adding type information to plain JavaScript files](#strategy-adding-type-information-to-plain-javascript-files)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[12.3 Strategy: linting before activating a compiler option](#strategy-linting-before-activating-a-compiler-option)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[12.4 Strategy: Too many errors? Use snapshot testing](#strategy-too-many-errors-use-snapshot-testing)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[12.5 Tools that help with migrating to TypeScript](#tools-that-help-with-migrating-to-typescript)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[12.6 Conclusion and further reading](#conclusion-and-further-reading)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: This chapter gives an overview of strategies for migrating code bases from JavaScript
+    to TypeScript. It also mentions material for further reading.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[12.1 Strategy: mixed JavaScript/TypeScript code bases](#strategy-mixed-javascript-typescript-code-bases)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The TypeScript compiler supports a mix of JavaScript and TypeScript files if
+    we use the compiler option `--allowJs`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: TypeScript files are compiled.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: JavaScript files are simply copied over to the output directory (after a few
+    simple type checks).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: At first, there are only JavaScript files. Then, one by one, we switch files
+    to TypeScript. While we do so, our code base keeps being compiled.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is what `tsconfig.json` looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**More information:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“Incrementally Migrating JavaScript to TypeScript”](https://medium.com/@clayallsopp/incrementally-migrating-javascript-to-typescript-565020e49c88)
+    by [Clay Allsopp](https://twitter.com/clayallsopp).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[12.2 Strategy: adding type information to plain JavaScript files](#strategy-adding-type-information-to-plain-javascript-files)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This approach works as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We continue to use our current build infrastructure.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We run the TypeScript compiler, but only as a type checker (compiler option
+    `--noEmit`). In addition to the compiler option `--allowJs` (for allowing and
+    copying JavaScript files), we also have to use the compiler option `--checkJs`
+    (for type-checking JavaScript files).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We add type information via JSDoc comments (see example below) and declaration
+    files.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Once TypeScript’s type checker doesn’t complain anymore, we use the compiler
+    to build the code base. Switching from `.js` files to `.ts` files is not urgent
+    now because the whole code base is already fully statically typed. We can even
+    produce type files (filename extension `.d.ts`) now.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is how we specify static types for plain JavaScript via JSDoc comments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**More information:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“Type-checking JavaScript files” (§6.8)](ch_typescript-workflows.html#check-js)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“How we gradually migrated to TypeScript at Unsplash”](https://medium.com/unsplash/how-we-gradually-migrated-to-typescript-at-unsplash-7a34caa24ef1)
+    by [Oliver Joseph Ash](https://twitter.com/OliverJAsh)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[12.3 Strategy: linting before activating a compiler option](#strategy-linting-before-activating-a-compiler-option)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Projects that migrate to TypeScript often start with the default type checking
+    and then add more checks, in stages – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Initially: default checks'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Activate `strictNullChecks` (prevents `undefined` and `null` from being used
+    unless the type is `T | undefined` or `T | null`, respectively)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Activate `noImplicitAny` (prevents omitting types for parameters and more)
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Activate `strict` (includes the previous two compiler options – which can be
+    removed – and adds [additional ones](https://www.typescriptlang.org/tsconfig/#strict))
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'In contrast to compiler options, we can activate linting options on a per-file
+    basis. This helps when switching from less strict type checking to stricter type
+    checking: We can lint before making the switch. These are examples of useful rules
+    that the TypeScript linter [typescript-eslint](https://typescript-eslint.io) provides:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Preparing for `noImplicitAny`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`no-unsafe-call`](https://typescript-eslint.io/rules/no-unsafe-call/)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`no-unsafe-member-access`](https://typescript-eslint.io/rules/no-unsafe-member-access/)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`no-unsafe-argument`](https://typescript-eslint.io/rules/no-unsafe-argument/)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`no-unsafe-assignment`](https://typescript-eslint.io/rules/no-unsafe-assignment/)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`no-explicit-any`](https://typescript-eslint.io/rules/no-explicit-any/)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Preparing for `erasableSyntaxOnly`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[`eslint-plugin-erasable-syntax-only`](https://github.com/JoshuaKGoldberg/eslint-plugin-erasable-syntax-only)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[12.4 Strategy: Too many errors? Use snapshot testing](#strategy-too-many-errors-use-snapshot-testing)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In large JavaScript projects, switching to TypeScript may produce too many
+    errors – no matter which approach we choose. Then snapshot-testing the TypeScript
+    errors may be an option:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We run the TypeScript compiler on the whole code base for the first time.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The errors produced by the compiler become our initial snapshot.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'As we work on the code base, we compare new error output with the previous
+    snapshot:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sometimes existing errors disappear. Then we can create a new snapshot.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sometimes new errors appear. Then we either have to fix these errors or create
+    a new snapshot.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**More information:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“How to Incrementally Migrate 100k Lines of Code to Typescript”](https://dylanvann.com/incrementally-migrating-to-typescript/)
+    by [Dylan Vann](https://twitter.com/atomarranger)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[12.5 Tools that help with migrating to TypeScript](#tools-that-help-with-migrating-to-typescript)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[ts-migrate](https://github.com/airbnb/ts-migrate) helps with the first step
+    of moving from JavaScript to TypeScript: “The resulting code will pass the build,
+    but a followup is required to improve type safety. There will be lots of `//@ts-expect-error`,
+    and `any` that will need to be fixed over time. In general, it is a lot nicer
+    than starting from scratch.”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[type-coverage](https://github.com/plantain-00/type-coverage) shows which percentage
+    of identifiers have the type `any`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[12.6 Conclusion and further reading](#conclusion-and-further-reading)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We have taken a quick look at strategies for migrating to TypeScript. Two more
+    tips:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Start your migration with experiments: Play with your code base and try out
+    various strategies before committing to one of them.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Then lay out a clear plan for going forward. Discuss prioritization with your
+    team:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sometimes finishing the migration quickly may take priority.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sometimes the code remaining fully functional during the migration may be more
+    important.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: And so on…
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Further reading:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“Migrating from JavaScript”](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
+    in the TypeScript Handbook'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

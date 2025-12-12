@@ -1,0 +1,557 @@
+- en: 39 Testing types
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_testing-types.html](https://exploringjs.com/ts/book/ch_testing-types.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[39.1 Asserting at the type level](#asserting-at-the-type-level)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.2 How to check if a type is `any`?](#checking-if-type-is-any)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.3 How to check if two types are equal?](#checking-type-equality)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.3.1 A first attempt: `TMutuallyAssignable`](#a-first-attempt-tmutuallyassignable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.3.2 Disabling distribution](#disabling-distribution)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.3.3 Ensuring the `any` is only equal to itself](#TEqual)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.4 How do we assert that something must be `true`?](#how-do-we-assert-that-something-must-be-true)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.4.1 `Not`: utility type for boolean negation](#not-utility-type-for-boolean-negation)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.5 Asserting errors](#asserting-errors)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.5.1 A more complex example](#a-more-complex-example)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.6 Asserting the type of a value](#asserting-the-type-of-a-value)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.7 A use case for a type-level assertion in normal code](#type-level-assertions-in-normal-code)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.8 Running type-level tests](#running-type-level-tests)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[39.9 Further reading](#further-reading-11)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In this chapter, we explore how we can test that complicated TypeScript types
+    work as expected. To do that, we need assertions at the type level and other tools.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[39.1 Asserting at the type level](#asserting-at-the-type-level)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Writing more complicated types is like programming at a different level:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'At the program level, we use JavaScript – e.g.:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Values
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Functions with parameters
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'At the type level, we use (non-JavaScript) TypeScript – e.g.:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Types
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Generic types with type parameters
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'At the program level, we can use assertions such as [`assert.deepEqual()`](https://nodejs.org/api/assert.html#assertdeepequalactual-expected-message)
+    to test our code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'So how can we test type-level code – which is important for complicated types?
+    We also need assertions – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The generic types `Assert` and `Equal` are part of my npm package [`asserttt`](https://github.com/rauschma/asserttt).
+    In this chapter, we’ll use this package in two ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: On one hand, we reimplement its API to see how it works.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On the other hand, we use its API to check that what we have implemented works
+    as desired.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'To avoid confusion, the names of our types always start with `T`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`asserttt` type: `MutuallyAssignable`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Our version: `TMutuallyAssignable`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[39.2 How to check if a type is `any`?](#checking-if-type-is-any)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In this section, we explore how to check if a given type is `any`. That will
+    help us later with defining `TEqual<X, Y>`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'How can we detect `any` by only checking assignability via `extends`? Special
+    types we have to consider:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`any` is assignable to and from any type – with one exception: It’s not assignable
+    to `never`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Any type is assignable to `unknown`. `unknown` is not assignable to any type
+    (other than `unknown` and `any`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`never` is assignable to any type. No type (other than `never`) is assignable
+    to `never`; not even `any` can be assigned to `never`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Therefore, a type `T` is `any` if both:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`T` is assignable to the number literal type `1`.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The number literal type `2` is assignable to `T`.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'After check 1, `T` can be `1`, `never` or `any`. Check 2 excludes `1` and `never`.
+    This is an implementation of the two checks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[An even more concise solution](https://stackoverflow.com/questions/49927523/disallow-call-with-any/49928360#49928360)
+    was proposed by Joe Calzaretta:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: How does this code work?
+  prefs: []
+  type: TYPE_NORMAL
+- en: The condition `0 extends 1` fails. It checks if `0` is a subset of `1` (if `0`
+    is assignable to `1`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For all normal types `T`, the intersection `1 & T` is as big as the type `1`
+    or smaller. Therefore, the result of the check stays the same.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Only the type `any` is different, because `1 & any` is `any` and `0` is a subset
+    of `any`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[39.3 How to check if two types are equal?](#checking-type-equality)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The most important part of a type-level assertion API is checking whether two
+    types are equal. As it turns out, that is surprisingly difficult.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[39.3.1 A first attempt: `TMutuallyAssignable`](#a-first-attempt-tmutuallyassignable)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'What does two `X` and `Y` being equal actually mean? One reasonable definition
+    is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`X` is assignable to `Y` and'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Y` is assignable to `X`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We check assignability via `extends`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The test cases start off well: line A and line B produce the expected results
+    and even the more tricky check in line C works correctly.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Alas, in line D, the result is both `true` and `false`. Why is that? `TMutuallyAssignable`
+    is defined using conditional types and those are distributive over union types
+    ([more information](ch_conditional-types.html#distributivity-of-conditional-types)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[39.3.2 Disabling distribution](#disabling-distribution)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In order for `TMutuallyAssignable` to work as desired, we need to switch off
+    distribution. A conditional type is only distributive if the left-hand side of
+    `extends` is a bare type variable ([more information](ch_conditional-types.html#preventing-distributivity)).
+    Therefore, we can disable distribution by turning both sides of `extends` into
+    single-element tuples:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can simplify this `TMutuallyAssignable` a little by doing both `extends`
+    checks at the same time (the square brackets still ensure that no distribution
+    happens):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s test the non-distributive version of `TMutuallyAssignable`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now we can also handle union types correctly (line A). However, one problem
+    remains (line B): `any` is equal to any other type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If the expected type is `any` then all actual types are equal to it.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we expect a specific type then the actual type `any` will always be equal,
+    too.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[39.3.3 Ensuring the `any` is only equal to itself](#TEqual)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use `TMutuallyAssignable` to define a generic type `TEqual` that fixes
+    the issues with `any` (we use the utility `TIsAny` from earlier):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Our approach is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If both `X` and `Y` are `any`, they are equal.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If neither `X` nor `Y` is `any`, they are equal if they are mutually assignable.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, only `X` or only `Y` is `any` and they are not equal.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`TEqual` passes all of the following tests:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`TEqual` passes the test in line A, which `TMutuallyAssignable` failed. Line
+    B contains an addition check for `any` – to make sure everything works correctly.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[39.4 How do we assert that something must be `true`?](#how-do-we-assert-that-something-must-be-true)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'At the program/JavaScript level, we can throw an exception if an assertion
+    fails:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Alas, there is no way to fail at compile time in TypeScript. If there were,
+    it could look like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: This type has the same result as a `void` function if `B` is `true`. If it is
+    `false` then it fails at the type level, via the invented directive `fail`. The
+    closest thing to `fail` that TypeScript currently has, is returning `never`. However,
+    `never` does not immediately cause type checking errors.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Thankfully, there is a decent workaround that mostly gives us what we want:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'When we pass arguments to a generic type, the `extends` constraints of all
+    of its parameters must be fulfilled. Otherwise, we get a type-level failure. That’s
+    what we use in line A: The value we pass to `AssertType2` must be `true` or the
+    type checker complains.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This workaround has limits, though. The following functionality can only be
+    implemented via `fail`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[39.4.1 `Not`: utility type for boolean negation](#not-utility-type-for-boolean-negation)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Once we have `Equal` and `Assert`, we can implement more helper types – e.g.
+    `Not<B>`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The square brackets around `B` prevent distribution. `TNot` enables us to assert
+    that one type is *not* equal to another type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A generic type whose result is `true` or `false` is called a *predicate*. Such
+    types can be used with `Assert`. `Equal` and `Not` are predicates. But more predicates
+    are conceivable and useful – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`asserttt` defines [more predicates](https://github.com/rauschma/asserttt/blob/main/src/asserttt.ts).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[39.5 Asserting errors](#asserting-errors)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Sometimes, we need to test that an error happens where we expect it. At the
+    JavaScript level, we can use functions such as `assert.throws()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'At the type level, we can use `@ts-expect-error`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: By default, `@ts-expect-error` only checks *that* an error exists not which
+    error it is. To check the latter, we can use a tool such as [ts-expect-error](https://www.npmjs.com/package/ts-expect-error).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[39.5.1 A more complex example](#a-more-complex-example)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'For fun, let’s compare another JavaScript-level test with its analog at the
+    type level. This is the JavaScript code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: For the type-level code, I’m omitting the runtime type check – even though that
+    can often still make sense.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[39.6 Asserting the type of a value](#asserting-the-type-of-a-value)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'When testing types, we also may want to check if a value has a given type –
+    as provided via inference or a generic type. One way of doing so is via the `typeof`
+    operator (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Another option is via a helper function `assertType()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Using a program-level function makes this check less verbose because we can
+    directly accept program-level values, we don’t have to convert them to type-level
+    values via `typeof`. This is what `assertType()` looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We don’t do anything with the parameter `_value`; we only statically check
+    if it is assignable to the type parameter `T`. One limitation of `assertType()`
+    is that it only checks assignability; it does not check type equality. For example,
+    we can’t check that a value has the type `string` and not a more specific type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, the type of `value_abc` is assignable to `string` but it is not equal
+    to `string`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In contrast, `Equal` enables us to check that a value does not have a type
+    that is more specific than `string`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[39.7 A use case for a type-level assertion in normal code](#type-level-assertions-in-normal-code)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Occasionally, type-level assertions are even useful in normal (non-test) code.
+    For example, consider the following enum pattern:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s assume we want to use [Zod](ch_validating-external-data.html#ch_validating-external-data)
+    to validate a JSON property whose value is one of the keys of `OutputFormat`.
+    Then we need an Array that we can pass to [`z.enum()`](https://zod.dev/?id=zod-enums):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why don’t we create `OUTPUT_FORMAT_KEYS` via `Object.keys()`? Zod needs a tuple
+    so that it can infer a static type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'To ensure that `OUTPUT_FORMAT_KEYS` is consistent with `OutputFormatKey`, we
+    can use the following type-level assertion:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, we use an indexed access type `T[K]` to convert the Array `OUTPUT_FORMAT_KEYS`
+    to a union of the types of its elements ([more information](ch_computing-with-tuple-types.html#from-tuple-to-union)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[39.8 Running type-level tests](#running-type-level-tests)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'To run normal tests written in TypeScript, we run the transpiled JavaScript.
+    If tests include type-level assertions, we need to additionally type check them.
+    Two options are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: First run the JavaScript. Then type-check the tests via `tsc`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Run the tests via a tool such as [tsx](https://tsx.is) that type checks code
+    before running it.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[39.9 Further reading](#further-reading-11)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Overview of various type testing approaches: 2ality blog post [“Testing static
+    types in TypeScript”](https://2ality.com/2022/11/testing-static-types-typescript.html)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

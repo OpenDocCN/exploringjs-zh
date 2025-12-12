@@ -1,0 +1,1781 @@
+- en: 8 Guide to tsconfig.json
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_tsconfig-json.html](https://exploringjs.com/ts/book/ch_tsconfig-json.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.1 Features not covered by this chapter](#features-not-covered-by-this-chapter)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.2 Extending base files via `extends`](#extending-base-files-via-extends)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.3 Where are the input files?](#where-are-the-input-files)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.4 What is the output?](#what-is-the-output)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.4.1 Where are the output files written?](#where-are-the-output-files-written)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.4.2 Emitting source maps](#emitting-source-maps)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.4.3 Emitting `.d.ts` files (e.g. for libraries)](#emitting-d-ts-files-e-g-for-libraries)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.4.4 Fine-tuning emitted files](#fine-tuning-emitted-files)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.5 Language and platform features](#language-and-platform-features)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.5.1 `target`](#target)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.5.2 `lib`](#lib)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.5.3 `skipLibCheck`](#skipLibCheck)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.5.4 Types for the built-in Node.js APIs](#types-for-the-built-in-node-js-apis)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.6 Module system](#module-system)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.6.1 How does TypeScript look for imported modules?](#how-does-typescript-look-for-imported-modules)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.6.2 Running TypeScript directly (without generating JS files)](#running-typescript-directly)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.6.3 Importing JSON](#importing-json)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.6.4 Importing other non-TypeScript artifacts](#importing-other-non-typescript-artifacts)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7 Type checking](#type-checking)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7.1 `strict`](#strict)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7.2 `exactOptionalPropertyTypes`](#exactOptionalPropertyTypes)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7.3 `noFallthroughCasesInSwitch`](#noFallthroughCasesInSwitch)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7.4 `noImplicitOverride`](#noImplicitOverride)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7.5 `noImplicitReturns`](#noImplicitReturns)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7.6 `noPropertyAccessFromIndexSignature`](#noPropertyAccessFromIndexSignature)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7.7 `noUncheckedIndexedAccess`](#noUncheckedIndexedAccess)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.7.8 Type checking options that have good defaults](#type-checking-options-that-have-good-defaults)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.8 Compiling TypeScript with tools other than tsc](#compiling-without-tsc)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.8.1 Using tsc only for type checking](#noEmit)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.8.2 Generating `.js` files via type stripping: `erasableSyntaxOnly` and
+    `verbatimModuleSyntax`](#type-stripping)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.8.3 `erasableSyntaxOnly`: no transpiled language features](#erasableSyntaxOnly)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.8.4 `verbatimModuleSyntax`: enforcing `type` in imports and exports](#verbatimModuleSyntax)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.8.5 `isolatedDeclarations`: generating `.d.ts` files more efficiently](#isolatedDeclarations)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.9 Importing CommonJS from ESM](#importing-commonjs-from-esm)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.9.1 `allowSyntheticDefaultImports`: type-checking default imports of CommonJS
+    modules](#allowSyntheticDefaultImports)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.9.2 `esModuleInterop`: better compilation of TypeScript to CommonJS code](#esModuleInterop)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.10 One more option with a good default](#one-more-option-with-a-good-default)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.11 Visual Studio Code](#visual-studio-code)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.12 Summary: Assemble your `tsconfig.json` by answering four questions](#tsconfig-summary)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.12.1 Do you want to transpile new JavaScript to older JavaScript?](#do-you-want-to-transpile-new-javascript-to-older-javascript)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.12.2 Should TypeScript only allow JavaScript features at the non-type level?](#should-typescript-only-allow-javascript-features-at-the-non-type-level)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.12.3 Which filename extension do you want to use in local imports?](#which-filename-extension-do-you-want-to-use-in-local-imports)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.12.4 What files should tsc emit?](#what-files-should-tsc-emit)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.13 Further reading](#further-reading-2)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.13.1 `tsconfig.json` recommendations by other people](#tsconfig-recommendations)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[8.13.2 Sources of this chapter](#sources-of-this-chapter)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '![Icon “details”](../Images/837806d7ec89826c3784b2e685feb762.png) **Version:
+    TypeScript 5.8**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter covers `tsconfig.json` as supported by TypeScript 5.8.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This chapter documents all common options of the TypeScript configuration file
+    [`tsconfig.json`](https://www.typescriptlang.org/tsconfig/):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This knowledge will enable you to understand and simplify your `tsconfig.json`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If you don’t have the time to read the chapter, you can jump to [the summary](#tsconfig-summary)
+    at the end where I show a starter `tsconfig.json` file with all settings – along
+    with four questions to determine which settings you can delete.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: I also link to [the `tsconfig.json` recommendations](#tsconfig-recommendations)
+    by several well-known TypeScript programmers. (I went through them when I researched
+    this chapter.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.1 Features not covered by this chapter](#features-not-covered-by-this-chapter)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This chapter only describes how to set up projects whose local modules are all
+    ESM. It does give tips for importing CommonJS, though.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Not explained here:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Importing and type-checking plain JavaScript in your code base, namely the options
+    [`allowJs`](https://www.typescriptlang.org/tsconfig/#allowJs) and [`checkJs`](https://www.typescriptlang.org/tsconfig/#checkJs).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How to set up JSX. See [“JSX”](https://www.typescriptlang.org/docs/handbook/jsx.html)
+    in the TypeScript Handbook.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '“Projects” (useful for monorepos): option `composite` etc. For more information
+    on this topic, see:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Chapter [“Project References”](https://www.typescriptlang.org/docs/handbook/project-references.html)
+    in the TypeScript Handbook
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: My blog post [“Simple monorepos via npm workspaces and TypeScript project references”](https://2ality.com/2021/07/simple-monorepos.html)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.2 Extending base files via `extends`](#extending-base-files-via-extends)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This option lets us refer to an existing `tsconfig.json` via a module specifier
+    (as if we imported a JSON file). That file becomes the *base* that our tsconfig
+    *extends*. That means that our tsconfig has all the option of the base, but can
+    override any of them and can add options not mentioned in the base.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The GitHub repository [`tsconfig/bases`](https://github.com/tsconfig/bases)
+    lists bases that are available under the npm namespace `@tsconfig` and can be
+    used like this (after they were installed locally via npm):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: Alas, none of these files suit my needs. But they can serve as an inspiration
+    for your tsconfig.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.3 Where are the input files?](#where-are-the-input-files)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On one hand, we have to tell TypeScript what the input files are. These are
+    the available options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`files`: an exhaustive array of all input files'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`include`: Specifies the input files via an array of patterns with wildcards
+    that are interpreted as relative to `tsconfig.json`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`exlude`: Specifies which files should be excluded from the `include` set of
+    files – via an array of patterns.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.4 What is the output?](#what-is-the-output)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[8.4.1 Where are the output files written?](#where-are-the-output-files-written)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'How TypeScript determines where to write an output file:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It takes the input path (relative to `tsconfig.json`),
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: removes the prefix specified by `rootDir` and
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: “appends” the result to `outDir`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'As an example, consider the following `tsconfig.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Consequences of these settings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Input: `src/util.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Output: `dist/util.js`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Input: `src/test/integration_test.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Output: `dist/test/integration_test.js`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.4.1.1 Putting `src/` and `test/` next to each other](#src-test-siblings)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: I like the idea of having a separate directory `test/` that is a sibling of
+    `src/`. However then the output files in `dist/` are more deeply nested inside
+    the project’s directory than the input files in `src/` and `test/`. That means
+    that we can’t access files such as `package.json` via relative module specifiers.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`tsconfig.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Consequences of these settings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Input: `src/util.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Output: `dist/src/util.js`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Input: `test/integration_test.ts`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Output: `dist/test/integration_test.js`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.4.1.2 Default values of `rootDir`](#default-values-of-rootdir)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The default value of `rootDir` depends on the input file paths. I find that
+    too unpredictable and always specify it explicitly. It is the longest common prefix
+    of the input file paths.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Example 1:** Default value is `''src''` (relative to the project directory)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`tsconfig.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Example 2:** Default value is `''src/core/cli''`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`tsconfig.json`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Example 3:**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`tsconfig.json`: Default value is `''.''`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.4.2 Emitting source maps](#emitting-source-maps)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`sourceMap` produces source map files that point from the transpiled JavaScript
+    to the original TypeScript. That helps with debugging and is usually a good idea.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.4.3 Emitting `.d.ts` files (e.g. for libraries)](#emitting-d-ts-files-e-g-for-libraries)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we want TypeScript code to consume our transpiled TypeScript code, we usually
+    should include `.d.ts` files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: Optionally, we can include the TypeScript source code in our npm package and
+    activate `declarationMap`. Then importers can, e.g., click on types or go to the
+    definition of a value and their editor will send them to the original source code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.4.3.1 Option `declarationDir`](#option-declarationdir)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: By default, each `.d.ts` file is put next to its `.js` file. If you want to
+    change that, you can use option [`declarationDir`](https://www.typescriptlang.org/tsconfig/#declarationDir).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.4.4 Fine-tuning emitted files](#fine-tuning-emitted-files)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: The values shown above are the defaults.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`newLine` configures the line endings for emitted files. Allowed values are:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"lf"`: "n" (Unix)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"crlf"`: "rn" (Windows)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`removeComments`: If active, all comments in TypeScript files are omitted in
+    transpiled JavaScript files. I’m weakly in favor of sticking with the default
+    and not removing comments:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It helps with reading transpiled JavaScript – especially if the TypeScript source
+    code isn’t included.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Bundlers remove comments.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On Node.js, the added burden doesn’t matter much.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.5 Language and platform features](#language-and-platform-features)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.5.1 `target`](#target)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`target` determines which newer JavaScript syntax is transpiled to older syntax.
+    For example, if the target is `"ES5"` then an arrow function `() => {}` is transpiled
+    to a function expression `function () {}`. Values can be:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`"ESNext"`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"ES5"`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"ES6"`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"ES2015"` (same as `"ES6"`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"ES2016"`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"ESNext"` means that nothing is ever transpiled. I find that setting easiest
+    to deal with. It’s also the best setting if you don’t use `tsc` and use type stripping
+    (which never transpiles anything either).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.5.1.1 How to pick a good `"ES20YY"` target](#how-to-pick-a-good-es20yy-target)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we want to transpile, we have to pick an ECMAScript version that works for
+    our target platforms. There are two tables that provide good overviews:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For browsers: [`compat-table.github.io`](https://compat-table.github.io/compat-table/es2016plus/)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For Node.js: [`node.green`](https://node.green/)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Additionally, [the official tsconfig bases](https://github.com/tsconfig/bases)
+    all provide values for `target`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.5.2 `lib`](#lib)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`lib` determines which types for built-in APIs are available – e.g. `Math`
+    or methods of built-in types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: There are categories such as `"ES2024"` and `"DOM"` and subcategories such as
+    `"DOM.Iterable"` and `"ES2024.Promise"`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Which values are available? We can look them up here:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Auto-completion (e.g. in Visual Studio Code)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[TypeScript documentation](https://www.typescriptlang.org/tsconfig/#lib)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[TypeScript source code repository](https://github.com/microsoft/TypeScript/tree/main/src/lib)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The values are case-insensitive: Visual Studio Code’s autocompletion suggestions
+    contain many capital letters; the filenames contain none. `lib` values can be
+    written either way.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: When does TypeScript support a given API? It must be “available un-prefixed/flagged
+    in at least 2 browser *engines* (i.e. not just 2 chromium browsers)” ([source](https://github.com/microsoft/TypeScript/tree/main/src/lib)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.5.2.1 Setting up `lib` via `target`](#setting-up-lib-via-target)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`target` determines the default value of `lib`: If the latter is omitted and
+    `target` is `"ES20YY"` then `"ES20YY.Full"` is used. However, that is not a value
+    we can use ourselves. If we want to replicate what removing `lib` does, we have
+    to enumerate the contents of (e.g.) `es2024.full.d.ts` in the [TypeScript source
+    code repository](https://github.com/microsoft/TypeScript/tree/main/src/lib) ourselves:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In this file, we can observe an interesting phenomenon:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Category `"ES20YY"` usually includes all of its subcategories.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Category `"DOM"` doesn’t – e.g., subcategory `"DOM.Iterable"` is not yet part
+    of it.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Among other things, `"DOM.Iterable"` enables iteration over NodeLists – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.5.3 `skipLibCheck`](#skipLibCheck)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`skipLibCheck:false` – By default, TypeScript type-checks all `.d.ts` files.
+    This is normally not necessary but helps when a project contains hand-written
+    `.d.ts` files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`skipLibCheck:true` – If we switch it off, then TypeScript will only type-check
+    library functionality we use in our code. That saves time – which is why I went
+    with `true`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.5.4 Types for the built-in Node.js APIs](#types-for-the-built-in-node-js-apis)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The types for the Node.js APIs must be installed via [an npm package](https://www.npmjs.com/package/@types/node):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.6 Module system](#module-system)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[8.6.1 How does TypeScript look for imported modules?](#how-does-typescript-look-for-imported-modules)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'These options affect how TypeScript looks for imported modules:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.6.1.1 Option `module`](#option-module)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'With this option, we specify systems for handling modules. If we set it up
+    correctly, we also take care of the related option `moduleResolution`, for which
+    it provides good defaults. The TypeScript documentation recommends either of the
+    following two values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Node.js: `"NodeNext"` supports both CommonJS and the latest ESM features.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Implies `"moduleResolution": "NodeNext"`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Downside of `"NodeNext"`: It’s a moving target. But generally, functionality
+    is only added.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Upside of `"NodeNext"`: It supports a good mix of features – for example ([source](https://github.com/microsoft/TypeScript/pull/60761)):'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"Node16"` does not support import attributes (which are needed for importing
+    JSON files).'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"Node18"` and `"Node20"` support the outdated import assertions.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`require(esm)` (which is only relevant for CommonJS code, not for ESM code)
+    is only supported by `"Node20"` and `"NodeNext"`.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Bundlers: `"Preserve"` supports both CommonJS and the latest ESM features.
+    It matches what most bundlers do.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Implies `"moduleResolution": "bundler"`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Given that bundlers mostly mimic what Node.js does, I’m always using `"NodeNext"`
+    and haven’t encountered any issues.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that in both cases, TypeScript forces us to mention the complete names
+    of local modules we import. We can’t omit filename extensions as was frequent
+    practice when Node.js was only compiled to CommonJS. The new approach mirrors
+    how pure-JavaScript ESM works.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`module:NodeNext` implies `target:ESNext` but in this case, I prefer to manually
+    set up `target` because `module` and `target` are not as closely related as `module`
+    and `moduleResolution`. Furthermore, `module:Bundler` does not imply anything.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.6.1.2 Option `noUncheckedSideEffectImports`](#option-nouncheckedsideeffectimports)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'By default, TypeScript does not complain if an empty import does not exist.
+    The reason for this behavior is that this is a pattern supported by some bundlers
+    to associate non-TypeScript artifacts with modules. And TypeScript only sees TypeScript
+    files. This is what such an import looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: Interestingly, TypeScript normally is also OK with emptily imported TypeScript
+    files that don’t exist. It only complains if we import something from a non-existent
+    file.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: Setting `noUncheckedSideEffectImports` to `true` changes that. I’m explaining
+    an alternative for importing non-TypeScript artifacts [later](#importing-other-non-typescript-artifacts).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.6.2 Running TypeScript directly (without generating JS files)](#running-typescript-directly)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: Most non-browser JavaScript platforms now can run TypeScript code directly,
+    without transpiling it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This mainly affects what filename extension we use when we import a local module.
+    Traditionally, TypeScript does not change module specifiers and we have to use
+    the filename extension `.js` in ESM modules (which is what works in the JavaScript
+    that our TypeScript is compiled to):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we run TypeScript directly, that import statement looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is enabled via the following settings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`allowImportingTsExtensions`: If this option is active, TypeScript won’t complain
+    if we use the filename extension `.ts`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`rewriteRelativeImportExtensions`: With this option, we can also transpile
+    TypeScript code that is meant to be run directly. By default, TypeScript does
+    not change the module specifiers of imports. This option comes with a few caveats:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Only relative paths are rewritten.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: They are rewritten “naively” – without taking the options `baseUrl` and `paths`
+    into consideration (which are beyond the scope of this chapter).
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Paths that are routed via the `"exports"` and `"imports"` properties in `package.json`
+    don’t look like relative paths and are therefore not rewritten either.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Related option:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If you want to use tsc only for type checking, then take a look at [the `noEmit`
+    option](#noEmit).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.6.2.1 Node’s built-in support for TypeScript](#typescript-in-nodejs)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Node.js now supports TypeScript via *type stripping*:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[More information on type stripping and option `erasableSyntaxOnly` that helps
+    with it](#erasableSyntaxOnly)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Node’s official documentation on its TypeScript support](https://nodejs.org/api/typescript.html)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.6.3 Importing JSON](#importing-json)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The option `resolveJsonModule` enables us to import JSON files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.6.4 Importing other non-TypeScript artifacts](#importing-other-non-typescript-artifacts)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Whenever we import a file `basename.ext` whose extension `ext` TypeScript doesn’t
+    know, it looks for a file `basename.d.ext.ts`. If it can’t find it, it raises
+    an error. The TypeScript documentation has [a good example](https://www.typescriptlang.org/tsconfig/#allowArbitraryExtensions)
+    of what such a file can look like.
+  prefs: []
+  type: TYPE_NORMAL
+- en: There are two ways in which we can prevent TypeScript from raising errors for
+    unknown imports.
+  prefs: []
+  type: TYPE_NORMAL
+- en: First, we can use option `allowArbitraryExtensions` to prevent any kind of error
+    reporting in this case.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Second, we can create an *ambient module declaration* with a wildcard specifier
+    – a `.d.ts` file that has to be somewhere among the files that TypeScript is aware
+    of. The following example suppresses errors for all imports with the filename
+    extension `.css`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.7 Type checking](#type-checking)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`strict` is a must, in my opinion. With the remaining settings, you have to
+    decide for yourself if you want the additional strictness for your code. You can
+    start by adding all of them and see which ones cause too much trouble for your
+    taste.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.7.1 `strict`](#strict)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The compiler setting `strict` provides an important minimal setting for type
+    checking. In principle, this setting would default to `true` but backward compatibility
+    makes that impossible.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “tip”](../Images/0873709827ba4924e4afbb757e47a4df.png) **The compiler
+    option `strict` in a nutshell**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`strict` basically means: Type-check as much as possible, as correctly as possible.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`strict` activates the following settings (which won’t be mentioned again in
+    this chapter):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`alwaysStrict`: always emit `"use strict"` in script files. That’s a legacy
+    JavaScript feature that’s not needed in ECMAScript modules.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`noImplicitAny`: If `true`, we can omit types in some locations (mainly parameter
+    definitions) and TypeScript will (implicitly) infer the type `any`. If `false`,
+    we must provide explicit type annotations – which can use the type `any` (explicitly).
+    For more information, see [“The compiler option `noImplicitAny`” (§14.2.3)](ch_any-unknown.html#noImplicitAny).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`noImplicitThis`: If we use `this` in ordinary functions, we must explicitly
+    declare its type.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`strictBindCallApply`: If `true`, TypeScript will check that we pass correct
+    arguments to `.call()`, `.apply()` and `.bind()`. If `false`, we can pass any
+    arguments to those methods.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`strictBuiltinIteratorReturn`: If active, built-in iterators have the `TReturn`
+    type `undefined` (instead of `any`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`strictFunctionTypes`: If `true`, compatibility between function types is handled
+    more correctly.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`strictNullChecks`: If `true`, the values `undefined` and `null` are not elements
+    of normal types `T`. If we want to accept them, we have to use the type `undefined
+    | T` or `null | T`, respectively.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`strictPropertyInitialization`: If `true`, TypeScript warns us if we don’t
+    initialize a class instance property in the constructor. For more information,
+    see [“Strict property initialization” (§21.4.1)](ch_class-definitions.html#strictPropertyInitialization).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`useUnknownInCatchVariables`: If `true`, TypeScript gives `catch` variables
+    without type annotations the type `unknown` (instead of `any`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.7.2 `exactOptionalPropertyTypes`](#exactOptionalPropertyTypes)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If `true` then `.colorTheme` can only be omitted and not be set to `undefined`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This option also prevents optional tuple elements being `undefined` (vs. missing):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.7.2.1 `exactOptionalPropertyTypes` prevents useful patterns](#exactoptionalpropertytypes-prevents-useful-patterns)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'I’m ambivalent about this option: On one hand, enabling it prevents useful
+    patterns such as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.7.2.2 `exactOptionalPropertyTypes` produces better types: spreading](#exactoptionalpropertytypes-produces-better-types-spreading)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'On the other hand, it does better reflect how JavaScript works – e.g., spreading
+    distinguishes missing properties and properties whose values are `undefined`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: If we had assigned an empty object in line A then the value of `result` would
+    be `{a:1}` and match its type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.assign()` works similarly to spreading.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.7.2.3 `exactOptionalPropertyTypes` produces better types: `in` operator](#exactoptionalpropertytypes-produces-better-types-in-operator)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.7.3 `noFallthroughCasesInSwitch`](#noFallthroughCasesInSwitch)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If `true`, non-empty `switch` cases must end with `break`, `return` or `throw`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.7.4 `noImplicitOverride`](#noImplicitOverride)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If `true` then methods that override superclass methods must have the `override`
+    modifier.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.7.5 `noImplicitReturns`](#noImplicitReturns)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If `true` then an “implicit return” (the function or method ending) is only
+    allowed if the return type is `void`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.7.6 `noPropertyAccessFromIndexSignature`](#noPropertyAccessFromIndexSignature)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If `true` then for types such as the following one, we cannot use the dot notation
+    for unknown properties, only for known ones:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.7.7 `noUncheckedIndexedAccess`](#noUncheckedIndexedAccess)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[8.7.7.1 `noUncheckedIndexedAccess` and objects](#nouncheckedindexedaccess-and-objects)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If `noUncheckedIndexedAccess` is `true` then the type of an unknown property
+    is the union of `undefined` and the type of the index signature:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`noUncheckedIndexedAccess` does the same for `Record` (which is a mapped type):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.7.7.2 `noUncheckedIndexedAccess` and Arrays](#nouncheckedindexedaccess-and-arrays)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Option `noUncheckedIndexedAccess` also affects how Arrays are handled:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'One common pattern for Arrays is to check the length before accessing an element.
+    However, that pattern becomes inconvenient with `noUncheckedIndexedAccess`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Therefore, it makes more sense to use a different pattern:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.7.8 Type checking options that have good defaults](#type-checking-options-that-have-good-defaults)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'By default, the following options produce warnings in editors, but we can also
+    choose to produce compiler errors or ignore problems:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`allowUnreachableCode`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`allowUnusedLabels`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`noUnusedLocals`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`noUnusedParameters`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.8 Compiling TypeScript with tools other than tsc](#compiling-without-tsc)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The TypeScript compiler tsc performs three tasks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Type checking
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Emitting JavaScript files
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Emitting declaration files
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'External tools have become popular that do #2 and #3 much faster. The following
+    subsections describe configuration options that help those tools.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.8.1 Using tsc only for type checking](#noEmit)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Sometimes, we want to use tsc only for type checking – e.g., if we run TypeScript
+    directly or use external tools for compiling TypeScript files (to JavaScript files,
+    declaration files, etc.):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`noEmit`: If `true`, we can run tsc and it will only type-check the TypeScript
+    code, it won’t emit any files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In principle, you don’t have to provide output-related settings such as `rootDir`
+    and `outDir` anymore. However, some external tools may need them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.8.2 Generating `.js` files via type stripping: `erasableSyntaxOnly` and
+    `verbatimModuleSyntax`](#type-stripping)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: '*Type stripping* is a simple and fast way of compiling TypeScript to JavaScript.
+    It’s what Node.js uses when it runs TypeScript. Type stripping is fast because
+    it only supports a subset of TypeScript where two things are possible:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Type syntax can be detected and removed by only parsing the syntax – without
+    performing additional semantic analyses.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'No non-type language features are transpiled. In other words: Removing the
+    type syntax is enough to produce JavaScript.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'To help with type stripping, TypeScript has two compiler options that report
+    errors if we use unsupported features:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`verbatimModuleSyntax` forbids features that prevent #1.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`erasableSyntaxOnly` forbids features that are transpiled.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Note that these options don’t change what is emitted by tsc.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Useful related knowledge: [“Type stripping technique: replacing types with
+    spaces” (§6.5.1.1)](ch_typescript-workflows.html#ts-blank-space).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.8.3 `erasableSyntaxOnly`: no transpiled language features](#erasableSyntaxOnly)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The compiler option `erasableSyntaxOnly` helps with [type stripping](#type-stripping).
+    It forbids non-type TypeScript features that are not “current” JavaScript (as
+    supported by the target platforms) and have to be transpiled. These are the most
+    important ones:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: JSX
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Enums
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Parameter properties](https://www.typescriptlang.org/docs/handbook/2/classes.html#parameter-properties)
+    in class constructors.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Namespaces
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Future JavaScript that is compiled to current JavaScript
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Another feature that is forbidden by `erasableSyntaxOnly` is the legacy way
+    of casting via angle brackets – because its syntax makes type stripping impossible
+    in some cases ([source](https://github.com/microsoft/TypeScript/pull/61244)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, the alternative `as` is always better anyway:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.8.4 `verbatimModuleSyntax`: enforcing `type` in imports and exports](#verbatimModuleSyntax)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The compiler option `verbatimModuleSyntax` forces us to add the keyword `type`
+    to type-only imports and exports.
+  prefs: []
+  type: TYPE_NORMAL
+- en: When compiling TypeScript to JavaScript via [type stripping](#type-stripping),
+    we need to remove the TypeScript parts. Most of those parts are easy to detect.
+    The exception are imports and exports – e.g., without semantic analysis, we don’t
+    know if an import is a (TypeScript) type or a (JavaScript) value. If type-only
+    imports and exports are marked with the keyword `type`, no such analysis is necessary.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.8.4.1 Importing types](#importing-types)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is what the keyword `type` looks like in imports:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that a class is both a value and a type. In that case, no `type` keyword
+    is needed because that part of the syntax can stay in plain JavaScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can also apply `type` to the whole import:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.8.4.2 Exporting types](#exporting-types)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Inline type exports:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Export clauses:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Alas, default-exporting only works for interfaces:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can use the following workaround:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why does this inconsistency exist? `type` is allowed as a (JavaScript-level)
+    identifier after `export default`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.8.4.3 `isolatedModules`](#isolatedModules)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Activating `verbatimModuleSyntax` also activates `isolatedModules`, which is
+    why we only need the former setting. The latter prevents us from using some relatively
+    obscure features that are also problematic.
+  prefs: []
+  type: TYPE_NORMAL
+- en: As an aside, this option enables esbuild to compile TypeScript to JavaScript
+    ([source](https://esbuild.github.io/content-types/#isolated-modules)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.8.5 `isolatedDeclarations`: generating `.d.ts` files more efficiently](#isolatedDeclarations)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Option `isolatedDeclarations` helps external tools compile TypeScript files
+    to declaration files, by forcing us to add more type annotations so that no type
+    inference is needed for compilation (trivially simple type inference is still
+    allowed – more on that soon). That has several benefits:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The tools don’t need to know the logic of type inference – which makes them
+    simpler. Extracting declarations becomes a syntactic operation and doesn’t really
+    have to consider the type level.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Not having to run type inference saves time.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We can look at single files in isolation: Type inference sometimes has to visit
+    other files to compute its results, which introduces dependencies on those files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Incidentally, that explains the name of the compiler option.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`isolatedDeclarations` only produces compiler errors, it does not change what
+    is emitted by tsc. It only affects constructs that are exported – because only
+    those show up in declaration files. Module-internal code is not affected.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Let’s look at three constructs affected by `isolatedDeclarations`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.8.5.1 Return types of top-level functions](#return-types-of-top-level-functions)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'For top-level functions, we should usually explicitly specify return types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.8.5.2 Types of variable declarations](#types-of-variable-declarations)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'More complicated variable declarations must have type annotations. Note that
+    this only affects top-level declarations – e.g.: Variable declarations inside
+    functions don’t show up in declaration files and therefore don’t matter.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.8.5.3 Types of class instance fields](#types-of-class-instance-fields)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Class instance fields must have type annotations (even though `tsc` can infer
+    their types if there is an assignment in the constructor):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.8.5.4 `isolatedDeclarations` requires `declaration` or `composite`](#isolateddeclarations-requires-declaration-or-composite)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'I’d love to always use `isolatedDeclarations`, but TypeScript only allows it
+    if option `declaration` or option `composite` are active. [Jake Bailey explains
+    why that is](https://github.com/microsoft/TypeScript/issues/58262#issuecomment-2597014286):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: At the implementation level, `isolatedDeclarations` diagnostics are extra declaration
+    diagnostics produced by the declaration transformer, which we only run when `declaration`
+    is enabled.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Theoretically it could be implemented such that `isolatedDeclarations` enables
+    those checks (the diagnostics actually come from us running the transformer and
+    then throwing away the resulting AST), but it is a change from the original design.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[8.8.5.5 Further reading](#further-reading-1)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: The TypeScript 5.5 release notes have [a comprehensive section](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5/#isolated-declarations)
+    on isolated declarations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.9 Importing CommonJS from ESM](#importing-commonjs-from-esm)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'One key issue affects importing a CommonJS module from an ESM module:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In ESM, the default export is the property `.default` of the module namespace
+    object.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In CommonJS, the module object *is* the default export – e.g., there are many
+    CommonJS modules that set `module.exports` to a function.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Let’s look at two options that help.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.9.1 `allowSyntheticDefaultImports`: type-checking default imports of CommonJS
+    modules](#allowSyntheticDefaultImports)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This option only affects type checking, not the JavaScript code emitted by
+    TypeScript: If active, a default import of a CommonJS module refers to `module.exports`
+    (not `module.exports.default`) – but only if there is no `module.exports.default`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This reflects how Node.js handles default imports of CommonJS modules ([source](https://nodejs.org/api/esm.html#interoperability-with-commonjs)):
+    “When importing CommonJS modules, the `module.exports` object is provided as the
+    default export. Named exports may be available, provided by static analysis as
+    a convenience for better ecosystem compatibility.”'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Do we need this option?** Yes, but it’s automatically activated if `moduleResolution`
+    is `"bundler"` or if `module` is `"NodeNext"` (which activates `esModuleInterop`
+    which activates `allowSyntheticDefaultImports`).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.9.2 `esModuleInterop`: better compilation of TypeScript to CommonJS code](#esModuleInterop)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This option affects emitted CommonJS code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If `false`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`import * as m from ''m''` is compiled to `const m = require(''m'')`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`import m from ''m''` is (roughly) compiled to `const m = require(''m'')` and
+    every access of `m` is compiled to `m.default`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `true`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`import * as m from ''m''` assigns a new object to `m` that has the same properties
+    as `module.exports` plus a property `.default` that refers to `module.exports`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`import m from ''m''` assigns a new object to `m` that has a single property
+    `.default` that refers to `module.exports`. Every access of `m` is compiled to
+    `m.default`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a CommonJS module has the marker property `.__esModule` then it is always
+    imported as if `esModuleInterop` were switched off.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Do we need this option?** No, since we only author ESM modules.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.10 One more option with a good default](#one-more-option-with-a-good-default)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We can usually ignore this option:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`moduleDetection`: This option configures how TypeScript determines whether
+    a file is a script or a module. It can usually be omitted because its default
+    `"auto"` works well in most cases. You only need to explicitly set it to `"force"`
+    if your codebase has a module that has neither imports nor exports. If `module`
+    is `"NodeNext"` and `package.json` has `"type":"module"` then even those files
+    are interpreted as modules.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.11 Visual Studio Code](#visual-studio-code)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'If you are unhappy with the module specifiers for local imports in automatically
+    created imports then you can take a look at the following two settings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs: []
+  type: TYPE_PRE
+- en: By default, VSC should now be smart enough to add filename extensions where
+    necessary.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.12 Summary: Assemble your `tsconfig.json` by answering four questions](#tsconfig-summary)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This is a starter `tsconfig.json` file with all settings. The following subsections
+    explain which parts to remove – depending on your needs.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Alternatively, you can use my interactive [tsconfig configurator](https://github.com/rauschma/tsconfigurator)
+    via the command line or online.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.12.1 Do you want to transpile new JavaScript to older JavaScript?](#do-you-want-to-transpile-new-javascript-to-older-javascript)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'TypeScript can transpile new JavaScript features to code that only uses older
+    “target” features. That can help support older JavaScript engines. If that’s what
+    you want, you must change `"target"`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE55]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[8.12.2 Should TypeScript only allow JavaScript features at the non-type level?](#should-typescript-only-allow-javascript-features-at-the-non-type-level)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In other words: Should all non-JavaScript syntax be erasable? If yes, then
+    these are the main features that are forbidden: JSX, enums, constructor parameter
+    properties, and namespaces.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The starter tsconfig only allows erasable syntax. If you want to use any of
+    the aforementioned features, then remove section “Only JS at non-type level”.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.12.3 Which filename extension do you want to use in local imports?](#which-filename-extension-do-you-want-to-use-in-local-imports)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The starter tsconfig enables `.ts` in imports. If you want to use `.js`, you
+    can remove section “Use filename extension .ts in imports”.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.12.4 What files should tsc emit?](#what-files-should-tsc-emit)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If `tsc` should emit *some* files, remove property `"noEmit"`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `tsc` should *not* emit JavaScript, remove subsection “Output: .js”.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `tsc` should *not* emit declarations, remove subsection “Output: .d.ts”.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If no files are emitted, you can remove the following properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`"rootDir"`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`"outDir"`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Emitted files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| File | `tsconfig.json` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `*.js` | Default (deactivated via `"noEmit": true`) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `*.js.map` | `"sourceMap": true` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `*.d.ts` | `"declaration": true` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `*.d.ts.map` | `"declarationMap": true` |'
+  prefs: []
+  type: TYPE_TB
+- en: Source maps (`.map`) are only emitted if their source files are emitted.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[8.13 Further reading](#further-reading-2)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[8.13.1 `tsconfig.json` recommendations by other people](#tsconfig-recommendations)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Matt Pocock’s [“The TSConfig Cheat Sheet”](https://www.totaltypescript.com/tsconfig-cheat-sheet)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pelle Wessman’s [`base.json`](https://github.com/voxpelli/tsconfig/blob/main/base.json)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sindre Sorhus’ [`tsconfig.json`](https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[8.13.2 Sources of this chapter](#sources-of-this-chapter)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Some of the sources were already mentioned earlier. These are additional sources
+    I used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[The official TSConfig documentation](https://www.typescriptlang.org/tsconfig/)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Section “Path Rewriting for Relative Paths”](https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/#path-rewriting-for-relative-paths)
+    in the TypeScript 5.7 announcement.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The esbuild documentation makes [interesting observations](https://esbuild.github.io/content-types/#typescript)
+    about compiling TypeScript.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

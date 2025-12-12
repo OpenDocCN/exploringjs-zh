@@ -1,0 +1,828 @@
+- en: 30 Type guards and narrowing
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_type-guards.html](https://exploringjs.com/ts/book/ch_type-guards.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.1 Type guards and narrowing](#type-guards-and-narrowing-1)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.1.1 Example: a type guard with `===`](#example-a-type-guard-with)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.1.2 Example: a type guard with `typeof`](#example-a-type-guard-with-typeof)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.2 When do we need to narrow types?](#when-do-we-need-to-narrow-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.2.1 The type `unknown` is usually too general](#the-type-unknown-is-usually-too-general)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.3 Where can we use type guards?](#where-can-we-use-type-guards)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.3.1 Type guards can also affect parts of expressions](#type-guards-can-also-affect-parts-of-expressions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.4 What kinds of type guards are built-in?](#what-kinds-of-type-guards-are-built-in)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.4.1 `typeof`, `instanceof`, `Array.isArray`](#typeof-instanceof-array-isarray)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.4.2 Strict equality (`===`) and strict inequality(`!==`)](#strict-equality-and-strict-inequality)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.4.3 Truthiness checks](#truthiness-checks)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.4.4 Checking for distinct properties via the operator `in`](#checking-for-distinct-properties-via-the-operator-in)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.4.5 Checking the value of a shared property (discriminated unions)](#checking-the-value-of-a-shared-property-discriminated-unions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.5 Narrowing via assignment](#narrowing-via-assignment)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.5.1 Narrowing storage locations with explicit types](#narrowing-storage-locations-with-explicit-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.5.2 Narrowing variables without explicit types](#narrowing-variables-without-explicit-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.6 For which storage locations can we use type-narrowing?](#for-which-storage-locations-can-we-use-type-narrowing)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.6.1 Narrowing the types of dotted names](#narrowing-the-types-of-dotted-names)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.6.2 Narrowing Array element types](#narrowing-array-element-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.7 User-defined type guard functions](#user-defined-type-guard-functions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.7.1 Example: `isNonNullable()`](#example-isnonnullable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.7.2 Example: helping `.every()` with a user-defined type guard](#example-helping-every-with-a-user-defined-type-guard)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.7.3 `this`-based type guards](#this-based-type-guards)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.7.4 Inferred type predicates](#inferred-type-predicates)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[30.7.5 Advanced example: user-defined type guard `isTypeOf()`](#advanced-example-user-defined-type-guard-istypeof)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Sometimes a value `nameOpt` has a type that is not specific enough – e.g.,
+    the type `null | string`. Before we can do anything with `nameOpt`, we have to
+    check whether it is `null` or a string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The condition of such a check is called a *type guard*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As a result of the check, the type becomes more specific (smaller) and is either
+    `null` or `string`. That process is called *narrowing*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In this chapter, we explore type guards and narrowing.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.1 Type guards and narrowing](#type-guards-and-narrowing-1)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[30.1.1 Example: a type guard with `===`](#example-a-type-guard-with)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is a first example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The initial type of `nameOpt`, `null | string` is too general:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Before we can work with it, we need to *narrow* it – make it more specific.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We achieve that via the `if` statement in line A. Its condition is called a
+    *type guard*: an expression with a boolean result that examines the type of `nameOpt`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In line B, we can see that the `if` statement with the type guard did indeed
+    narrow the type of `nameOpt` inside the if-branch: At its start, it is `null`.
+    We can also see that in the else-branch, the type of `nameOpt` is `string`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The assignment in line C also changes the type of `nameOpt`. It doesn’t narrow
+    its previous type, it narrows its original type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Control flow analysis.** After both branches of `if` (in line D), the type
+    of `nameOpt` is `string` because that’s what its type is at the end of both branches.
+    So TypeScript traces what happens in both branches and adjusts the type accordingly.
+    This kind of tracing is called *control flow analysis*.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**The effect of a type guard is static and dynamic.** It’s interesting that
+    a type guard is always tied to a value that exists at runtime. Its has an effect
+    at the type level and at the JavaScript level.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Narrowing produces subsets of types.** In this chapter, we interpret types
+    as sets of values, as explained in [“What is a type in TypeScript? Two perspectives”
+    (§13)](ch_what-is-a-type.html#ch_what-is-a-type). Narrowing makes a type smaller:
+    We go from a set of values to a proper subset.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.1.2 Example: a type guard with `typeof`](#example-a-type-guard-with-typeof)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the following example, we use `typeof` in a type guard:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In this example, there are two type guards: one in line A and one in line B.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.2 When do we need to narrow types?](#when-do-we-need-to-narrow-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'These are examples of types being too general:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Nullable types:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[Discriminated unions](ch_unions-object-types.html#discriminated-unions):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Types of optional parameters:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Note that these types are all union types!
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.2.1 The type `unknown` is usually too general](#the-type-unknown-is-usually-too-general)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If a value has [the type `unknown`](ch_any-unknown.html#ch_any-unknown), we
+    can do almost nothing with it and have to narrow its type first (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In other words: The type `unknown` is too general and we must narrow it. In
+    a way, `unknown` is also a union type – the union of all types.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.3 Where can we use type guards?](#where-can-we-use-type-guards)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In `if` statements:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In conditional expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In `switch` statements:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.3.1 Type guards can also affect parts of expressions](#type-guards-can-also-affect-parts-of-expressions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If the left-hand side of the logical And operator (`&&`) is a type guard then
+    it affects its right-hand side (which may contain more uses of `&&`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `&&` operator stops evaluating if its left-hand side is falsy. Therefore,
+    if we reach the right-hand side, we can be sure that `value !== null` is true
+    – which is why we can access `value.length`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'With the logical Or operator (`||`), we get a related effect:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `||` operator stops evaluating if its left-hand side is truthy. Therefore,
+    if we reach the right-hand side, we can be sure that `value === null` is false
+    – which is why we can access `value.length`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.4 What kinds of type guards are built-in?](#what-kinds-of-type-guards-are-built-in)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In this section we explore TypeScript’s built-in type guards (expressions that
+    evaluate to `true` or `false`).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.4.1 `typeof`, `instanceof`, `Array.isArray`](#typeof-instanceof-array-isarray)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'These are three common built-in type guards:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.4.2 Strict equality (`===`) and strict inequality(`!==`)](#strict-equality-and-strict-inequality)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Strict equality can be used in a type guard:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If an element of a union type is a singleton type (with a single value) then
+    we can use `===` and `!==` to narrow:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`null` is a singleton type whose only member is the value `null`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.4.3 Truthiness checks](#truthiness-checks)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[30.4.3.1 Truthiness checks via `if`](#truthiness-checks-via-if)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Truthiness checks are related to equality checks. They also act as type guards:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'At first glance, we may think that all strings go to the if-branch while all
+    nulls go to the else-branch. Alas, that’s not the case:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Then-branch: `value` is neither `null` nor the empty string.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Else-branch: `value` is either `null` or the empty string. That explains the
+    type in line A.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[30.4.3.2 Recommendation: avoid truthiness checks](#recommendation-avoid-truthiness-checks)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Truthiness is problematic, because it rejects non-nullish values such as empty
+    strings, zero, etc. And TypeScript has no types to express “non-empty string”,
+    “non-zero number”, etc.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'That’s why I recommend to avoid it – code that uses it is more difficult to
+    understand. Instead, we can use `===` and `!==` for more explicit checks. With
+    an explicit check, the previous example becomes less confusing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.4.3.3 Truthiness checks via logical And (`&&`) and logical Or (`||`)](#truthiness-checks-via-logical-and-and-logical-or)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The operators logical And (`&&`) and logical Or (`||`) can also perform truthiness
+    checks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.4.3.4 `Boolean()` cannot be used as a type guard](#boolean-cannot-be-used-as-a-type-guard)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The function `Boolean()` cannot be used as a type guard:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Alas, there is no narrowing: In line A, the type of `value` is not `string`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In principle, `Boolean()` could be turned into a type guard function, but that
+    would would have [several downsides](https://github.com/microsoft/TypeScript/issues/50387#issuecomment-2037968462).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'As an alternative to `Boolean()`, we can use the prefix operator logical Negation
+    (`!`) twice. That does narrow:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: However, both `Boolean()` and `!!` are truthiness checks and therefore best
+    avoided.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.4.4 Checking for distinct properties via the operator `in`](#checking-for-distinct-properties-via-the-operator-in)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The `in` operator can be used in type guards – to check for distinct properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that the following check would not have worked:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: The problem in this case is that, without narrowing, we can’t access property
+    `.first` of a value whose type is `FirstOrSecond`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.4.4.1 The operator `in` also narrows to single properties](#the-operator-in-also-narrows-to-single-properties)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can also use `in` to narrow to a single property:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: This kind of narrowing only works if the left-hand side of the `in` operator
+    is a string literal (and not, e.g., a variable).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.4.5 Checking the value of a shared property (discriminated unions)](#checking-the-value-of-a-shared-property-discriminated-unions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In a [discriminated union](ch_unions-object-types.html#discriminated-unions),
+    the components of a union type have (at least) one property in common whose value
+    is different for each component. Such a property is called a *discriminant*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Checking the value of a discriminant is a type guard:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the previous example, `.kind` is a discriminant: Each component of the union
+    type `Attendee` has this property, with a unique value.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'An `if` statement and equality checks work similarly to a `switch` statement:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.5 Narrowing via assignment](#narrowing-via-assignment)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[30.5.1 Narrowing storage locations with explicit types](#narrowing-storage-locations-with-explicit-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Assignment narrows the type of a storage location (such as a variable). If
+    a variable `x` has an explicit type, we can assign any value of that type to it
+    – which narrows its type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: After we assign a string, the type of `x` is narrowed to `string`. After we
+    assign `null`, the type of `x` is narrowed to `null`. At the end, we can see that
+    we must stay within the confines of the type `null | string` – otherwise, we get
+    an error.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that, with type guards, we always narrow the current type, whereas with
+    assignments, we narrow the original type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.5.2 Narrowing variables without explicit types](#narrowing-variables-without-explicit-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If [the compiler option `noImplicitAny`](ch_any-unknown.html#noImplicitAny)
+    is active (which it is if `strict` is active) then each storage location must
+    have a type – either an inferred type or an explicitly defined type. The only
+    exception are variables defined via `let` (`var` works similarly):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`x` initially has the implicit type `any`. In line A, we observe its type,
+    which is why its type is narrowed to `undefined`. There are no restrictions with
+    regard to what we can assign. Each time, the type is narrowed accordingly. There
+    are no restrictions because we always narrow the original type of `x`: [the top
+    type `any`](ch_any-unknown.html#ch_any-unknown).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we initialize a `let` variable with a value then it does not have the implicit
+    type `any`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.6 For which storage locations can we use type-narrowing?](#for-which-storage-locations-can-we-use-type-narrowing)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[30.6.1 Narrowing the types of dotted names](#narrowing-the-types-of-dotted-names)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can narrow the types of properties (even of nested ones that we access via
+    chains of property names):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s take a look at several locations in the previous code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Line A: We narrowed the type of `arg.prop` via a type guard.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Line B: Callbacks may be executed much later (think of asynchronous code),
+    which is why TypeScript undoes narrowing inside callbacks.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Line C: The preceding assignment also undid narrowing.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[30.6.2 Narrowing Array element types](#narrowing-array-element-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[30.6.2.1 The Array method `.every()` narrows](#the-array-method-every-narrows)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can use method `.every()` to narrow the type of Array elements:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: Interestingly, TypeScript does not allow us to push the value `null` to `mixedValues`
+    (line A) after we have narrowed its type to `Array<number>`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.6.2.2 The Array method `.filter()` produces Arrays with narrower types](#the-array-method-filter-produces-arrays-with-narrower-types)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`.filter()` produces Arrays that have narrower types (i.e., it doesn’t actually
+    narrow existing types):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.7 User-defined type guard functions](#user-defined-type-guard-functions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'TypeScript lets us define our own type guard functions – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The return type `value is Function` is a *type predicate*. It is part of the
+    type signature of `isFunction()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A user-defined type guard function must always return booleans. If `isFunction(x)`
+    returns `true`, TypeScript narrows the type of the actual argument `x` to `Function`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that TypeScript doesn’t care how we compute the result of a user-defined
+    type guard function. That gives us a lot of freedom w.r.t. the checks we use.
+    For example, we could have implemented `isFunction()` as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that we have to use the type `any` for the parameter `value` because the
+    type `unknown` does not let us make the function call in line A.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “details”](../Images/837806d7ec89826c3784b2e685feb762.png) **Terminology:
+    “type guard function” vs. “type guard”**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Custom type guard functions are often called custom type guards – even though
+    they are only invoked in type guard expressions (and not type guards themselves).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.7.1 Example: `isNonNullable()`](#example-isnonnullable)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[The utility type `NonNullable<T>`](ch_intersections-object-types.html#NonNullable)
+    removes `undefined` and `null` from union types `T`. In the next example, we use
+    it to define a custom type guard:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.7.2 Example: helping `.every()` with a user-defined type guard](#example-helping-every-with-a-user-defined-type-guard)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s look at an example where a type guard with `.every()` doesn’t work properly.
+    We’ll use the following utility type, which is explained in [“A generic type for
+    constructors: `Class<T>`” (§23.3)](ch_classes-as-values.html#generic-type-class).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'After the type guard in line A, we’d expect the type of `arr` to be `Array<T>`.
+    Alas, that’s not the case:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can fix this issue by turning the check in line A into the user-defined
+    type guard `isInstanceOf()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.7.3 `this`-based type guards](#this-based-type-guards)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In locations where we can use the type `this`, we can implement type guards
+    that use that type (line A and line B)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The type guards `.isCircle()` and `.isRectangle()` enable us to go from the
+    type of the abstract superclass `Shape` to one of its subclasses – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.7.3.1 Example: narrowing the type of a property](#example-narrowing-the-type-of-a-property)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the following code, we use a `this`-based type guard to narrow the type
+    of a property:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If the type guard `.hasValue()` returns `true`, we can be sure that `.value`
+    is not `null`. Therefore, we narrow its type accordingly. The `& this` is not
+    really needed in this case but it ensures that the method still works if we add
+    more properties: It means that we keep all of `this` but intersect it with a type
+    where `.value` has a narrower type.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.7.4 Inferred type predicates](#inferred-type-predicates)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In some cases, TypeScript can infer a type predicate – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: This is why the Array methods `.every()` and `.filter()` can narrow Arrays with
+    a callback that is not a type guard.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A type predicate can only be inferred if:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: No return type is explicitly specified.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The function has a single return statement and no implicit returns.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The function does not mutate its parameter.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The function returns a type guard expression.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'No type predicate is inferred for truthiness checks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.7.5 Advanced example: user-defined type guard `isTypeOf()`](#advanced-example-user-defined-type-guard-istypeof)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Let’s turn the JavaScript operator `typeof` into the user-defined type guard
+    `isTypeOf()` – while fixing the following `typeof` bug (`null` should produce
+    the result `''null''`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what using `isTypeOf()` looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[30.7.5.1 Implementing `isTypeOf()` via conditional types](#implementing-istypeof-via-conditional-types)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is a first attempt to implement `typeof` in TypeScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: The [generic type](ch_computing-with-types-overview.html#generic-types) `TypeStringToType`
+    uses [conditional types](ch_conditional-types.html#ch_conditional-types) to translate
+    from string literal types such as `'number'` to types such as `number`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.7.5.2 Implementing `isTypeOf()` via a type lookup table](#implementing-istypeof-via-a-type-lookup-table)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following solution is similar to the previous one, but this time, we don’t
+    use conditional types to translate from string literal types to types; we use
+    an object literal type as a lookup table:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The lookup table provides us with a nice benefit: We can restrict the type
+    of `typeString` to the keys of `TypeofLookupTable` – which means that we get a
+    compiler error if we make a typo:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: (This approach is inspired by code by [Ran Lottem](https://dev.to/krumpet/generic-type-guard-in-typescript-258l).)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[30.7.5.3 Implementing `isTypeOf()` via function overloading](#implementing-istypeof-via-function-overloading)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Another option is to use [function overloading](ch_typing-functions.html#overloading-function-declarations):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs: []
+  type: TYPE_PRE
+- en: (This approach is an idea by [Nick Fisher](https://twitter.com/spadgos/status/1266839605883666432).)
+  prefs: []
+  type: TYPE_NORMAL

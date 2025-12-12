@@ -1,0 +1,295 @@
+- en: 16 Symbols in TypeScript
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_symbols.html](https://exploringjs.com/ts/book/ch_symbols.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[16.1 Types for symbols](#types-for-symbols)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[16.1.1 `symbol` and `typeof MY_SYMBOL`](#symbol-and-typeof-my-symbol)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[16.1.2 The type `unique symbol`](#the-type-unique-symbol)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[16.2 Unions of symbol types](#unions-of-symbol-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[16.3 Symbols as special values](#symbols-as-special-values)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[16.4 Symbols as enum values](#symbols-as-enum-values)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[16.5 Further reading](#further-reading-6)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In this chapter, we examine how TypeScript handles JavaScript symbols at the
+    type level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If you want to refresh your knowledge of JavaScript symbols, you can check out
+    chapter [“Symbols”](https://exploringjs.com/js/book/ch_symbols.html) of “Exploring
+    JavaScript”.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[16.1 Types for symbols](#types-for-symbols)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[16.1.1 `symbol` and `typeof MY_SYMBOL`](#symbol-and-typeof-my-symbol)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Type inference usually gives us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: broader, more general types for `let`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: narrower, more specific types for `const`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That is also true for symbols:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`symbol` is the type of all symbols. `typeof SYM2` is the type of one specific
+    symbol. There is no way for us to create another value that matches `typeof SYM2`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note the type `unique symbol` in the error message. We’ll get to what it is
+    soon.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Out inability to create a new symbol that is equal to the original `SYM2` is
+    a JavaScript phenomenon:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Symbols are similar to object literals in this regard:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[16.1.1.1 Pitfall: assignment broadens the type of a symbol](#pitfall-assignment-broadens-the-type-of-a-symbol)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: If we assign a variable `SYM` with the type `typeof SYM` to another variable
+    `X`, then the type of the latter is broadened to `symbol` – even when we declare
+    it with `const`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Related GitHub issue: [`“unique symbol` lost on assignment to `const` despite
+    type assertion”](https://github.com/microsoft/TypeScript/issues/55901)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[16.1.2 The type `unique symbol`](#the-type-unique-symbol)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The type `unique symbol` is a subtype of `symbol`. It means that this particular
+    location holds a symbol with a particular type. It is very similar to `typeof
+    SOME_SYMBOL` but does not name the particular symbol. Each location of `unique
+    symbol` is different and incompatible with all other locations (similar to `typeof
+    SOME_SYMBOL`).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`unique symbol` can be used in `const` variable declaration and `static readonly`
+    properties. If we want to express uniqueness elsewhere, we have to use `typeof
+    S` – as we have done previously. Given that `unique symbol` is basically another
+    way of expressing `typeof S`, it’s not very useful'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The previous code is completely equivalent to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'There is one more location where we can use `unique symbol` – as the type of
+    a read-only property. That is done to declare the types of well-known symbols
+    such as `Symbol.iterator` (file `lib.es2015.iterable.d.ts`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Why is the name of the interface `SymbolConstructor`? That’s due to how symbols
+    are set up in file `lib.es2015.symbol.d.ts`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[16.1.2.1 We can’t create properties whose type is `unique symbol`](#assignable-to-unique-symbol-property)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Consider the following type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can’t create an object that is assignable to `Obj`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: In the previous subsection `SymbolConstructor.iterator` was not meant for yet-to-be-created
+    objects. It was meant for a single global value that already existed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[16.2 Unions of symbol types](#unions-of-symbol-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We can use symbols to define union types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We have to use `typeof` to go from program level to type level:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Program level: `ACTIVE`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Type level: `typeof ACTIVE`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How does a symbol-based union type compare to a string-based union type such
+    as the one below?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To make it easier to compare `ActSym` with `ActStr`, let’s define the latter
+    in a more complicated way (which we normally wouldn’t do):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: What are the pros and cons of a string-based union type?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pro: No need to import constants, we can simply mention the strings (see last
+    line above).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Con: The union values are not type-safe. Strings are compared by value (not
+    by identity), which is why a value can be mistaken to be a member of `ActStr`
+    when it actually isn’t. That kind of mistake cannot happen with symbol-based type
+    unions.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[16.3 Symbols as special values](#symbols-as-special-values)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`undefined` and `null` are often used as special “non-values” that are different
+    from the actual values of a type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, a symbol can be a better, more self-explanatory alternative:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on this topic, see [“Adding special values to types” (§17)](ch_special-values.html#ch_special-values).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[16.4 Symbols as enum values](#symbols-as-enum-values)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Symbols also work well if we want to create an enum with new, unique values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why the intermediate step of declaring the variables `Active` and `Inactive`
+    in the first two lines? Why don’t we create the symbols in line A and line B?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we do that then:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Activation.Active` will have the type `symbol`, not the type `typeof Active`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Activation.Inactive` will have the type `symbol`, not the type `typeof Inactive`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As a result, `ActivationType` will be `symbol`. For a longer explanation, see
+    [“Symbols as property values” (§26.4.5)](ch_enums.html#enum-object-with-symbols).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[16.5 Further reading](#further-reading-6)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'TypeScript: chapter [“Symbols”](https://www.typescriptlang.org/docs/handbook/symbols.html)
+    in the TypeScript Handbook'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'JavaScript: chapter [“Symbols”](https://exploringjs.com/js/book/ch_symbols.html)
+    in “Exploring JavaScript”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

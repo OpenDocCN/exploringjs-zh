@@ -1,0 +1,651 @@
+- en: 2 Sales pitch for TypeScript
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_why-typescript.html](https://exploringjs.com/ts/book/ch_why-typescript.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.1 Notation used in this chapter](#notation-used-in-this-chapter)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.2 TypeScript benefit: auto-completion and detecting more errors during editing](#typescript-benefit-auto-completion-and-detecting-more-errors-during-editing)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.2.1 Example: typos, incorrect types, missing arguments](#example-typos-incorrect-types-missing-arguments)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.2.2 Example: getting function results wrong](#example-getting-function-results-wrong)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.2.3 Example: working with optional properties](#example-working-with-optional-properties)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.2.4 Example: forgetting switch cases](#example-forgetting-switch-cases)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.2.5 Example: code handles some cases incorrectly](#example-code-handles-some-cases-incorrectly)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.3 Type annotations for function parameters and results are good documentation](#type-annotations-for-function-parameters-and-results-are-good-documentation)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.4 TypeScript benefit: better refactoring](#typescript-benefit-better-refactoring)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.5 Using TypeScript has become easier](#easier-typescript)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.6 The downsides of using TypeScript](#the-downsides-of-using-typescript)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.7 TypeScript FAQ](#typescript-faq)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.7.1 Is TypeScript code heavyweight?](#is-typescript-code-heavyweight)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.7.2 Is TypeScript trying to turn JavaScript into C# or Java?](#is-typescript-trying-to-turn-javascript-into-c-or-java)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.7.3 Advanced usage of types seems very complicated. Do I really have to
+    learn that?](#advanced-usage-of-types-seems-very-complicated-do-i-really-have-to-learn-that)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[2.7.4 How long does it take to learn TypeScript?](#how-long-does-it-take-to-learn-typescript)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Roughly, TypeScript is JavaScript plus type information. The latter is removed
+    before TypeScript code is executed by JavaScript engines. Therefore, writing and
+    deploying TypeScript is more work. Is that added work worth it? In this chapter,
+    I’m going to argue that yes, it is. Read it if you are skeptical about TypeScript
+    but interested in giving it a chance.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “reading”](../Images/00b0d6029a045810b908b88d1a6733d2.png) **You can
+    skip this chapter if you’re already sure you want to learn and use TypeScript**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.1 Notation used in this chapter](#notation-used-in-this-chapter)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In TypeScript code, I’ll show the errors reported by TypeScript via comments
+    that start with `@ts-expect-error` – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: That makes it easier to automatically test all the source code in this chapter.
+    It’s also a built-in TypeScript feature that can be useful (albeit rarely).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.2 TypeScript benefit: auto-completion and detecting more errors during editing](#typescript-benefit-auto-completion-and-detecting-more-errors-during-editing)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Let’s look at examples of code where TypeScript helps us – by auto-completing
+    and by detecting errors. The first example is simple; later ones are more sophisticated.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.2.1 Example: typos, incorrect types, missing arguments](#example-typos-incorrect-types-missing-arguments)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: What is happening here?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Line A: TypeScript knows the type of `point1` and it doesn’t have a property
+    `.z`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Line B: `point1.x` is a number and therefore doesn’t have the string method
+    `.toUpperCase()`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Line C: This invocation works because the second argument of `new Point()`
+    is optional.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Line D: At least one argument must be provided.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Line E: The second argument of `new Point()` must be a number.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In line A, we get auto-completion after `point1.` (the properties `x` and `y`
+    of that object):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/7b1a3c569b4d72f4b590282515bc15ca.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: '[2.2.2 Example: getting function results wrong](#example-getting-function-results-wrong)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: How many issues can you see in the following JavaScript code?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s see what TypeScript tells us if we add type annotations (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'TypeScript tells us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'At the end, there is no `return` statement – which is true: We forgot to start
+    line B with `return` and therefore implicitly return `undefined` after line B.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The implicitly returned `undefined`is incompatible with the return type `string`
+    (line A).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If we fix this issue, TypeScript points out another error:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In line B, we are returning an Array while the return type in line A says that
+    we want to return a string. If we fix that issue too, TypeScript is finally happy
+    with our code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[2.2.3 Example: working with optional properties](#example-working-with-optional-properties)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In our next example, we work with names that are defined via objects. We define
+    the structure of those objects via the following TypeScrip type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In other words: NameDef objects have two properties whose values are strings.
+    Both properties are optional – which is indicated via the question marks in line
+    A and line B.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following code contains an error and TypeScript warns us about it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`??` is the nullish coalescing operator that returns its left-hand side – unless
+    it is `undefined` or `null`. In that case, it returns its right-hand side. For
+    more information, see [“Exploring JavaScript”](https://exploringjs.com/js/book/ch_undefined-null.html#nullish-coalescing-operator).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`nameDef.name` may be missing. In that case, the result is `undefined` and
+    not a string. If we fix that, TypeScript does not report any more errors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[2.2.4 Example: forgetting switch cases](#example-forgetting-switch-cases)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Consider the following type for colors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In other words: a color is either the string `''red''` or the string `''green''`
+    or the string `''blue''`. The following function translates such colors to CSS
+    hexadecimal color values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In line A, we get an error because we return a string that is incompatible
+    with the return type `` `#${string}` ``: It does not start with a hash symbol.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The error in line C means that we forgot a case (the value `''blue''`). To
+    understand the error message, we must know that TypeScript continually adapts
+    the type of `color`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Before the `switch` statement, its type is `'red' | 'green' | 'blue'`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: After we crossed off the cases `'red'` and `'green'`, its type is `'blue'` in
+    line B.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: And that type is incompatible with the special type `never` that the parameter
+    of `new UnexpectedValueError()` has. That type is used for variables at locations
+    that we never reach. For more information see [“The bottom type `never`” (§15)](ch_never.html#ch_never).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'After we fix both errors, our code looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what the error class `UnexpectedValueError` looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Lastly, TypeScript gives us auto-completion for the argument of `getCssColor()`
+    (the values `''blue''`, `''green''` and `''red''` that we can use for it):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/3912e75bc5156e6c1c88db9527658f69.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: '[2.2.5 Example: code handles some cases incorrectly](#example-code-handles-some-cases-incorrectly)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following type describes content via objects. Content can be text, an image
+    or a video:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the following code, we use content incorrectly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'TypeScript warns us because not all kinds of content have the property `.content`.
+    However, they all do have the property `.kind` – which we can use to fix the error:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that TypeScript does not complain in line A, because we have excluded text
+    content, which is the only content that does not have the property `.width`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.3 Type annotations for function parameters and results are good documentation](#type-annotations-for-function-parameters-and-results-are-good-documentation)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider the following JavaScript code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That does not tell us much about the arguments expected by `filter()`. We also
+    don’t know what it returns. In contrast, this is what the corresponding TypeScript
+    code looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This information tells us:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Argument `items` is an iterable over strings.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The `callback` receives a string and an index and returns a boolean.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The result of `filter()` is another iterable over strings.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Yes, the type notation takes getting used to. But, once we understand it, we
+    can quickly get a rough understand of what `filter()` does. More quickly than
+    by reading prose in English (which, admittedly, is still needed to fill in the
+    gaps left by the type notation and the name of the function).
+  prefs: []
+  type: TYPE_NORMAL
+- en: I find it easier to understand TypeScript code bases than JavaScript code bases
+    because, to me, TypeScript provides an additional layer of documentation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This additional documentation also helps when working in teams because it is
+    clearer how code is to be used and TypeScript often warns us if we are doing something
+    wrong.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Whenever I migrate JavaScript code to TypeScript, I’m noticing an interesting
+    phenomenon: In order to find the appropriate types for the parameters of a function
+    or method, I have to check where it is invoked. That means that static types give
+    me information locally that I otherwise have to look up elsewhere.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.4 TypeScript benefit: better refactoring](#typescript-benefit-better-refactoring)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Refactorings are automated code transformations that many integrated development
+    environments offer.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Renaming methods is an example of a refactoring. Doing so in plain JavaScript
+    can be tricky because the same name might refer to different methods. TypeScript
+    has more information on how methods and types are connected, which makes renaming
+    methods safer there.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.5 Using TypeScript has become easier](#easier-typescript)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We now often don’t need an extra build step compared to JavaScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: On server side JavaScript platforms such as Node.js, Deno and Bun, we can run
+    TypeScript directly – without compiling it.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Most bundlers such as Vite have built-in support for TypeScript.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'More good news:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Compiling TypeScript to JavaScript has become more efficient – thanks to a technique
+    called *type stripping* which simply removes the type part of TypeScript syntax
+    and makes no other transformations ([more information](ch_tsconfig-json.html#type-stripping)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Creating packages has also improved:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'npm: Non-library packages can be published in TypeScript. Library packages
+    must contain JavaScript plus *declaration files* (with type information). Generating
+    the latter has also improved – thanks to a technique called [*isolated declarations*](ch_tsconfig-json.html#isolatedDeclarations).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[JSR (JavaScript Registry)](https://jsr.io) is an alternative to npm where
+    packages can be uploaded as TypeScript. It supports a variety of platforms. For
+    Node.js, it automatically generates JavaScript files and declaration files.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Alas, type checking is still relatively slow and must be performed via the TypeScript
+    compiler `tsc`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.6 The downsides of using TypeScript](#the-downsides-of-using-typescript)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'It is an added layer on top of JavaScript: more complexity, more things to
+    learn, etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: npm packages can only be used if they have static type definitions. These days,
+    most packages either come with type definitions or there are type definitions
+    available for them on [DefinitelyTyped](http://definitelytyped.org). However,
+    especially the latter can occasionally be slightly wrong, which leads to issues
+    that you don’t have without static typing.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Configuring TypeScript via `tsconfig.json` also adds a bit of complexity and
+    means that there is a lot of variation w.r.t. how TypeScript code bases are type-checked.
+    There are two mitigating factors:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For my own projects, I’m now using [a maximally strict `tsconfig.json`](ch_tsconfig-json.html#tsconfig-summary)
+    – which eliminated my doubts about what my `tsconfig.json` should look like.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Type stripping (see previous section) has clarified the role of `tsconfig.json`
+    for me: With them, it only configures how type checking works. Generating JavaScript
+    can be done without `tsconfig.json`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[2.7 TypeScript FAQ](#typescript-faq)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[2.7.1 Is TypeScript code heavyweight?](#is-typescript-code-heavyweight)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'TypeScript code *can* be heavyweight. But it doesn’t have to be. For example,
+    due to type inference, we can often get away with relatively few type annotations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The only non-JavaScript syntax in this code is `<T>`: Its first occurrence
+    `setDifference<T>` means that the function `setDifference()` has a *type parameter*
+    – a parameter at the type level. All later occurrences of `<T>` refer to that
+    parameter. They mean:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The parameters `set1` and `set2` are Sets whose elements have the same type
+    `T`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The result is also a Set. Its elements have the same type as those of `set1`
+    and `set2`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Note that we normally don’t have to provide the type parameter `<T>` – TypeScript
+    can extract it automatically from the types of the parameters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: When it comes to *using* `setDifference()`, the TypeScript code is not different
+    from JavaScript code in this case.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.7.2 Is TypeScript trying to turn JavaScript into C# or Java?](#is-typescript-trying-to-turn-javascript-into-c-or-java)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Over time, the nature of TypeScript has evolved.
+  prefs: []
+  type: TYPE_NORMAL
+- en: TypeScript 0.8 was released in October 2012 when JavaScript had remained stagnant
+    for a long time. Therefore, TypeScript added features that its team felt JavaScript
+    was missing - e.g. classes, modules and enums.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Since then, JavaScript has gained many new features. TypeScript now tracks
+    what JavaScript provides and does not introduce new language-level features anymore
+    – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In 2012, TypeScript had its own way of doing modules. Now it supports ECMAScript
+    modules and CommonJS.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In 2012, TypeScript had classes that were transpiled to functions. Since ECMAScript
+    6 came out in 2015, TypeScript has supported the built-in classes.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In 2015, TypeScript introduced its own flavor of decorators, in order to support
+    Angular. In 2022, ECMAScript decorators reached stage 3 and TypeScript has supported
+    them since. For more information, see section [“The history of decorators”](https://2ality.com/2022/10/javascript-decorators.html#the-history-of-decorators)
+    in the 2ality post on ECMAScript decorators.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the type checking option [`erasableSyntaxOnly`](ch_tsconfig-json.html#erasableSyntaxOnly)
+    is active, TypeScript only supports JavaScript’s language features – e.g. we are
+    not allowed to use enums. This option enables [type stripping](#easier-typescript)
+    and is popular among TypeScript programmers. Thus it looks like in the future,
+    most TypeScript will really be pure JavaScript plus type information.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: TypeScript will only get better enums or pattern matching if and when JavaScript
+    gets them.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[2.7.2.1 TypeScript is more than OOP](#typescript-is-more-than-oop)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'A common misconception is that TypeScript only supports a class-heavy OOP style;
+    it supports many functional programming patterns just as well – e.g. *discriminated
+    unions* which are a (slightly less elegant) version of algebraic data types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In Haskell, this data type would look like this (without labels, for simplicity’s
+    sake):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [“TypeScript for functional programmers”](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html)
+    in the TypeScript Handbook.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.7.3 Advanced usage of types seems very complicated. Do I really have to
+    learn that?](#advanced-usage-of-types-seems-very-complicated-do-i-really-have-to-learn-that)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Normal use of TypeScript almost always involves relatively simple types. For
+    libraries, complicated types can be useful but then they are complicated to write
+    and not complicated to use. My general recommendation is to make types as simple
+    as possible and therefore easier to understand and maintain. If types for code
+    are too complicated then it’s often possible to simplify them – e.g. by changing
+    the code and using two functions instead of one or by not capturing every last
+    detail with them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'One key insight for making sense of advanced types, is that they are mostly
+    like a new programming language at the type level and usually describe how input
+    types are transformed into output types. In many ways, they are similar to JavaScript.
+    There are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Variables (type variables)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Functions with parameters (generic types with type parameters)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Conditional expressions `C ? T : F` (conditional types)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Loops over objects (mapped types)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For more information on this topic, see [“Overview: computing with types” (§33)](ch_computing-with-types-overview.html#ch_computing-with-types-overview).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.7.3.1 Are complicated types worth it?](#are-complicated-types-worth-it)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Sometimes they are – for example, as an experiment, I wrote [a simple SQL API](https://github.com/rauschma/simple-sql)
+    that gives you a lot of type completions and warnings during editing (if you make
+    typos etc). Note that writing that API involved some work; using it is simple.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[2.7.4 How long does it take to learn TypeScript?](#how-long-does-it-take-to-learn-typescript)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: I believe that you can learn the basics of TypeScript within a day and be productive
+    the next day. There is still more to learn after that, but you can do so while
+    already using it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“The basics of TypeScript” (§4)](ch_typescript-essentials.html#ch_typescript-essentials)
+    teaches you those basics. If you are new to TypeScript, I’d love to hear from
+    you: Is my assumption correct? Were you able to write (simple) TypeScript after
+    reading it?'
+  prefs: []
+  type: TYPE_NORMAL

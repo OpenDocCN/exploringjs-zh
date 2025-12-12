@@ -1,0 +1,897 @@
+- en: '38 Template literal types (`${U}`): creating and transforming string literal
+    types'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_template-literal-types.html](https://exploringjs.com/ts/book/ch_template-literal-types.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.1 The structure of this chapter](#the-structure-of-this-chapter)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.2 Syntax and basic ways of using template literal types](#syntax-and-basic-ways-of-using-template-literal-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.2.1 The syntax](#the-syntax)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.2.2 Concatenation is distributive](#concatenation-is-distributive)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.2.3 Extracting substrings via `infer`](#extracting-substrings-via-infer)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.2.4 Parsing substrings via `infer` plus `extends`](#parsing-substrings-via-infer-plus-extends)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.2.5 Interpolating primitive types into template literals](#interpolating-primitive-types-into-template-literals)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.3 Utility types for string manipulation](#utility-types-for-strings)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.3.1 Example: `isUppercase`](#example-isuppercase)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.3.2 Example: `ToString`](#example-tostring)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.3.3 Example: trimming string literal types](#example-trimming-string-literal-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.4 Working with tuples](#working-with-tuples)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.4.1 Joining a tuple of strings](#joining-a-tuple-of-strings)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.4.2 Splitting a string](#Split)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.4.3 Example: defining a string literal union type via a string literal
+    type](#example-defining-a-string-literal-union-type-via-a-string-literal-type)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.4.4 Splitting a string into code units](#splitting-a-string-into-code-units)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.5 Working with objects](#working-with-objects)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.5.1 Example: adding prefixes to property names](#example-adding-prefixes-to-property-names)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.6 Practical examples](#practical-examples)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.6.1 Example: styling output to a terminal](#example-styling-output-to-a-terminal)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.6.2 Example: property paths](#example-property-paths)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.6.3 Example: changing property name prefixes](#example-changing-property-name-prefixes)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.6.4 Example: converting camel case to hyphen case](#example-converting-camel-case-to-hyphen-case)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.6.5 Example: converting hyphen case to camel case](#example-from-hyphen-case-to-camel-case)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.7 Neat things people are doing with template literal types](#neat-things-people-are-doing-with-template-literal-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.7.1 Node.js: type for UUIDs](#node-js-type-for-uuids)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.7.2 Parsing CLI arguments (Stefan Baumgartner)](#parsing-cli-arguments-stefan-baumgartner)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.7.3 Smart result type of `document.querySelector()` (Mike Ryan)](#smart-result-type-of-document-queryselector-mike-ryan)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.7.4 Typing routes in Angular (Mike Ryan)](#typing-routes-in-angular-mike-ryan)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.7.5 Express route extractor (Dan Vanderkam)](#express-route-extractor-dan-vanderkam)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.7.6 Tailwind color variations (Tomek Sułkowski)](#tailwind-color-variations-tomek-su-C5-82kowski)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.7.7 Arktype: defining types](#arktype-defining-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.8 Conclusion and caveats](#conclusion-and-caveats)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.9 Further reading](#further-reading-10)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[38.10 Sources of this chapter](#sources-of-this-chapter-7)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'In this chapter, we take a closer look at template literal types in TypeScript:
+    While their syntax is similar to JavaScript’s template literals, they operate
+    at the type level. Their use cases include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Static syntax checking for string literals
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Transforming the casing of property names (e.g. from hyphen case to camel case)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Concisely specifying large string literal union types
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[38.1 The structure of this chapter](#the-structure-of-this-chapter)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'First, we’ll learn how template literal types work via small toy examples.
+    We’ll write type-level code that looks similar to JavaScript code. These are the
+    topics we’ll cover:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Syntax and basic ways of using template literal types
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Utility types for string manipulation
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Working with tuples
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Working with objects
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: After that, we’ll look at practical examples and neat things that people have
+    done with template literal types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.2 Syntax and basic ways of using template literal types](#syntax-and-basic-ways-of-using-template-literal-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[38.2.1 The syntax](#the-syntax)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The syntax of template literal types is inspired by JavaScript’s template literals.
+    They also let us concatenate values, optionally interspersed with static string
+    fragments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Explanations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In line (A), we define the generic type `Song`. It is similar to a function
+    in JavaScript but operates at the type level. The `extends` keyword is used to
+    specify the types that `Num` and `Bev` must be assignable to.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In line (B), we apply `Song` to two arguments: a number literal type and a
+    string literal type.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[38.2.2 Concatenation is distributive](#concatenation-is-distributive)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we insert a string literal union type into a template literal type, the
+    latter is applied to each member of the former:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we insert more than one string literal union type, then we get the cartesian
+    product (all possible combinations are used):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: That enables us to concisely specify large unions. We’ll see a practical example
+    later on.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Anders Hejlsberg warns](https://github.com/microsoft/TypeScript/pull/40336):
+    “Beware that the cross product distribution of union types can quickly escalate
+    into very large and costly types. Also note that union types are limited to less
+    than 100,000 constituents, and the following will cause an error:”'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The above union type has exactly 100,000 elements. This is another example
+    that exceeds the limit:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.2.3 Extracting substrings via `infer`](#extracting-substrings-via-infer)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we use the `infer` operator inside a template literal, we can extract parts
+    of strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.2.4 Parsing substrings via `infer` plus `extends`](#parsing-substrings-via-infer-plus-extends)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'By default an `infer` inside a template literal extracts a string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we constrain `infer` via `extends` to a type then TypeScript parses values
+    of that type – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Parsing numbers only works for integers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: For an example that uses `StrToNum`, see [“Extracting the indices (numbers)
+    of a tuple” (§37.3.2)](ch_computing-with-tuple-types.html#TupleIndices).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.2.5 Interpolating primitive types into template literals](#interpolating-primitive-types-into-template-literals)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'So far, we have inserted literal types and union types into template literals,
+    but we can also insert some primitive types. That lets us construct subsets of
+    `string`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'These are the supported types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that `undefined` is the type with the single value `undefined`. `null`
+    is similar.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.2.5.1 Example: keeping only strings with numbers](#example-keeping-only-strings-with-numbers)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'An interpolated type `number` can be used to “filter” a union of string literal
+    types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We use the intersection type in line A to extract those elements of `Properties`
+    that are stringified numbers. Examples that use this trick:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“Example: removing the constraint of parameter `K` of `Pick<T, K>`” (§36.3.3.2)](ch_mapped-types.html#PickFreely)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Extracting the index keys (strings) of a tuple” (§37.3.1)](ch_computing-with-tuple-types.html#TupleIndexKeys)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[38.2.5.2 Example: excluding strings that start with “a”](#example-excluding-strings-that-start-with-a)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The template literal type `` `a${string}` `` matches all string literal types
+    that start with the character “a”. Therefore, we can use it to exclude those types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.3 Utility types for string manipulation](#utility-types-for-strings)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'TypeScript has four built-in string manipulation types ([documentation](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#intrinsic-string-manipulation-types)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Uppercase<StringLiteralType>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Lowercase<StringLiteralType>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Capitalize<StringLiteralType>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Uncapitalize<StringLiteralType>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'TypeScript (as of version 5.7) uses the following JavaScript methods to make
+    the changes – which are not locale aware ([source](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#intrinsic-string-manipulation-types)
+    – see “technical details” at the end):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.3.1 Example: `isUppercase`](#example-isuppercase)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use `Uppercase` to define a generic type `IsUppercase`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.3.2 Example: `ToString`](#example-tostring)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`ToString` uses normal template literal type interpolation to convert primitive
+    literal types to string literal types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.3.3 Example: trimming string literal types](#example-trimming-string-literal-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To trim a string literal type, we recursively remove all spaces from its start
+    and its end:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note the self-recursive invocations in line A and line B.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Acknowledgement: This example was inspired by [code by Mike Ryan](https://x.com/MikeRyanDev/status/1308472279010025477).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.4 Working with tuples](#working-with-tuples)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[38.4.1 Joining a tuple of strings](#joining-a-tuple-of-strings)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: Once again, we are programming at a type level in a functional style.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In the second line, we take the tuple `Strs` apart (think destructuring):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`First` is the first element (a string).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Rest` is the remaining elements (a tuple).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Next:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If the tuple `Rest` is empty, the result is simply `First`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, we concatenate `First` with the separator `Sep` and the joined `Rest`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[38.4.2 Splitting a string](#Split)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: We use `infer` inside a template literal to determine the prefix `First` before
+    a separator `Sep` and then recursively invoke `Split` (line A).
+  prefs: []
+  type: TYPE_NORMAL
+- en: If no separator is found, the result is a tuple with the whole `Str` (line B).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.4.3 Example: defining a string literal union type via a string literal
+    type](#example-defining-a-string-literal-union-type-via-a-string-literal-type)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use the previously defined `Split` and `Trim` to convert a string literal
+    type to a string literal union type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`TupleToUnion` treats the tuple `Tup` as a map from numbers (indices) to values:
+    `Tup[number]` means “give me all the values” (the range of `Tup`).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note how the application of `Trim` is distributed and applied to each member
+    of the union.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.4.4 Splitting a string into code units](#splitting-a-string-into-code-units)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we infer without a fixed separator, then the `First` inferred string is
+    always a single code unit (a “JavaScript character”, not a Unicode code point
+    which comprises one or two code units):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.5 Working with objects](#working-with-objects)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[38.5.1 Example: adding prefixes to property names](#example-adding-prefixes-to-property-names)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Below, we are using a mapped type to convert an object type `Obj` to a new
+    object type, where each property key starts with a dollar sign (`$`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'How does this code work? We assemble an output object like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The result of `PrependDollarSign` is computed by a loop. In each iteration,
+    the loop variable `Key` is assigned to one element of a union of string literal
+    types. These are three ways of describing that union:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`keyof Obj & string`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: the intersection of the keys of `Obj` and all strings
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: the string keys of `Obj`
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Each loop iteration contributes one property to the output object:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The key of that property is specified via `as`: `` `$${Key}` ``'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The value of that property comes ofter the colon: `Obj[Key]`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[38.6 Practical examples](#practical-examples)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[38.6.1 Example: styling output to a terminal](#example-styling-output-to-a-terminal)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In Node.js, we can use [`util.styleText()`](https://nodejs.org/api/util.html#utilstyletextformat-text-options)
+    to log styled text to the console:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To get a list of all possible style values, evaluate this expression in the
+    Node.js REPL:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Below, we define a function `styleText()` that uses a single string to specify
+    multiple styles and statically checks that that string has the proper format:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.6.2 Example: property paths](#example-property-paths)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following example is based on code by [Anders Hejlsberg](https://github.com/microsoft/TypeScript/pull/40336):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.6.3 Example: changing property name prefixes](#example-changing-property-name-prefixes)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is a more complicated version of an earlier example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The type `JsonLd` describes [structured data](https://developers.google.com/search/docs/appearance/structured-data/article)
+    in JSON-LD format.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We use `PropKeysAtToUnderscore` to convert the type `JsonLd` into a type with
+    keys that we don’t need to quote.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that in line A, we only the change key if it is a string that starts with
+    an at symbol. Other keys (including symbols) are not changed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We could constrain the type of `Key` like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: But then we couldn’t use `AtToUnderscore` for symbols and would have to filter
+    values in some manner before passing them to this utility type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.6.4 Example: converting camel case to hyphen case](#example-converting-camel-case-to-hyphen-case)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: We can use template literal types to convert a string in camel case (JavaScript)
+    to one in hyphen case (CSS).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s first convert a string to a tuple of strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To understand how this works, consider the roles of the parameters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Str` is the actual parameter and the only parameter that doesn’t have a default
+    value. `SplitCamelCase` uses recursion to iterate over the characters of `Str`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Word`: While inside a word, we add characters to this parameter.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Words`: Once a word is finished, it is added to this (initially empty) tuple.
+    Once recursion is finished then `Words` contains the result of `SplitCamelCase`
+    and is returned.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The rest of the work involves lower-casing and joining the tuple elements,
+    with hyphens as separators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.6.5 Example: converting hyphen case to camel case](#example-from-hyphen-case-to-camel-case)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Going the opposite way, from hyphen case to camel case, is easier because we
+    have hyphens as separators. As a utility type, we use [`Split`](#Split) from earlier
+    in this chapter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.7 Neat things people are doing with template literal types](#neat-things-people-are-doing-with-template-literal-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In this section, I have collected interesting things I have seen people do with
+    template literal types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.7.1 Node.js: type for UUIDs](#node-js-type-for-uuids)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[`@types/node`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node/crypto.d.ts)
+    uses the following type for UUIDs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.7.2 Parsing CLI arguments (Stefan Baumgartner)](#parsing-cli-arguments-stefan-baumgartner)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Given the following definitions for the parameters of a shell script (`num`
+    is an arbitrary name for a string parameter – not a type):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This type can be statically derived for `opts`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [“The TypeScript converging point”](https://fettblog.eu/slides/the-typescript-converging-point/)
+    by Stefan Baumgartner'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.7.3 Smart result type of `document.querySelector()` (Mike Ryan)](#smart-result-type-of-document-queryselector-mike-ryan)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'By parsing the argument of `querySelector()` at compile time, we can derive
+    nice types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [tweet](https://x.com/MikeRyanDev/status/1308472279010025477)
+    by Mike Ryan.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.7.4 Typing routes in Angular (Mike Ryan)](#typing-routes-in-angular-mike-ryan)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [tweet](https://x.com/MikeRyanDev/status/1308036861747752962)
+    by Mike Ryan.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.7.5 Express route extractor (Dan Vanderkam)](#express-route-extractor-dan-vanderkam)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The first argument of `handleGet()` determines the parameters of the callback:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [tweet](https://x.com/danvdk/status/1301707026507198464)
+    by Dan Vanderkam'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.7.6 Tailwind color variations (Tomek Sułkowski)](#tailwind-color-variations-tomek-su%C5%82kowski)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Thanks to template literals being distributive, we can define `TailwindColor`
+    very concisely:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [tweet](https://x.com/sulco/status/1332337570563448834) by
+    Tomek Sułkowski'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[38.7.7 Arktype: defining types](#arktype-defining-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Where [the TypeScript library Zod](https://zod.dev) uses chained method calls
+    to define types, the [ArkType library](https://github.com/arktypeio/arktype) uses
+    (mostly) string literals that are parsed via template literal types. I prefer
+    Zod’s approach, but it’s amazing how much ArkType does with string literals:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[38.8 Conclusion and caveats](#conclusion-and-caveats)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'It’s amazing what people are doing with template literal types: We now can
+    statically check complex data in string literals or use them to derive types.
+    However, doing so also comes with caveats:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The error messages are usually not very good.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Type-level code that uses template literals can be difficult to understand.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Such code can slow down type checking – especially if it involves recursion.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[38.9 Further reading](#further-reading-10)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'List of template literal types examples: [“Awesome Template Literal Types”](https://github.com/ghoullier/awesome-template-literal-types)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[38.10 Sources of this chapter](#sources-of-this-chapter-7)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Chapter [“Template Literal Types”](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
+    in the TypeScript Handbook
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Pull request [“Template literal types and mapped type `as` clauses”](https://github.com/microsoft/TypeScript/pull/40336)
+    by Anders Hejlsberg
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Blog post [“Transform string literal type into camelCase in TypeScript”](https://blog.beraliv.dev/2022-07-14-camel-case)
+    by Alexey Berezin
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Blog post [“I didn’t know you could compose template literal types in TypeScript”](https://macarthur.me/posts/template-literal-types/)
+    by Alex MacArthur
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

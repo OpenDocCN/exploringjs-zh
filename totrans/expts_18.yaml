@@ -1,0 +1,195 @@
+- en: 14 The top types any and unknown
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_any-unknown.html](https://exploringjs.com/ts/book/ch_any-unknown.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.1 TypeScript’s two top types](#typescript-s-two-top-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.2 The top type `any`](#the-top-type-any)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.2.1 Example: `JSON.parse()`](#example-json-parse)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.2.2 Example: `String()`](#example-string)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.2.3 The compiler option `noImplicitAny`](#noImplicitAny)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.3 The top type `unknown`](#the-top-type-unknown)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In TypeScript, `any` and `unknown` are types that contain all values. In this
+    chapter, we examine what they are and what they can be used for.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.1 TypeScript’s two top types](#typescript-s-two-top-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`any` and `unknown` are so-called *top types* in TypeScript. Quoting [Wikipedia](https://en.wikipedia.org/wiki/Top_type):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The *top type* […] is the *universal* type, sometimes called the *universal
+    supertype* as all other types in any given type system are subtypes […]. In most
+    cases it is the type which contains every possible [value] in the type system
+    of interest.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: That is, when viewing types as sets of values (for more information on what
+    types are, see [“What is a type in TypeScript? Two perspectives” (§13)](ch_what-is-a-type.html#ch_what-is-a-type)),
+    `any` and `unknown` are sets that contain all values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: TypeScript also has the *bottom type* `never`, which is the empty set and explained
+    in [“The bottom type `never`” (§15)](ch_never.html#ch_never).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.2 The top type `any`](#the-top-type-any)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'If a value has type `any`, we can do everything with it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Every type is assignable to type `any`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Type `any` is assignable to every type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `any` we lose any protection that is normally given to us by TypeScript’s
+    static type system. Therefore, it should only be used as a last resort, if we
+    can’t use more specific types or `unknown`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.2.1 Example: `JSON.parse()`](#example-json-parse)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The result of `JSON.parse()` depends on dynamic input, which is why the return
+    type is `any` (I have omitted the parameter `reviver` from the signature):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`JSON.parse()` was added to TypeScript before the type `unknown` existed. Otherwise,
+    its return type would probably be `unknown`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.2.2 Example: `String()`](#example-string)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The function `String()`, which converts arbitrary values to strings, has the
+    following type signature:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[14.2.3 The compiler option `noImplicitAny`](#noImplicitAny)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If the compiler option `noImplicitAny` is `true`, TypeScript requires explicit
+    type annotations in locations where it can’t infer types. The most important example
+    is parameters definitions. If this option is `false`, it (implicitly) uses the
+    type `any` in those locations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is an example of a compiler error that is caused by `noImplicitAny` being
+    `true`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'TypeScript does not complain about us using the type `any` explicitly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[14.3 The top type `unknown`](#the-top-type-unknown)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The type `unknown` is a type-safe version of the type `any`. Whenever you are
+    thinking of using `any`, try using `unknown` first. `unknown` is similar to `any`
+    in that we can assign any value to it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, an `unknown` value is not assignable to anything:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Therefore, if we have a value of type `unknown`, we must narrow that type before
+    we can do anything with the value – e.g., via:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Type assertions](ch_type-assertions.html#ch_type-assertions):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Equality:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[Type guards](ch_type-guards.html#ch_type-guards):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[Assertion functions](ch_assertion-functions.html#ch_assertion-functions):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE

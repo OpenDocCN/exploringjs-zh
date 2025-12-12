@@ -1,0 +1,345 @@
+- en: 22 Class-related types
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_class-related-types.html](https://exploringjs.com/ts/book/ch_class-related-types.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[22.1 The two prototype chains of classes](#the-two-prototype-chains-of-classes)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[22.2 Interfaces for instances of classes](#interfaces-for-instances-of-classes)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[22.3 Interfaces for classes](#interfaces-for-classes)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[22.3.1 Example: converting from and to JSON](#example-converting-from-and-to-json)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[22.3.2 Example: TypeScript’s built-in interfaces for the class `Object` and
+    for its instances](#example-typescript-s-built-in-interfaces-for-the-class-object-and-for-its-instances)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[22.4 Classes as types](#classes-as-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[22.4.1 Pitfall: classes work structurally, not nominally](#pitfall-classes-work-structurally-not-nominally)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[22.5 Further reading](#further-reading-7)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In this chapter, we examine types related to classes and their instances.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[22.1 The two prototype chains of classes](#the-two-prototype-chains-of-classes)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider this class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![](../Images/f0091b5ecd0cda2b8e4df5b426d81e52.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 22.1: Objects created by class `Counter`. Left-hand side: the class
+    and its superclass `Object`. Right-hand side: The instance `myCounter`, the prototype
+    properties of `Counter`, and the prototype methods of the superclass `Object`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The diagram in [figure 22.1](#fig:diagram-class-counter) shows the runtime
+    structure of class `Counter`. There are two prototype chains of objects in this
+    diagram:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Class (left-hand side): The static prototype chain consists of the objects
+    that make up class `Counter`. The prototype object of class `Counter` is its superclass,
+    `Object`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Instance (right-hand side): The instance prototype chain consists of the objects
+    that make up the instance `myCounter`. The chain starts with the instance `myCounter`
+    and continues with `Counter.prototype` (which holds the prototype methods of class
+    `Counter`) and `Object.prototype` (which holds the prototype methods of class
+    `Object`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In this chapter, we’ll first explore instance objects and then classes as objects.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[22.2 Interfaces for instances of classes](#interfaces-for-instances-of-classes)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Interfaces specify services that objects provide. For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'TypeScript’s interfaces work [structurally](ch_what-is-a-type.html#nominal-vs-structural-type-systems):
+    In order for an object to implement an interface, it only needs to have the right
+    properties with the right types. We can see that in the following example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: Structural interfaces are convenient because we can create interfaces even for
+    objects that already exist (i.e., we can introduce them after the fact).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we know ahead of time that an object must implement a given interface, it
+    often makes sense to check early if it does, in order to avoid surprises later.
+    We can do that for instances of classes via `implements`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Comments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can `implement` any object type (not just interfaces).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: TypeScript does not distinguish between inherited properties (such as `.increment`)
+    and own properties (such as `.value`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As an aside, private properties are ignored by interfaces and can’t be specified
+    via them. This is expected given that private data is for internal purposes only.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[22.3 Interfaces for classes](#interfaces-for-classes)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Classes themselves are also objects (functions). Therefore, we can use interfaces
+    to specify their properties. The main use case here is describing factories for
+    objects. The next section gives an example.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[22.3.1 Example: converting from and to JSON](#example-converting-from-and-to-json)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following two interfaces can be used for classes that support their instances
+    being converted from and to JSON:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We use these interfaces in the following code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how we can check right away if class `Person` (as an object) implements
+    the interface `JsonStatic`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If you don’t want to use a library (with the utility types `Assert` and `Assignable`)
+    for this purpose, you can use the following pattern:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: The downside of this pattern is that it produces extra JavaScript code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[22.3.1.1 Can we do better?](#can-we-do-better)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'It would be nice to avoid an external check – e.g., like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line B, we use [the `satisfies` operator](ch_satisfies.html#ch_satisfies),
+    which enforces that the value `Person` is assignable to `JsonStatic` while preserving
+    the type of that value. That is important because `Person` should not be limited
+    to what’s defined in `JsonStatic`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Alas, this alternative approach is even more verbose and doesn’t compile. One
+    of the compiler errors is in line C:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Type alias 'Person' circularly references itself.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Why? Type `Person` is mentioned in line A. Even if we rename the type `Person`
+    to `TPerson`, that error doesn’t go away.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[22.3.2 Example: TypeScript’s built-in interfaces for the class `Object` and
+    for its instances](#example-typescript-s-built-in-interfaces-for-the-class-object-and-for-its-instances)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'It is instructive to take a look at TypeScript’s built-in types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'On one hand, interface `ObjectConstructor` is for the class pointed to by the
+    global variable `Object`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On the other hand, interface `Object` (which is mentioned in line A and line
+    B) is for instances of `Object`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In other words – the name `Object` is used twice, at two different [language
+    levels](ch_typescript-essentials.html#language-levels):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: At the dynamic level, for a global variable.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: At the static level, for a type.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[22.4 Classes as types](#classes-as-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider the following class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: This class definition creates two things.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, a constructor function named `Color` (that can be invoked via `new`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Second, an interface named `Color` that matches instances of `Color`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Here is proof that `Color` really is an interface:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[22.4.1 Pitfall: classes work structurally, not nominally](#pitfall-classes-work-structurally-not-nominally)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'There is one pitfall, though: Using `Color` as a static type is not a very
+    strict check:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Why doesn’t TypeScript complain in line A? That’s due to [structural typing](ch_what-is-a-type.html#nominal-vs-structural-type-systems):
+    Instances of `Person` and of `Color` have the same structure and are therefore
+    statically compatible.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[22.4.1.1 Switching off structural typing](#switching-off-structural-typing)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can turn `Color` into [a nominal type](ch_what-is-a-type.html#nominal-vs-structural-type-systems)
+    by adding a private field (or a `private` property):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This way of switching off structural typing is called *branding*. Note that
+    the private fields of `Color` and `Person` are incompatible even though they have
+    the same name and the same type. That reflects how JavaScript works: We cannot
+    access the private field of `Color` from `Person` and vice versa.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[22.4.1.2 Use case for branding: migrating from an object type to a class](#use-case-for-branding-migrating-from-an-object-type-to-a-class)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Let’s say we want to migrate the following code from the object type in line
+    A to a class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In our first attempt, invoking `storePerson()` with an object literal still
+    works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Once we brand `Person`, we get a compiler error:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is how we fix the error:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[22.5 Further reading](#further-reading-7)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[Chapter “Classes”](https://exploringjs.com/js/book/ch_classes.html) in “Exploring
+    JavaScript”'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

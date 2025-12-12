@@ -1,0 +1,371 @@
+- en: 31 Assertion functions
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_assertion-functions.html](https://exploringjs.com/ts/book/ch_assertion-functions.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.1 Assertion functions in Node.js](#assertion-functions-in-node-js)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.1.1 `assert(cond)` for asserting conditions](#assert-cond-for-asserting-conditions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.1.2 `assert.equal(value1, value2)` for asserting equality](#assert-equal-value1-value2-for-asserting-equality)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.2 TypeScript’s support for assertion functions](#typescript-s-support-for-assertion-functions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.3 Asserting a boolean condition: `asserts «cond»`](#asserting-a-boolean-condition-asserts-cond)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.3.1 Asserting type guards](#asserting-type-guards)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.4 Asserting the type of an argument: `asserts «arg» is «type»`](#asserting-the-type-of-an-argument-asserts-arg-is-type)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.4.0.1 Example assertion function: `assert.equal()`](#example-assertion-function-assert-equal)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.5 Alternatives to assertion functions](#alternatives-to-assertion-functions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.5.1 Technique: forced conversion](#technique-forced-conversion)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.5.2 Technique: throwing an exception](#technique-throwing-an-exception)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.6 Quick reference: assertion functions](#quick-reference-assertion-functions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.6.1 Assertion signature: `asserts «cond»`](#assertion-signature-asserts-cond)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[31.6.2 Assertion signature: `asserts «arg» is «type»`](#assertion-signature-asserts-arg-is-type)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'In programming, an assertion function is a function that checks if a condition
+    is true at a particular point in a program and throws an exception if it isn’t.
+    In this chapter, we explore:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: How assertion functions are used in JavaScript.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How TypeScript supports them at the type level.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[31.1 Assertion functions in Node.js](#assertion-functions-in-node-js)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Node.js has a whole module, `'node:assert/strict'` with assertion functions.
+    You can check out [its documentation](https://nodejs.org/api/assert.html) online.
+    Let’s look at two important examples.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.1.1 `assert(cond)` for asserting conditions](#assert-cond-for-asserting-conditions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Function `assert()` lets us assert conditions. I see it as a comment that is
+    written in code and therefore verifiable – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`ext` having to start with a dot could be a comment. Instead, we chose to write
+    it as an assertion (line A). If the condition is false, `assert()` throws an exception.
+    In other words: `assert(cond)` means “`cond` must be true”.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.1.2 `assert.equal(value1, value2)` for asserting equality](#assert-equal-value1-value2-for-asserting-equality)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The assertion function `assert.equal()` is mainly used for testing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: If the two arguments of `assert.equal()` are not equal, it throws an exception.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.2 TypeScript’s support for assertion functions](#typescript-s-support-for-assertion-functions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: TypeScript provides special support for assertion functions. There are two kinds
+    of *assertion signatures* we can specify as the return types of `void` functions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, we can assert a boolean condition (think `assert()`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Second, we can assert the type of an argument:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: Next, we’ll examine how calling an assertion function affects the type level.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.3 Asserting a boolean condition: `asserts «cond»`](#asserting-a-boolean-condition-asserts-cond)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is a re-implementation of Node’s `assert()` function so that we can also
+    use it in browsers. It asserts a boolean `condition`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The assertion signature in line A makes `assertTrue` an assertion function.
+    We’ll explore the type-level consequences of that in the next subsection. The
+    following design decisions were made:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The type of `condition` is `boolean` and not `unknown` because that forces us
+    to avoid truthiness checks.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In line B, we also could have used a custom subclass of `Error`, e.g. one called
+    `AssertionError`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[31.3.1 Asserting type guards](#asserting-type-guards)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Using a [*type guard*](ch_type-guards.html#ch_type-guards) (a boolean expression
+    exploring the types of values) in a condition narrows types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Asserting a type guard has a similar effect:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s look at an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`value instanceof Set` is a type guard and because we asserted it in line A,
+    we narrowed the type of `value` to `Set<any>`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.4 Asserting the type of an argument: `asserts «arg» is «type»`](#asserting-the-type-of-an-argument-asserts-arg-is-type)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following assertion function narrows the type of its parameter `value`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s use `assertIsNumber()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: The assertion in line A narrows the type of `value` from `unknown` to `number`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note that `assertIsNumber()` really narrows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: We narrowed the original type of `str`, `string` to the narrower type `string
+    & number` – which is the same as [the bottom type `never`](ch_never.html#ch_never).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.4.0.1 Example assertion function: `assert.equal()`](#example-assertion-function-assert-equal)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is a simplified version of Node’s `assert.equal()` function that has the
+    same types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: If it terminates, the type of `actual` is narrowed to the type `T`. That’s rarely
+    useful, but I found it interesting that the function does that.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.4.0.2 Example assertion function: `assertNonNullable()`](#example-assertion-function-assertnonnullable)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following assertion function asserts that its parameter `value` is not
+    nullable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We use [the utility type `NonNullable<T>`](ch_intersections-object-types.html#NonNullable)
+    to remove `undefined` and `null` from `T` – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[31.4.0.3 Example assertion function: adding a property to an object](#example-assertion-function-adding-a-property-to-an-object)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following assertion function adds a property to an object and updates its
+    type accordingly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: An intersection type `S & T` (such as the one in line A) has the properties
+    of both type `S` and type `T`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.5 Alternatives to assertion functions](#alternatives-to-assertion-functions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[31.5.1 Technique: forced conversion](#technique-forced-conversion)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'An assertion function narrows the type of an existing value. A forced conversion
+    function returns an existing value with a new type – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The corresponding assertion function looks as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Forced conversion is a versatile technique with uses beyond those of assertion
+    functions. For example, we can convert:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: From an input format (think JSON schema) that is easy to write
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Into an output format that is easy to work with in code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For more information, see [“External vs. internal representation of data” (§32.3.4)](ch_validating-external-data.html#external-vs-internal-representation-of-data).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.5.2 Technique: throwing an exception](#technique-throwing-an-exception)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Consider the following code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Instead of the `if` statement that starts in line A, we also could have used
+    an assertion function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: Throwing an exception is a quick alternative if we don’t want to write such
+    a function. Similarly to calling an assertion function, this technique also updates
+    the static type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[31.6 Quick reference: assertion functions](#quick-reference-assertion-functions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[31.6.1 Assertion signature: `asserts «cond»`](#assertion-signature-asserts-cond)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Assertion signature: `asserts condition`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Result: `void` or exception'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[31.6.2 Assertion signature: `asserts «arg» is «type»`](#assertion-signature-asserts-arg-is-type)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Assertion signature: `asserts value is string`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Result: `void` or exception'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

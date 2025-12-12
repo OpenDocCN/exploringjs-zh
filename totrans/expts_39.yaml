@@ -1,0 +1,420 @@
+- en: 32 Validating external data
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_validating-external-data.html](https://exploringjs.com/ts/book/ch_validating-external-data.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.1 JSON schema](#json-schema)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.1.1 An example JSON schema](#an-example-json-schema)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.2 Approaches for data validation in TypeScript](#approaches-for-data-validation-in-typescript)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.2.1 Approaches not using JSON schema](#approaches-not-using-json-schema)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.2.2 Approaches using JSON schema](#approaches-using-json-schema)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.2.3 Picking a library](#picking-a-library)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3 Example: validating data via the library *Zod*](#example-validating-data-via-the-library-zod)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.1 Defining a “schema” via Zod’s builder API](#defining-a-schema-via-zod-s-builder-api)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.2 Validating data](#validating-data)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.3 Tip: Use `z.interface()` and property keys with question marks for
+    optional properties (Zod 4)](#zod-optional-properties)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.4 External vs. internal representation of data](#external-vs-internal-representation-of-data)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.4 Conclusion: various thoughts about data validation libraries](#conclusion-various-thoughts-about-data-validation-libraries)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '*Data validation* means ensuring that data has the desired structure and content.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'With TypeScript, validation becomes relevant when we receive external data
+    such as:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Data parsed from JSON files
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Data received from web services
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In these cases, we expect the data to fit static types we have, but we can’t
+    be sure. Contrast that with data we create ourselves, where TypeScript continuously
+    checks that everything is correct.
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter explains how to validate external data in TypeScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.1 JSON schema](#json-schema)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Before we can explore approaches for data validation in TypeScript, we need
+    to take a look at *JSON schema* because several of the approaches are based on
+    it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The idea behind [JSON schema](https://json-schema.org) is to express the *schema*
+    (structure and content, think static type) of JSON data in JSON. That is, metadata
+    is expressed in the same format as data.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The use cases for JSON schema are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Validating JSON data: If we have a schema definition for data, we can use tools
+    to check that the data is correct. One issue with data can also be fixed automatically:
+    We can specify default values that can be used to add properties that are missing.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Documenting JSON data formats: On one hand, the core schema definitions can
+    be considered documentation. But JSON schema additionally supports descriptions,
+    deprecation notes, comments, examples, and more. These mechanisms are called *annotations*.
+    They are not used for validation, but for documentation.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'IDE support for editing data: For example, Visual Studio Code supports JSON
+    schema. If there is a schema for a JSON file, we gain several editing features:
+    auto-completion, highlighting of errors, etc. Notably, VS Code’s support for `package.json`
+    files is completely based on a JSON schema.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.1.1 An example JSON schema](#an-example-json-schema)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This example is taken from [the `json-schema.org` website](https://json-schema.org/learn/miscellaneous-examples.html#describing-geographical-coordinates):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following JSON data is valid w.r.t. this schema:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.2 Approaches for data validation in TypeScript](#approaches-for-data-validation-in-typescript)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This section provides a brief overview of various approaches for validating
+    data in TypeScript. For each approach, I list one or more libraries that support
+    the approach. W.r.t. libraries, I don’t intend to be comprehensive because things
+    change quickly in this space.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.2.1 Approaches not using JSON schema](#approaches-not-using-json-schema)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'One approach for validation is to create a schema object by invoking builder
+    methods and functions. Such an object enables us to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Check data at runtime.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Give data that passes the check the appropriate type at compile time.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There are many libraries that work like this. Next, we’ll look at a few examples.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.2.1.1 Zod](#zod)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[Zod](https://github.com/vriad/zod) (demonstrated in more depth later in this
+    chapter) uses builder methods and is very popular.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.2.1.2 Valibot](#valibot)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[Valibot](https://github.com/fabian-hiller/valibot) is similar to Zod but uses
+    functions, which helps with excluding unused code from bundles.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.2.1.3 ArkType](#arktype)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[ArkType](https://github.com/arktypeio/arktype) has a distinct way of specifying
+    types: Instead of function or method invocations, it often uses string literal
+    types (parsed via template literal types at compile time).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.2.1.4 Standard Schema: standard for validation APIs](#standard-schema-standard-for-validation-apis)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: “[Standard Schema](https://standardschema.dev) is a common interface designed
+    to be implemented by JavaScript and TypeScript schema libraries.” Inspired by
+    Zod, supported by many libraries.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.2.2 Approaches using JSON schema](#approaches-using-json-schema)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Approach: Converting TypeScript types to JSON schema. Libraries:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[ts-json-schema-generator](https://github.com/vega/ts-json-schema-generator)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[typescript-json-schema](https://github.com/YousefED/typescript-json-schema)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Approach: Converting a JSON schema to TypeScript types. Libraries:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[quicktype](https://github.com/quicktype/quicktype)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Approach: A builder API creates both TypeScript types and JSON schemas. Library:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[TypeBox](https://github.com/sinclairzx81/typebox) (it also validates untyped
+    data in TypeScript code)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Approach: Validating JSON data via JSON schemas. This functionality is also
+    useful for the other approaches. npm package:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Ajv JSON schema validator](https://github.com/ajv-validator/ajv)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.2.3 Picking a library](#picking-a-library)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Which approach and therefore library to use, depends on what we need:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we are starting with TypeScript types and want to ensure that data (coming
+    from configuration files, etc.) fits those types, then builder APIs that support
+    static types are a good choice.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If our starting point is a JSON schema, then we should consider one of the libraries
+    that support JSON schemas.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.3 Example: validating data via the library *Zod*](#example-validating-data-via-the-library-zod)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[32.3.1 Defining a “schema” via Zod’s builder API](#defining-a-schema-via-zod-s-builder-api)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Zod has a builder API that produces both types and validation functions. That
+    API is used as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note: `z.interface()` and the property keys with question marks are Zod 4 features.
+    A subsection below explains why they are used here.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For larger schemas, it can make sense to break things up into multiple `const`
+    declarations.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Zod can produce a static type from `FileEntryInputSchema`, but I decided to
+    (redundantly!) manually maintain the static type `FileEntryInput`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why the redundancy?
+  prefs: []
+  type: TYPE_NORMAL
+- en: It’s easier to read.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It helps with migrating to a different validation library or approach, should
+    I ever have to.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We can use a static check to ensure that `FileEntryInputSchema` and `FileEntryInput`
+    are in sync:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: The generic type `z.infer` derives a type from a Zod schema.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.3.2 Validating data](#validating-data)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The schema method `.parse()` checks if a value has the correct structure:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.3.3 Tip: Use `z.interface()` and property keys with question marks for
+    optional properties (Zod 4)](#zod-optional-properties)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'They are a Zod 4 features. Without them, optional properties have the wrong
+    types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.optional()` does not do exactly what we want: In addition to making the property
+    optional, it also adds `undefined` to its type (line A and line B).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.3.4 External vs. internal representation of data](#external-vs-internal-representation-of-data)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: When working with external data, it’s often useful to distinguish two types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'On one hand, there is the type that describes the input data. Its structure
+    is optimized for being easy to author:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On the other hand, there is the type that is used in the program. Its structure
+    is optimized for being easy to use in code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: After we have used Zod to ensure that the input data conforms to `FileEntryInput`,
+    we can use a conversion function that converts the data to a value of type `FileEntry`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.4 Conclusion: various thoughts about data validation libraries](#conclusion-various-thoughts-about-data-validation-libraries)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'I see two options for improving data validation libraries in the long run:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Built-in support for runtime type representations in TypeScript: That would
+    help validation libraries – at least with simpler use cases. For advanced use
+    cases, it may be possible to leverage decorators.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Built-in support for compiling types to validation code. This could look similar
+    to macros as supported, e.g., by Rust.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For libraries that have builder APIs, I’d find tools useful that compile TypeScript
+    types to builder API invocations (online and via a shell command). This would
+    help in two ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The tools could be used to explore how the APIs work.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We’d have the option of producing API code via the tools.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

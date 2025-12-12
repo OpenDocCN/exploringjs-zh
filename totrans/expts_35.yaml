@@ -1,0 +1,252 @@
+- en: 28 Type assertions (related to casting)
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_type-assertions.html](https://exploringjs.com/ts/book/ch_type-assertions.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[28.1 Type assertions](#type-assertions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.1.1 Obsolete alternative syntax for type assertions](#obsolete-alternative-syntax-for-type-assertions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.1.2 Example: asserting an index signature](#example-asserting-an-index-signature)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.1.3 Example: `as any`](#example-as-any)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.2 Constructs related to type assertions](#constructs-related-to-type-assertions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.2.1 Non-nullish assertion operator (postfix `!`)](#non-nullish-assertion-operator-postfix)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.2.2 Definite assignment assertions](#definite-assignment-assertions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.2.3 Const assertions (`as const`)](#const-assertions-as-const)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.2.4 `satisfies` operator](#satisfies-operator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: This chapter is about *type assertions* in TypeScript, which are related to
+    type casts in other languages and performed via the `as` operator.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[28.1 Type assertions](#type-assertions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: A type assertion lets us override a static type that TypeScript has computed
+    for a value. That is useful for working around limitations of the type system.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Type assertions are related to type casts in other languages, but they don’t
+    throw exceptions and don’t do anything at runtime (they do perform a few minimal
+    checks statically).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Comments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In line A, we widen the type of the Array to `object`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In line B, we see that this type doesn’t let us access any properties ([details](ch_typing-objects.html#general-types-for-objects)).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In line C, we use a type assertion (the operator `as`) to tell TypeScript that
+    `data` is an Array. Now we can access property `.length`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Type assertions are a last resort and should be avoided as much as possible.
+    They remove the safety net that the static type system normally gives us.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note that, in line A, we also overrode TypeScript’s type. But we did it via
+    a type annotation. This way of overriding is safer than type assertions because
+    we are more constrained: TypeScript’s type must be assignable to the type of the
+    annotation.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[28.1.1 Obsolete alternative syntax for type assertions](#obsolete-alternative-syntax-for-type-assertions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'TypeScript has an alternative “angle-bracket” syntax for type assertions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'I recommend avoiding this syntax:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It has grown out of style.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It is not compatible with React JSX code (in `.tsx` files).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It is not allowed if [the compiler option `erasableSyntaxOnly`](ch_tsconfig-json.html#erasableSyntaxOnly)
+    is active.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[28.1.2 Example: asserting an index signature](#example-asserting-an-index-signature)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In the following code (line A), we use the type assertion `as Dict`, so that
+    we can access the properties of a value whose inferred type is `object`. That
+    is, we are overriding the static type `object` with the static type `Dict`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[28.1.3 Example: `as any`](#example-as-any)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the following example, the computed return type in line A does not match
+    the value we return in line B:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To make the error go away, we use `as any` in line A:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: This is an extreme measure. Alas it’s unavoidable in this case. For more information,
+    see [“Computed return types of functions often don’t match returned values” (§33.14)](ch_computing-with-types-overview.html#computed-return-types-dont-match).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[28.2 Constructs related to type assertions](#constructs-related-to-type-assertions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[28.2.1 Non-nullish assertion operator (postfix `!`)](#non-nullish-assertion-operator-postfix)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If a value’s type is a union that includes the types `undefined` or `null`,
+    the *non-nullish assertion operator* (or *non-null assertion operator*) removes
+    these types from the union. We are telling TypeScript: “This value can’t be `undefined`
+    or `null`.” As a consequence, we can perform operations that are prevented by
+    the types of these two values – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[28.2.1.1 Example – Maps: `.get()` after `.has()`](#example-maps-get-after-has)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'After we use the Map method `.has()`, we know that a Map has a given key. Alas,
+    the result of `.get()` does not reflect that knowledge, which is why we have to
+    use the nullish assertion operator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can avoid the nullish assertion operator whenever the values of a Map can’t
+    be `undefined`. Then missing entries can be detected by checking if the result
+    of `.get()` is `undefined`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[28.2.2 Definite assignment assertions](#definite-assignment-assertions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If [*strict property initialization*](ch_class-definitions.html#strictPropertyInitialization)
+    is switched on, we occasionally need to tell TypeScript that we do initialize
+    certain properties – even though it thinks we don’t.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is an example where TypeScript complains even though it shouldn’t:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The errors go away if we use *definite assignment assertions* (exclamation
+    marks) in line A and line B:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[28.2.3 Const assertions (`as const`)](#const-assertions-as-const)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Const assertions make values read-only and lead to more specific inferred types
+    – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [“Const assertions (`as const`)” (§25.7)](ch_readonly.html#const-assertions).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[28.2.4 `satisfies` operator](#satisfies-operator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The `satisfies` operator enforces that a value has a given type but (mostly)
+    otherwise does not affect the type of that value – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: The `satisfies` operator in line B catches the error in line A but does not
+    prevent `TextStyle` from having an object literal type. Therefore, we can extract
+    the property keys in line C.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'More information: [“The `satisfies` operator” (§29)](ch_satisfies.html#ch_satisfies).'
+  prefs: []
+  type: TYPE_NORMAL

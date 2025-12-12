@@ -1,0 +1,237 @@
+- en: 17 Adding special values to types
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_special-values.html](https://exploringjs.com/ts/book/ch_special-values.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[17.1 Adding special values in band](#adding-special-values-in-band)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[17.1.1 Adding `null` or `undefined` to a type](#adding-null-or-undefined-to-a-type)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[17.1.2 Adding a symbol to a type](#adding-symbol-to-type)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[17.2 Adding special values out of band](#adding-special-values-out-of-band)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[17.2.1 Discriminated unions](#discriminated-unions-1)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[17.2.2 Other kinds of union types](#other-kinds-of-union-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'One way of understanding types is as sets of values. Sometimes there are two
+    levels of values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Base level: normal values'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Meta level: special values'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In this chapter, we examine how we can add special values to base-level types.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[17.1 Adding special values in band](#adding-special-values-in-band)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: One way of adding special values is to create a new type which is a superset
+    of the base type where some values are special. These special values are called
+    [*sentinels*](https://en.wikipedia.org/wiki/Sentinel_value). They exist [*in band*](https://en.wikipedia.org/wiki/In-band_signaling)
+    (think inside the same channel) and are siblings of normal values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'As an example, consider the following interface for a stream of text lines:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: At the moment, `.getNextLine()` only handles text lines, but not ends of files
+    (EOFs). How could we add support for EOF?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Possibilities include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An additional method `.isEof()` that needs to be called before calling `.getNextLine()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.getNextLine()` throws an exception when it reaches an EOF.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A sentinel value for EOF.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next two subsections describe two ways in which we can introduce sentinel
+    values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[17.1.1 Adding `null` or `undefined` to a type](#adding-null-or-undefined-to-a-type)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'When using strict TypeScript, no simple object type (defined via interfaces,
+    object patterns, classes, etc.) includes `null`. That makes it a good sentinel
+    value that we can add to the base type `string` via a union type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now, whenever we are using the value returned by `.getNextLine()`, TypeScript
+    forces us to consider both possibilities: strings and `null` – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In line A, we can’t use the string method `.startsWith()` because `line` might
+    be `null`. We can fix this as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: Now, when execution reaches line A, we can be sure that `line` is not `null`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[17.1.2 Adding a symbol to a type](#adding-symbol-to-type)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: We can also use values other than `null` as sentinels. Symbols are best suited
+    for this task because each one of them has a unique identity and no other value
+    can be mistaken for it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is how to use a symbol to represent EOF:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why do we need `typeof` and can’t use `EOF` directly? That’s because `EOF` is
+    a value, not a type. The type operator `typeof` converts `EOF` to a type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[17.1.2.1 Example: a symbol as an error value](#example-a-symbol-as-an-error-value)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following function `parseNumber()` uses the symbol `couldNotParseNumber`
+    as an error value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[17.2 Adding special values out of band](#adding-special-values-out-of-band)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'What do we do if potentially *any* value can be returned by a method? How do
+    we ensure that base values and meta values don’t get mixed up? This is an example
+    where that might happen:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: Whatever value we pick for `EOF`, there is a risk of someone creating an `ValueStream<typeof
+    EOF>` and adding that value to the stream.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The solution is to keep normal values and special values separate, so that they
+    can’t be mixed up. Special values existing separately is called [*out of band*](https://en.wikipedia.org/wiki/Out-of-band_data)
+    (think different channel).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[17.2.1 Discriminated unions](#discriminated-unions-1)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: A [*discriminated union*](ch_unions-object-types.html#discriminated-unions)
+    is a union of several object types that all have at least one property in common,
+    the so-called *discriminant*. The discriminant must have a different value for
+    each object type – we can think of it as the ID of the object type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[17.2.1.1 Example: `ValueStreamValue`](#example-valuestreamvalue)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: In the following example, `ValueStreamValue<T>` is a discriminated union and
+    its discriminant is `.type`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: Initially, the type of `value` is `ValueStreamValue<T>` (line A). Then we exclude
+    the value `'eof'` for the discriminant `.type` and its type is narrowed to `NormalValue<T>`
+    (line B). That’s why we can access property `.data` in line C.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[17.2.1.2 Example: `IteratorResult`](#example-iteratorresult)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'When deciding how to implement [iterators](https://exploringjs.com/js/book/ch_sync-iteration.html),
+    TC39 didn’t want to use a fixed sentinel value. Otherwise, code would break if
+    that value appeared in an iterable. One solution would have been to pick a sentinel
+    value when starting an iteration. TC39 instead opted for a discriminated union
+    with the common property `.done`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[17.2.2 Other kinds of union types](#other-kinds-of-union-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Other kinds of union types can be as convenient as discriminated unions, as
+    long as we have the means to distinguish the member types of the union.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'One possibility is to distinguish the member types via unique properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Another possibility is to distinguish the member types via `typeof` and/or
+    instance checks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE

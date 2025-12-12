@@ -1,0 +1,492 @@
+- en: '34 Conditional types (C ? T : F)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_conditional-types.html](https://exploringjs.com/ts/book/ch_conditional-types.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.1 Syntax and first examples](#syntax-and-first-examples)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.1.1 Chaining conditional types](#chaining-conditional-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.1.2 Nesting conditional types](#nesting-conditional-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.1.3 Example: only wrapping types that have the property `.length`](#example-only-wrapping-types-that-have-the-property-length)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.2 Conditional types are distributive over union types](#distributivity-of-conditional-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.2.1 Only the left-hand side of `extends` is distributed](#only-the-left-hand-side-of-extends-is-distributed)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.2.2 Only type variables trigger distribution](#only-type-variables-trigger-distribution)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.2.3 Preventing distributivity](#preventing-distributivity)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.2.4 Technique: always applying](#unconditional-mapping)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.3 Filtering union types by conditionally returning `never`](#filtering-union-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.3.1 The built-in utility type `Exclude<T, U>`](#the-built-in-utility-type-exclude-t-u)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.3.2 The built-in utility type `Extract<T, U>`](#the-built-in-utility-type-extract-t-u)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.4 Extracting parts of composite types via `infer` in conditional types](#extracting-parts-of-composite-types-via-infer-in-conditional-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.5 Writing conditions for conditional types](#writing-conditions-for-conditional-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.5.1 Is one type assignable to another one?](#checking-assignability)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.5.2 Checking if a generic type returns a particular value](#checking-if-a-generic-type-returns-a-particular-value)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.5.3 Checking if two types are equal](#checking-if-two-types-are-equal)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.5.4 Logical Or](#logical-or)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.5.5 Logical And](#logical-and)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.6 Deferred conditional types](#deferred-conditional-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[34.7 Sources of this chapter](#sources-of-this-chapter-4)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'A conditional type in TypeScript is an if-then-else expression: Its result
+    is either one of two branches – which one depends on a condition. That is especially
+    useful in generic types. Conditional types are also an essential tool for working
+    with union types because they let us “loop” over them. Read on if you want to
+    know how all of that works.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.1 Syntax and first examples](#syntax-and-first-examples)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A *conditional type* has the following syntax:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A conditional type has three parts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `Sub` is assignable to `Super`… (condition)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: …then the result of this type expression is `TrueBranch`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, the result is `FalseBranch`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'I like to format longer conditional types like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is a first example of using conditional types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.1.1 Chaining conditional types](#chaining-conditional-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Similarly to JavaScript’s ternary operator, we can also chain TypeScript’s
+    conditional type operator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.1.2 Nesting conditional types](#nesting-conditional-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In the previous example, the true branch was always short and the false branch
+    contained the next (nested) conditional type. That’s why each conditional type
+    has the same indentation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'However, if a nested conditional type appears in a true branch, then indentation
+    helps humans read the code – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on this code, see the [“Filtering a tuple” (§37.6.4.2)](ch_computing-with-tuple-types.html#filtering-tuples)
+    – from which this example was taken.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.1.3 Example: only wrapping types that have the property `.length`](#example-only-wrapping-types-that-have-the-property-length)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the following example, `Wrap<>` only wraps types in Promises if they have
+    the property `.length` whose values are numbers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.2 Conditional types are distributive over union types](#distributivity-of-conditional-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Conditional types are [*distributive*](https://en.wikipedia.org/wiki/Distributive_property)
+    over union types: Applying a conditional type `C` to a union type `U` is the same
+    as the union of applying `C` to each element of `U`. This is an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Distributivity enables us to “loop” over the elements of the union type in
+    line A: `WrapLen<T>` is applied to each element and only wraps values that have
+    a property `.length` whose value is a number.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For comparison, this is what happens with non-union types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.2.1 Only the left-hand side of `extends` is distributed](#only-the-left-hand-side-of-extends-is-distributed)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We have already seen that conditional types are distributed over the left-hand
+    side of `extends`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'What about the right-hand side, though? There, no distribution occurs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.2.2 Only type variables trigger distribution](#only-type-variables-trigger-distribution)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we directly mention a union type in the condition of a conditional type
+    then no distribution happens:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Compare that with using the type variable `T`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.2.3 Preventing distributivity](#preventing-distributivity)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Consider the following generic type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In line A, we can see that `IsString` is distributive – which makes sense since
+    we have used a conditional type to define it. But that is not what we want in
+    this case: We’d like `IsString` to tell us that the complete type `string|number`
+    is *not* assignable to `string`. This is how we can prevent distributivity:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: A conditional type is only distributive if the left-hand side of `extends` is
+    a bare type variable. By wrapping both the left-hand side and the right-hand side
+    of `extends`, the intended check still happens but there is no distribution.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.2.4 Technique: always applying](#unconditional-mapping)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Conditional types are an important tool for working with union types because
+    they enable us to loop over them. Sometimes, we simply want to unconditionally
+    map each union element to a new type. Then we can use the following technique:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note how type `boolean` really is just the union `false | true`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: The following (seemingly simpler) approach does *not* work – `T` needs to be
+    part of the condition. Otherwise, the conditional type is not distributive.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.3 Filtering union types by conditionally returning `never`](#filtering-union-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Interpreted as a set, type `never` is empty. Therefore, if it appears in a
+    union type, it is ignored:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That means we can use `never` to ignore components of a union type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens if we swap the type expressions of the true branch and
+    the false branch:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.3.1 The built-in utility type `Exclude<T, U>`](#the-built-in-utility-type-exclude-t-u)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Excluding types from a union is such a common operation that TypeScript provides
+    the built-in utility type `Exclude<T, U>`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: Interpreted as a set operation, `Exclude<T, U>` is `T − U`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: To see an interesting use case for `Exclude`, check out [“Extracting a subtype
+    of a discriminated union” (§19.2.3)](ch_unions-object-types.html#extracting-subtype-of-discriminated-union).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.3.2 The built-in utility type `Extract<T, U>`](#the-built-in-utility-type-extract-t-u)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The inverse of `Exclude<T, U>` is `Extract<T, U>` (which is also built into
+    TypeScript):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: Interpreted as a set operation, `Extract<T, U>` is `T ∩ U`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.4 Extracting parts of composite types via `infer` in conditional types](#extracting-parts-of-composite-types-via-infer-in-conditional-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`infer` lets us extract parts of compound types and can only be used inside
+    the `extends` clause of a conditional type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information, see [“Extracting parts of compound types via `infer`”
+    (§35)](ch_infer-keyword.html#ch_infer-keyword).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.5 Writing conditions for conditional types](#writing-conditions-for-conditional-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[34.5.1 Is one type assignable to another one?](#checking-assignability)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can use a conditional type to implement an assignability check:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why is this correct? Recall that, in the condition of a conditional type, `A
+    extends B` checks if `A` is assignable to `B`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.5.2 Checking if a generic type returns a particular value](#checking-if-a-generic-type-returns-a-particular-value)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the following code, we check if `Str` is equal to `Uppercase<Str>`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: We don’t really check equality, we only check if `Str` is assignable to `Uppercase<Str>`
+    – via `extends`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'There is one thing to watch out for – `never` is assignable to all types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on `Uppercase`, see [“Utility types for string manipulation”
+    (§38.3)](ch_template-literal-types.html#utility-types-for-strings).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.5.3 Checking if two types are equal](#checking-if-two-types-are-equal)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the next example, we use the generic utility type `Equal` from [`asserttt`](ch_book-notation.html#notation-generic-type-Assert)
+    to check if two types are equal (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that we check if the result of `Equal<A, B>` is assignable to `true`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.5.4 Logical Or](#logical-or)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To check if `X || Y`, we check:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[34.5.5 Logical And](#logical-and)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To check if `X && Y`, we can use a trick and check `[X, Y]` via `extends` –
+    e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on this code, see [“Ensuring the `any` is only equal to
+    itself” (§39.3.3)](ch_testing-types.html#TEqual).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.6 Deferred conditional types](#deferred-conditional-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'To conclude, let’s look at an interesting phenomenon: Normally, the result
+    of a conditional type is either its true branch or its false branch. However,
+    if its condition contains one or more type variables that don’t have a value yet
+    then it is *deferred* and not turned into a simpler value – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, we can see that `Result` is neither `string` nor `number`, but a
+    deferred conditional type.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[34.7 Sources of this chapter](#sources-of-this-chapter-4)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Chapter [“Conditional Types”](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html)
+    in the TypeScript Handbook
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Section [“Conditional Types”](https://www.typescriptlang.org/docs/handbook/advanced-types.html#conditional-types)
+    in the TypeScript Handbook (version 1)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Describes deferred conditional types.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL

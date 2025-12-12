@@ -1,0 +1,188 @@
+- en: 5 Notation used in this book
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_book-notation.html](https://exploringjs.com/ts/book/ch_book-notation.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[5.1 JavaScript level: `assert.*`](#javascript-level-assert)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[5.2 Type level: `assertType<T>(v)`](#notation-assertType)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[5.3 Type level: `Assert<B>`](#notation-generic-type-Assert)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[5.4 Type level: `@ts-expect-error`](#notation-ts-expect-error)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[5.5 Isn’t this book’s notation kind of ugly?](#isn-t-this-book-s-notation-kind-of-ugly)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'This chapter explains functionality that is used in the code examples to explain
+    results and errors. We have to consider two levels:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'JavaScript level: values (e.g. returned by functions) and exceptions'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Type level: types (e.g. constructed by generic types) and compiler errors'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The functions and generic types that help us, have to be imported: The import
+    statements to do so are shown in this chapter, but omitted elsewhere in this book.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[5.1 JavaScript level: `assert.*`](#javascript-level-assert)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Expected results are checked via the following assertion functions from [the
+    Node.js module `node:assert`](https://nodejs.org/api/assert.html):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`assert.equal()` tests equality via `===`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`assert.deepEqual()` tests equality by deeply comparing nested objects (incl.
+    Arrays).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`assert.throws()` complains if the callback parameter does *not* throw an exception.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is an example of using these assertions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: In the first line, the specifier of the imported module has the suffix `/strict`.
+    That enables [strict assertion mode](https://nodejs.org/api/assert.html#assert_strict_assertion_mode),
+    which uses `===` and not `==` for comparisons.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[5.2 Type level: `assertType<T>(v)`](#notation-assertType)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Function `assertType()` is provided by the TypeScript library [`asserttt`](https://github.com/rauschma/asserttt).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The function call `assertType<T>(v)` asserts that the (dynamic) value `v` has
+    the (static) type `T`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[5.3 Type level: `Assert<B>`](#notation-generic-type-Assert)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`asserttt` also provides the utility type `Assert<B>`, which asserts that the
+    type `B` (usually an instantiated generic type) is `true`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`asserttt` has several *predicates* (generic types that construct booleans)
+    that we can use with `Assert<>`. In the previous example, we have used:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Equal<T1, T2>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Not<B>`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[5.4 Type level: `@ts-expect-error`](#notation-ts-expect-error)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In this book, `@ts-expect-error` is used to show TypeScript compiler errors:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: How does TypeScript handle such a directive?
+  prefs: []
+  type: TYPE_NORMAL
+- en: If there is an error in a line after a `@ts-expect-error` comment then that
+    error is ignored and compilation succeeds.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If there is no error then TypeScript complains:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'In other words: TypeScript checks that there is an error but not what error
+    it is. All text after `@ts-expect-error` is ignored (including the colon).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: To get more thorough checks, I use the tool [`ts-expect-error`](https://www.npmjs.com/package/ts-expect-error)
+    which checks if the suppressed error messages match the texts after `@ts-expect-error:`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[5.5 Isn’t this book’s notation kind of ugly?](#isn-t-this-book-s-notation-kind-of-ugly)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: When it comes to displaying type information for TypeScript code, there are
+    some very pretty approaches out there – e.g. [Shiki Twoslash](https://shikijs.github.io/twoslash/)
+    which uses the [twoslash syntax](https://github.com/microsoft/TypeScript-Website/tree/v2/packages/ts-twoslasher).
+  prefs: []
+  type: TYPE_NORMAL
+- en: This book uses in-code checks (as described above) even though that doesn’t
+    look as nice. Why?
+  prefs: []
+  type: TYPE_NORMAL
+- en: This notation makes you think about types in terms of tests. That prepares you
+    for [computed types](ch_computing-with-types-overview.html#ch_computing-with-types-overview)
+    and for [coding exercises](ch_resources-on-typescript.html#coding-exercises) –
+    whose notation is similar.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The notation makes it possible to test the code examples automatically, via
+    the [Markcheck](https://github.com/rauschma/markcheck) tool for Markdown. That
+    ensures that they don’t contain errors. Twoslash only specifies which types to
+    display; it does not check that those types are as expected.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For printed books, HTML still isn’t where I’d like it to be. Thus, I can’t use
+    Shiki Twoslash there.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Minor downside of Shiki Twoslash: You need to run the TypeScript type checker
+    in order to render a book. With my notation, I only need to run it when I check
+    the code examples.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

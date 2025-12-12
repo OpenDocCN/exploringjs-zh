@@ -1,0 +1,255 @@
+- en: 35 Extracting parts of compound types via infer
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/ts/book/ch_infer-keyword.html](https://exploringjs.com/ts/book/ch_infer-keyword.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: (Ad, please don’t block.)
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[35.1 `infer`: extracting types inside the `extends` clause of a conditional
+    type](#infer-extracting-types-inside-the-extends-clause-of-a-conditional-type)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[35.1.1 Example: extracting property keys and values via `Record`](#example-extracting-property-keys-and-values-via-record)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[35.2 Constraining `infer` via `extends`](#constraining-infer-via-extends)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[35.3 Built-in utility types that use `infer`](#built-in-utility-types-that-use-infer)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[35.3.1 Extracting parts of function types via `infer`](#extracting-parts-of-function-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[35.3.2 Extracting parts of class types via `infer`](#extracting-parts-of-class-types-via-infer)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[35.4 Example: synchronous version of an asynchronous interface](#example-synchronous-version-of-an-asynchronous-interface)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[35.5 Using `infer` to define local type variables](#using-infer-to-define-local-type-variables)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[35.6 Sources of this chapter](#sources-of-this-chapter-5)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In this chapter, we explore how we can extract parts of compound types via the
+    `infer` keyword.
+  prefs: []
+  type: TYPE_NORMAL
+- en: It helps if you are loosely familiar with [conditional types](ch_conditional-types.html#ch_conditional-types).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[35.1 `infer`: extracting types inside the `extends` clause of a conditional
+    type](#infer-extracting-types-inside-the-extends-clause-of-a-conditional-type)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`infer` is used inside the constraint part of a conditional type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A constraint can be a type pattern – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'At any location where we can mention an existing type variable (such as `T`
+    or `R` in the previous examples), we can also introduce a new type variable `X`
+    via `infer X`. Let’s look at an example: The following generic type `ElemType<Arr>`
+    extracts the element type of an Array type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`infer` has a lot in common with [destructuring](https://exploringjs.com/js/book/ch_destructuring.html#ch_destructuring)
+    in JavaScript.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[35.1.1 Example: extracting property keys and values via `Record`](#example-extracting-property-keys-and-values-via-record)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The utility type `Record` lets us implement the `keyof` operator ourselves:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also implement a utility type `PropValues` that extracts property values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[35.2 Constraining `infer` via `extends`](#constraining-infer-via-extends)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In some cases, we need to help `infer` by using `extends` to constrain what
+    can be inferred – e.g. (based on [an idea by Heribert Schütz](https://mastodon.social/@hcschuetz/114127961269403080)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Notes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This code does not work without the two `extends` in line A and line B.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Line C shows us the exact result produced by `EnumFromTuple`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Line D shows us that the result is assignable from and to a simple object literal
+    type.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[35.3 Built-in utility types that use `infer`](#built-in-utility-types-that-use-infer)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: TypeScript has several built-in [utility types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
+    In this section, we look at those that use `infer`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[35.3.1 Extracting parts of function types via `infer`](#extracting-parts-of-function-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Both of these utility types are straightforward: We put `infer` where we want
+    to extract a type. Let’s use both types:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[35.3.2 Extracting parts of class types via `infer`](#extracting-parts-of-class-types-via-infer)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following non-built-in utility type for classes demonstrate how [*construct
+    signatures*](ch_classes-as-values.html#construct-signatures) work:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: This type includes all classes whose instances have the type `T`. The keyword
+    `abstract` means that it includes both abstract and concrete classes. Without
+    that keyword, it would only include classes that are instantiable.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Construct signatures enable us to extract parts of classes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To demonstrate these utility types, let’s define a class we can apply them
+    to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that the class `Point` defines two things:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A type: the type `Point` for instances of the class.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A value: a factory for objects whose type is `Point`. That value has the type
+    `Class<Point>`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[35.4 Example: synchronous version of an asynchronous interface](#example-synchronous-version-of-an-asynchronous-interface)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following example is a little more complex: It converts all asynchronous
+    methods in an object type to synchronous methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Condition: Is the current property value `Intf[K]` a function? (Line A)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If yes: The new property value is a function with the same parameters `A` but
+    an unwrapped return type `R`. (Line B)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If no: The new property value is the same as the old property value. (Line
+    C)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let’s apply `Syncify` to an interface `AsyncService` with Promise-based methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[35.5 Using `infer` to define local type variables](#using-infer-to-define-local-type-variables)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We can use `infer` to define local type variables such as `W` below:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information, see [“Defining local type variables” (§33.8)](ch_computing-with-types-overview.html#local-type-variables).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[35.6 Sources of this chapter](#sources-of-this-chapter-5)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Section [“Inferring within conditional types”](https://devblogs.microsoft.com/typescript/announcing-typescript-2-8-2/#inferring-within-conditional-types)
+    in the blog post announcing TypeScript 2.8.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Section [“Inferring Within Conditional Types”](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#inferring-within-conditional-types)
+    in the official TypeScript Handbook.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
