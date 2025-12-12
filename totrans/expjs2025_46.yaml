@@ -1,112 +1,168 @@
 - en: 39 WeakSets (WeakSet) ES6 (advanced)
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 39 WeakSet（WeakSet）ES6（高级）
 - en: 原文：[https://exploringjs.com/js/book/ch_weaksets.html](https://exploringjs.com/js/book/ch_weaksets.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_weaksets.html](https://exploringjs.com/js/book/ch_weaksets.html)
 - en: '[39.1 How are WeakSets different from Sets?](#sets-vs-weaksets)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[39.1 WeakSet与Set有何不同？](#sets-vs-weaksets)'
 - en: '[39.2 Use case for WeakSets: marking objects](#marking-objects-via-weaksets)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[39.2 WeakSet的使用场景：标记对象](#marking-objects-via-weaksets)'
 - en: '[39.2.1 Example: Marking objects as safe to use with a method](#example-marking-objects-as-safe-to-use-with-a-method)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[39.2.1 示例：使用方法标记对象为安全使用](#example-marking-objects-as-safe-to-use-with-a-method)'
 - en: '[39.3 WeakSet API](#weakset-api)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[39.3 WeakSet API](#weakset-api)'
 - en: '[39.1 How are WeakSets different from Sets?](#sets-vs-weaksets)'
+  id: totrans-6
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[39.1 WeakSet与Set有何不同？](#sets-vs-weaksets)'
 - en: 'WeakSets are similar to Sets, with the following differences:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: WeakSet与Set类似，但有以下区别：
 - en: They can hold objects without preventing those objects from being garbage-collected.
+  id: totrans-8
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们可以持有对象，而不会阻止这些对象被垃圾回收。
 - en: 'They are black boxes: we only get any data out of a WeakSet if we have both
     the WeakSet and a value. The only methods that are supported are `.add()`, `.delete()`,
     `.has()`. See the section on [WeakMaps as black boxes](ch_weakmaps.html#weakmaps-as-black-boxes)
     for an explanation of why WeakSets don’t allow iteration, looping, and clearing.'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们是黑盒：我们只有在拥有WeakSet和值的情况下才能从WeakSet中获取任何数据。支持的方法只有`.add()`、`.delete()`和`.has()`。请参阅[WeakMaps作为黑盒](ch_weakmaps.html#weakmaps-as-black-boxes)部分，了解为什么WeakSet不允许迭代、循环和清除的原因。
 - en: '[39.2 Use case for WeakSets: marking objects](#marking-objects-via-weaksets)'
+  id: totrans-10
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[39.2 WeakSet的使用场景：标记对象](#marking-objects-via-weaksets)'
 - en: Given that we can’t iterate over the elements of WeakSets, there are not that
     many use cases for them.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于我们无法遍历WeakSet的元素，因此它们的使用场景并不多。
 - en: 'We can use WeakSets to mark objects – for example:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用WeakSet来标记对象——例如：
 - en: '[PRE0]'
+  id: totrans-13
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: In line A, we mark `obj` as saved.
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行A中，我们将`obj`标记为已保存。
 - en: In line B, we check if `obj` is saved.
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行B中，我们检查`obj`是否已保存。
 - en: In line C, `obj` can be garbage-collected even though it is an element of the
     data structure `isSaved`.
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行C中，即使`obj`是数据结构`isSaved`的一个元素，它也可以被垃圾回收。
 - en: 'In a way, we created a boolean property for `obj`, but stored it externally.
     If `isSaved` were a property, the previous code would look as follows:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 从某种意义上说，我们为`obj`创建了一个布尔属性，但将其外部存储。如果`isSaved`是一个属性，那么前面的代码将如下所示：
 - en: '[PRE1]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[39.2.1 Example: Marking objects as safe to use with a method](#example-marking-objects-as-safe-to-use-with-a-method)'
+  id: totrans-19
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[39.2.1 示例：使用方法标记对象为安全使用](#example-marking-objects-as-safe-to-use-with-a-method)'
 - en: 'The following code demonstrates how a class can ensure that its methods are
     only applied to instances that were created by it (based on [code by Domenic Denicola](https://esdiscuss.org/topic/actual-weakset-use-cases#content-1)):'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了如何确保一个类只对其由其创建的实例应用其方法（基于[Domenic Denicola的代码](https://esdiscuss.org/topic/actual-weakset-use-cases#content-1)）：
 - en: '[PRE2]'
+  id: totrans-21
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[39.3 WeakSet API](#weakset-api)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[39.3 WeakSet API](#weakset-api)'
 - en: 'The constructor and the three methods of `WeakSet` work the same as [their
     `Set` equivalents](ch_sets.html#quickref-sets):'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 构造函数和`WeakSet`的三个方法与它们的`Set`等价物的工作方式相同[参考ch_sets.html#quickref-sets]：
 - en: '`new WeakSet<T>(values?: Iterable<T>)` ^(ES6)'
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new WeakSet<T>(values?: Iterable<T>)` ^（ES6）'
 - en: '`.add(value: T): this` ^(ES6)'
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.add(value: T): this` ^（ES6）'
 - en: '`.delete(value: T): boolean` ^(ES6)'
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.delete(value: T): boolean` ^（ES6）'
 - en: '`.has(value: T): boolean` ^(ES6)'
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.has(value: T): boolean` ^（ES6）'

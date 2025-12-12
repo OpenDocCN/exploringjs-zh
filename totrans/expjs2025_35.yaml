@@ -1,537 +1,788 @@
 - en: 29 Modules ES6
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 29 模块 ES6
 - en: 原文：[https://exploringjs.com/js/book/ch_modules.html](https://exploringjs.com/js/book/ch_modules.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_modules.html](https://exploringjs.com/js/book/ch_modules.html)
 - en: '[29.1 Cheat sheet: modules](#cheat-sheet-modules)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1 模块速查表](#cheat-sheet-modules)'
 - en: '[29.1.1 Named exports, named imports, namespace imports](#named-exports-named-imports-namespace-imports)'
+  id: totrans-3
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1.1 命名导出、命名导入、命名空间导入](#named-exports-named-imports-namespace-imports)'
 - en: '[29.1.2 Dynamic imports via `import()` ^(ES2020)](#dynamic-imports-via-import-es2020)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1.2 通过 `import()` 动态导入（ES2020）](#dynamic-imports-via-import-es2020)'
 - en: '[29.1.3 Default exports and imports](#default-exports-and-imports)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1.3 默认导出和导入](#default-exports-and-imports)'
 - en: '[29.1.4 Kinds of module specifiers](#kinds-of-module-specifiers)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1.4 模块指定符的类型](#kinds-of-module-specifiers)'
 - en: '[29.2 JavaScript’s source code units: scripts and modules](#source-code-units)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.2 JavaScript 的源代码单元：脚本和模块](#source-code-units)'
 - en: '[29.2.1 Code before built-in modules was written in ECMAScript 5](#code-before-builtin-modules-was-written-in-ecmascript-5)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.2.1 在内置模块之前编写的代码是 ECMAScript 5](#code-before-builtin-modules-was-written-in-ecmascript-5)'
 - en: '[29.3 Before we had modules, we had scripts](#scripts)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.3 在我们有模块之前，我们有脚本](#scripts)'
 - en: '[29.4 Module systems created prior to ES6](#module-systems-created-prior-to-es6)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.4 在 ES6 之前创建的模块系统](#module-systems-created-prior-to-es6)'
 - en: '[29.4.1 Server side: CommonJS modules](#server-side-commonjs-modules)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.4.1 服务器端：CommonJS 模块](#server-side-commonjs-modules)'
 - en: '[29.4.2 Client side: AMD (Asynchronous Module Definition) modules](#client-side-amd-asynchronous-module-definition-modules)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.4.2 客户端：AMD（异步模块定义）模块](#client-side-amd-asynchronous-module-definition-modules)'
 - en: '[29.4.3 Characteristics of JavaScript modules](#characteristics-of-javascript-modules)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.4.3 JavaScript 模块的特点](#characteristics-of-javascript-modules)'
 - en: '[29.5 ECMAScript modules](#ecmascript-modules)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.5 ECMAScript 模块](#ecmascript-modules)'
 - en: '[29.5.1 ES modules: syntax, semantics, loader API](#es-modules-syntax-semantics-loader-api)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.5.1 ES 模块：语法、语义、加载器 API](#es-modules-syntax-semantics-loader-api)'
 - en: '[29.6 Named exports and imports](#named-exports-and-imports)'
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6 命名导出和导入](#named-exports-and-imports)'
 - en: '[29.6.1 Named exports](#named-exports)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6.1 命名导出](#named-exports)'
 - en: '[29.6.2 Named imports](#named-imports)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6.2 命名导入](#named-imports)'
 - en: '[29.6.3 Namespace imports](#namespace-imports)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6.3 命名空间导入](#namespace-imports)'
 - en: '[29.6.4 Named exporting styles: inline versus clause (advanced)](#named-exporting-styles-inline-versus-clause-advanced)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6.4 命名导出风格：内联与子句（高级）](#named-exporting-styles-inline-versus-clause-advanced)'
 - en: '[29.7 Default exports and default imports](#default-exports-and-default-imports)'
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.7 默认导出和默认导入](#default-exports-and-default-imports)'
 - en: '[29.7.1 The two styles of default-exporting](#the-two-styles-of-defaultexporting)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.7.1 两种默认导出风格](#the-two-styles-of-defaultexporting)'
 - en: '[29.7.2 The default export as a named export (advanced)](#the-default-export-as-a-named-export-advanced)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.7.2 默认导出作为命名导出（高级）](#the-default-export-as-a-named-export-advanced)'
 - en: '[29.7.3 Recommendations: named exports vs. default exports](#recommendations-named-exports-vs-default-exports)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.7.3 建议：命名导出与默认导出](#recommendations-named-exports-vs-default-exports)'
 - en: '[29.8 Re-exporting](#re-exporting)'
+  id: totrans-25
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.8 重新导出](#re-exporting)'
 - en: '[29.9 More details on exporting and importing](#more-details-on-exporting-and-importing)'
+  id: totrans-26
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.9 导出和导入的更多细节](#more-details-on-exporting-and-importing)'
 - en: '[29.9.1 Imports are read-only views on exports](#imports-are-readonly-views-on-exports)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.9.1 导入是导出的只读视图](#imports-are-readonly-views-on-exports)'
 - en: '[29.9.2 ESM’s transparent support for cyclic imports (advanced)](#esms-transparent-support-for-cyclic-imports-advanced)'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.9.2 ESM 对循环导入的透明支持（高级）](#esms-transparent-support-for-cyclic-imports-advanced)'
 - en: '[29.10 Packages: JavaScript’s units for software distribution](#javascript-packages)'
+  id: totrans-29
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.10 包：JavaScript 的软件分发单元](#javascript-packages)'
 - en: '[29.10.1 Publishing packages: package registries, package managers, package
     names](#publishing-packages)'
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.10.1 发布包：包注册表、包管理器、包名称](#publishing-packages)'
 - en: '[29.10.2 The file system layout of a package](#package-file-system-layout)'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.10.2 包的文件系统布局](#package-file-system-layout)'
 - en: '[29.10.3 `package.json`](#packagejson)'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.10.3 `package.json`](#packagejson)'
 - en: '[29.10.4 Package exports: controlling what other packages see](#package-exports)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.10.4 包导出：控制其他包可见的内容](#package-exports)'
 - en: '[29.10.5 Package imports](#package-imports)'
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.10.5 包导入](#package-imports)'
 - en: '[29.11 Naming modules](#naming-modules)'
+  id: totrans-35
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.11 模块命名](#naming-modules)'
 - en: '[29.12 Module specifiers](#module-specifiers)'
+  id: totrans-36
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.12 模块指定符](#module-specifiers)'
 - en: '[29.12.1 Kinds of module specifiers](#kinds-of-module-specifiers-1)'
+  id: totrans-37
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.12.1 模块指定符的类型](#kinds-of-module-specifiers-1)'
 - en: '[29.12.2 Filename extensions in module specifiers](#filename-extensions-in-module-specifiers)'
+  id: totrans-38
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.12.2 模块指定符中的文件扩展名](#filename-extensions-in-module-specifiers)'
 - en: '[29.12.3 Module specifiers in Node.js](#module-specifiers-in-nodejs)'
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.12.3 Node.js 中的模块指定符](#module-specifiers-in-nodejs)'
 - en: '[29.12.4 Module specifiers in browsers](#module-specifiers-in-browsers)'
+  id: totrans-40
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.12.4 浏览器中的模块指定符](#module-specifiers-in-browsers)'
 - en: '[29.13 `import.meta` – metadata for the current module ^(ES2020)](#import.meta)'
+  id: totrans-41
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.13 `import.meta` – 当前模块的元数据 (ES2020)](#import.meta)'
 - en: '[29.13.1 `import.meta.url`](#import.meta.url)'
+  id: totrans-42
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.13.1‌ `import.meta.url`](#import.meta.url)'
 - en: '[29.13.2 `import.meta.url` and class `URL`](#importmetaurl-and-class-url)'
+  id: totrans-43
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.13.2 `import.meta.url` 和 `URL` 类](#importmetaurl-and-class-url)'
 - en: '[29.13.3 `import.meta.url` on Node.js](#importmetaurl-on-nodejs)'
+  id: totrans-44
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.13.3‌ Node.js 上的 `import.meta.url`](#importmetaurl-on-nodejs)'
 - en: '[29.14 Loading modules dynamically via `import()` ^(ES2020) (advanced)](#dynamic-imports)'
+  id: totrans-45
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.14‌ 通过 `import()` 动态加载模块 (ES2020) (高级)](#dynamic-imports)'
 - en: '[29.14.1 The limitations of static `import` statements](#the-limitations-of-static-import-statements)'
+  id: totrans-46
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.14.1 静态 `import` 语句的限制](#the-limitations-of-static-import-statements)'
 - en: '[29.14.2 Dynamic imports via the `import()` operator](#dynamic-imports-via-the-import-operator)'
+  id: totrans-47
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.14.2‌ 通过 `import()` 操作符动态导入](#dynamic-imports-via-the-import-operator)'
 - en: '[29.14.3 Use cases for `import()`](#use-cases-for-import)'
+  id: totrans-48
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.14.3 `import()` 的用例](#use-cases-for-import)'
 - en: '[29.15 Top-level `await` in modules ^(ES2022) (advanced)](#top-level-await)'
+  id: totrans-49
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.15 模块中的顶层 `await` (ES2022) (高级)](#top-level-await)'
 - en: '[29.15.1 Use cases for top-level `await`](#use-cases-for-toplevel-await)'
+  id: totrans-50
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.15.1 顶层 `await` 的用例](#use-cases-for-toplevel-await)'
 - en: '[29.15.2 How does top-level `await` work under the hood?](#how-does-toplevel-await-work-under-the-hood)'
+  id: totrans-51
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.15.2 顶层 `await` 在底层是如何工作的？](#how-does-toplevel-await-work-under-the-hood)'
 - en: '[29.15.3 The pros and cons of top-level `await`](#the-pros-and-cons-of-toplevel-await)'
+  id: totrans-52
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.15.3 顶层 `await` 的优缺点](#the-pros-and-cons-of-toplevel-await)'
 - en: '[29.16 Import attributes: importing non-JavaScript artifacts ^(ES2025)](#import-attributes)'
+  id: totrans-53
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.16 导入属性：导入非 JavaScript 艺术品 (ES2025)](#import-attributes)'
 - en: '[29.16.1 The history of importing non-JavaScript artifacts](#the-history-of-importing-nonjavascript-artifacts)'
+  id: totrans-54
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.16.1‌ 导入非 JavaScript 艺术品的历史](#the-history-of-importing-nonjavascript-artifacts)'
 - en: '[29.16.2 Use cases for importing non-JavaScript artifacts](#use-cases-for-importing-nonjavascript-artifacts)'
+  id: totrans-55
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.16.2 导入非 JavaScript 艺术品的用例](#use-cases-for-importing-nonjavascript-artifacts)'
 - en: '[29.16.3 Import attributes](#import-attributes-1)'
+  id: totrans-56
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.16.3 导入属性](#import-attributes-1)'
 - en: '[29.16.4 The syntax of import attributes](#the-syntax-of-import-attributes)'
+  id: totrans-57
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.16.4 导入属性的语法](#the-syntax-of-import-attributes)'
 - en: '[29.16.5 JSON modules ^(ES2025)](#json-modules)'
+  id: totrans-58
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.16.5 JSON 模块 (ES2025)](#json-modules)'
 - en: '[29.17 Polyfills: emulating native web platform features (advanced)](#polyfills)'
+  id: totrans-59
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.17‌ Polyfills：模拟原生 Web 平台功能 (高级)](#polyfills)'
 - en: '[29.17.1 Sources of this section](#sources-of-this-section)'
+  id: totrans-60
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.17.1 本节的来源](#sources-of-this-section)'
 - en: '[29.1 Cheat sheet: modules](#cheat-sheet-modules)'
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.1 速查表：模块](#cheat-sheet-modules)'
 - en: '[29.1.1 Named exports, named imports, namespace imports](#named-exports-named-imports-namespace-imports)'
+  id: totrans-62
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.1.1 命名导出、命名导入、命名空间导入](#named-exports-named-imports-namespace-imports)'
 - en: If we put `export` in front of a named entity inside a module, it becomes a
     *named export* of that module. All other entities are private to the module.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在模块内的一个命名实体前加上 `export`，它就变成了该模块的 *命名导出*。所有其他实体对该模块都是私有的。
 - en: '[PRE0]'
+  id: totrans-64
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[PRE1]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: The string after `from` is called a *module specifier*. It identifies from which
     module we want to import.
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: '`from` 后面的字符串被称为 *模块指定符*。它标识了我们想从哪个模块导入。'
 - en: '[29.1.2 Dynamic imports via `import()` ^(ES2020)](#dynamic-imports-via-import-es2020)'
+  id: totrans-67
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.1.2 通过 `import()` 动态导入 (ES2020)](#dynamic-imports-via-import-es2020)'
 - en: 'So far, all imports we have seen were *static*, with the following constraints:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们看到的所有导入都是 *静态的*，具有以下约束：
 - en: They have to appear at the top level of a module.
+  id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们必须出现在模块的最顶层。
 - en: The module specifier is fixed.
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块指定符是固定的。
 - en: 'Dynamic imports via `import()` don’t have those constraints:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过 `import()` 的动态导入没有这些约束：
 - en: '[PRE2]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[PRE3]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[29.1.3 Default exports and imports](#default-exports-and-imports)'
+  id: totrans-74
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.1.3‌ 默认导出和导入](#default-exports-and-imports)'
 - en: 'A *default export* is most often used when a module only contains a single
     entity (even though it can be combined with named exports):'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 当模块只包含单个实体时，最常使用 *默认导出*（即使它可以与命名导出结合使用）：
 - en: '[PRE4]'
+  id: totrans-76
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'There can be at most one default export. That’s why `const` or `let` can’t
     be default-exported (line A):'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 至多只能有一个默认导出。这就是为什么 `const` 或 `let` 不能作为默认导出（行 A）：
 - en: '[PRE5]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'This is the syntax for importing default exports:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是导入默认导出的语法：
 - en: '[PRE6]'
+  id: totrans-80
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[29.1.4 Kinds of module specifiers](#kinds-of-module-specifiers)'
+  id: totrans-81
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.1.4 模块指定符的类型](#kinds-of-module-specifiers)'
 - en: 'Module specifiers identify modules. There are three kinds of them:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块指定符标识模块。它们有三种类型：
 - en: '*Absolute specifiers* are full URLs – for example:'
+  id: totrans-83
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*绝对指定符* 是完整的 URL – 例如：'
 - en: '[PRE7]'
+  id: totrans-84
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: Absolute specifiers are mostly used to access libraries that are directly hosted
     on the web.
+  id: totrans-85
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 绝对指定符主要用于访问直接托管在网上的库。
 - en: '*Relative specifiers* are relative URLs (starting with `''/''`, `''./''` or
     `''../''`) – for example:'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*相对指定符* 是相对 URL（以 `''/''`、`''./''` 或 `''../''` 开头）——例如：'
 - en: '[PRE8]'
+  id: totrans-87
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Every module has a URL whose protocol depends on its location (`file:`, `https:`,
     etc.). If it uses a relative specifier, JavaScript turns that specifier into a
     full URL by resolving it against the module’s URL.
+  id: totrans-88
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 每个模块都有一个 URL，其协议取决于其位置（`file:`, `https:` 等）。如果它使用相对指定符，JavaScript 会通过解析它来将指定符转换为完整的
+    URL。
 - en: Relative specifiers are mostly used to access other modules within the same
     code base.
+  id: totrans-89
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 相对指定符主要用于访问同一代码库中的其他模块。
 - en: '*Bare specifiers* are paths (without protocol and domain) that start with neither
     slashes nor dots. They begin with the names of packages. Those names can optionally
     be followed by *subpaths*:'
+  id: totrans-90
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*裸指定符* 是路径（没有协议和域名），不以斜杠或点开头。它们以包的名称开始。这些名称可以可选地后面跟有 *子路径*：'
 - en: '[PRE9]'
+  id: totrans-91
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Bare specifiers can also refer to packages with scoped names:'
+  id: totrans-92
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 裸指定符也可以引用具有作用域名称的包：
 - en: '[PRE10]'
+  id: totrans-93
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: Each bare specifier refers to exactly one module inside a package; if it has
     no subpath, it refers to the designated “main” module of its package.
+  id: totrans-94
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 每个裸指定符恰好指向一个包内的一个模块；如果没有子路径，它指向其包的指定“主”模块。
 - en: A bare specifier is never used directly but always *resolved* – translated to
     an absolute specifier. How resolution works depends on the platform.
+  id: totrans-95
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 裸指定符永远不会直接使用，但总是 *解析* —— 转换为绝对指定符。解析的工作方式取决于平台。
 - en: '[29.2 JavaScript’s source code units: scripts and modules](#source-code-units)'
+  id: totrans-96
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.2 JavaScript 的源代码单元：脚本和模块](#source-code-units)'
 - en: What does “source code unit” mean in the world of JavaScript?
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 JavaScript 的世界中，“源代码单元”是什么意思？
 - en: A chunk of JavaScript source code (text)
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一段 JavaScript 源代码（文本）
 - en: Often one unit is stored in a single file.
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通常一个单元存储在一个单独的文件中。
 - en: We can also embed multiple units in a single HTML file.
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们还可以在一个单独的 HTML 文件中嵌入多个单元。
 - en: 'JavaScript has a rich history of source code units: ES6 brought built-in modules,
     but older formats are still around, too. Understanding the latter helps understand
     the former, so let’s investigate. The next sections describe the following ways
     of delivering JavaScript source code:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript 拥有丰富的源代码单元历史：ES6 带来了内置模块，但较旧的格式仍然存在。了解后者有助于理解前者，因此让我们来调查。接下来的几节将描述以下交付
+    JavaScript 源代码的方式：
 - en: '*Scripts* are code fragments that browsers run in global scope. They are precursors
     of modules.'
+  id: totrans-102
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*脚本* 是浏览器在全局范围内运行的代码片段。它们是模块的先驱。'
 - en: '*CommonJS modules* are a module format designed for servers (e.g., via Node.js).'
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*CommonJS 模块* 是为服务器设计的模块格式（例如，通过 Node.js）。'
 - en: '*AMD modules* are a module format designed for browsers.'
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*AMD 模块* 是为浏览器设计的模块格式。'
 - en: '*ECMAScript modules* are JavaScript’s built-in module format. It supersedes
     all previous formats.'
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*ECMAScript 模块* 是 JavaScript 的内置模块格式。它取代了所有之前的格式。'
 - en: '[Table 29.1](#tbl:source-code-units) gives an overview of these source code
     units. Note that we can choose between two filename extensions for CommonJS modules
     and ECMAScript modules. Which choice to make depends on how we want to use a file.
     Details are given later in this chapter.'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: '[表 29.1](#tbl:source-code-units) 提供了这些源代码单元的概述。请注意，我们可以选择两种文件扩展名用于 CommonJS
+    模块和 ECMAScript 模块。选择哪种取决于我们如何使用文件。详细信息将在本章后面给出。'
 - en: '|  | Usage | Runs on | Loaded | Filename ext. |'
+  id: totrans-107
   prefs: []
   type: TYPE_TB
+  zh: '|  | 用途 | 运行在 | 加载 | 文件名扩展名 |'
 - en: '| --- | --- | --- | --- | --- |'
+  id: totrans-108
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- | --- |'
 - en: '| Script | Legacy | browsers | async | `.js` |'
+  id: totrans-109
   prefs: []
   type: TYPE_TB
+  zh: '| 脚本 | 传统 | 浏览器 | 异步 | `.js` |'
 - en: '| CommonJS module | Decreasing | servers | sync | `.js .cjs` |'
+  id: totrans-110
   prefs: []
   type: TYPE_TB
+  zh: '| CommonJS 模块 | 下降 | 服务器 | 同步 | `.js .cjs` |'
 - en: '| AMD module | Legacy | browsers | async | `.js` |'
+  id: totrans-111
   prefs: []
   type: TYPE_TB
+  zh: '| AMD 模块 | 传统 | 浏览器 | 异步 | `.js` |'
 - en: '| ECMAScript module | Modern | browsers, servers | async | `.js .mjs` |'
+  id: totrans-112
   prefs: []
   type: TYPE_TB
+  zh: '| ECMAScript 模块 | 现代 | 浏览器、服务器 | 异步 | `.js .mjs` |'
 - en: 'Table 29.1: Ways of delivering JavaScript source code.'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 表 29.1：交付 JavaScript 源代码的方式。
 - en: '[29.2.1 Code before built-in modules was written in ECMAScript 5](#code-before-builtin-modules-was-written-in-ecmascript-5)'
+  id: totrans-114
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.2.1 内置模块之前的代码是用 ECMAScript 5 编写的](#code-before-builtin-modules-was-written-in-ecmascript-5)'
 - en: 'Before we get to built-in modules (which were introduced with ES6), all code
     that we’ll see, will be written in ES5\. Among other things:'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们接触到内置模块（ES6 引入的）之前，我们将看到的所有代码都将使用 ES5 编写。其中之一是：
 - en: ES5 did not have `const` and `let`; only `var`.
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ES5 没有使用 `const` 和 `let`；只有 `var`。
 - en: ES5 did not have arrow functions; only function expressions.
+  id: totrans-117
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ES5 没有箭头函数；只有函数表达式。
 - en: '[29.3 Before we had modules, we had scripts](#scripts)'
+  id: totrans-118
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.3 在我们拥有模块之前，我们有脚本](#scripts)'
 - en: 'Initially, browsers only had *scripts* – pieces of code that were executed
     in global scope. As an example, consider an HTML file that loads script files
     via the following HTML:'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 最初，浏览器只有 *脚本* – 在全局作用域中执行的代码片段。例如，考虑一个通过以下 HTML 加载脚本文件的 HTML 文件：
 - en: '[PRE11]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'The main file is `my-module.js`, where we simulate a module:'
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: 主文件是 `my-module.js`，在那里我们模拟一个模块：
 - en: '[PRE12]'
+  id: totrans-122
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '`myModule` is a global variable that is assigned the result of immediately
     invoking a function expression. The function expression starts in the first line.
     It is invoked in the last line.'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: '`myModule` 是一个全局变量，它被分配给立即调用函数表达式的结果。函数表达式从第一行开始。它在最后一行被调用。'
 - en: 'This way of wrapping a code fragment is called *immediately invoked function
     expression* (IIFE, coined by Ben Alman). What do we gain from an IIFE? `var` is
     not block-scoped (like `const` and `let`), it is function-scoped: the only way
@@ -540,739 +791,1111 @@
     Therefore, the IIFE in the example hides all of the following variables from global
     scope and minimizes name clashes: `importedFunc1`, `importedFunc2`, `internalFunc`,
     `exportedFunc`.'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种封装代码片段的方式被称为“立即执行函数表达式”（IIFE，由 Ben Alman 提出）。我们从 IIFE 中获得了什么？`var` 不是块级作用域（像
+    `const` 和 `let`），它是函数级作用域：创建 `var` 声明变量新作用域的唯一方法是通过函数或方法（对于 `const` 和 `let`，我们可以使用函数、方法或块
+    `{`）。因此，示例中的 IIFE 隐藏了以下所有变量，从而最小化了名称冲突：`importedFunc1`、`importedFunc2`、`internalFunc`、`exportedFunc`。
 - en: 'Note that we are using an IIFE in a particular manner: at the end, we pick
     what we want to export and return it via an object literal. That is called the
     *revealing module pattern* (coined by Christian Heilmann).'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，我们以一种特定的方式使用 IIFE：在最后，我们选择我们想要导出的内容，并通过对象字面量返回它。这被称为 *揭示模块模式*（由 Christian
+    Heilmann 提出）。
 - en: 'This way of simulating modules, has several issues:'
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种模拟模块的方式有几个问题：
 - en: Libraries in script files export and import functionality via global variables,
     which risks name clashes.
+  id: totrans-127
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 脚本文件中的库通过全局变量导出和导入功能，这可能导致名称冲突。
 - en: Dependencies are not stated explicitly, and there is no built-in way for a script
     to load the scripts it depends on. Therefore, the web page has to load not just
     the scripts that are needed by the page but also the dependencies of those scripts,
     the dependencies’ dependencies, etc. And it has to do so in the right order!
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 依赖关系没有明确声明，也没有内置的方法让脚本加载它所依赖的脚本。因此，网页不仅要加载页面需要的脚本，还要加载这些脚本的依赖项、依赖项的依赖项等，并且必须按正确的顺序加载！
 - en: '[29.4 Module systems created prior to ES6](#module-systems-created-prior-to-es6)'
+  id: totrans-129
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.4 在 ES6 之前创建的模块系统](#module-systems-created-prior-to-es6)'
 - en: 'Prior to ECMAScript 6, JavaScript did not have built-in modules. Therefore,
     the flexible syntax of the language was used to implement custom module systems
     *within* the language. Two popular ones are:'
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 ECMAScript 6 之前，JavaScript 没有内置的模块。因此，语言的灵活语法被用来在语言内部实现自定义模块系统。其中两个流行的是：
 - en: CommonJS (targeting the server side)
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: CommonJS（面向服务器端）
 - en: AMD (Asynchronous Module Definition, targeting the client side)
+  id: totrans-132
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: AMD (异步模块定义，面向客户端)
 - en: '[29.4.1 Server side: CommonJS modules](#server-side-commonjs-modules)'
+  id: totrans-133
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.4.1 服务器端：CommonJS 模块](#server-side-commonjs-modules)'
 - en: The original CommonJS standard for modules was created for server and desktop
     platforms. It was the foundation of the original Node.js module system, where
     it achieved enormous popularity. Contributing to that popularity were the npm
     package manager for Node and tools that enabled using Node modules on the client
     side (browserify, webpack, and others).
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 原始的 CommonJS 模块标准是为服务器和桌面平台创建的。它是原始 Node.js 模块系统的基础，在那里它获得了巨大的流行度。对这种流行度的贡献包括
+    Node 的 npm 包管理器和能够使用 Node 模块在客户端（browserify、webpack 等）上使用的工具。
 - en: 'From now on, *CommonJS module* means the Node.js version of this standard (which
     has a few additional features). This is an example of a CommonJS module:'
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 从现在起，*CommonJS 模块* 指的是该标准的 Node.js 版本（它有一些额外的功能）。这是一个 CommonJS 模块的例子：
 - en: '[PRE13]'
+  id: totrans-136
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'CommonJS can be characterized as follows:'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: CommonJS 可以描述如下：
 - en: Designed for servers.
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 专为服务器设计。
 - en: Modules are meant to be loaded *synchronously* (the importer waits while the
     imported module is loaded and executed).
+  id: totrans-139
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块旨在 *同步* 加载（导入者等待导入的模块加载和执行）。
 - en: Compact syntax.
+  id: totrans-140
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 紧凑的语法。
 - en: '[29.4.2 Client side: AMD (Asynchronous Module Definition) modules](#client-side-amd-asynchronous-module-definition-modules)'
+  id: totrans-141
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.4.2 客户端：AMD（异步模块定义）模块](#client-side-amd-asynchronous-module-definition-modules)'
 - en: The AMD module format was created to be easier to use in browsers than the CommonJS
     format. Its most popular implementation is [RequireJS](https://requirejs.org).
     The following is an example of an AMD module.
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: AMD模块格式被创建出来是为了在浏览器中使用比CommonJS格式更容易。它最流行的实现是[RequireJS](https://requirejs.org)。以下是一个AMD模块的示例。
 - en: '[PRE14]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'AMD can be characterized as follows:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: AMD可以这样描述：
 - en: Designed for browsers.
+  id: totrans-145
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为浏览器设计。
 - en: Modules are meant to be loaded *asynchronously*. That’s a crucial requirement
     for browsers, where code can’t wait until a module has finished downloading. It
     has to be notified once the module is available.
+  id: totrans-146
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块旨在**异步**加载。这对于浏览器来说是一个关键要求，因为代码不能等待模块下载完成。一旦模块可用，就必须通知它。
 - en: The syntax is slightly more complicated.
+  id: totrans-147
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 语法稍微复杂一些。
 - en: 'Benefit of AMD modules (and the reason why they work well for browsers): They
     can be executed directly. In contrast, CommonJS modules must either be compiled
     before deployment or custom source code must be generated and evaluated dynamically
     [(think `eval()`)](ch_dynamic-code-evaluation.html#eval). That isn’t always permitted
     on the web.'
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: AMD模块的好处（以及为什么它们在浏览器中表现良好）：它们可以直接执行。相比之下，CommonJS模块必须在部署前编译，或者必须生成和动态评估自定义源代码（例如`eval()`）。这在网上并不总是允许的。
 - en: '[29.4.3 Characteristics of JavaScript modules](#characteristics-of-javascript-modules)'
+  id: totrans-149
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.4.3 JavaScript模块的特性](#characteristics-of-javascript-modules)'
 - en: 'Looking at CommonJS and AMD, similarities between JavaScript module systems
     emerge:'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 观察CommonJS和AMD，JavaScript模块系统之间的相似性显现出来：
 - en: There is one module per file.
+  id: totrans-151
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个文件有一个模块。
 - en: 'Such a file is basically a piece of code that is executed:'
+  id: totrans-152
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这样的文件基本上是一段要执行的代码：
 - en: 'Local scope: The code is executed in a local “module scope”. Therefore, by
     default, all of the variables, functions, and classes declared in it are internal
     and not global.'
+  id: totrans-153
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 局部作用域：代码在局部“模块作用域”中执行。因此，默认情况下，其中声明的所有变量、函数和类都是内部的，而不是全局的。
 - en: 'Exports: If we want any declared entity to be exported, we must explicitly
     mark it as an export.'
+  id: totrans-154
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 导出：如果我们想导出任何声明的实体，我们必须明确将其标记为导出。
 - en: 'Imports: Each module can import exported entities from other modules. Those
     other modules are identified via *module specifiers* (usually paths, occasionally
     full URLs).'
+  id: totrans-155
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 导入：每个模块都可以从其他模块导入导出的实体。这些其他模块通过**模块指定符**（通常是路径，偶尔是完整URL）来识别。
 - en: 'Modules are *singletons*: Even if a module is imported multiple times, only
     a single “instance” of it exists.'
+  id: totrans-156
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块是**单例**的：即使一个模块被导入多次，也只有一个“实例”存在。
 - en: No global variables are used. Instead, module specifiers serve as global IDs.
+  id: totrans-157
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不使用全局变量。相反，模块指定符作为全局ID。
 - en: '[29.5 ECMAScript modules](#ecmascript-modules)'
+  id: totrans-158
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.5 ECMAScript模块](#ecmascript-modules)'
 - en: '*ECMAScript modules* (*ES modules* or *ESM*) were introduced with ES6\. They
     continue the tradition of JavaScript modules and have all of their aforementioned
     characteristics. Additionally:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: '*ECMAScript模块*（*ES模块*或*ESM*）随着ES6的引入而出现。它们继续了JavaScript模块的传统，并具有上述所有特性。此外：'
 - en: With CommonJS, ES modules share the compact syntax and support for cyclic dependencies.
+  id: totrans-160
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在CommonJS中，ES模块共享紧凑的语法和对循环依赖的支持。
 - en: With AMD, ES modules share being designed for asynchronous loading.
+  id: totrans-161
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在AMD中，ES模块共享为异步加载而设计的特性。
 - en: 'ES modules also have new benefits:'
+  id: totrans-162
   prefs: []
   type: TYPE_NORMAL
+  zh: ES模块也有新的好处：
 - en: The syntax is even more compact than CommonJS’s.
+  id: totrans-163
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 语法比CommonJS的更紧凑。
 - en: Modules have *static* structures (which can’t be changed at runtime). That helps
     with static checking, optimized access of imports, dead code elimination, and
     more.
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块具有**静态**结构（在运行时无法更改）。这有助于静态检查、优化导入访问、删除死代码等。
 - en: Support for cyclic imports is completely transparent.
+  id: totrans-165
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对循环导入的支持是完全透明的。
 - en: 'This is an example of ES module syntax:'
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个ES模块语法的示例：
 - en: '[PRE15]'
+  id: totrans-167
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: From now on, “module” means “ECMAScript module”.
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 从现在开始，“模块”指的是“ECMAScript模块”。
 - en: '[29.5.1 ES modules: syntax, semantics, loader API](#es-modules-syntax-semantics-loader-api)'
+  id: totrans-169
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.5.1 ES模块：语法、语义、加载器API](#es-modules-syntax-semantics-loader-api)'
 - en: 'The full standard of ES modules comprises the following parts:'
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: ES模块的完整标准包括以下部分：
 - en: 'Syntax (how code is written): What is a module? How are imports and exports
     declared? Etc.'
+  id: totrans-171
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 语法（代码的编写方式）：什么是模块？如何声明导入和导出？等等。
 - en: 'Semantics (how code is executed): How are variable bindings exported? How are
     imports connected with exports? Etc.'
+  id: totrans-172
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 语义（代码的执行方式）：变量绑定是如何导出的？导入是如何与导出连接的？等等。
 - en: A programmatic loader API for configuring module loading.
+  id: totrans-173
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 用于配置模块加载的程序化加载器API。
 - en: Parts 1 and 2 were introduced with ES6\. Work on part 3 is ongoing.
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 第1部分和第2部分是在ES6中引入的。第3部分的工作正在进行中。
 - en: '[29.6 Named exports and imports](#named-exports-and-imports)'
+  id: totrans-175
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.6 命名导出和导入](#named-exports-and-imports)'
 - en: '[29.6.1 Named exports](#named-exports)'
+  id: totrans-176
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.6.1 命名导出](#named-exports)'
 - en: Each module can have zero or more *named exports*.
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个模块可以有零个或多个**命名导出**。
 - en: 'As an example, consider the following two files:'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为例子，考虑以下两个文件：
 - en: '[PRE16]'
+  id: totrans-179
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Module `my-math.mjs` has two named exports: `square` and `LIGHT_SPEED`.'
+  id: totrans-180
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块 `my-math.mjs` 有两个命名导出：`square` 和 `LIGHT_SPEED`。
 - en: '[PRE17]'
+  id: totrans-181
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: To export something, we put the keyword `export` in front of a declaration.
     Entities that are not exported are private to a module and can’t be accessed from
     outside.
+  id: totrans-182
   prefs: []
   type: TYPE_NORMAL
+  zh: 要导出某些内容，我们在声明前放置关键字 `export`。未导出的实体对模块是私有的，并且不能从外部访问。
 - en: '[29.6.2 Named imports](#named-imports)'
+  id: totrans-183
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.6.2 命名导入](#named-imports)'
 - en: 'Module `main.mjs` has a single named import, `square`:'
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块 `main.mjs` 有一个命名导入，`square`：
 - en: '[PRE18]'
+  id: totrans-185
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'It can also rename its import:'
+  id: totrans-186
   prefs: []
   type: TYPE_NORMAL
+  zh: 它也可以重命名其导入：
 - en: '[PRE19]'
+  id: totrans-187
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '[29.6.2.1 Syntactic pitfall: named importing is not destructuring](#syntactic-pitfall-named-importing-is-not-destructuring)'
+  id: totrans-188
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.6.2.1 语法陷阱：命名导入不是解构](#syntactic-pitfall-named-importing-is-not-destructuring)'
 - en: 'Both named importing and destructuring look similar:'
+  id: totrans-189
   prefs: []
   type: TYPE_NORMAL
+  zh: 命名导入和解构看起来很相似：
 - en: '[PRE20]'
+  id: totrans-190
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'But they are quite different:'
+  id: totrans-191
   prefs: []
   type: TYPE_NORMAL
+  zh: 但它们相当不同：
 - en: Imports remain connected with their exports.
+  id: totrans-192
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 导入与其导出保持连接。
 - en: We can destructure again inside a destructuring pattern, but the `{}` in an
     import statement can’t be nested.
+  id: totrans-193
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以在解构模式内部再次解构，但导入语句中的 `{}` 不能嵌套。
 - en: 'The syntax for renaming is different:'
+  id: totrans-194
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 重命名的语法不同：
 - en: '[PRE21]'
+  id: totrans-195
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'Rationale: Destructuring is reminiscent of an object literal (including nesting),
     while importing evokes the idea of renaming.'
+  id: totrans-196
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 理由：解构让人联想到对象字面量（包括嵌套），而导入则唤起了重命名的想法。
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Named exports**'
+  id: totrans-197
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：命名导出**'
 - en: '`exercises/modules/export_named_test.mjs`'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/modules/export_named_test.mjs`'
 - en: '[29.6.3 Namespace imports](#namespace-imports)'
+  id: totrans-199
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.6.3 命名空间导入](#namespace-imports)'
 - en: '*Namespace imports* are an alternative to named imports. If we namespace-import
     a module, it becomes an object whose properties are the named exports. This is
     what `main.mjs` looks like if we use a namespace import:'
+  id: totrans-200
   prefs: []
   type: TYPE_NORMAL
+  zh: '**命名空间导入**是命名导入的替代方案。如果我们命名空间导入一个模块，它将变成一个对象，其属性是命名导出。这是如果我们使用命名空间导入的 `main.mjs`
+    的样子：'
 - en: '[PRE22]'
+  id: totrans-201
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: '[29.6.4 Named exporting styles: inline versus clause (advanced)](#named-exporting-styles-inline-versus-clause-advanced)'
+  id: totrans-202
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.6.4 命名导出风格：内联与子句（高级）](#named-exporting-styles-inline-versus-clause-advanced)'
 - en: 'The named export style we have seen so far was *inline*: We exported entities
     by prefixing them with the keyword `export`.'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们之前看到的命名导出风格是**内联**的：我们通过在实体前添加关键字 `export` 来导出实体。
 - en: 'But we can also use separate *export clauses*. For example, this is what `lib/my-math.mjs`
     looks like with an export clause:'
+  id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: 但我们也可以使用独立的**导出子句**。例如，这是使用导出子句的 `lib/my-math.mjs` 的样子：
 - en: '[PRE23]'
+  id: totrans-205
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'With an export clause, we can rename before exporting and use different names
     internally:'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用导出子句，我们可以在导出之前重命名，并在内部使用不同的名称：
 - en: '[PRE24]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '[29.7 Default exports and default imports](#default-exports-and-default-imports)'
+  id: totrans-208
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.7 默认导出和默认导入](#default-exports-and-default-imports)'
 - en: Each module can have at most one *default export*. The idea is that the module
     *is* the default-exported value.
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个模块最多只能有一个**默认导出**。其想法是模块**就是**默认导出的值。
 - en: 'As an example of default exports, consider the following two files:'
+  id: totrans-210
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为默认导出的例子，考虑以下两个文件：
 - en: '[PRE25]'
+  id: totrans-211
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Module `my-func.mjs` has a default export:'
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块 `my-func.mjs` 有一个默认导出：
 - en: '[PRE26]'
+  id: totrans-213
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'Module `main.mjs` default-imports the exported function:'
+  id: totrans-214
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块 `main.mjs` 默认导入导出的函数：
 - en: '[PRE27]'
+  id: totrans-215
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'Note the syntactic difference: the curly braces around named imports indicate
     that we are reaching *into* the module, while a default import *is* the module.'
+  id: totrans-216
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意语法差异：命名导入周围的括号表示我们正在进入模块内部，而默认导入**就是**模块。
 - en: '![Icon “question”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **What are
     use cases for default exports?**'
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“问题”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **默认导出的用例有哪些？**'
 - en: The most common use case for a default export is a module that contains a single
     function or a single class.
+  id: totrans-218
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认导出的最常见用例是包含单个函数或单个类的模块。
 - en: '[29.7.1 The two styles of default-exporting](#the-two-styles-of-defaultexporting)'
+  id: totrans-219
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.7.1 推荐项：两种默认导出方式](#the-two-styles-of-defaultexporting)'
 - en: There are two styles of doing default exports.
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两种进行默认导出的方式。
 - en: 'First, we can label existing declarations with `export default`:'
+  id: totrans-221
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们可以使用 `export default` 标记现有的声明：
 - en: '[PRE28]'
+  id: totrans-222
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: Second, we can directly default-export values. This style of `export default`
     is much like a declaration.
+  id: totrans-223
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，我们可以直接默认导出值。这种 `export default` 的风格与声明非常相似。
 - en: '[PRE29]'
+  id: totrans-224
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: '[29.7.1.1 Why are there two default export styles?](#why-are-there-two-default-export-styles)'
+  id: totrans-225
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.7.1.1 为什么有两种默认导出方式？](#why-are-there-two-default-export-styles)'
 - en: 'The reason is that `export default` can’t be used to label `const`: `const`
     may define multiple values, but `export default` needs exactly one value. Consider
     the following hypothetical code:'
+  id: totrans-226
   prefs: []
   type: TYPE_NORMAL
+  zh: 原因是 `export default` 不能用来标记 `const`：`const` 可以定义多个值，但 `export default` 需要正好一个值。考虑以下假设代码：
 - en: '[PRE30]'
+  id: totrans-227
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: With this code, we don’t know which one of the three values is the default export.
+  id: totrans-228
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用此代码，我们不知道三个值中的哪一个才是默认导出。
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Default exports**'
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：默认导出**'
 - en: '`exercises/modules/export_default_test.mjs`'
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/modules/export_default_test.mjs`'
 - en: '[29.7.2 The default export as a named export (advanced)](#the-default-export-as-a-named-export-advanced)'
+  id: totrans-231
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.7.2 默认导出作为命名导出（高级）](#the-default-export-as-a-named-export-advanced)'
 - en: 'Internally, a default export is simply a named export whose name is `default`.
     As an example, consider the previous module `my-func.mjs` with a default export:'
+  id: totrans-232
   prefs: []
   type: TYPE_NORMAL
+  zh: 内部，默认导出只是一个名为 `default` 的命名导出。例如，考虑之前具有默认导出的模块 `my-func.mjs`：
 - en: '[PRE31]'
+  id: totrans-233
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'The following module `my-func2.mjs` is equivalent to that module:'
+  id: totrans-234
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下模块 `my-func2.mjs` 与该模块等价：
 - en: '[PRE32]'
+  id: totrans-235
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'For importing, we can use a normal default import:'
+  id: totrans-236
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于导入，我们可以使用正常的默认导入：
 - en: '[PRE33]'
+  id: totrans-237
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'Or we can use a named import:'
+  id: totrans-238
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者我们可以使用命名导入：
 - en: '[PRE34]'
+  id: totrans-239
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'The default export is also available via property `.default` of namespace imports:'
+  id: totrans-240
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认导出也可以通过命名空间导入的 `.default` 属性访问：
 - en: '[PRE35]'
+  id: totrans-241
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '![Icon “question”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **Isn’t
     `default` illegal as a variable name?**'
+  id: totrans-242
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“问题”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **“default”作为变量名不合法吗？**'
 - en: '`default` can’t be a variable name, but it can be an export name and it can
     be a property name:'
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: '`default` 不能作为变量名，但它可以作为导出名和属性名：'
 - en: '[PRE36]'
+  id: totrans-244
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '[29.7.3 Recommendations: named exports vs. default exports](#recommendations-named-exports-vs-default-exports)'
+  id: totrans-245
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.7.3 推荐项：命名导出与默认导出](#recommendations-named-exports-vs-default-exports)'
 - en: 'These are my recommendations:'
+  id: totrans-246
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是我的推荐：
 - en: 'Avoid mixing named exports and default exports: A module can have both named
     exports and a default export, but it’s usually better to stick to one export style
     per module.'
+  id: totrans-247
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 避免混合命名导出和默认导出：一个模块可以同时有命名导出和默认导出，但通常最好每个模块只坚持一种导出风格。
 - en: 'There is one exception: For unit-testing, it can make sense to name-export
     internal functions (etc.) that complement the default export (the public API of
     the module).'
+  id: totrans-248
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有一个例外：对于单元测试，将内部函数（等）命名为导出，以补充默认导出（模块的公共API）是有意义的。
 - en: In some cases, you may be sure that the module will only ever export a single
     value (usually a function or a class). That is, conceptually, the module *is*
     the value – similarly to a variable. Then a default export is a good option.
+  id: totrans-249
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在某些情况下，你可能确信该模块只会导出一个值（通常是函数或类）。也就是说，从概念上讲，模块 *就是* 该值——类似于一个变量。那么默认导出是一个不错的选择。
 - en: You can never go wrong with only using named exports.
+  id: totrans-250
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只使用命名导出永远不会出错。
 - en: '[29.8 Re-exporting](#re-exporting)'
+  id: totrans-251
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.8 重新导出](#re-exporting)'
 - en: A module `library.mjs` can export one or more exports of another module `internal.mjs`
     as if it had made them itself. That is called *re-exporting*.
+  id: totrans-252
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个模块 `library.mjs` 可以将另一个模块 `internal.mjs` 的一个或多个导出作为它自己的导出导出。这被称为 *重新导出*。
 - en: '[PRE37]'
+  id: totrans-253
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: '[PRE38]'
+  id: totrans-254
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: The wildcard re-export turns all exports of module `internal.mjs` into exports
     of `library.mjs`, except the default export.
+  id: totrans-255
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通配符重新导出将模块 `internal.mjs` 的所有导出转换为 `library.mjs` 的导出，除了默认导出。
 - en: The namespace re-export turns all exports of module `internal.mjs` into an object
     that becomes the named export `ns` of `library.mjs`. Because `internal.mjs` has
     a default export, `ns` has a property `.default`.
+  id: totrans-256
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 命名空间重新导出将模块 `internal.mjs` 的所有导出转换为成为 `library.mjs` 的命名导出 `ns` 的对象。因为 `internal.mjs`
+    有默认导出，所以 `ns` 有一个属性 `.default`。
 - en: 'The following code demonstrates the two bullet points above:'
+  id: totrans-257
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了上述两个要点：
 - en: '[PRE39]'
+  id: totrans-258
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '[29.9 More details on exporting and importing](#more-details-on-exporting-and-importing)'
+  id: totrans-259
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.9 更多关于导出和导入的细节](#more-details-on-exporting-and-importing)'
 - en: '[29.9.1 Imports are read-only views on exports](#imports-are-readonly-views-on-exports)'
+  id: totrans-260
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.9.1 导入是导出的只读视图](#imports-are-readonly-views-on-exports)'
 - en: So far, we have used imports and exports intuitively, and everything seems to
     have worked as expected. But now it is time to take a closer look at how imports
     and exports are really related.
+  id: totrans-261
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们直观地使用了导入和导出，一切似乎都按预期工作。但现在，是时候更深入地了解导入和导出是如何真正关联的了。
 - en: 'Consider the following two modules:'
+  id: totrans-262
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下两个模块：
 - en: '[PRE40]'
+  id: totrans-263
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: '`counter.mjs` exports a (mutable!) variable and a function:'
+  id: totrans-264
   prefs: []
   type: TYPE_NORMAL
+  zh: '`counter.mjs`导出一个（可变的！）变量和一个函数：'
 - en: '[PRE41]'
+  id: totrans-265
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: '`main.mjs` name-imports both exports. When we use `incCounter()`, we discover
     that the connection to `counter` is live – we can always access the live state
     of that variable:'
+  id: totrans-266
   prefs: []
   type: TYPE_NORMAL
+  zh: '`main.mjs`同时命名导出。当我们使用`incCounter()`时，我们发现与`counter`的连接是活跃的——我们总能访问该变量的实时状态：'
 - en: '[PRE42]'
+  id: totrans-267
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: Note that while the connection is live and we can read `counter`, we cannot
     change this variable (e.g., via `counter++`).
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，虽然连接是活跃的，我们可以读取`counter`，但我们不能改变这个变量（例如，通过`counter++`）。
 - en: 'There are two benefits to handling imports this way:'
+  id: totrans-269
   prefs: []
   type: TYPE_NORMAL
+  zh: 以这种方式处理导入有两个好处：
 - en: It is easier to split modules because previously shared variables can become
     exports.
+  id: totrans-270
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由于之前共享的变量可以成为导出，因此更容易拆分模块。
 - en: This behavior is crucial for supporting transparent cyclic imports. Read on
     for more information.
+  id: totrans-271
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这种行为对于支持透明的循环导入至关重要。继续阅读以获取更多信息。
 - en: '[29.9.2 ESM’s transparent support for cyclic imports (advanced)](#esms-transparent-support-for-cyclic-imports-advanced)'
+  id: totrans-272
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.9.2 ESM对循环导入的透明支持（高级）](#esms-transparent-support-for-cyclic-imports-advanced)'
 - en: 'ESM supports cyclic imports transparently. To understand how that is achieved,
     consider the following example: [figure 29.1](#fig:module-imports) shows a directed
     graph of modules importing other modules. P importing M is the cycle in this case.'
+  id: totrans-273
   prefs: []
   type: TYPE_NORMAL
+  zh: ESM透明地支持循环导入。为了理解这是如何实现的，考虑以下示例：[图29.1](#fig:module-imports)显示了模块导入其他模块的有向图。在这种情况下，P导入M是一个循环。
 - en: '![](../Images/e021933bd9279348226080408fab73a2.png)'
+  id: totrans-274
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/e021933bd9279348226080408fab73a2.png)'
 - en: 'Figure 29.1: A directed graph of modules importing modules: M imports N and
     O, N imports P and Q, etc.'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 图29.1：模块导入模块的有向图：M导入N和O，N导入P和Q等。
 - en: 'After parsing, these modules are set up in two phases:'
+  id: totrans-276
   prefs: []
   type: TYPE_NORMAL
+  zh: 解析后，这些模块在两个阶段被设置：
 - en: 'Instantiation: Every module is visited and its imports are connected to its
     exports. Before a parent can be instantiated, all of its children must be instantiated.'
+  id: totrans-277
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 实例化：每个模块都被访问，并且其导入与导出连接。在父模块实例化之前，必须先实例化所有子模块。
 - en: 'Evaluation: The bodies of the modules are executed. Once again, children are
     evaluated before parents.'
+  id: totrans-278
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 评估：模块的主体被执行。再次强调，子模块在父模块之前被评估。
 - en: 'This approach handles cyclic imports correctly, due to two features of ES modules:'
+  id: totrans-279
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种方法正确处理了循环导入，归功于ES模块的两个特性：
 - en: 'Due to the static structure of ES modules, the exports are already known after
     parsing. That makes it possible to instantiate P before its child M: P can already
     look up M’s exports.'
+  id: totrans-280
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由于ES模块的静态结构，解析后导出就已经知道了。这使得在M之前实例化P成为可能：P已经可以查找M的导出。
 - en: When P is evaluated, M hasn’t been evaluated, yet. However, entities in P can
     already mention imports from M. They just can’t use them, yet, because the imported
     values are filled in later. For example, a function in P can access an import
     from M. The only limitation is that we must wait until after the evaluation of
     M, before calling that function.
+  id: totrans-281
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当P被评估时，M还没有被评估。然而，P中的实体已经可以提及来自M的导入。它们只是还不能使用，因为导入的值稍后才会填充。例如，P中的一个函数可以访问来自M的导入。唯一的限制是我们必须等待M评估完毕后，才能调用该函数。
 - en: Imports being filled in later is enabled by them being “live immutable views”
     on exports.
+  id: totrans-282
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 导入被填充是通过它们成为导出的“活跃不可变视图”来实现的。
 - en: '[29.10 Packages: JavaScript’s units for software distribution](#javascript-packages)'
+  id: totrans-283
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.10 包：JavaScript的软件分发单元](#javascript-packages)'
 - en: 'In the JavaScripte ecosystem, a *package* is a way of organizing software projects:
     It is a directory with a standardized layout. A package can contain all kinds
     of files - for example:'
+  id: totrans-284
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript生态系统中，一个*包*是组织软件项目的一种方式：它是一个具有标准化布局的目录。一个包可以包含各种文件——例如：
 - en: A web application written in JavaScript, to be deployed on a server
+  id: totrans-285
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个用JavaScript编写的Web应用程序，将被部署到服务器上
 - en: JavaScript libraries (for Node.js, for browsers, for all JavaScript platforms,
     etc.)
+  id: totrans-286
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript库（用于Node.js、浏览器、所有JavaScript平台等）
 - en: 'Libraries for programming languages other than JavaScript: TypeScript, Rust,
     etc.'
+  id: totrans-287
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 除了JavaScript之外的其他编程语言的库：TypeScript、Rust等。
 - en: Unit tests (e.g. for the libraries in the package)
+  id: totrans-288
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 单元测试（例如，针对软件包中的库）
 - en: Node.js-based shell scripts – e.g., development tools such as compilers, test
     runners, and documentation generators
+  id: totrans-289
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 基于 Node.js 的 shell 脚本 - 例如，编译器、测试运行器和文档生成器等开发工具
 - en: Many other kinds of artifacts
+  id: totrans-290
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 许多其他类型的工件
 - en: 'A package can *depend on* other packages (which are called its *dependencies*):'
+  id: totrans-291
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个软件包可以*依赖于*其他软件包（这些称为其*依赖项*）：
 - en: Libraries needed by the package’s JavaScript code
+  id: totrans-292
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 软件包的 JavaScript 代码所需的库
 - en: Shell scripts used during development
+  id: totrans-293
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 开发期间使用的shell脚本
 - en: Etc.
+  id: totrans-294
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: The dependencies of a package are installed inside that package (we’ll see how
     soon).
+  id: totrans-295
   prefs: []
   type: TYPE_NORMAL
+  zh: 软件包的依赖项将安装在该软件包内部（我们很快就会看到）。
 - en: 'One common distinction between packages is:'
+  id: totrans-296
   prefs: []
   type: TYPE_NORMAL
+  zh: 软件包之间的一种常见区别是：
 - en: '*Published packages* can be installed by us:'
+  id: totrans-297
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*已发布的软件包*可以被我们安装：'
 - en: 'Global installation: We can install them globally so that their shell scripts
     become available at the command line.'
+  id: totrans-298
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 全局安装：我们可以全局安装它们，这样它们的shell脚本就可以在命令行中使用了。
 - en: 'Local installation: We can install them as dependencies into our own packages.'
+  id: totrans-299
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 本地安装：我们可以将它们作为依赖项安装到我们自己的软件包中。
 - en: '*Unpublished packages* never become dependencies of other packages, but do
     have dependencies themselves. Examples include web applications that are deployed
     to servers.'
+  id: totrans-300
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*未发布的软件包*永远不会成为其他软件包的依赖项，但它们本身也有依赖项。例如，部署到服务器的Web应用程序。'
 - en: The next subsection explains how packages can be published.
+  id: totrans-301
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一个子节将解释如何发布软件包。
 - en: '[29.10.1 Publishing packages: package registries, package managers, package
     names](#publishing-packages)'
+  id: totrans-302
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.10.1 发布软件包：软件包注册表、软件包管理器、软件包名称](#publishing-packages)'
 - en: 'The main way of publishing a package is to upload it to a package registry
     – an online software repository. Two popular public registries are:'
+  id: totrans-303
   prefs: []
   type: TYPE_NORMAL
+  zh: 发布软件包的主要方式是将它上传到软件包注册表 - 一个在线软件仓库。两个流行的公共注册表是：
 - en: '[The *npm registry*](https://www.npmjs.com) is most widely used and the default
     when using Node.js.'
+  id: totrans-304
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[npm注册表](https://www.npmjs.com)是最广泛使用的，并且在使用Node.js时是默认的。'
 - en: '[The open-source package registry JSR](https://jsr.io) has special support
     for TypeScript and was created by the makers of the JavaScript runtime Deno.'
+  id: totrans-305
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[开源软件包注册表JSR](https://jsr.io)为TypeScript提供了特殊支持，并由JavaScript运行时Deno的制作者创建。'
 - en: Companies can also host their own private registries.
+  id: totrans-306
   prefs: []
   type: TYPE_NORMAL
+  zh: 公司也可以托管他们自己的私有注册表。
 - en: A *package manager* is a command line tool that downloads packages from a registry
     (or other sources) and installs them as shell scripts and/or as dependencies.
     The most popular package manager is called *npm* and comes bundled with Node.js.
@@ -1281,1633 +1904,2436 @@
     to “npm is not a package manager” ([source]([https://en.wikipedia.org/wiki/Npm_(software)#Acronym)).](https://en.wikipedia.org/wiki/Npm_(software)#Acronym)).)
     There are other popular package managers such as jsr, vlt, pnpm and yarn. All
     of these package managers support either or both of the npm registry and JSR.
+  id: totrans-307
   prefs: []
   type: TYPE_NORMAL
+  zh: '*软件包管理器*是一个命令行工具，它从注册表（或其他来源）下载软件包，并将它们作为shell脚本和/或作为依赖项安装。最受欢迎的软件包管理器称为*npm*，它捆绑在Node.js中。其名称最初代表“Node
+    Package Manager”。后来，当npm和npm注册表不仅用于Node.js软件包时，这个含义被改为“npm不是软件包管理器”([来源](https://en.wikipedia.org/wiki/Npm_(software)#Acronym))。还有其他流行的软件包管理器，如jsr、vlt、pnpm和yarn。所有这些软件包管理器都支持npm注册表和JSR中的任何一个或两个。'
 - en: 'Let’s explore how the npm registry works. Each package has a name. There are
     two kinds of names:'
+  id: totrans-308
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们探索npm注册表是如何工作的。每个软件包都有一个名称。有两种类型的名称：
 - en: '*Global names* are unique across the whole registry. These are two examples:'
+  id: totrans-309
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*全局名称*在整个注册表中是唯一的。以下是一些示例：'
 - en: '[PRE43]'
+  id: totrans-310
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: '*Scoped names* consist of two parts: A scope and a name. Scopes are globally
     unique, names are unique per scope. These are two examples:'
+  id: totrans-311
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*范围名称*由两部分组成：一个范围和一个名称。范围是全球唯一的，名称在每个范围内是唯一的。以下是一些示例：'
 - en: '[PRE44]'
+  id: totrans-312
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: The scope starts with an `@` symbol and is separated from the name with a slash.
+  id: totrans-313
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 范围以一个`@`符号开始，并用斜杠与名称分开。
 - en: '[29.10.2 The file system layout of a package](#package-file-system-layout)'
+  id: totrans-314
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.10.2 软件包的文件系统布局](#package-file-system-layout)'
 - en: 'Once a package `my-package` is fully installed, it almost always looks like
     this:'
+  id: totrans-315
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦软件包`my-package`完全安装，它通常看起来是这样的：
 - en: '[PRE45]'
+  id: totrans-316
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: What are the purposes of these file system entries?
+  id: totrans-317
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些文件系统条目的目的是什么？
 - en: '`package.json` is a file every package must have:'
+  id: totrans-318
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`package.json`是每个软件包都必须拥有的文件：'
 - en: It contains metadata describing the package (its name, its version, its author,
     etc.).
+  id: totrans-319
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它包含描述软件包的元数据（其名称、版本、作者等）。
 - en: 'It lists the dependencies of the package: other packages that it needs, such
     as libraries and tools. Per dependency, we record:'
+  id: totrans-320
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它列出了包的依赖项：它需要的其他包，例如库和工具。对于每个依赖项，我们记录：
 - en: A range of version numbers. Not specifying a specific version allows for upgrades
     and for code sharing between dependencies.
+  id: totrans-321
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一系列版本号。不指定特定版本允许升级以及依赖项之间的代码共享。
 - en: 'By default, dependencies come from the npm registry. But we can also specify
     other sources: a local directory, a GZIP file, a URL pointing to a GZIP file,
     a registry other than npm’s, a git repository, etc.'
+  id: totrans-322
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 默认情况下，依赖项来自 npm 注册表。但我们也可以指定其他来源：本地目录、GZIP 文件、指向 GZIP 文件的 URL、除 npm 之外的其他注册表、git
+    仓库等。
 - en: '`node_modules/` is a directory into which the dependencies of the package are
     installed. Each dependency also has a `node_modules` folder with its dependencies,
     etc. The result is a tree of dependencies.'
+  id: totrans-323
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules/` 是一个目录，其中安装了包的依赖项。每个依赖项也有一个包含其依赖项的 `node_modules` 文件夹，等等。结果是依赖项的树状结构。'
 - en: 'Most packages also have the file `package-lock.json` that sits next to `package.json`:
     It records the exact versions of the dependencies that were installed and is kept
     up to date if we add more dependencies via npm.'
+  id: totrans-324
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数包也都有一个名为 `package-lock.json` 的文件，它位于 `package.json` 旁边：它记录了已安装依赖项的确切版本，并且如果通过
+    npm 添加更多依赖项，它将保持更新。
 - en: '[29.10.3 `package.json`](#packagejson)'
+  id: totrans-325
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.10.3 `package.json`](#packagejson)'
 - en: 'This is a starter `package.json` that can be created via npm:'
+  id: totrans-326
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个可以通过 npm 创建的初始 `package.json`：
 - en: '[PRE46]'
+  id: totrans-327
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: What are the purposes of these properties?
+  id: totrans-328
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些属性的目的是什么？
 - en: 'Some properties are required for public packages (published on the npm registry):'
+  id: totrans-329
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一些属性对于公共包（发布在 npm 注册表中）是必需的：
 - en: '`name` specifies the name of this package.'
+  id: totrans-330
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`name` 指定此包的名称。'
 - en: '`version` is used for version management and follows [semantic versioning](https://semver.org)
     with three dot-separated numbers:'
+  id: totrans-331
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`version` 用于版本管理，并遵循 [语义化版本控制](https://semver.org)，由三个点分隔的数字组成：'
 - en: The *major version* is incremented when incompatible API changes are made.
+  id: totrans-332
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当进行不兼容的 API 变更时，会递增 *主版本*。
 - en: The *minor version* is incremented when functionality is added in a backward
     compatible manner.
+  id: totrans-333
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当以向后兼容的方式添加功能时，会递增 *次要版本*。
 - en: The *patch version* is incremented when small changes are made that don’t really
     change the functionality.
+  id: totrans-334
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当进行的小改动不会真正改变功能时，会递增 *修补版本*。
 - en: 'Other properties for public packages are optional:'
+  id: totrans-335
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 公共包的其他属性是可选的：
 - en: '`description`, `keywords`, `author` are optional and make it easier to find
     packages.'
+  id: totrans-336
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`description`、`keywords`、`author` 是可选的，这使得查找包变得更加容易。'
 - en: '`license` clarifies how this package can be used. It makes sense to provide
     this value if the package is public in any way. [“Choose an open source license”](https://choosealicense.com)
     can help with making this choice.'
+  id: totrans-337
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`license` 阐明了如何使用此包。如果包以任何方式是公共的，提供此值是有意义的。[“选择开源许可”](https://choosealicense.com)
+    可以帮助做出这个选择。'
 - en: '`main` is a legacy property and has been superseded by `exports`. It points
     to the code of a library package.'
+  id: totrans-338
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`main` 是一个遗留属性，已被 `exports` 取代。它指向库包的代码。'
 - en: '`scripts` is a property for setting up abbreviations for development-time shell
     commands. These can be executed via `npm run`. For example, the script `test`
     can be executed via `npm run test`.'
+  id: totrans-339
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`scripts` 是一个用于设置开发时 shell 命令缩写的属性。这些可以通过 `npm run` 执行。例如，`test` 脚本可以通过 `npm
+    run test` 执行。'
 - en: 'More useful properties:'
+  id: totrans-340
   prefs: []
   type: TYPE_NORMAL
+  zh: 更有用的属性：
 - en: 'Normally, the properties `name` and `version` are required and npm warns us
     if they are missing. However, we can change that via the following setting:'
+  id: totrans-341
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通常，`name` 和 `version` 属性是必需的，如果它们缺失，npm 会警告我们。但是，我们可以通过以下设置来更改这一点：
 - en: '[PRE47]'
+  id: totrans-342
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: That prevents the package from accidentally being published and allows us to
     omit name and version.
+  id: totrans-343
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 这防止了包意外发布，并允许我们省略名称和版本。
 - en: '`exports` is for *package exports* – which specify how importers see the content
     of this package. We’ll learn more about package exports [later](#package-exports).'
+  id: totrans-344
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`exports` 用于 *包导出* – 指定导入者如何看到此包的内容。我们将在 [稍后](#package-exports) 了解更多关于包导出的内容。'
 - en: '`imports` is for *package imports* – which define aliases for module specifiers
     that packages can use internally. We’ll learn more about package imports [later](#package-imports).'
+  id: totrans-345
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`imports` 用于 *包导入* – 定义了包可以内部使用的模块指定符别名。我们将在 [稍后](#package-imports) 了解更多关于包导入的内容。'
 - en: '`dependencies` lists the dependencies of a package.'
+  id: totrans-346
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dependencies` 列出了包的依赖项。'
 - en: '`devDependencies` are dependencies that are only installed during development
     (not when a package is added as a dependency).'
+  id: totrans-347
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`devDependencies` 是仅在开发期间安装的依赖项（不是当包作为依赖项添加时）。'
 - en: 'The following setting means that all files with the name extension `.js` are
     interpreted as ECMAScript modules. Unless we are dealing with legacy code, it
     makes sense to add it:'
+  id: totrans-348
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 以下设置意味着所有以 `.js` 为扩展名的文件都被解释为 ECMAScript 模块。除非我们正在处理遗留代码，否则添加它是合理的：
 - en: '[PRE48]'
+  id: totrans-349
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: '`bin` lists modules within the package that are installed as shell scripts.'
+  id: totrans-350
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`bin` 列出作为 shell 脚本安装的包内的模块。'
 - en: '![Icon “external”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png) **More information
     on `package.json`**'
+  id: totrans-351
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“外部”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png)  **关于 `package.json`
+    的更多信息**'
 - en: See [the npm documentation](https://docs.npmjs.com/files/package.json).
+  id: totrans-352
   prefs: []
   type: TYPE_NORMAL
+  zh: 查看 [npm 文档](https://docs.npmjs.com/files/package.json)。
 - en: '[29.10.4 Package exports: controlling what other packages see](#package-exports)'
+  id: totrans-353
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.10.4 包导出：控制其他包可见的内容](#package-exports)'
 - en: '[*Package exports*](https://nodejs.org/api/packages.html#packages_package_entry_points)
     are specified via property `"exports"` in `package.json` and support three important
     features:'
+  id: totrans-354
   prefs: []
   type: TYPE_NORMAL
+  zh: '[*包导出*](https://nodejs.org/api/packages.html#packages_package_entry_points)
+    通过 `package.json` 中的 `"exports"` 属性指定，并支持三个重要特性：'
 - en: 'Hiding the internals of a package:'
+  id: totrans-355
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 隐藏包的内部结构：
 - en: 'Without property `"exports"`, every module in a package `my-lib` can be accessed
     via a relative path after the package name – e.g.:'
+  id: totrans-356
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果不存在 `"exports"` 属性，则包 `my-lib` 中的每个模块都可以通过包名后的相对路径访问——例如：
 - en: '[PRE49]'
+  id: totrans-357
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: Once the property exists, only specifiers listed in it can be used. Everything
     else is hidden from the outside.
+  id: totrans-358
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一旦存在该属性，就只能使用其中列出的指定符。其他所有内容对外部都是隐藏的。
 - en: 'Nicer module specifiers: Package exports let us change the bare specifier subpaths
     for importing the modules of a package: They can be shorter, extension-less, etc.'
+  id: totrans-359
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 更好的模块指定符：包导出允许我们更改导入包模块的裸指定符子路径：它们可以更短，无扩展名等。
 - en: 'Conditional exports: The same module specifier exports different modules –
     depending on which JavaScript platform an importer uses (browser, Node.js, etc.).'
+  id: totrans-360
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 条件导出：相同的模块指定符导出不同的模块——这取决于导入者使用的 JavaScript 平台（浏览器、Node.js 等）。
 - en: 'Next, we’ll look at some example. For a more detailed explanation of how package
     exports work, see section [“Package exports: controlling what other packages see”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html#package-exports-controlling-what-other-packages-see)
     in “Shell scripting with Node.js”.'
+  id: totrans-361
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来，我们将查看一些例子。要更详细地了解包导出是如何工作的，请参阅“使用 Node.js 的 Shell 脚本”中的[“包导出：控制其他包可见的内容”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html#package-exports-controlling-what-other-packages-see)部分。
 - en: '[29.10.4.1 Examples: package exports](#examples-package-exports)'
+  id: totrans-362
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.10.4.1 例子：包导出](#examples-package-exports)'
 - en: 'Example – specifying which module is imported via the bare specifier of a package
     (in the past, this was specified via property `main`):'
+  id: totrans-363
   prefs: []
   type: TYPE_NORMAL
+  zh: 例子——指定通过包的裸指定符导入的模块（过去，这是通过 `main` 属性指定的）：
 - en: '[PRE50]'
+  id: totrans-364
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: 'Example – specifying a better path for a module:'
+  id: totrans-365
   prefs: []
   type: TYPE_NORMAL
+  zh: 例子——指定模块更好的路径：
 - en: '[PRE51]'
+  id: totrans-366
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: 'Example – specifying better paths for a tree of modules:'
+  id: totrans-367
   prefs: []
   type: TYPE_NORMAL
+  zh: 例子——指定模块树更好的路径：
 - en: '[PRE52]'
+  id: totrans-368
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: '[29.10.4.2 Examples: conditional package exports](#conditional-package-exports)'
+  id: totrans-369
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.10.4.2 例子：条件包导出](#conditional-package-exports)'
 - en: The examples in this subsection show excerpts of `package.json`.
+  id: totrans-370
   prefs: []
   type: TYPE_NORMAL
+  zh: 本小节中的例子展示了 `package.json` 的摘录。
 - en: 'Example – export different modules for Node.js, browsers and other platforms:'
+  id: totrans-371
   prefs: []
   type: TYPE_NORMAL
+  zh: 例子——为 Node.js、浏览器和其他平台导出不同的模块：
 - en: '[PRE53]'
+  id: totrans-372
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: 'Example – development vs. production:'
+  id: totrans-373
   prefs: []
   type: TYPE_NORMAL
+  zh: 例子——开发与生产：
 - en: '[PRE54]'
+  id: totrans-374
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: 'In Node.js we can specify an environment like this:'
+  id: totrans-375
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Node.js 中，我们可以指定一个环境如下：
 - en: '[PRE55]'
+  id: totrans-376
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: '[29.10.5 Package imports](#package-imports)'
+  id: totrans-377
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.10.5 包导入](#package-imports)'
 - en: '[Package imports](https://nodejs.org/api/packages.html#imports) let a package
     define abbreviations for module specifiers that it can use itself, internally
     (where package exports define abbreviations for other packages). This is an example:'
+  id: totrans-378
   prefs: []
   type: TYPE_NORMAL
+  zh: '[包导入](https://nodejs.org/api/packages.html#imports) 允许一个包定义它自己内部使用的模块指定符的缩写。这是一个例子：'
 - en: '`package.json`:'
+  id: totrans-379
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json`：'
 - en: '[PRE56]'
+  id: totrans-380
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: 'Each of the keys of `"imports"` has to start with a hash sign (`#`). The key
     `"#some-pkg"` is *conditional* (with the same features as [conditional package
     exports](#conditional-package-exports)):'
+  id: totrans-381
   prefs: []
   type: TYPE_NORMAL
+  zh: '`"imports"` 的每个键都必须以井号（`#`）开头。键 `"#some-pkg"` 是**条件性的**（具有与[条件包导出](#conditional-package-exports)相同的特性）：'
 - en: If the current package is used on Node.js, the module specifier `'#some-pkg'`
     refers to package `some-pkg-node-native`.
+  id: totrans-382
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果当前包在 Node.js 上使用，模块指定符 `'#some-pkg'` 指的是 `some-pkg-node-native` 包。
 - en: Elsewhere, `'#some-pkg'` refers to the file `./polyfills/some-pkg-polyfill.js`
     inside the current package.
+  id: totrans-383
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在其他地方，`'#some-pkg'`指的是当前包内`./polyfills/some-pkg-polyfill.js`文件。
 - en: Note that only package imports can refer to external packages, package exports
     can’t do that.
+  id: totrans-384
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，只有包导入可以引用外部包，包导出不能这样做。
 - en: What are the use cases for package imports?
+  id: totrans-385
   prefs: []
   type: TYPE_NORMAL
+  zh: 包导入有哪些用例？
 - en: Referring to different platform-specific implementations modules via the same
     module specifier (as demonstrated above).
+  id: totrans-386
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过相同的模块指定符引用不同平台特定的实现模块（如上所示）。
 - en: Aliases to modules inside the current package – to avoid relative specifiers
     (which can get complicated with deeply nested directories).
+  id: totrans-387
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当前包内模块的别名 – 以避免相对指定符（在深层嵌套目录中可能会变得复杂）。
 - en: '[29.10.5.1 Examples: accessing `package.json` via package imports](#examples-accessing-packagejson-via-package-imports)'
+  id: totrans-388
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.10.5.1 示例：通过包导入访问 `package.json`](#examples-accessing-packagejson-via-package-imports)'
 - en: Let’s explore two ways of accessing `package.json` via package imports.
+  id: totrans-389
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们探讨两种通过包导入访问`package.json`的方法。
 - en: 'First, we can define a package import for the root level of the package:'
+  id: totrans-390
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们可以为包的根级别定义一个包导入：
 - en: '[PRE57]'
+  id: totrans-391
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: 'Then the import statement looks like this:'
+  id: totrans-392
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，导入语句看起来像这样：
 - en: '[PRE58]'
+  id: totrans-393
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: 'Second, we can define a package import just for `package.json`:'
+  id: totrans-394
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，我们可以为`package.json`定义一个包导入：
 - en: '[PRE59]'
+  id: totrans-395
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: 'Then the import statement looks like this:'
+  id: totrans-396
   prefs: []
   type: TYPE_NORMAL
+  zh: 然后，导入语句看起来像这样：
 - en: '[PRE60]'
+  id: totrans-397
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: '[29.11 Naming modules](#naming-modules)'
+  id: totrans-398
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.11 命名模块](#naming-modules)'
 - en: There are no established best practices for naming module files and the variables
     they are imported into.
+  id: totrans-399
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于命名模块文件及其导入的变量，没有建立最佳实践。
 - en: 'In this chapter, I’m using the following naming style:'
+  id: totrans-400
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我使用以下命名风格：
 - en: 'The names of module files are dash-cased and only have lowercase letters:'
+  id: totrans-401
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块文件的名称是破折号命名，并且只有小写字母：
 - en: '[PRE61]'
+  id: totrans-402
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: 'The names of namespace imports are camel-cased and start with lowercase letters:'
+  id: totrans-403
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 命名空间导入的名称是驼峰式，并且以小写字母开头：
 - en: '[PRE62]'
+  id: totrans-404
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE62]'
 - en: 'The names of default imports are camel-cased and start with lowercase letters:'
+  id: totrans-405
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 默认导入的名称是驼峰式，并且以小写字母开头：
 - en: '[PRE63]'
+  id: totrans-406
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE63]'
 - en: 'What is the thinking behind this style? We want module file names to be similar
     to package names:'
+  id: totrans-407
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种风格的背后是什么思考？我们希望模块文件名与包名相似：
 - en: Dashes are far more commonly used than underscores in package names. Maybe that
     is influenced by underscores being very rare in domain names.
+  id: totrans-408
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在包名中，破折号比下划线更常用。这可能受到下划线在域名中非常罕见的影响。
 - en: npm doesn’t allow uppercase letters in package names ([source](https://docs.npmjs.com/cli/v11/configuring-npm/package-json#name)).
+  id: totrans-409
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npm不允许包名中使用大写字母（[来源](https://docs.npmjs.com/cli/v11/configuring-npm/package-json#name)）。
 - en: Thanks to CSS, there are clear rules for translating dash-cased names to camel-cased
     names. We can use these rules for namespace imports and default imports.
+  id: totrans-410
   prefs: []
   type: TYPE_NORMAL
+  zh: 多亏了CSS，有明确的规则将破折号命名转换为驼峰命名。我们可以使用这些规则来处理命名空间导入和默认导入。
 - en: '[29.12 Module specifiers](#module-specifiers)'
+  id: totrans-411
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.12 模块指定符](#module-specifiers)'
 - en: '*Module specifiers* are the strings that identify modules. They work slightly
     differently in browsers and Node.js. Before we can look at the differences, we
     need to learn about the different categories of module specifiers.'
+  id: totrans-412
   prefs: []
   type: TYPE_NORMAL
+  zh: '*模块指定符*是标识模块的字符串。它们在浏览器和Node.js中的工作方式略有不同。在我们能够查看这些差异之前，我们需要了解不同类别的模块指定符。'
 - en: '[29.12.1 Kinds of module specifiers](#kinds-of-module-specifiers-1)'
+  id: totrans-413
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.12.1 模块指定符的类型](#kinds-of-module-specifiers-1)'
 - en: 'There are three kinds of module specifiers:'
+  id: totrans-414
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块指定符有三种类型：
 - en: '*Absolute specifiers* are full URLs – for example:'
+  id: totrans-415
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*绝对指定符*是完整的URL – 例如：'
 - en: '[PRE64]'
+  id: totrans-416
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE64]'
 - en: Absolute specifiers are mostly used to access libraries that are directly hosted
     on the web.
+  id: totrans-417
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 绝对指定符主要用于访问直接托管在网上的库。
 - en: '*Relative specifiers* are relative URLs (starting with `''/''`, `''./''` or
     `''../''`) – for example:'
+  id: totrans-418
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*相对指定符*是相对URL（以`''/''`, `''./''`或`''../''`开头） – 例如：'
 - en: '[PRE65]'
+  id: totrans-419
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE65]'
 - en: Every module has a URL whose protocol depends on its location (`file:`, `https:`,
     etc.). If it uses a relative specifier, JavaScript turns that specifier into a
     full URL by resolving it against the module’s URL.
+  id: totrans-420
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 每个模块都有一个URL，其协议取决于其位置（`file:`, `https:`等）。如果它使用相对指定符，JavaScript会将该指定符转换为完整的URL，通过解析模块的URL来实现。
 - en: Relative specifiers are mostly used to access other modules within the same
     code base.
+  id: totrans-421
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 相对指定符主要用于访问同一代码库中的其他模块。
 - en: '*Bare specifiers* are paths (without protocol and domain) that start with neither
     slashes nor dots. They begin with the names of packages. Those names can optionally
     be followed by *subpaths*:'
+  id: totrans-422
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*裸指定符*是不带协议和域的路径，不以斜杠或点开头。它们以包的名称开始。这些名称可以可选地后面跟有*子路径*：'
 - en: '[PRE66]'
+  id: totrans-423
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE66]'
 - en: 'Bare specifiers can also refer to packages with scoped names:'
+  id: totrans-424
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 裸露指定符也可以指向具有范围名称的包：
 - en: '[PRE67]'
+  id: totrans-425
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE67]'
 - en: Each bare specifier refers to exactly one module inside a package; if it has
     no subpath, it refers to the designated “main” module of its package.
+  id: totrans-426
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 每个裸露指定符恰好指向包内部的一个模块；如果没有子路径，它指向其包指定的“主”模块。
 - en: A bare specifier is never used directly but always *resolved* – translated to
     an absolute specifier. How resolution works depends on the platform. We’ll learn
     more soon.
+  id: totrans-427
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 裸露指定符永远不会直接使用，而是始终*解析* – 转换为绝对指定符。解析的工作方式取决于平台。我们很快就会了解更多。
 - en: '[29.12.2 Filename extensions in module specifiers](#filename-extensions-in-module-specifiers)'
+  id: totrans-428
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.12.2 模块指定符中的文件扩展名](#filename-extensions-in-module-specifiers)'
 - en: Absolute specifiers and relative specifiers always have filename extensions
     – mainly `.js` or `.mjs`.
+  id: totrans-429
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 绝对指定符和相对指定符始终具有文件扩展名 – 主要为 `.js` 或 `.mjs`。
 - en: 'There are three styles of bare specifiers:'
+  id: totrans-430
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 裸露指定符有三种样式：
 - en: 'Style 1: no subpath'
+  id: totrans-431
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式1：没有子路径
 - en: '[PRE68]'
+  id: totrans-432
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE68]'
 - en: 'Style 2: a subpath without a filename extension. In this case, the subpath
     works like a modifier for the package name:'
+  id: totrans-433
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式2：没有文件扩展名的子路径。在这种情况下，子路径类似于对包名的修饰符：
 - en: '[PRE69]'
+  id: totrans-434
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE69]'
 - en: 'Style 3: a subpath with a filename extension. In this case, the package is
     seen as a collection of modules and the subpath points to one of them:'
+  id: totrans-435
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 样式3：具有文件扩展名的子路径。在这种情况下，包被视为模块集合，子路径指向其中之一：
 - en: '[PRE70]'
+  id: totrans-436
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE70]'
 - en: 'Caveat of style 3 bare specifiers: How the filename extension is interpreted
     depends on the dependency and may differ from the importing package. For example,
     the importing package may use `.mjs` for ESM modules and `.js` for CommonJS modules,
     while the ESM modules exported by the dependency may have bare paths with the
     filename extension `.js`.'
+  id: totrans-437
   prefs: []
   type: TYPE_NORMAL
+  zh: 样式3裸露指定符的注意事项：文件扩展名的解释取决于依赖项，可能与导入包不同。例如，导入包可能使用 `.mjs` 用于ESM模块和 `.js` 用于CommonJS模块，而依赖项导出的ESM模块可能具有带有文件扩展名
+    `.js` 的裸路径。
 - en: '[29.12.3 Module specifiers in Node.js](#module-specifiers-in-nodejs)'
+  id: totrans-438
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.12.3 在Node.js中的模块指定符](#module-specifiers-in-nodejs)'
 - en: Let’s see how module specifiers work in Node.js. Especially bare specifiers
     are handled differently than in browsers.
+  id: totrans-439
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看模块指定符在Node.js中的工作方式。特别是裸露指定符的处理方式与浏览器不同。
 - en: '[29.12.3.1 Resolving module specifiers in Node.js](#resolving-module-specifiers-in-nodejs)'
+  id: totrans-440
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.12.3.1 在Node.js中解析模块指定符](#resolving-module-specifiers-in-nodejs)'
 - en: 'The [*Node.js resolution algorithm*](https://nodejs.org/api/esm.html#resolution-algorithm)
     works as follows:'
+  id: totrans-441
   prefs: []
   type: TYPE_NORMAL
+  zh: '[*Node.js解析算法*](https://nodejs.org/api/esm.html#resolution-algorithm) 的工作方式如下：'
 - en: 'Parameters:'
+  id: totrans-442
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 参数：
 - en: URL of importing module
+  id: totrans-443
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 导入模块的URL
 - en: Module specifier
+  id: totrans-444
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块指定符
 - en: 'Result: Resolved URL for module specifier'
+  id: totrans-445
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果：模块指定符的解析URL
 - en: 'This is the algorithm:'
+  id: totrans-446
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是算法：
 - en: 'If a specifier is absolute, resolution is already finished. Three protocols
     are most common:'
+  id: totrans-447
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果指定符是绝对的，解析已经完成。最常见的协议有三个：
 - en: '`file:` for local files'
+  id: totrans-448
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`file:` 用于本地文件'
 - en: '`https:` for remote files'
+  id: totrans-449
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`https:` 用于远程文件'
 - en: '`node:` for built-in modules'
+  id: totrans-450
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node:` 用于内置模块'
 - en: If a specifier is relative, it is resolved against the URL of the importing
     module.
+  id: totrans-451
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果指定符是相对的，它将相对于导入模块的URL进行解析。
 - en: 'If a specifier is bare:'
+  id: totrans-452
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果指定符是裸露的：
 - en: If it starts with `'#'`, it is resolved by looking it up among the *package
     imports* (which are explained [later](#package-imports)) and resolving the result.
+  id: totrans-453
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果它以 `'#'` 开头，它将通过查找*包导入*（这将在[稍后](#package-imports)解释）并解析结果来解析。
 - en: 'Otherwise, it is a bare specifier that has one of these formats (the subpath
     is optional):'
+  id: totrans-454
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，它是一个具有以下格式之一的裸露指定符（子路径是可选的）：
 - en: '`«package»/sub/path`'
+  id: totrans-455
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`«package»/sub/path`'
 - en: '`@«scope»/«scoped-package»/sub/path`'
+  id: totrans-456
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`@«scope»/«scoped-package»/sub/path`'
 - en: 'The resolution algorithm traverses the current directory and its ancestors
     until it finds a directory `node_modules` that has a subdirectory matching the
     beginning of the bare specifier, i.e. either:'
+  id: totrans-457
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 解析算法遍历当前目录及其父目录，直到找到一个包含与裸露指定符开头匹配的子目录 `node_modules`，即：
 - en: '`node_modules/«package»/`'
+  id: totrans-458
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules/«package»/`'
 - en: '`node_modules/@«scope»/«scoped-package»/`'
+  id: totrans-459
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules/@«scope»/«scoped-package»/`'
 - en: That directory is the directory of the package. By default, the (potentially
     empty) subpath after the package ID is interpreted as relative to the package
     directory. The default can be overridden via *package exports* which are explained
     next.
+  id: totrans-460
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 该目录是包的目录。默认情况下，包ID之后的（可能为空）子路径被解释为相对于包目录。默认值可以通过*包导出*来覆盖，这将在下文中解释。
 - en: The result of the resolution algorithm must point to a file. That explains why
     absolute specifiers and relative specifiers always have filename extensions. Bare
     specifiers often don’t because they are abbreviations that are looked up in package
     exports.
+  id: totrans-461
   prefs: []
   type: TYPE_NORMAL
+  zh: 解析算法的结果必须指向一个文件。这解释了为什么绝对指定符和相对指定符始终具有文件扩展名。裸指定符通常没有，因为它们是查找包导出的缩写。
 - en: 'Module files usually have these filename extensions:'
+  id: totrans-462
   prefs: []
   type: TYPE_NORMAL
+  zh: 模块文件通常具有以下文件扩展名：
 - en: If a file has the name extension `.mjs`, it is always an ES module.
+  id: totrans-463
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果文件具有`.mjs`扩展名，它始终是ES模块。
 - en: 'A file that has the name extension `.js` is an ES module if the closest `package.json`
     has this entry:'
+  id: totrans-464
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果最接近的`package.json`有此条目，则具有`.js`扩展名的文件是ES模块：
 - en: '`"type": "module"`'
+  id: totrans-465
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"type": "module"`'
 - en: 'If Node.js executes code provided via stdin, `--eval` or `--print`, we use
     [the following command-line option](https://nodejs.org/api/cli.html#--input-typetype)
     so that it is interpreted as an ES module:'
+  id: totrans-466
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果Node.js执行通过stdin、`--eval`或`--print`提供的代码，我们使用[以下命令行选项](https://nodejs.org/api/cli.html#--input-typetype)以便将其解释为ES模块：
 - en: '[PRE71]'
+  id: totrans-467
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE71]'
 - en: '[29.12.4 Module specifiers in browsers](#module-specifiers-in-browsers)'
+  id: totrans-468
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.12.4 浏览器中的模块指定符](#module-specifiers-in-browsers)'
 - en: 'In browsers, we can write inline modules like this:'
+  id: totrans-469
   prefs: []
   type: TYPE_NORMAL
+  zh: 在浏览器中，我们可以这样编写内联模块：
 - en: '[PRE72]'
+  id: totrans-470
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE72]'
 - en: '`type="module"` tells the browser that this is an ESM module and not [a browser
     script](#scripts).'
+  id: totrans-471
   prefs: []
   type: TYPE_NORMAL
+  zh: '`type="module"`告诉浏览器这是一个ES模块，而不是[浏览器脚本](#scripts)。'
 - en: 'We can only use two kinds of module specifiers:'
+  id: totrans-472
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们只能使用两种模块指定符：
 - en: '[PRE73]'
+  id: totrans-473
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE73]'
 - en: Read on to find out how to work around this limitation and use npm packages.
+  id: totrans-474
   prefs: []
   type: TYPE_NORMAL
+  zh: 继续阅读以了解如何绕过此限制并使用npm包。
 - en: '[29.12.4.1 Filename extensions in browsers](#filename-extensions-in-browsers)'
+  id: totrans-475
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.12.4.1 浏览器中的文件扩展名](#filename-extensions-in-browsers)'
 - en: Browsers don’t care about filename extensions, only about content types.
+  id: totrans-476
   prefs: []
   type: TYPE_NORMAL
+  zh: 浏览器不关心文件扩展名，只关心内容类型。
 - en: Hence, we can use any filename extension for ECMAScript modules, as long as
     they are served with [a JavaScript content type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#textjavascript)
     (`text/javascript` is recommended).
+  id: totrans-477
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，只要它们以[JavaScript内容类型](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#textjavascript)（推荐使用`text/javascript`）提供，我们可以为ECMAScript模块使用任何文件扩展名。
 - en: '[29.12.4.2 Using npm packages in browsers](#using-npm-packages-in-browsers)'
+  id: totrans-478
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.12.4.2 在浏览器中使用npm包](#using-npm-packages-in-browsers)'
 - en: On Node.js, npm packages are downloaded into the `node_modules` directory and
     accessed via bare module specifiers. Node.js traverses the file system in order
     to find packages. We can’t do that in web browsers. Three approaches are common
     for bringing npm packages to browsers.
+  id: totrans-479
   prefs: []
   type: TYPE_NORMAL
+  zh: 在Node.js上，npm包被下载到`node_modules`目录，并通过裸模块指定符访问。Node.js遍历文件系统以查找包。我们无法在Web浏览器中这样做。将npm包带到浏览器中的三种常见方法。
 - en: '[29.12.4.2.1 Approach 1: Using a content delivery network](#approach-1-using-a-content-delivery-network)'
+  id: totrans-480
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
+  zh: '[29.12.4.2.1 方法1：使用内容分发网络](#approach-1-using-a-content-delivery-network)'
 - en: 'Content delivery networks (CDNs) such as [`unpkg.com`](https://unpkg.com) and
     [`esm.sh`](https://esm.sh) let us import npm packages via URLs. This is what the
     `unpkg.com` URLs look like:'
+  id: totrans-481
   prefs: []
   type: TYPE_NORMAL
+  zh: 内容分发网络（CDN）如[`unpkg.com`](https://unpkg.com)和[`esm.sh`](https://esm.sh)允许我们通过URL导入npm包。这是`unpkg.com`
+    URL的示例：
 - en: '[PRE74]'
+  id: totrans-482
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE74]'
 - en: 'For example:'
+  id: totrans-483
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE75]'
+  id: totrans-484
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE75]'
 - en: 'One downside of CDNs is that they introduce an additional point of failure:'
+  id: totrans-485
   prefs: []
   type: TYPE_NORMAL
+  zh: CDN的一个缺点是它们引入了一个额外的故障点：
 - en: CDNs can go offline.
+  id: totrans-486
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: CDN可能会离线。
 - en: There is a risk of CDNs serving malicious code – e.g. if they are hacked or
     taken over by a new maintainer.
+  id: totrans-487
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: CDN提供恶意代码的风险存在——例如，如果它们被黑客攻击或被新的维护者接管。
 - en: '[29.12.4.2.2 Approach 2: Using `node_modules` with bare specifiers and a bundler](#approach-2-using-nodemodules-with-bare-specifiers-and-a-bundler)'
+  id: totrans-488
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
+  zh: '[29.12.4.2.2 方法2：使用带有裸指定符和打包器的`node_modules`](#approach-2-using-nodemodules-with-bare-specifiers-and-a-bundler)'
 - en: 'A [bundler](ch_next-steps.html#bundler) is a build tool. It works roughly as
     follows:'
+  id: totrans-489
   prefs: []
   type: TYPE_NORMAL
+  zh: '[打包器](ch_next-steps.html#bundler)是一个构建工具。它大致工作如下：'
 - en: Given a directory with a web app. We point the bundler to the app’s *entry point*
     – the module where execution starts.
+  id: totrans-490
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 给定一个包含Web应用的目录。我们将打包器指向应用的*入口点*——执行开始的模块。
 - en: It collects everything that module imports (its imports, the imports of the
     imports, etc.).
+  id: totrans-491
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它收集该模块导入的所有内容（它的导入、导入的导入等）。
 - en: It produces a *bundle*, a single file with all the code. That file can be used
     from an HTML page.
+  id: totrans-492
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它生成一个*bundle*，一个包含所有代码的单个文件。该文件可以从HTML页面中使用。
 - en: If an app has multiple entry points, the bundler produces multiple bundles.
     It’s also possible to tell it to create bundles for parts of the application that
     are loaded on demand.
+  id: totrans-493
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个应用有多个入口点，打包器会生成多个包。也可以指示它为按需加载的应用部分创建包。
 - en: When bundling, we can use bare import specifiers in files because bundlers know
     how to find the corresponding modules in `node_modules`. Bundlers also honor package
     exports and package imports.
+  id: totrans-494
   prefs: []
   type: TYPE_NORMAL
+  zh: 在打包时，我们可以在文件中使用裸导入指定符，因为打包器知道如何在 `node_modules` 中找到相应的模块。打包器还尊重包导出和包导入。
 - en: Why bundle?
+  id: totrans-495
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么需要打包？
 - en: Loading a single file tends to be faster than loading multiple files – especially
     if there are many small ones.
+  id: totrans-496
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 加载单个文件通常比加载多个文件更快 – 尤其是当有很多小文件时。
 - en: Bundlers only include code in the file that is really used (which is especially
     relevant for libraries). That saves storage space and also speeds up loading.
+  id: totrans-497
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 打包器只包含文件中实际使用的代码（这对于库尤其相关）。这节省了存储空间，也加快了加载速度。
 - en: A downside of bundling is that we need to bundle the whole app every time we
     want to run it.
+  id: totrans-498
   prefs: []
   type: TYPE_NORMAL
+  zh: 打包的一个缺点是每次我们想要运行应用时都需要打包整个应用。
 - en: '[29.12.4.2.3 Approach 3: Converting npm packages to browser-compatible files](#approach-3-converting-npm-packages-to-browsercompatible-files)'
+  id: totrans-499
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
+  zh: '[29.12.4.2.3 方法 3：将 npm 包转换为浏览器兼容文件](#approach-3-converting-npm-packages-to-browsercompatible-files)'
 - en: 'There are package managers for browsers that let us download modules as single
     bundled files that can be used in browsers. As an example, consider the following
     directory of a web app:'
+  id: totrans-500
   prefs: []
   type: TYPE_NORMAL
+  zh: 浏览器有包管理器，允许我们下载作为单个打包文件使用的模块。例如，考虑以下 Web 应用的目录：
 - en: '[PRE76]'
+  id: totrans-501
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE76]'
 - en: 'We used a bundler to install package `lodash-es` into a single file. Module
     `main.js` can import it like this:'
+  id: totrans-502
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用打包器将包 `lodash-es` 安装到单个文件中。模块 `main.js` 可以这样导入它：
 - en: '[PRE77]'
+  id: totrans-503
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE77]'
 - en: To deploy this app, the contents of `assets/` and `src/` are copied to the production
     server (in addition to non-JavaScript artifacts).
+  id: totrans-504
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了部署此应用，`assets/` 和 `src/` 目录的内容被复制到生产服务器（除了非 JavaScript 艺术品之外）。
 - en: What are the benefits of this approach compared to using a bundler?
+  id: totrans-505
   prefs: []
   type: TYPE_NORMAL
+  zh: 与使用打包器相比，这种方法的优点是什么？
 - en: We install the external dependencies once and then can always run our app immediately
     – no prior bundling is required (which can be time-consuming).
+  id: totrans-506
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们安装外部依赖项一次，然后可以始终立即运行我们的应用 – 不需要先打包（这可能很耗时）。
 - en: Unbundled code is easier to debug.
+  id: totrans-507
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 未打包的代码更容易调试。
 - en: '[29.12.4.2.4 Improving approach 3: import maps](#import-maps)'
+  id: totrans-508
   prefs:
   - PREF_H6
   type: TYPE_NORMAL
+  zh: '[29.12.4.2.4 改进方法 3：导入映射](#import-maps)'
 - en: 'Approach 3 can be further improved: [*Import maps*](https://2ality.com/2022/01/esm-specifiers.html#import-maps)
     are a browser technology that lets us define abbreviations for module specifiers
     – e.g. `''lodash-es''` for `''../assets/lodash-es.js''`.'
+  id: totrans-509
   prefs: []
   type: TYPE_NORMAL
+  zh: 方法 3 可以进一步改进：[*导入映射*](https://2ality.com/2022/01/esm-specifiers.html#import-maps)
+    是一种浏览器技术，允许我们为模块指定符定义缩写 – 例如，`'lodash-es'` 对应 `'../assets/lodash-es.js'`。
 - en: 'This is what an import map looks like if we store it *inline* – inside an HTML
     file:'
+  id: totrans-510
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将导入映射存储在 HTML 文件中，它会看起来像这样：
 - en: '[PRE78]'
+  id: totrans-511
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE78]'
 - en: 'We can also store import maps in external files (the content type must be `application/importmap+json`):'
+  id: totrans-512
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以将导入映射存储在外部文件中（内容类型必须是 `application/importmap+json`）：
 - en: '[PRE79]'
+  id: totrans-513
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE79]'
 - en: 'Now the import in `main.js` looks like this:'
+  id: totrans-514
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在 `main.js` 中的导入看起来是这样的：
 - en: '[PRE80]'
+  id: totrans-515
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE80]'
 - en: '[29.13 `import.meta` – metadata for the current module ^(ES2020)](#import.meta)'
+  id: totrans-516
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.13 `import.meta` – 当前模块的元数据 (ES2020)](#import.meta)'
 - en: The object `import.meta` holds metadata for the current module.
+  id: totrans-517
   prefs: []
   type: TYPE_NORMAL
+  zh: 对象 `import.meta` 包含当前模块的元数据。
 - en: '[29.13.1 `import.meta.url`](#import.meta.url)'
+  id: totrans-518
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.13.1 `import.meta.url`](#import.meta.url)'
 - en: 'The most important property of `import.meta` is `.url` which contains a string
     with the URL of the current module’s file – for example:'
+  id: totrans-519
   prefs: []
   type: TYPE_NORMAL
+  zh: '`import.meta` 的最重要的属性是 `.url`，它包含一个字符串，包含当前模块文件的 URL – 例如：'
 - en: '[PRE81]'
+  id: totrans-520
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE81]'
 - en: '[29.13.2 `import.meta.url` and class `URL`](#importmetaurl-and-class-url)'
+  id: totrans-521
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.13.2 `import.meta.url` 和 `URL` 类](#importmetaurl-and-class-url)'
 - en: 'Class `URL` is available via a global variable in browsers and on Node.js.
     We can look up its full functionality in [the Node.js documentation](https://nodejs.org/api/url.html#url_class_url).
     When working with `import.meta.url`, its constructor is especially useful:'
+  id: totrans-522
   prefs: []
   type: TYPE_NORMAL
+  zh: '`URL` 类在浏览器和 Node.js 中通过全局变量可用。我们可以在 [Node.js 文档](https://nodejs.org/api/url.html#url_class_url)
+    中查找其完整功能。当使用 `import.meta.url` 时，其构造函数特别有用：'
 - en: '[PRE82]'
+  id: totrans-523
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE82]'
 - en: Parameter `input` contains the URL to be parsed. It can be relative if the second
     parameter, `base`, is provided.
+  id: totrans-524
   prefs: []
   type: TYPE_NORMAL
+  zh: 参数 `input` 包含要解析的 URL。如果提供了第二个参数 `base`，则可以是相对路径。
 - en: 'In other words, this constructor lets us resolve a relative path against a
     base URL:'
+  id: totrans-525
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说，这个构造函数允许我们相对于基本 URL 解析相对路径：
 - en: '[PRE83]'
+  id: totrans-526
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE83]'
 - en: 'This is how we get a `URL` instance that points to a file `data.txt` that sits
     next to the current module:'
+  id: totrans-527
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们如何获取一个指向当前模块旁边 `data.txt` 文件的 `URL` 实例：
 - en: '[PRE84]'
+  id: totrans-528
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE84]'
 - en: '[29.13.3 `import.meta.url` on Node.js](#importmetaurl-on-nodejs)'
+  id: totrans-529
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.13.3 在 Node.js 上的 `import.meta.url`](#importmetaurl-on-nodejs)'
 - en: 'On Node.js, `import.meta.url` is always a string with a `file:` URL – for example:'
+  id: totrans-530
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Node.js 上，`import.meta.url` 总是一个带有 `file:` URL 的字符串 – 例如：
 - en: '[PRE85]'
+  id: totrans-531
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE85]'
 - en: '[29.13.3.1 Example: reading a sibling file of a module](#example-reading-a-sibling-file-of-a-module)'
+  id: totrans-532
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.13.3.1 示例：读取模块的兄弟文件](#example-reading-a-sibling-file-of-a-module)'
 - en: 'Many Node.js file system operations accept either strings with paths or instances
     of `URL`. That enables us to read a sibling file `data.txt` of the current module:'
+  id: totrans-533
   prefs: []
   type: TYPE_NORMAL
+  zh: 许多 Node.js 文件系统操作接受路径的字符串或 `URL` 实例。这使得我们可以读取当前模块的兄弟文件 `data.txt`：
 - en: '[PRE86]'
+  id: totrans-534
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE86]'
 - en: '[29.13.3.2 Module `fs` and URLs](#module-fs-and-urls)'
+  id: totrans-535
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.13.3.2 模块 `fs` 和 URLs](#module-fs-and-urls)'
 - en: 'For most functions of the module `fs`, we can refer to files via:'
+  id: totrans-536
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于 `fs` 模块的大多数函数，我们可以通过以下方式引用文件：
 - en: Paths – in strings or instances of `Buffer`.
+  id: totrans-537
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 路径 – 字符串或 `Buffer` 实例。
 - en: URLs – in instances of `URL` (with the protocol `file:`)
+  id: totrans-538
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: URLs – 在 `URL` 实例中（协议为 `file:`）
 - en: For more information on this topic, see [the Node.js API documentation](https://nodejs.org/api/fs.html#fs_file_paths).
+  id: totrans-539
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于这个主题的更多信息，请参阅[Node.js API 文档](https://nodejs.org/api/fs.html#fs_file_paths)。
 - en: '[29.13.3.3 Converting between `file:` URLs and paths](#converting-urls-paths)'
+  id: totrans-540
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.13.3.3 在 `file:` URLs 和路径之间转换](#converting-urls-paths)'
 - en: '[The Node.js module `url`](https://nodejs.org/api/url.html) has two functions
     for converting between `file:` URLs and paths:'
+  id: totrans-541
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Node.js 模块 `url`](https://nodejs.org/api/url.html) 有两个函数用于在 `file:` URLs 和路径之间进行转换：'
 - en: '`fileURLToPath(url: URL|string): string`'
+  id: totrans-542
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`fileURLToPath(url: URL|string): string`'
 - en: Converts a `file:` URL to a path.
+  id: totrans-543
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 将 `file:` URL 转换为路径。
 - en: '`pathToFileURL(path: string): URL`'
+  id: totrans-544
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`pathToFileURL(path: string): URL`'
 - en: Converts a path to a `file:` URL.
+  id: totrans-545
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 将路径转换为 `file:` URL。
 - en: 'If we need a path that can be used in the local file system, then property
     `.pathname` of `URL` instances does not always work:'
+  id: totrans-546
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们需要可以在本地文件系统中使用的路径，那么 `URL` 实例的 `.pathname` 属性并不总是有效：
 - en: '[PRE87]'
+  id: totrans-547
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE87]'
 - en: 'Therefore, it is better to use `fileURLToPath()`:'
+  id: totrans-548
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，最好使用 `fileURLToPath()`：
 - en: '[PRE88]'
+  id: totrans-549
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE88]'
 - en: Similarly, `pathToFileURL()` does more than just prepend `'file://'` to an absolute
     path.
+  id: totrans-550
   prefs: []
   type: TYPE_NORMAL
+  zh: 类似地，`pathToFileURL()` 不仅将 `'file://'` 前缀添加到绝对路径。
 - en: '[29.14 Loading modules dynamically via `import()` ^(ES2020) (advanced)](#dynamic-imports)'
+  id: totrans-551
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.14 通过 `import()` 动态加载模块 (ES2020) (高级)](#dynamic-imports)'
 - en: '![Icon “reading”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **The `import()`
     operator returns Promises**'
+  id: totrans-552
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“阅读”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **`import()` 操作符返回
+    Promises**'
 - en: 'Promises are a technique for handling results that are computed asynchronously
     (i.e., not immediately). It may make sense to postpone reading this section until
     you understand them. More information:'
+  id: totrans-553
   prefs: []
   type: TYPE_NORMAL
+  zh: Promises 是处理异步计算结果（即，不是立即）的技术。可能有必要在理解它们之后再阅读这一节。更多信息：
 - en: '[“Promises for asynchronous programming ^(ES6)” (§43)](ch_promises.html#ch_promises)'
+  id: totrans-554
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“异步编程的 Promises (ES6)” (§43)](ch_promises.html#ch_promises)'
 - en: '[“Async functions ^(ES2017)” (§44)](ch_async-functions.html#ch_async-functions)
     (explains the `await` operator for Promises, which we use in this section)'
+  id: totrans-555
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“异步函数 (ES2017)” (§44)](ch_async-functions.html#ch_async-functions)（解释了用于 Promises
+    的 `await` 操作符，我们将在本节中使用它）'
 - en: '[29.14.1 The limitations of static `import` statements](#the-limitations-of-static-import-statements)'
+  id: totrans-556
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.14.1 静态 `import` 语句的限制](#the-limitations-of-static-import-statements)'
 - en: 'So far, the only way to import a module has been via an `import` statement.
     That statement has several limitations:'
+  id: totrans-557
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，导入模块的唯一方法是通过 `import` 语句。该语句有几个限制：
 - en: We must use it at the top level of a module. That is, we can’t, for example,
     import something when we are inside a function or inside an `if` statement.
+  id: totrans-558
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们必须在模块的最顶层使用它。也就是说，例如，当我们处于函数内部或 `if` 语句内部时，我们不能导入任何东西。
 - en: The module specifier is always fixed. That is, we can’t change what we import
     depending on a condition. And we can’t assemble a specifier dynamically.
+  id: totrans-559
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块指定符始终是固定的。也就是说，我们不能根据条件更改我们导入的内容。我们也不能动态地组装指定符。
 - en: '[29.14.2 Dynamic imports via the `import()` operator](#dynamic-imports-via-the-import-operator)'
+  id: totrans-560
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.14.2 通过 `import()` 操作符进行动态导入](#dynamic-imports-via-the-import-operator)'
 - en: 'The `import()` operator doesn’t have the limitations of `import` statements.
     It looks like this:'
+  id: totrans-561
   prefs: []
   type: TYPE_NORMAL
+  zh: '`import()` 操作符没有 `import` 语句的限制。它看起来像这样：'
 - en: '[PRE89]'
+  id: totrans-562
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE89]'
 - en: This operator is used like a function, receives a string with a module specifier
     and returns a Promise that resolves to a namespace object. The properties of that
     object are the exports of the imported module.
+  id: totrans-563
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个操作符的使用方式类似于函数，接收一个包含模块指定符的字符串，并返回一个解析为命名空间对象的 Promise。该对象的属性是导入模块的导出。
 - en: Note that `await` can be used at the top levels of modules (see [next section](#top-level-await)).
+  id: totrans-564
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`await` 可以在模块的最高级别使用（参见 [下一节](#top-level-await)）。
 - en: '[29.14.2.1 Example: loading a module dynamically](#example-loading-a-module-dynamically)'
+  id: totrans-565
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.14.2.1 示例：动态加载模块](#example-loading-a-module-dynamically)'
 - en: 'Consider the following files:'
+  id: totrans-566
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下文件：
 - en: '[PRE90]'
+  id: totrans-567
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE90]'
 - en: 'We have already seen module `my-math.mjs`:'
+  id: totrans-568
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到了模块 `my-math.mjs`：
 - en: '[PRE91]'
+  id: totrans-569
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE91]'
 - en: 'We can use `import()` to load this module on demand:'
+  id: totrans-570
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用 `import()` 按需加载此模块：
 - en: '[PRE92]'
+  id: totrans-571
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE92]'
 - en: 'Two things in this code can’t be done with `import` statements:'
+  id: totrans-572
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码中的两个操作无法使用 `import` 语句完成：
 - en: We are importing inside a function (not at the top level).
+  id: totrans-573
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们在函数内部导入（而不是在顶层）。
 - en: The module specifier comes from a variable.
+  id: totrans-574
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模块指定符来自一个变量。
 - en: '![Icon “question”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **Why is
     `import()` an operator and not a function?**'
+  id: totrans-575
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“问题”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **为什么 `import()`
+    是一个操作符而不是一个函数？**'
 - en: '`import()` looks like a function but couldn’t be implemented as a function:'
+  id: totrans-576
   prefs: []
   type: TYPE_NORMAL
+  zh: '`import()` 看起来像一个函数，但无法作为一个函数实现：'
 - en: It needs to know the URL of the current module in order to resolve relative
     module specifiers.
+  id: totrans-577
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它需要知道当前模块的 URL，以便解析相对模块指定符。
 - en: If `import()` were a function, we’d have to explicitly pass this information
     to it (e.g. via an parameter).
+  id: totrans-578
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `import()` 是一个函数，我们就必须显式地传递这个信息给它（例如，通过参数）。
 - en: In contrast, an operator is a core language construct and has implicit access
     to more data, including the URL of the current module.
+  id: totrans-579
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 相比之下，操作符是一个核心语言构造，并且可以隐式访问更多数据，包括当前模块的 URL。
 - en: '[29.14.3 Use cases for `import()`](#use-cases-for-import)'
+  id: totrans-580
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.14.3 `import()` 的用例](#use-cases-for-import)'
 - en: '[29.14.3.1 Loading code on demand](#loading-code-on-demand)'
+  id: totrans-581
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.14.3.1 按需加载代码](#loading-code-on-demand)'
 - en: 'Some functionality of web apps doesn’t have to be present when they start,
     it can be loaded on demand. Then `import()` helps because we can put such functionality
     into modules – for example:'
+  id: totrans-582
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些 Web 应用的功能在它们启动时不必存在，可以在需要时加载。这时 `import()` 就很有用，因为我们可以将这些功能放入模块中——例如：
 - en: '[PRE93]'
+  id: totrans-583
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE93]'
 - en: '[29.14.3.2 Conditional loading of modules](#conditional-loading-of-modules)'
+  id: totrans-584
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.14.3.2 条件加载模块](#conditional-loading-of-modules)'
 - en: 'We may want to load a module depending on whether a condition is true. For
     example, a module with [a polyfill](#polyfills) that makes a new feature available
     on legacy platforms:'
+  id: totrans-585
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可能想要根据条件是否为真来加载模块。例如，一个包含 [polyfill](#polyfills) 的模块，该 polyfill 在旧平台上提供新功能：
 - en: '[PRE94]'
+  id: totrans-586
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE94]'
 - en: '[29.14.3.3 Computed module specifiers](#computed-module-specifiers)'
+  id: totrans-587
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.14.3.3 计算模块指定符](#computed-module-specifiers)'
 - en: 'For applications such as internationalization, it helps if we can dynamically
     compute module specifiers:'
+  id: totrans-588
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于国际化等应用，如果我们能够动态计算模块指定符，那就很有帮助：
 - en: '[PRE95]'
+  id: totrans-589
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE95]'
 - en: '[29.15 Top-level `await` in modules ^(ES2022) (advanced)](#top-level-await)'
+  id: totrans-590
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.15 模块中的顶层 `await` (ES2022) (高级)](#top-level-await)'
 - en: '![Icon “reading”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **`await`
     is a feature of async functions**'
+  id: totrans-591
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“阅读”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **`await` 是异步函数的一个特性**'
 - en: '`await` is explained in [“Async functions ^(ES2017)” (§44)](ch_async-functions.html#ch_async-functions).
     It may make sense to postpone reading this section until you understand async
     functions.'
+  id: totrans-592
   prefs: []
   type: TYPE_NORMAL
+  zh: '`await` 在 [“异步函数 (ES2017)” (§44)](ch_async-functions.html#ch_async-functions)
+    中进行了解释。可能有必要在理解异步函数之后再阅读这一节。'
 - en: We can use the `await` operator at the top level of a module. If we do that,
     the module becomes asynchronous and works differently. Thankfully, we don’t usually
     see that as programmers because it is handled transparently by the language.
+  id: totrans-593
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以在模块的最高级别使用 `await` 操作符。如果我们这样做，模块就会变为异步，并且工作方式不同。幸运的是，作为程序员，我们通常不会看到这种情况，因为它由语言透明地处理。
 - en: '[29.15.1 Use cases for top-level `await`](#use-cases-for-toplevel-await)'
+  id: totrans-594
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.15.1 顶层 `await` 的用例](#use-cases-for-toplevel-await)'
 - en: Why would we want to use the `await` operator at the top level of a module?
     It lets us initialize a module with asynchronously loaded data. The next three
     subsections show three examples of where that is useful.
+  id: totrans-595
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么我们想在模块的最高级别使用 `await` 操作符呢？它允许我们使用异步加载数据初始化模块。接下来的三个小节展示了这种用法在哪些情况下是有用的。
 - en: '[29.15.1.1 Loading modules dynamically](#loading-modules-dynamically)'
+  id: totrans-596
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.15.1.1 动态加载模块](#loading-modules-dynamically)'
 - en: '[PRE96]'
+  id: totrans-597
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE96]'
 - en: In line A, we [dynamically import](#dynamic-imports) a module. Thanks to top-level
     `await`, that is almost as convenient as using a normal, static import.
+  id: totrans-598
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行 A 中，我们[动态导入](#dynamic-imports)了一个模块。多亏了顶层 `await`，这几乎与使用正常的静态导入一样方便。
 - en: '[29.15.1.2 Using a fallback if module loading fails](#using-a-fallback-if-module-loading-fails)'
+  id: totrans-599
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.15.1.2 如果模块加载失败，使用回退](#using-a-fallback-if-module-loading-fails)'
 - en: '[PRE97]'
+  id: totrans-600
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE97]'
 - en: '[29.15.1.3 Using whichever resource loads fastest](#using-whichever-resource-loads-fastest)'
+  id: totrans-601
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.15.1.3 使用加载最快的资源](#using-whichever-resource-loads-fastest)'
 - en: '[PRE98]'
+  id: totrans-602
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE98]'
 - en: Due to [`Promise.any()`](ch_promises.html#Promise.any), variable `resource`
     is initialized via whichever download finishes first.
+  id: totrans-603
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于 `Promise.any()`，变量 `resource` 通过最先完成的下载进行初始化。
 - en: '[29.15.2 How does top-level `await` work under the hood?](#how-does-toplevel-await-work-under-the-hood)'
+  id: totrans-604
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.15.2 顶层 `await` 在底层是如何工作的？](#how-does-toplevel-await-work-under-the-hood)'
 - en: Consider the following two files.
+  id: totrans-605
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下两个文件。
 - en: '`first.mjs`:'
+  id: totrans-606
   prefs: []
   type: TYPE_NORMAL
+  zh: '`first.mjs`:'
 - en: '[PRE99]'
+  id: totrans-607
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE99]'
 - en: '`main.mjs`:'
+  id: totrans-608
   prefs: []
   type: TYPE_NORMAL
+  zh: '`main.mjs`:'
 - en: '[PRE100]'
+  id: totrans-609
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE100]'
 - en: 'Both are roughly equivalent to the following code:'
+  id: totrans-610
   prefs: []
   type: TYPE_NORMAL
+  zh: 这两种方法大致等同于以下代码：
 - en: '`first.mjs`:'
+  id: totrans-611
   prefs: []
   type: TYPE_NORMAL
+  zh: '`first.mjs`:'
 - en: '[PRE101]'
+  id: totrans-612
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE101]'
 - en: '`main.mjs`:'
+  id: totrans-613
   prefs: []
   type: TYPE_NORMAL
+  zh: '`main.mjs`:'
 - en: '[PRE102]'
+  id: totrans-614
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE102]'
 - en: 'A module becomes asynchronous if:'
+  id: totrans-615
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个模块如果成为异步的：
 - en: It directly uses top-level `await` (`first.mjs`).
+  id: totrans-616
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 它直接使用顶层 `await` (`first.mjs`）。
 - en: It imports one or more asynchronous modules (`main.mjs`).
+  id: totrans-617
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 它导入一个或多个异步模块（`main.mjs`）。
 - en: Each asynchronous module exports a Promise (line A and line B) that is fulfilled
     after its body was executed. At that point, it is safe to access the exports of
     that module.
+  id: totrans-618
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个异步模块导出一个 Promise（行 A 和行 B），在它的主体执行完毕后得到满足。到那时，可以安全地访问该模块的导出。
 - en: In case (2), the importing module waits until the Promises of all imported asynchronous
     modules are fulfilled, before it enters its body (line C). Synchronous modules
     are handled as usually.
+  id: totrans-619
   prefs: []
   type: TYPE_NORMAL
+  zh: 在情况 (2) 中，导入模块会等待所有导入的异步模块的 Promise 被满足，然后才进入其主体（行 C）。同步模块按常规处理。
 - en: Awaited rejections and synchronous exceptions are managed as in async functions.
+  id: totrans-620
   prefs: []
   type: TYPE_NORMAL
+  zh: 等待拒绝和同步异常的管理方式与异步函数中相同。
 - en: '[29.15.3 The pros and cons of top-level `await`](#the-pros-and-cons-of-toplevel-await)'
+  id: totrans-621
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.15.3 顶层 `await` 的优缺点](#the-pros-and-cons-of-toplevel-await)'
 - en: What are the pros and cons of top-level `await`?
+  id: totrans-622
   prefs: []
   type: TYPE_NORMAL
+  zh: 顶层 `await` 的优缺点是什么？
 - en: 'Pros:'
+  id: totrans-623
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：
 - en: It is convenient to have this operator available at the top level of a module,
     especially for dynamically imported modules.
+  id: totrans-624
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在模块的顶层有这个操作符是非常方便的，尤其是对于动态导入的模块。
 - en: It obviates the need for complicated techniques to ensure that importers don’t
     access data before it is ready.
+  id: totrans-625
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这避免了需要复杂的技术来确保导入者不会在数据准备好之前访问数据。
 - en: 'Tt supports asynchronicity transparently: Importers do not need to know if
     an imported module is asynchronous or not.'
+  id: totrans-626
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它透明地支持异步性：导入者不需要知道导入的模块是否是异步的。
 - en: 'Cons:'
+  id: totrans-627
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：
 - en: Top-level `await` delays the initialization of importing modules. Therefore,
     it’s best used sparingly. Asynchronous tasks that take longer are better performed
     later, on demand. However, even modules without top-level `await` can block importers
     (e.g. via an infinite loop at the top level), so blocking per se is not an argument
     against it.
+  id: totrans-628
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 顶层 `await` 延迟导入模块的初始化。因此，最好谨慎使用。耗时较长的异步任务最好在需要时再执行。然而，即使没有顶层 `await` 的模块也可以阻塞导入者（例如，通过顶层无限循环），所以阻塞本身并不是反对它的理由。
 - en: On Node.js, ESM modules that use top-level `await` cannot be required from CommonJS.
     That matters if you write an ESM-based package and want it to be usable from CommonJS
     code bases. For more information, see section [“Loading ECMAScript modules using
     `require()`”](https://nodejs.org/api/modules.html#loading-ecmascript-modules-using-require)
     in the Node.js documentation.
+  id: totrans-629
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在 Node.js 上，使用顶层 `await` 的 ESM 模块不能从 CommonJS 中导入。如果你编写了一个基于 ESM 的包，并希望它可以从
+    CommonJS 代码库中使用，这很重要。更多信息，请参阅 Node.js 文档中的[“使用 `require()` 加载 ECMAScript 模块”](https://nodejs.org/api/modules.html#loading-ecmascript-modules-using-require)部分。
 - en: '[29.16 Import attributes: importing non-JavaScript artifacts ^(ES2025)](#import-attributes)'
+  id: totrans-630
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.16 导入属性：导入非 JavaScript 艺术品 (ES2025)](#import-attributes)'
 - en: '[29.16.1 The history of importing non-JavaScript artifacts](#the-history-of-importing-nonjavascript-artifacts)'
+  id: totrans-631
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.16.1 导入非 JavaScript 艺术品的历程](#the-history-of-importing-nonjavascript-artifacts)'
 - en: 'Importing artifacts that are not JavaScript code as modules, has a long tradition
     in the JavaScript ecosystem. For example, the JavaScript module loader RequireJS
     has support for so-called [*plugins*](https://requirejs.org/docs/plugins.html).
     To give you a feeling for how old RequireJS is: Version 1.0.0 was released in
     2009\. Specifiers of modules that are imported via a plugin look like this:'
+  id: totrans-632
   prefs: []
   type: TYPE_NORMAL
+  zh: 将非 JavaScript 代码作为模块导入，在 JavaScript 生态系统中有着悠久的历史。例如，JavaScript 模块加载器 RequireJS
+    支持所谓的[*插件*](https://requirejs.org/docs/plugins.html)。为了给您一个关于 RequireJS 多么古老的感觉：版本
+    1.0.0 于 2009 年发布。通过插件导入的模块的指定符看起来如下：
 - en: '[PRE103]'
+  id: totrans-633
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE103]'
 - en: 'For example, the following module specifier imports a file as JSON:'
+  id: totrans-634
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，以下模块指定符将文件作为 JSON 导入：
 - en: '[PRE104]'
+  id: totrans-635
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE104]'
 - en: Inspired by RequireJS, webpack supports the same module specifier syntax for
     its [*loaders*](https://webpack.js.org/loaders/).
+  id: totrans-636
   prefs: []
   type: TYPE_NORMAL
+  zh: 受 RequireJS 启发，webpack 支持相同的模块指定符语法来支持其[*加载器*](https://webpack.js.org/loaders/)。
 - en: '[29.16.2 Use cases for importing non-JavaScript artifacts](#use-cases-for-importing-nonjavascript-artifacts)'
+  id: totrans-637
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.16.2 导入非 JavaScript 艺术品的用例](#use-cases-for-importing-nonjavascript-artifacts)'
 - en: 'These are a few use cases for importing non-JavaScript artifacts:'
+  id: totrans-638
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是导入非 JavaScript 艺术品的几个用例：
 - en: Importing JSON configuration data
+  id: totrans-639
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 导入 JSON 配置数据
 - en: Importing WebAssembly code as if it were a JavaScript module
+  id: totrans-640
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将 WebAssembly 代码作为 JavaScript 模块导入
 - en: Importing CSS to build user interfaces
+  id: totrans-641
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将 CSS 导入以构建用户界面
 - en: For more use cases, you can take a look at [the list of webpack’s loaders](https://webpack.js.org/loaders/).
+  id: totrans-642
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于更多用例，您可以查看[webpack 的加载器列表](https://webpack.js.org/loaders/)。
 - en: '[29.16.3 Import attributes](#import-attributes-1)'
+  id: totrans-643
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.16.3 导入属性](#import-attributes-1)'
 - en: 'The motivating use case for import attributes was importing JSON data as a
     module. That looks as follows:'
+  id: totrans-644
   prefs: []
   type: TYPE_NORMAL
+  zh: 导入属性的激励用例是将 JSON 数据作为模块导入。这看起来如下所示：
 - en: '[PRE105]'
+  id: totrans-645
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE105]'
 - en: '`type` is an import attribute (more on the syntax soon).'
+  id: totrans-646
   prefs: []
   type: TYPE_NORMAL
+  zh: '`type` 是一个导入属性（关于语法的更多内容很快就会介绍）。'
 - en: You may wonder why a JavaScript engine can’t use the filename extension `.json`
     to determine that this is JSON data. However, a core architectural principle of
     the web is to never use the filename extension to determine what’s inside a file.
     Instead, content types are used.
+  id: totrans-647
   prefs: []
   type: TYPE_NORMAL
+  zh: 您可能会想知道为什么 JavaScript 引擎不能使用文件扩展名 `.json` 来确定这是 JSON 数据。然而，网络的核心架构原则是永远不要使用文件扩展名来确定文件内部的内容。相反，使用内容类型。
 - en: If a server is set up correctly then why not do a normal import and omit the
     import attributes?
+  id: totrans-648
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果服务器设置正确，为什么不进行正常的导入并省略导入属性呢？
 - en: The server may be deliberately misconfigured – e.g., an external server not
     controlled by the people who wrote the code. It could swap an imported JSON file
     with code that would be executed by the importer.
+  id: totrans-649
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 服务器可能故意配置错误——例如，一个不由编写代码的人控制的第三方服务器。它可能会用一个将被导入器执行的代码替换导入的 JSON 文件。
 - en: The server may be accidentally misconfigured. With import attributes, we get
     feedback more quickly.
+  id: totrans-650
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 服务器可能意外配置错误。使用导入属性，我们可以更快地获得反馈。
 - en: Given that the expected content type is not explicit in the code, the attributes
     also document the expectations of the programmer.
+  id: totrans-651
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由于预期的内容类型在代码中不是明确的，属性也记录了程序员的期望。
 - en: '[29.16.4 The syntax of import attributes](#the-syntax-of-import-attributes)'
+  id: totrans-652
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.16.4 导入属性的语法](#the-syntax-of-import-attributes)'
 - en: Let’s examine in more detail what import attributes look like.
+  id: totrans-653
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们更详细地检查导入属性的外观。
 - en: '[29.16.4.1 Static import statements](#static-import-statements)'
+  id: totrans-654
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.16.4.1 静态导入语句](#static-import-statements)'
 - en: 'We have already seen a normal (static) import statement:'
+  id: totrans-655
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到了一个正常的（静态）导入语句：
 - en: '[PRE106]'
+  id: totrans-656
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE106]'
 - en: 'The import attributes start with the keyword `with`. That keyword is followed
     by an object literal. For now, the following object literal features are supported:'
+  id: totrans-657
   prefs: []
   type: TYPE_NORMAL
+  zh: 导入属性以“with”关键字开头。该关键字后面跟着一个对象字面量。目前，支持以下对象字面量特性：
 - en: Unquoted keys and quoted keys
+  id: totrans-658
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 未引用的键和引用的键
 - en: The values must be strings
+  id: totrans-659
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值必须是字符串
 - en: 'There are no other syntactic restrictions placed on the keys and the values,
     but engines should throw an exception if they don’t support a key and/or a value:'
+  id: totrans-660
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有对键和值的语法进行其他限制，但如果引擎不支持某个键和/或值，则应抛出异常：
 - en: Attributes change what is imported, so simply ignoring them is risky because
     that changes the runtime behavior of code.
+  id: totrans-661
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 属性会改变导入的内容，因此简单地忽略它们是危险的，因为这会改变代码的运行时行为。
 - en: A side benefit is that this makes it easier to add more features in the future
     because no one will use keys and values in unexpected ways.
+  id: totrans-662
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个副作用是，这使得将来更容易添加更多功能，因为没有人会以意想不到的方式使用键和值。
 - en: '[29.16.4.2 Dynamic imports](#dynamic-imports-1)'
+  id: totrans-663
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.16.4.2 动态导入](#dynamic-imports-1)'
 - en: 'To support import attributes, [dynamic imports](import-operator) get a second
     parameter – an object with configuration data:'
+  id: totrans-664
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了支持导入属性，[动态导入](import-operator) 获得了第二个参数——一个包含配置数据的对象：
 - en: '[PRE107]'
+  id: totrans-665
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE107]'
 - en: The import attributes don’t exist at the top level; they are specified via the
     property `with`. That makes it possible to add more configuration options in the
     future.
+  id: totrans-666
   prefs: []
   type: TYPE_NORMAL
+  zh: 导入属性不在顶层；它们通过 `with` 属性指定。这使得将来能够添加更多的配置选项。
 - en: '[29.16.4.3 Re-export statements](#reexport-statements)'
+  id: totrans-667
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[29.16.4.3 重新导出语句](#reexport-statements)'
 - en: 'A re-export imports and exports in a single step. For the former, we need attributes:'
+  id: totrans-668
   prefs: []
   type: TYPE_NORMAL
+  zh: 重新导出在单个步骤中导入和导出。对于前者，我们需要属性：
 - en: '[PRE108]'
+  id: totrans-669
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE108]'
 - en: '[29.16.5 JSON modules ^(ES2025)](#json-modules)'
+  id: totrans-670
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.16.5 JSON 模块 (ES2025)](#json-modules)'
 - en: 'Import attributes are really just syntax. They lay the foundation for actual
     features that make use of that syntax. The first ECMAScript feature based on import
     attributes is JSON modules – which we’ve already seen in action:'
+  id: totrans-671
   prefs: []
   type: TYPE_NORMAL
+  zh: 导入属性实际上只是语法。它们为使用该语法的实际功能奠定了基础。第一个基于导入属性的 ECMAScript 功能是 JSON 模块——我们已经在实际操作中看到了它：
 - en: 'This is a file `config-data.json`:'
+  id: totrans-672
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个文件 `config-data.json`：
 - en: '[PRE109]'
+  id: totrans-673
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE109]'
 - en: 'It sits next to the following ECMAScript module `main.js`:'
+  id: totrans-674
   prefs: []
   type: TYPE_NORMAL
+  zh: 它紧邻以下 ECMAScript 模块 `main.js`：
 - en: '[PRE110]'
+  id: totrans-675
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE110]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Importing JSON**'
+  id: totrans-676
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：导入 JSON**'
 - en: '`exercises/modules/get-version_test.mjs`'
+  id: totrans-677
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/modules/get-version_test.mjs`'
 - en: '[29.17 Polyfills: emulating native web platform features (advanced)](#polyfills)'
+  id: totrans-678
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.17 Polyfills：模拟原生 Web 平台功能（高级）](#polyfills)'
 - en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **Backends
     have polyfills, too**'
+  id: totrans-679
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“详情”](../Images/38ba63de820aae6f94a019538ae0f222.png) **后端也有 polyfills**'
 - en: This section is about frontend development and web browsers, but similar ideas
     apply to backend development.
+  id: totrans-680
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节是关于前端开发和 Web 浏览器的，但类似的想法也适用于后端开发。
 - en: '*Polyfills* help with a conflict that we are facing when developing a web application
     in JavaScript:'
+  id: totrans-681
   prefs: []
   type: TYPE_NORMAL
+  zh: '*Polyfills* 帮助我们在用 JavaScript 开发 Web 应用程序时遇到的冲突：'
 - en: On one hand, we want to use modern web platform features that make the app better
     and/or development easier.
+  id: totrans-682
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一方面，我们希望使用使应用程序更好和/或开发更简单的现代 Web 平台功能。
 - en: On the other hand, the app should run on as many browsers as possible.
+  id: totrans-683
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 另一方面，应用程序应该在尽可能多的浏览器上运行。
 - en: 'Given a web platform feature X:'
+  id: totrans-684
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定一个 Web 平台功能 X：
 - en: A *polyfill* for X is a piece of code. If it is executed on a platform that
     already has built-in support for X, it does nothing. Otherwise, it makes the feature
     available on the platform. In the latter case, the polyfilled feature is (mostly)
     indistinguishable from a native implementation. In order to achieve that, the
     polyfill usually makes global changes. For example, it may modify global data
     or configure a global module loader. Polyfills are often packaged as modules.
+  id: totrans-685
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: X 的 *polyfill* 是一段代码。如果它在已经内置了对 X 的支持的平台上执行，则不会做任何事情。否则，它使该功能在平台上可用。在后一种情况下，polyfill
+    的功能（主要）与原生实现不可区分。为了实现这一点，polyfill 通常会进行全局更改。例如，它可能会修改全局数据或配置全局模块加载器。Polyfills
+    通常被打包成模块。
 - en: The term [*polyfill*](https://remysharp.com/2010/10/08/what-is-a-polyfill) was
     coined by Remy Sharp.
+  id: totrans-686
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 术语 [*polyfill*](https://remysharp.com/2010/10/08/what-is-a-polyfill) 是由 Remy
+    Sharp 提出的。
 - en: A *speculative polyfill* is a polyfill for a proposed web platform feature (that
     is not standardized, yet).
+  id: totrans-687
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*推测性 polyfill* 是针对提议的 Web 平台功能（尚未标准化）的 polyfill。'
 - en: 'Alternative term: *prollyfill*'
+  id: totrans-688
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 术语：*prollyfill*
 - en: A *replica* of X is a library that reproduces the API and functionality of X
     locally. Such a library exists independently of a native (and global) implementation
     of X.
+  id: totrans-689
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: X 的 *复制品* 是一个库，它在本地上重现了 X 的 API 和功能。这样的库独立于 X 的本地（和全局）实现。
 - en: '*Replica* is a new term introduced in this section. Alternative term: *ponyfill*'
+  id: totrans-690
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*复制品* 是本节中引入的新术语。术语：*ponyfill*'
 - en: There is also the term *shim*, but it doesn’t have a universally agreed upon
     definition. It often means roughly the same as *polyfill*.
+  id: totrans-691
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 此外，还有术语 *shim*，但它没有普遍认同的定义。它通常意味着与 *polyfill* 大致相同。
 - en: Every time our web applications starts, it must first execute all polyfills
     for features that may not be available everywhere. Afterwards, we can be sure
     that those features are available natively.
+  id: totrans-692
   prefs: []
   type: TYPE_NORMAL
+  zh: 每次我们的 Web 应用程序启动时，它必须首先执行所有可能不在所有地方都有的功能的 polyfills。之后，我们可以确信那些功能是原生可用的。
 - en: '[29.17.1 Sources of this section](#sources-of-this-section)'
+  id: totrans-693
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.17.1 本节来源](#sources-of-this-section)'
 - en: '[“What is a Polyfill?”](https://remysharp.com/2010/10/08/what-is-a-polyfill)
     by Remy Sharp'
+  id: totrans-694
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“什么是 Polyfill？”](https://remysharp.com/2010/10/08/what-is-a-polyfill) —— 由
+    Remy Sharp 撰写'
 - en: 'Inspiration for the term *replica*: [The Eiffel Tower in Las Vegas](https://en.wikipedia.org/wiki/Paris_Las_Vegas)'
+  id: totrans-695
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “副本”一词的灵感来源：[拉斯维加斯的埃菲尔铁塔](https://en.wikipedia.org/wiki/Paris_Las_Vegas)
 - en: 'Useful clarification of “polyfill” and related terms: [“Polyfills and the evolution
     of the Web”](https://www.w3.org/2001/tag/doc/polyfills/). Edited by Andrew Betts.'
+  id: totrans-696
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对“polyfill”及相关术语的有用解释：[“Polyfills and the evolution of the Web”](https://www.w3.org/2001/tag/doc/polyfills/).
+    编辑：Andrew Betts.

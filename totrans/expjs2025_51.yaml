@@ -1,1657 +1,2427 @@
 - en: 43 Promises for asynchronous programming ES6
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
 - en: 原文：[https://exploringjs.com/js/book/ch_promises.html](https://exploringjs.com/js/book/ch_promises.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '[43.1 The basics of using Promises](#the-basics-of-using-promises)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.1 Using a Promise-based function](#using-promise-based-functions)'
+  id: totrans-3
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.2 Promises vs. events](#promises-vs-events)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.3 Implementing a Promise-based function](#implementing-promise-based-functions)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.4 The three basic states of Promises](#basic-states-of-promises)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.5 Creating resolved and rejected Promises via `Promise.resolve()` and
     `Promise.reject()`](#Promise.resolve-Promise.reject)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.6 Returning and throwing in `.then()` callbacks](#returning-and-throwing-in-then-callbacks)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.7 `.catch()` and its callback](#catch-and-its-callback)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.8 Chaining method calls](#chaining-method-calls)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.9 `Promise.try()`: starting a Promise chain ^(ES2025)](#Promise.try)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.10 `Promise.prototype.finally()` ^(ES2018)](#Promise.prototype.finally)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.11 `Promise.withResolvers()` ^(ES2024)](#Promise.withResolvers)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.1.12 Advantages of promises over plain callbacks](#promises-vs-callbacks)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.2 Examples](#examples)'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.2.1 Node.js: Reading a file asynchronously](#nodejs-reading-a-file-asynchronously)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.2.2 Browsers: Promisifying `XMLHttpRequest`](#promisifying-xmlhttprequest)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.2.3 Fetch API](#fetch-api)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.3 Tip for error handling: don’t mix rejections and exceptions](#tip-for-error-handling-dont-mix-rejections-and-exceptions)'
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.4 Promise-based functions start synchronously, settle asynchronously](#promise-based-functions-start-sync-settle-async)'
+  id: totrans-20
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.5 Promise combinator functions: working with Arrays of Promises](#promise-combinators)'
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.5.1 What is a Promise combinator function?](#what-is-a-promise-combinator-function)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.5.2 `Promise.all()`](#Promise.all)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.5.3 `Promise.race()`](#Promise.race)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.5.4 `Promise.any()` ^(ES2021)](#Promise.any)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.5.5 `Promise.allSettled()` ^(ES2020)](#Promise.allSettled)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.5.6 Short-circuiting (advanced)](#shortcircuiting-advanced)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.6 Concurrency and `Promise.all()` (advanced)](#concurrency-and-promiseall-advanced)'
+  id: totrans-28
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.6.1 Sequential execution vs. concurrent execution](#sequential-execution-vs-concurrent-execution)'
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.6.2 Concurrency tip: focus on when operations start](#focus-on-async-start)'
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.6.3 `Promise.all()` is fork-join](#promise-all-is-fork-join)'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.7 Tips for chaining Promises](#tips-for-chaining-promises)'
+  id: totrans-32
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.7.1 Chaining mistake: losing the tail](#chaining-mistake-losing-thetail)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.7.2 Chaining mistake: nesting](#chaining-mistake-nesting)'
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.7.3 Chaining mistake: more nesting than necessary](#chaining-mistake-more-nesting-than-necessary)'
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.7.4 Not all nesting is bad](#not-all-nesting-is-bad)'
+  id: totrans-36
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.7.5 Chaining mistake: creating Promises instead of chaining](#chaining-mistake-creating-promises-instead-of-chaining)'
+  id: totrans-37
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.8 Thenables (Promise-like objects) (advanced)](#thenables-promiselike-objects-advanced)'
+  id: totrans-38
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
 - en: '[43.8.1 Example: a fulfilled thenable](#example-a-fulfilled-thenable)'
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[43.8.1 示例：已解决的thenable](#example-a-fulfilled-thenable)'
 - en: '[43.8.2 Example: a rejected thenable](#example-a-rejected-thenable)'
+  id: totrans-40
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[43.8.2 示例：被拒绝的thenable](#example-a-rejected-thenable)'
 - en: '[43.9 Quick reference: `Promise`](#quickref-Promise)'
+  id: totrans-41
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[43.9 快速参考：`Promise`](#quickref-Promise)'
 - en: '[43.9.1 `new Promise()`](#new-promise)'
+  id: totrans-42
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[43.9.1 `new Promise()`](#new-promise)'
 - en: '[43.9.2 `Promise.*`: creating Promises](#promise-creating-promises)'
+  id: totrans-43
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[43.9.2 `Promise.*`：创建Promises](#promise-creating-promises)'
 - en: '[43.9.3 `Promise.*`: miscellaneous functionality](#promise-miscellaneous-functionality)'
+  id: totrans-44
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[43.9.3 `Promise.*`：其他功能](#promise-miscellaneous-functionality)'
 - en: '[43.9.4 `Promise.*`: Promise combinators](#promise-promise-combinators)'
+  id: totrans-45
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[43.9.4 `Promise.*`：Promise组合器](#promise-promise-combinators)'
 - en: '[43.9.5 `Promise.prototype.*`](#promiseprototype)'
+  id: totrans-46
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[43.9.5 `Promise.prototype.*`](#promiseprototype)'
 - en: '![Icon “reading”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **Recommended
     reading**'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“阅读”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **推荐阅读**'
 - en: This chapter builds on [the previous chapter](ch_async-js.html#ch_async-js)
     with background on asynchronous programming in JavaScript.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章基于[上一章](ch_async-js.html#ch_async-js)的内容，介绍了JavaScript中的异步编程背景。
 - en: '[43.1 The basics of using Promises](#the-basics-of-using-promises)'
+  id: totrans-49
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[43.1 使用Promise的基本知识](#the-basics-of-using-promises)'
 - en: '[43.1.1 Using a Promise-based function](#using-promise-based-functions)'
+  id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.1 使用基于Promise的函数](#using-promise-based-functions)'
 - en: 'Promises are a technique for delivering results asynchronously. Instead of
     directly returning a result, a Promise-based function returns a *Promise*: a container
     object that is initially empty. If and when the function is eventually done, it
     puts either a result or an error into the Promise.'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: Promises是一种异步交付结果的技术。而不是直接返回一个结果，基于Promise的函数返回一个*Promise*：一个最初为空的容器对象。如果函数最终完成，它会将结果或错误放入Promise中。
 - en: The following code shows how the Promise-based function `addAsync()` is used.
     We’ll see how that function is implemented soon.
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码展示了如何使用基于Promise的函数`addAsync()`。我们很快就会看到该函数的实现方式。
 - en: '[PRE0]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'To access what’s inside the Promise (if and when there is something inside
     it), we register callbacks:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 要访问Promise内部的内容（如果内部有内容的话），我们注册回调函数：
 - en: Method `.then()` registers callbacks that are called with the result (if and
     when there is one).
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.then()`方法注册了当有结果（如果有）时被调用的回调函数。'
 - en: Method `.catch()` registers callbacks that are called with the error (if and
     when there is one).
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.catch()`方法注册了当有错误（如果有）时被调用的回调函数。'
 - en: This aspect of Promises is similar to [the event pattern](ch_async-js.html#event-pattern).
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: Promises的这个方面与[事件模式](ch_async-js.html#event-pattern)类似。
 - en: '[43.1.2 Promises vs. events](#promises-vs-events)'
+  id: totrans-58
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.2 Promise与事件](#promises-vs-events)'
 - en: 'Promises differ from events in two ways:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: Promises与事件在两个方面有所不同：
 - en: 'They deliver at most one result and are optimized for that use case:'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们最多交付一个结果，并且针对该用例进行了优化：
 - en: If we register a `.then()` callback when a Promise is still empty, it is notified
     if and when the Promise receives a result. If we register a `.catch()` callback
     when a Promise is still empty, it is notified if and when the Promise receives
     an error.
+  id: totrans-61
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们在Promise为空时注册`.then()`回调，当Promise收到结果时会通知我们。如果我们在Promise为空时注册`.catch()`回调，当Promise收到错误时会通知我们。
 - en: Once a Promise receives a result or an error, that value is cached. Thus, if
     we register a callback after that happens, it gets the cached value (depending
     on whether it is eligible to receive it). That means there is no risk of registering
     a callback too late.
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一旦Promise收到结果或错误，该值就会被缓存。因此，如果我们在此之后注册回调，它会获取缓存的值（取决于它是否有资格接收它）。这意味着注册回调太晚的风险不存在。
 - en: 'The first value received by a Promise permanently *settles* that Promise: Values
     it receives later are ignored.'
+  id: totrans-63
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Promise接收到的第一个值永久性地*解决*该Promise：之后接收到的值将被忽略。
 - en: We can chain the Promise methods `.then()` and `.catch()` because they both
     return Promises. That helps with sequentially invoking multiple asynchronous functions.
     More on that later.
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以链式调用Promise方法`.then()`和`.catch()`，因为它们都返回Promises。这有助于顺序调用多个异步函数。关于这一点，稍后还会详细介绍。
 - en: '[43.1.3 Implementing a Promise-based function](#implementing-promise-based-functions)'
+  id: totrans-65
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.3 实现基于Promise的函数](#implementing-promise-based-functions)'
 - en: 'This is an implementation of a Promise-based function that adds two numbers
     `x` and `y`:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个基于Promise的函数实现，用于添加两个数字`x`和`y`：
 - en: '[PRE1]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '`addAsync()` immediately creates and returns a Promise by new-invoking the
     `Promise` constructor (line A). It can only change the state of the new Promise
     from inside the callback (line B) that it passes to the constructor:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: '`addAsync()`通过调用`Promise`构造函数立即创建并返回一个Promise（行A）。它只能通过将其传递给构造函数的回调（行B）来改变新Promise的状态：'
 - en: The callback parameter `resolve` is a function that puts a result into the Promise
     (in case of success).
+  id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 回调参数`resolve`是一个函数，它将结果放入Promise中（在成功的情况下）。
 - en: The callback parameter `reject` is a function that puts an error into the Promise
     (in case of failure).
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 回调参数`reject`是一个函数，它将错误放入Promise中（在失败的情况下）。
 - en: One we have invoked either these functions, subsequent invocations of them have
     no effect.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦我们调用了这些函数，后续的调用就没有任何效果了。
 - en: '[43.1.3.1 The revealing constructor pattern (advanced)](#revealing-constructor-pattern)'
+  id: totrans-72
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.3.1 揭示构造函数模式（高级）](#revealing-constructor-pattern)'
 - en: 'The Promise constructor uses *the revealing constructor pattern*:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: Promise构造函数使用*揭示构造函数模式*：
 - en: '[PRE2]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Quoting Domenic Denicola](https://blog.domenic.me/the-revealing-constructor-pattern/),
     one of the people behind JavaScript’s Promise API:'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 引用Domenic Denicola（JavaScript的Promise API背后的其中一人）的话：
 - en: I call this *the revealing constructor pattern* because the `Promise` constructor
     is *revealing* its internal capabilities, but only to the code that constructs
     the promise in question. The ability to resolve or reject the promise is only
     revealed to the constructing code, and is crucially *not* revealed to anyone *using*
     the promise. So if we hand off `p` to another consumer, say
+  id: totrans-76
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 我称之为*揭示构造函数模式*，因为`Promise`构造函数揭示了其内部能力，但仅限于构建相关Promise的代码。解析或拒绝Promise的能力仅对构建代码可见，并且关键的是*不*对任何使用Promise的人可见。所以如果我们把`p`传递给另一个消费者，比如说
 - en: ''
+  id: totrans-77
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: '[PRE3]'
+  id: totrans-78
   prefs:
   - PREF_BQ
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: ''
+  id: totrans-79
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: then we can be sure that this consumer cannot mess with any of the internals
     that were revealed to us by the constructor. This is as opposed to, for example,
     putting `resolve` and `reject` methods on `p`, which anyone could call.
+  id: totrans-80
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 那么，我们可以确信这个消费者无法干扰构造函数向我们揭示的任何内部机制。这与，例如，在`p`上放置`resolve`和`reject`方法形成对比，任何人都可以调用这些方法。
 - en: '[43.1.4 The three basic states of Promises](#basic-states-of-promises)'
+  id: totrans-81
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.4 Promise的三个基本状态](#basic-states-of-promises)'
 - en: '[Figure 43.1](#fig:promise_states_simple) depicts the three states a Promise
     can be in.'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: '[图43.1](#fig:promise_states_simple)描述了Promise可能处于的三个状态。'
 - en: '![](../Images/06c68bd8e345f2ccc6d4e27fffb6f694.png)'
+  id: totrans-83
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/06c68bd8e345f2ccc6d4e27fffb6f694.png)'
 - en: 'Figure 43.1: A Promise is initially in the state “pending”. It can later transition
     to either the state “fulfilled” or the state “rejected” (but it may never do so).
     If a Promise is in a final (non-pending) state, it is called *settled*.'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 图43.1：Promise最初处于“挂起”状态。它后来可以转换到“已履行”或“已拒绝”状态（但它可能永远不会这样做）。如果一个Promise处于最终（非挂起）状态，它被称为*已解决*。
 - en: '[43.1.4.1 Some Promises are never settled](#promises-that-are-never-settled)'
+  id: totrans-85
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.4.1 一些Promise永远不会解决](#promises-that-are-never-settled)'
 - en: 'This is an example of a Promise that is never settled and forever pending:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个永远不会解决且永远挂起的Promise的例子：
 - en: '[PRE4]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[43.1.4.2 What is the difference between resolving and fulfilling a Promise?](#resolving-vs-fulfilling-promises)'
+  id: totrans-88
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.4.2 解析Promise和履行Promise之间的区别是什么？](#resolving-vs-fulfilling-promises)'
 - en: 'A Promise can only be fulfilled with a non-Promise value. In contrast, we can
     resolve a Promise with either a non-Promise value or a Promise. If the callback
     of `new Promise()` calls `resolve(x)` then it depends on `x` what happens to the
     newly created Promise `p`:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个Promise只能用非Promise值来履行。相比之下，我们可以用非Promise值或另一个Promise来解析一个Promise。如果`new Promise()`的回调调用`resolve(x)`，那么新创建的Promise
+    `p`的结果取决于`x`：
 - en: If `x` is a non-Promise value then `p` is fulfilled with `x`.
+  id: totrans-90
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`x`是一个非Promise值，那么`p`会以`x`来履行。
 - en: 'If `x` is a Promise, then `p` adopts the state of `x` (which basically results
     in `x` replacing `p`). In other words:'
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`x`是一个Promise，那么`p`会采用`x`的状态（这基本上意味着`x`会替换`p`）。换句话说：
 - en: While `x` is pending, `p` is pending.
+  id: totrans-92
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当`x`处于挂起状态时，`p`也处于挂起状态。
 - en: If and when `x` is fulfilled, `p` is fulfilled.
+  id: totrans-93
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`x`被履行，`p`也会被履行。
 - en: If and when `x` is rejected, `p` is rejected.
+  id: totrans-94
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`x`被拒绝，`p`也会被拒绝。
 - en: 'In other words: Resolving only determines the fate of a Promise; it may or
     may not fulfill it. This behavior helps with chaining Promise methods. More on
     that later.'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说：解析只决定了Promise的命运；它可能履行也可能不履行。这种行为有助于Promise方法的链式调用。关于这一点，稍后还会详细介绍。
 - en: '[43.1.5 Creating resolved and rejected Promises via `Promise.resolve()` and
     `Promise.reject()`](#Promise.resolve-Promise.reject)'
+  id: totrans-96
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.5 通过`Promise.resolve()`和`Promise.reject()`创建满足和拒绝的Promise](#Promise.resolve-Promise.reject)'
 - en: 'If `x` is a non-Promise value then `Promise.resolve(x)` creates a Promise that
     is fulfilled with that value:'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果`x`是一个非Promise值，则`Promise.resolve(x)`创建一个以该值满足的Promise：
 - en: '[PRE5]'
+  id: totrans-98
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'If the argument is already a Promise, it is returned unchanged:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果参数已经是Promise，则返回不变：
 - en: '[PRE6]'
+  id: totrans-100
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '`Promise.reject(err)` accepts a value `err` (that is normally not a Promise)
     and returns a Promise that is rejected with it:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.reject(err)`接受一个值`err`（通常不是Promise）并返回一个以它拒绝的Promise：'
 - en: '[PRE7]'
+  id: totrans-102
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: Why is that useful?
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有什么用？
 - en: On one hand, we can use `Promise.resolve()` to convert a value that may or may
     not be a Promise to a value that is guaranteed to be a Promise.
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一方面，我们可以使用`Promise.resolve()`将可能或可能不是Promise的值转换为保证是Promise的值。
 - en: On the other hand, we may want to create a Promise that is fulfilled or rejected
     with a given non-Promise value. Then we can use `Promise.resolve()` and `Promise.reject()`
     – as demonstrated by the example below.
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 另一方面，我们可能想要创建一个以给定非Promise值来满足或拒绝的Promise。然后我们可以使用`Promise.resolve()`和`Promise.reject()`
+    – 如以下示例所示。
 - en: '[PRE8]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[43.1.6 Returning and throwing in `.then()` callbacks](#returning-and-throwing-in-then-callbacks)'
+  id: totrans-107
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.6 `.then()`回调中的返回和抛出](#returning-and-throwing-in-then-callbacks)'
 - en: '`.then()` registers callbacks for Promise fulfillments. It also returns a new
     Promise. Doing so enables method chaining: We can invoke `.then()` and `.catch()`
     on the result and keep the asynchronous computation going.'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.then()`为Promise满足注册回调函数。它还返回一个新的Promise。这样做使得方法链式调用成为可能：我们可以在结果上调用`.then()`和`.catch()`，并保持异步计算的进行。'
 - en: How the Promise returned by `.then()` is resolved, depends on what happens inside
     its callback. Let’s look at three common cases.
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.then()`返回的Promise是如何解决的，取决于其回调函数内部发生的事情。让我们看看三个常见的情况。'
 - en: '[43.1.6.1 Returning a non-Promise value from the `.then()` callback](#then-callback-returns-non-promise-value)'
+  id: totrans-110
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.6.1 从`.then()`回调返回非Promise值](#then-callback-returns-non-promise-value)'
 - en: 'First, the callback can return a non-Promise value (line A). Consequently,
     the Promise returned by `.then()` is fulfilled with that value (as checked in
     line B):'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，回调函数可以返回一个非Promise值（行A）。因此，`.then()`返回的Promise以该值满足（如行B中检查的那样）：
 - en: '[PRE9]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[43.1.6.2 Returning a Promise from the `.then()` callback](#then-callback-returns-promise)'
+  id: totrans-113
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.6.2 `.then()`回调返回Promise](#then-callback-returns-promise)'
 - en: 'Second, the callback can return a Promise `q` (line A). Consequently, the Promise
     `p` returned by `.then()` is resolved with `q`. In other words: `p` is effectively
     replaced by `q`.'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，回调函数可以返回一个Promise `q`（行A）。因此，`.then()`返回的Promise `p`以`q`来满足。换句话说：`p`实际上被`q`替换了。
 - en: '[PRE10]'
+  id: totrans-115
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Why is that useful? We can return the result of a Promise-based operation and
     process its fulfillment value via a “flat” (non-nested) `.then()`. Compare:'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有什么用？我们可以返回基于Promise的操作的结果，并通过一个“扁平”（非嵌套）的`.then()`来处理其满足值。比较：
 - en: '[PRE11]'
+  id: totrans-117
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[43.1.6.3 Throwing an exception inside the `.then()` callback](#then-callback-throws-exception)'
+  id: totrans-118
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.6.3 `.then()`回调中抛出异常](#then-callback-throws-exception)'
 - en: Third, the callback can throw an exception. Consequently, the Promise returned
     by `.then()` is rejected with that exception. That is, a synchronous error is
     converted into an asynchronous error.
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 第三，回调函数可以抛出异常。因此，`.then()`返回的Promise以该异常拒绝。也就是说，同步错误被转换为异步错误。
 - en: '[PRE12]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '[43.1.7 `.catch()` and its callback](#catch-and-its-callback)'
+  id: totrans-121
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.7 `.catch()`及其回调](#catch-and-its-callback)'
 - en: 'The difference between `.then()` and `.catch()` is that the latter is triggered
     by rejections, not fulfillments. However, both methods turn the actions of their
     callbacks into Promises in the same manner. For example, in the following code,
     the value returned by the `.catch()` callback in line A becomes a fulfillment
     value:'
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.then()`和`.catch()`之间的区别在于，后者是由拒绝触发的，而不是由满足触发的。然而，两种方法都以相同的方式将回调函数的动作转换为Promise。例如，在以下代码中，行A中`.catch()`回调函数返回的值成为满足值：'
 - en: '[PRE13]'
+  id: totrans-123
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '[43.1.8 Chaining method calls](#chaining-method-calls)'
+  id: totrans-124
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.8 链式调用方法](#chaining-method-calls)'
 - en: '`.then()` and `.catch()` always returning Promises enables us to create arbitrary
     long chains of method calls:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.then()`和`.catch()`总是返回Promise，使我们能够创建任意长的方法调用链：'
 - en: '[PRE14]'
+  id: totrans-126
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: Due to chaining, the `return` in line A returns the result of the last `.then()`.
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于链式调用，行A中的`return`返回了最后一个`.then()`的结果。
 - en: 'In a way, `.then()` is the asynchronous version of the synchronous semicolon:'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 在某种程度上，`.then()`是同步分号异步版本：
 - en: '`asyncFunc1().then(asyncFunc2)`'
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`asyncFunc1().then(asyncFunc2)`'
 - en: executes the asynchronous operations `asyncFunc1` and `asyncFunc2` sequentially.
+  id: totrans-130
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 依次执行异步操作`asyncFunc1`和`asyncFunc2`。
 - en: '`syncFunc1(); syncFunc2()`'
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`syncFunc1(); syncFunc2()`'
 - en: executes the synchronous operations `syncFunc1` and `syncFunc2` sequentially.
+  id: totrans-132
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 依次执行同步操作`syncFunc1`和`syncFunc2`。
 - en: 'We can also add `.catch()` into the mix and let it handle multiple error sources
     at the same time:'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以添加`.catch()`到混合中，并让它同时处理多个错误源：
 - en: '[PRE15]'
+  id: totrans-134
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '[43.1.9 `Promise.try()`: starting a Promise chain ^(ES2025)](#Promise.try)'
+  id: totrans-135
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.9 `Promise.try()`：启动Promise链（ES2025）](#Promise.try)'
 - en: 'Where the Promise method `.then(cb)` continues a Promise chain, `Promise.try(cb)`
     starts a Promise chain – while treating the callback `cb` similarly:'
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 当Promise方法`.then(cb)`继续Promise链时，`Promise.try(cb)`开始一个Promise链——同时以类似的方式处理回调`cb`：
 - en: It calls `cb`.
+  id: totrans-137
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它调用`cb`。
 - en: If `cb` throws an exception, `Promise.try()` returns a rejection with that exception.
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`cb`抛出异常，`Promise.try()`会返回一个带有该异常的拒绝。
 - en: If `cb` returns a value, `Promise.try()` resolves that value into a Promise
     (without nesting if the value already is a Promise).
+  id: totrans-139
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`cb`返回一个值，`Promise.try()`将那个值解析为一个Promise（如果没有嵌套，该值已经是Promise）。
 - en: '[43.1.9.1 Use case for `Promise.try()`: starting a Promise chain with code
     that is not purely asynchronous](#use-case-for-promisetry-starting-a-promise-chain-with-code-that-is-not-purely-asynchronous)'
+  id: totrans-140
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.9.1 `Promise.try()`的使用场景：使用非纯异步代码启动Promise链](#use-case-for-promisetry-starting-a-promise-chain-with-code-that-is-not-purely-asynchronous)'
 - en: 'We need `Promise.try()` to start a Promise chain with code that is a mix of
     synchronous and asynchronous functionality:'
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们需要`Promise.try()`来启动一个包含同步和异步功能的代码的Promise链：
 - en: Why a mix? If code is purely asynchronous, we can use it to start a Promise
     chain. If code is purely synchronous, there is no need for Promises.
+  id: totrans-142
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为什么是混合的？如果代码完全是异步的，我们可以用它来启动一个Promise链。如果代码完全是同步的，则不需要Promise。
 - en: Why at the start? Later in a Promise chain, Promise functions such as `.then()`
     are good tools for dealing with mixed code.
+  id: totrans-143
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为什么在开始时？在Promise链的后期，Promise函数如`.then()`是处理混合代码的好工具。
 - en: 'Let’s look at an example:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看一个例子：
 - en: '[PRE16]'
+  id: totrans-145
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: We have a mix of synchronous functionality (line A) and asynchronous functionality
     (line B).
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们有一个同步功能（行A）和异步功能（行B）的混合。
 - en: 'Why wrap the code inside the callback at all? It helps if the synchronous function
     we call in line A throws an exception: Then `Promise.try()` catches that exception
     and converts it into a rejected Promise for us. Therefore, the previous code is
     mostly equivalent to:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么要在回调中包裹代码呢？如果我们在行A中调用的同步函数抛出异常，这会有帮助：然后`Promise.try()`捕获那个异常并将其转换为为我们提供的拒绝的Promise。因此，前面的代码基本上等同于：
 - en: '[PRE17]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[43.1.9.2 Why not use an async function?](#why-not-use-an-async-function)'
+  id: totrans-149
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.9.2 为什么不使用异步函数？](#why-not-use-an-async-function)'
 - en: '`Promise.try()` is only needed if we work directly with Promises. Async functions
     (which are explained in [the next chapter](ch_async-functions.html#ch_async-functions))
     already provide good support for dealing with a mix of sync and async code (anywhere).'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 只有当我们直接与Promise一起工作时，`Promise.try()`才是必需的。异步函数（在下一章中解释[异步函数](ch_async-functions.html#ch_async-functions)）已经提供了很好的支持来处理同步和异步代码的混合（任何地方）。
 - en: '[43.1.9.3 Alternative to `Promise.try()`](#alternative-to-promisetry)'
+  id: totrans-151
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.9.3 `Promise.try()`的替代方案](#alternative-to-promisetry)'
 - en: 'This following code is an alternative to `Promise.try()`:'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码是`Promise.try()`的替代方案：
 - en: '[PRE18]'
+  id: totrans-153
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '`Promise.resolve()` creates a Promise that is fulfilled with `undefined`. That
     result does not matter to us. What does matter is that we have just started a
     Promise chain and can put the code to try into the callback in line A.'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.resolve()`创建一个被`undefined`实现的Promise。这个结果对我们来说并不重要。重要的是我们刚刚启动了一个Promise链，并且可以将要尝试的代码放入行A的回调中。'
 - en: The main downside compared to `Promise.try()` is that this pattern executes
     the code in line A on the next tick (and not immediately).
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 与`Promise.try()`相比，主要缺点是这种模式将在下一个tick上执行代码行A（而不是立即执行）。
 - en: '[43.1.10 `Promise.prototype.finally()` ^(ES2018)](#Promise.prototype.finally)'
+  id: totrans-156
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.10 `Promise.prototype.finally()`（ES2018）](#Promise.prototype.finally)'
 - en: 'The Promise method `.finally()` is often used as follows:'
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: Promise方法`.finally()`通常如下使用：
 - en: '[PRE19]'
+  id: totrans-158
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'The `.finally()` callback is always executed – independently of `somePromise`
     and the values returned by `.then()` and/or `.catch()`. In contrast:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.finally()`回调始终执行——独立于`somePromise`和`.then()`和/或`.catch()`返回的值。相比之下：'
 - en: The `.then()` callback is only executed if `somePromise` is fulfilled.
+  id: totrans-160
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只有当`somePromise`被实现时，`.then()`回调才会执行。
 - en: 'The `.catch()` callback is only executed if:'
+  id: totrans-161
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只有在以下情况下，`.catch()`回调才会执行：
 - en: either `somePromise` is rejected,
+  id: totrans-162
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 要么`somePromise`被拒绝，
 - en: or the `.then()` callback returns a rejected Promise,
+  id: totrans-163
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 或者 `.then()` 回调返回一个被拒绝的 Promise，
 - en: or the `.then()` callback throws an exception.
+  id: totrans-164
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 或者 `.then()` 回调抛出异常。
 - en: 'If the callback returns a non-Promise value or a fulfilled Promise, `.finally()`
     ignores that result and simply passes on the settlement that existed before it
     was called:'
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果回调返回一个非 Promise 值或一个已解决的 Promise，`.finally()` 将忽略该结果，并简单地传递在调用之前存在的结算：
 - en: '[PRE20]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'If however, the `.finally()` callback throws an exception or returns a rejected
     Promise, the Promise returned by `.finally()` is rejected:'
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，如果 `.finally()` 回调抛出异常或返回一个被拒绝的 Promise，则 `.finally()` 返回的 Promise 将被拒绝：
 - en: '[PRE21]'
+  id: totrans-168
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '[43.1.10.1 Use case for `.finally()`: cleaning up](#use-case-for-finally-cleaning-up)'
+  id: totrans-169
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.10.1 `.finally()` 的用例：清理](#use-case-for-finally-cleaning-up)'
 - en: 'One common use case for `.finally()` is similar to a common use case of the
     synchronous `finally` clause: cleaning up after you are done with a resource.
     That should always happen, regardless of whether everything went smoothly or there
     was an error – for example:'
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.finally()` 的一个常见用例类似于同步 `finally` 子句的常见用例：在完成资源使用后进行清理。这应该始终发生，无论一切是否顺利或出现错误
+    – 例如：'
 - en: '[PRE22]'
+  id: totrans-171
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: '[43.1.10.2 Use case for `.finally()`: doing something first after any kind
     of settlement](#use-case-for-finally-doing-something-first-after-any-kind-of-settlement)'
+  id: totrans-172
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.10.2 `.finally()` 的用例：在任何类型的结算之后首先执行某些操作](#use-case-for-finally-doing-something-first-after-any-kind-of-settlement)'
 - en: 'We can also use `.finally()` before both `.then()` and `.catch()`. Then what
     we do in the `.finally()` callback is always executed before the other two callbacks.
     As an example, consider the following function `handleAsyncResult()`:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以在 `.then()` 和 `.catch()` 之前使用 `.finally()`。那么在 `.finally()` 回调中执行的操作总是先于其他两个回调执行。以下是一个示例函数
+    `handleAsyncResult()`：
 - en: '[PRE23]'
+  id: totrans-174
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'This is what happens with a fulfilled Promise:'
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是已解决的 Promise 发生的情况：
 - en: '[PRE24]'
+  id: totrans-176
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'Output:'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE25]'
+  id: totrans-178
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'This is what happens with a rejected Promise:'
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是被拒绝的 Promise 发生的情况：
 - en: '[PRE26]'
+  id: totrans-180
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'Output:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE27]'
+  id: totrans-182
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: '[43.1.11 `Promise.withResolvers()` ^(ES2024)](#Promise.withResolvers)'
+  id: totrans-183
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.11 `Promise.withResolvers()` (ES2024)](#Promise.withResolvers)'
 - en: 'The most common way of creating and resolving a Promise is via the `Promise`
     constructor:'
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 创建和解析 Promise 最常见的方式是通过 `Promise` 构造函数：
 - en: '[PRE28]'
+  id: totrans-185
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'One limitation of creating Promises like that is that the settlement functions
     `resolve` and `reject` are meant to only be used inside the callback. Sometimes
     we want to use them outside of it. That’s when the following static factory method
     is useful:'
+  id: totrans-186
   prefs: []
   type: TYPE_NORMAL
+  zh: 创建像那样的 Promise 的一个限制是，解决函数 `resolve` 和 `reject` 只意味着在回调内部使用。有时我们想在它之外使用它们。这就是以下静态工厂方法有用的原因：
 - en: '[PRE29]'
+  id: totrans-187
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'This is what using that factory method looks like:'
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是使用那个工厂方法的样子：
 - en: '[PRE30]'
+  id: totrans-189
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '![Icon “question”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **Why the
     name `withResolvers`? Why not, e.g., `withSettlers`?**'
+  id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“问题”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **为什么叫 `withResolvers`？为什么不叫，例如，`withSettlers`？**'
 - en: '`resolve()` may not settle `promise` – it only resolves it.'
+  id: totrans-191
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`resolve()` 可能不会解决 `promise` – 它只解决它。'
 - en: The ECMAScript specification uses [the name “resolving functions”](https://tc39.es/ecma262/#sec-createresolvingfunctions)
     for `resolve` and `reject`.
+  id: totrans-192
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ECMAScript 规范使用 [“解析函数”的名称](https://tc39.es/ecma262/#sec-createresolvingfunctions)
+    来表示 `resolve` 和 `reject`。
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Implementing an asynchronous queue via a linked list whose elements are Promises**'
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：通过链表实现一个由 Promise
+    组成的异步队列，其元素是 Promise**'
 - en: '`exercises/promises/promise-queue_test.mjs`'
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/promises/promise-queue_test.mjs`'
 - en: '[43.1.11.1 An implementation](#an-implementation)'
+  id: totrans-195
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.11.1 实现](#an-implementation)'
 - en: 'We can implement `Promise.withResolvers()` as follows:'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以如下实现 `Promise.withResolvers()`：
 - en: '[PRE31]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: '[43.1.11.2 Example: one-element queue](#example-oneelement-queue)'
+  id: totrans-198
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.1.11.2 示例：单元素队列](#example-oneelement-queue)'
 - en: '[PRE32]'
+  id: totrans-199
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: '[43.1.12 Advantages of promises over plain callbacks](#promises-vs-callbacks)'
+  id: totrans-200
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.1.12 Promise 相对于普通回调的优点](#promises-vs-callbacks)'
 - en: 'These are some of the advantages of Promises over plain callbacks when it comes
     to handling one-off results:'
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是处理一次性结果时，Promise 相对于普通回调的一些优点：
 - en: 'The type signatures of Promise-based functions and methods are cleaner: if
     a function is callback-based, some parameters are about input, while the one or
     two callbacks at the end are about output. With Promises, everything output-related
     is handled via the returned value.'
+  id: totrans-202
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 基于 Promise 的函数和方法的类型签名更简洁：如果函数是基于回调的，一些参数是关于输入的，而最后的那个或两个回调是关于输出的。使用 Promises，所有与输出相关的操作都通过返回值处理。
 - en: Chaining asynchronous processing steps is more convenient.
+  id: totrans-203
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 连接异步处理步骤更加方便。
 - en: 'Promises handle both asynchronous errors (via rejections) and synchronous errors:
     Inside the callbacks for `new Promise()`, `.then()`, and `.catch()`, exceptions
     are converted to rejections. In contrast, if we use callbacks for asynchronicity,
     exceptions are normally not handled for us; we have to do it ourselves.'
+  id: totrans-204
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Promise 处理异步错误（通过拒绝）和同步错误：在 `new Promise()`、`.then()` 和 `.catch()` 的回调中，异常被转换为拒绝。相比之下，如果我们使用回调来处理异步性，通常不会为我们处理异常；我们必须自己处理。
 - en: Promises are a single standard that is slowly replacing several, mutually incompatible
     alternatives. For example, in Node.js, many functions are now available in Promise-based
     versions. And new asynchronous browser APIs are usually Promise-based.
+  id: totrans-205
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Promise 是一个单一的标准，它正在逐渐取代几个相互不兼容的替代方案。例如，在 Node.js 中，现在许多函数都有基于 Promise 的版本。而新的异步浏览器
+    API 通常也是基于 Promise 的。
 - en: 'One of the biggest advantages of Promises involves not working with them directly:
     they are the foundation of *async functions*, a synchronous-looking syntax for
     performing asynchronous computations. Asynchronous functions are covered in [the
     next chapter](ch_async-functions.html#ch_async-functions).'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: Promise 最大的优点之一是无需直接操作它们：它们是 *async 函数* 的基础，这是一种用于执行异步计算的同步外观语法。异步函数将在 [下一章](ch_async-functions.html#ch_async-functions)
+    中介绍。
 - en: '[43.2 Examples](#examples)'
+  id: totrans-207
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[43.2 示例](#examples)'
 - en: Seeing Promises in action helps with understanding them. Let’s look at examples.
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过观察 Promise 的实际应用来理解它们很有帮助。让我们看看一些例子。
 - en: '[43.2.1 Node.js: Reading a file asynchronously](#nodejs-reading-a-file-asynchronously)'
+  id: totrans-209
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.2.1 Node.js: 异步读取文件](#nodejs-reading-a-file-asynchronously)'
 - en: 'Consider the following text file `person.json` with [JSON data](ch_json.html#ch_json)
     in it:'
+  id: totrans-210
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下包含 [JSON 数据](ch_json.html#ch_json) 的文本文件 `person.json`：
 - en: '[PRE33]'
+  id: totrans-211
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: Let’s look at two versions of code that reads this file and parses it into an
     object. First, a callback-based version. Second, a Promise-based version.
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看两种读取此文件并将其解析为对象的代码版本。首先是一个基于回调的版本。其次是一个基于 Promise 的版本。
 - en: '[43.2.1.1 The callback-based version](#the-callbackbased-version)'
+  id: totrans-213
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.2.1.1 基于回调的版本](#the-callbackbased-version)'
 - en: 'The following code reads the contents of this file and converts it to a JavaScript
     object. It is based on Node.js-style callbacks:'
+  id: totrans-214
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码读取该文件的内容并将其转换为 JavaScript 对象。它基于 Node.js 风格的回调：
 - en: '[PRE34]'
+  id: totrans-215
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '`fs` is a built-in Node.js module for file system operations. We use the callback-based
     function `fs.readFile()` to read a file whose name is `person.json`. If we succeed,
     the content is delivered via the parameter `text` as a string. In line C, we convert
     that string from the text-based data format JSON into a JavaScript object. `JSON`
     is an object with methods for consuming and producing JSON. It is part of JavaScript’s
     standard library and documented [later in this book](ch_json.html#ch_json).'
+  id: totrans-216
   prefs: []
   type: TYPE_NORMAL
+  zh: '`fs` 是 Node.js 用于文件系统操作的内置模块。我们使用基于回调的函数 `fs.readFile()` 来读取名为 `person.json`
+    的文件。如果我们成功，内容将通过参数 `text` 作为字符串传递。在行 C 中，我们将该字符串从基于文本的数据格式 JSON 转换为 JavaScript
+    对象。`JSON` 是一个具有消费和生成 JSON 方法的对象。它是 JavaScript 标准库的一部分，并在本书的 [后续章节](ch_json.html#ch_json)
+    中有文档说明。'
 - en: 'Note that there are two error-handling mechanisms: the `if` in line A takes
     care of asynchronous errors reported by `fs.readFile()`, while the `try` in line
     B takes care of synchronous errors reported by `JSON.parse()`.'
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，有两种错误处理机制：行 A 中的 `if` 负责处理由 `fs.readFile()` 报告的异步错误，而行 B 中的 `try` 负责处理由 `JSON.parse()`
+    报告的同步错误。
 - en: '[43.2.1.2 The Promise-based version](#the-promisebased-version)'
+  id: totrans-218
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.2.1.2 基于 Promise 的版本](#the-promisebased-version)'
 - en: 'The following code uses `readFile()` from `node:fs/promises`, the Promise-based
     version of `fs.readFile()`:'
+  id: totrans-219
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码使用 `node:fs/promises` 中的 `readFile()`，这是 `fs.readFile()` 的基于 Promise 的版本：
 - en: '[PRE35]'
+  id: totrans-220
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: Function `readFile()` returns a Promise. In line A, we specify a success callback
     via method `.then()` of that Promise. The remaining code in `then`’s callback
     is synchronous.
+  id: totrans-221
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数 `readFile()` 返回一个 Promise。在行 A 中，我们通过该 Promise 的 `.then()` 方法指定一个成功回调。`then`
+    的回调函数中的剩余代码是同步的。
 - en: '`.then()` returns a Promise, which enables the invocation of the Promise method
     `.catch()` in line B. We use it to specify a failure callback.'
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.then()` 返回一个 Promise，这使得在行 B 中可以调用 Promise 方法 `.catch()`。我们用它来指定一个失败回调。'
 - en: Note that `.catch()` lets us handle both the asynchronous errors of `readFile()`
     and the synchronous errors of `JSON.parse()` because exceptions inside a `.then()`
     callback become rejections.
+  id: totrans-223
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`.catch()` 允许我们处理 `readFile()` 的异步错误和 `JSON.parse()` 的同步错误，因为 `.then()` 回调中的异常成为拒绝。
 - en: '[43.2.2 Browsers: Promisifying `XMLHttpRequest`](#promisifying-xmlhttprequest)'
+  id: totrans-224
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.2.2 Browsers: 将 `XMLHttpRequest` 转换为 Promise](#promisifying-xmlhttprequest)'
 - en: 'We have previously seen the event-based `XMLHttpRequest` API for downloading
     data in web browsers. The following function promisifies that API:'
+  id: totrans-225
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们之前已经看到了在网页浏览器中下载数据的基于事件的 `XMLHttpRequest` API。以下函数将这个 API 转换为 Promise：
 - en: '[PRE36]'
+  id: totrans-226
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'Note how the results and errors of `XMLHttpRequest` are handled via `resolve()`
     and `reject()`:'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意 `XMLHttpRequest` 的结果和错误是如何通过 `resolve()` 和 `reject()` 处理的：
 - en: A successful outcome leads to the returned Promise being fullfilled with it
     (line A).
+  id: totrans-228
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 成功的结果会导致返回的 Promise 被它本身（行 A）满足。
 - en: An error leads to the Promise being rejected (lines B and C).
+  id: totrans-229
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 错误会导致 Promise 被拒绝（行 B 和 C）。
 - en: 'This is how to use `httpGet()`:'
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是使用 `httpGet()` 的方法：
 - en: '[PRE37]'
+  id: totrans-231
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Timing out a Promise**'
+  id: totrans-232
   prefs: []
   type: TYPE_NORMAL
+  zh: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：Promise
+    超时**'
 - en: '`exercises/promises/promise_timeout_test.mjs`'
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/promises/promise_timeout_test.mjs`'
 - en: '[43.2.3 Fetch API](#fetch-api)'
+  id: totrans-234
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.2.3 Fetch API](#fetch-api)'
 - en: 'Most JavaScript platforms support Fetch, a Promise-based API for downloading
     data. Think of it as a Promise-based version of `XMLHttpRequest`. The following
     is an excerpt of [the API](https://fetch.spec.whatwg.org/#fetch-api):'
+  id: totrans-235
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数 JavaScript 平台支持 Fetch，这是一个基于 Promise 的 API，用于下载数据。将其视为 `XMLHttpRequest`
+    的基于 Promise 的版本。以下是该 API 的摘录[API](https://fetch.spec.whatwg.org/#fetch-api)：
 - en: '[PRE38]'
+  id: totrans-236
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 'That means we can use `fetch()` as follows:'
+  id: totrans-237
   prefs: []
   type: TYPE_NORMAL
+  zh: 这意味着我们可以这样使用 `fetch()`：
 - en: '[PRE39]'
+  id: totrans-238
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '`fetch()` is also used here: [“Example: `.map()` with an async function as
     a callback” (§44.3.3)](ch_async-functions.html#map-with-async-callback).'
+  id: totrans-239
   prefs: []
   type: TYPE_NORMAL
+  zh: '`fetch()` 也在这里使用：[“示例：`.map()` 与异步函数作为回调” (§44.3.3)](ch_async-functions.html#map-with-async-callback)。'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Using the fetch API**'
+  id: totrans-240
   prefs: []
   type: TYPE_NORMAL
+  zh: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：使用
+    fetch API**'
 - en: '`exercises/promises/fetch_json_test.mjs`'
+  id: totrans-241
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/promises/fetch_json_test.mjs`'
 - en: '[43.3 Tip for error handling: don’t mix rejections and exceptions](#tip-for-error-handling-dont-mix-rejections-and-exceptions)'
+  id: totrans-242
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[43.3 错误处理的技巧：不要混合拒绝和异常](#tip-for-error-handling-dont-mix-rejections-and-exceptions)'
 - en: 'Tip for implementing functions and methods:'
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: 实现函数和方法的技巧：
 - en: Don’t mix (asynchronous) rejections and (synchronous) exceptions.
+  id: totrans-244
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 不要混合（异步）拒绝和（同步）异常。
 - en: This makes our synchronous and asynchronous code more predictable and simpler
     because we can always focus on a single error-handling mechanism.
+  id: totrans-245
   prefs: []
   type: TYPE_NORMAL
+  zh: 这使得我们的同步和异步代码更加可预测和简单，因为我们总能专注于单一的错误处理机制。
 - en: 'For Promise-based functions and methods, the rule means that they should never
     throw exceptions. Alas, it is easy to accidentally get this wrong – for example:'
+  id: totrans-246
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于基于 Promise 的函数和方法，这个规则意味着它们永远不应该抛出异常。然而，很容易不小心出错——例如：
 - en: '[PRE40]'
+  id: totrans-247
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: The problem is that if an exception is thrown in line A, then `asyncFunc()`
     will throw an exception. Callers of that function only expect rejections and are
     not prepared for an exception. There are three ways in which we can fix this issue.
+  id: totrans-248
   prefs: []
   type: TYPE_NORMAL
+  zh: 问题在于，如果行 A 中抛出异常，那么 `asyncFunc()` 将抛出异常。该函数的调用者只期望拒绝，并没有准备好处理异常。我们可以通过三种方式来解决这个问题。
 - en: 'We can wrap the whole body of the function in a `try-catch` statement and return
     a rejected Promise if an exception is thrown:'
+  id: totrans-249
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以在函数的整个主体中包裹一个 `try-catch` 语句，并在抛出异常时返回一个拒绝的 Promise。
 - en: '[PRE41]'
+  id: totrans-250
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: Given that `.then()` converts exceptions to rejections, we can execute `doSomethingSync()`
     inside a `.then()` callback. To do so, we start a Promise chain via `Promise.resolve()`.
     We ignore the fulfillment value `undefined` of that initial Promise.
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于 `.then()` 将异常转换为拒绝，我们可以在 `.then()` 回调中执行 `doSomethingSync()`。为此，我们通过 `Promise.resolve()`
+    启动一个 Promise 链。我们忽略那个初始 Promise 的满足值 `undefined`。
 - en: '[PRE42]'
+  id: totrans-252
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: 'Lastly, `new Promise()` also converts exceptions to rejections. Using this
     constructor is therefore similar to the previous solution:'
+  id: totrans-253
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后，`new Promise()` 也会将异常转换为拒绝。因此，使用这个构造函数与之前的解决方案类似：
 - en: '[PRE43]'
+  id: totrans-254
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: '[43.4 Promise-based functions start synchronously, settle asynchronously](#promise-based-functions-start-sync-settle-async)'
+  id: totrans-255
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[43.4 基于 Promise 的函数开始同步，解决异步](#promise-based-functions-start-sync-settle-async)'
 - en: 'Most Promise-based functions are executed as follows:'
+  id: totrans-256
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数基于 Promise 的函数都是这样执行的：
 - en: Their execution starts right away, synchronously (in the current task).
+  id: totrans-257
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们的执行立即开始，同步（在当前任务中）。
 - en: But the Promise they return is guaranteed to be settled asynchronously (in a
     later task) – if ever.
+  id: totrans-258
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 但它们返回的 Promise 保证会在异步（稍后的任务）中解决——如果有的话。
 - en: 'The following code demonstrates that:'
+  id: totrans-259
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了这一点：
 - en: '[PRE44]'
+  id: totrans-260
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: 'Output:'
+  id: totrans-261
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE45]'
+  id: totrans-262
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: We can see that the callback of `new Promise()` is executed before the end of
     the code, while the result is delivered later (line A).
+  id: totrans-263
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以看到，`new Promise()` 的回调在代码结束之前执行，而结果稍后才会传递（行 A）。
 - en: 'Benefits of this approach:'
+  id: totrans-264
   prefs: []
   type: TYPE_NORMAL
+  zh: 此方法的好处：
 - en: Starting synchronously helps avoid race conditions because we can rely on the
     order in which Promise-based functions begin. There is an example [in the next
     chapter](ch_async-functions.html#fire-and-forget-await), where text is written
     to a file and race conditions are avoided.
+  id: totrans-265
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从同步开始有助于避免竞争条件，因为我们依赖于基于Promise的函数开始时的顺序。在下一章中有一个例子[在这里](ch_async-functions.html#fire-and-forget-await)，其中文本被写入文件，并避免了竞争条件。
 - en: Chaining Promises won’t starve other tasks of processing time because before
     a Promise is settled, there will always be a break, during which the event loop
     can run.
+  id: totrans-266
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在一个Promise解决之前，链式调用Promise不会使其他任务处理时间不足，因为在Promise解决之前，总会有一个中断，在这段时间内事件循环可以运行。
 - en: Promise-based functions always return results asynchronously; we can be sure
     that there is never a synchronous return. This kind of predictability makes code
     easier to work with.
+  id: totrans-267
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 基于Promise的函数总是异步返回结果；我们可以确信永远不会同步返回。这种可预测性使得代码更容易处理。
 - en: '![Icon “external”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png) **More information
     on this approach**'
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“外部”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png) **关于此方法的更多信息**'
 - en: '[“Designing APIs for Asynchrony”](http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony)
     by Isaac Z. Schlueter'
+  id: totrans-269
   prefs: []
   type: TYPE_NORMAL
+  zh: '[“为异步设计API”](http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony)
+    by Isaac Z. Schlueter'
 - en: '[43.5 Promise combinator functions: working with Arrays of Promises](#promise-combinators)'
+  id: totrans-270
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[43.5 Promise组合函数：处理Promise数组](#promise-combinators)'
 - en: '[43.5.1 What is a Promise combinator function?](#what-is-a-promise-combinator-function)'
+  id: totrans-271
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.5.1 Promise组合函数是什么？](#what-is-a-promise-combinator-function)'
 - en: 'The [*combinator pattern*](https://wiki.haskell.org/Combinator_pattern) is
     a pattern in functional programming for building structures. It is based on two
     kinds of functions:'
+  id: totrans-272
   prefs: []
   type: TYPE_NORMAL
+  zh: '[*组合模式*](https://wiki.haskell.org/Combinator_pattern)是函数式编程中用于构建结构的模式。它基于两种类型的函数：'
 - en: '*Primitive functions* (short: *primitives*) create atomic pieces.'
+  id: totrans-273
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*原始函数*（简称：*原始*）创建原子部分。'
 - en: '*Combinator functions* (short: *combinators*) combine atomic and/or compound
     pieces to create compound pieces.'
+  id: totrans-274
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*组合函数*（简称：*组合器*）将原子和/或复合部分组合成复合部分。'
 - en: 'When it comes to JavaScript Promises:'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 当涉及到JavaScript的Promise时：
 - en: 'Primitive functions include: `Promise.resolve()`, `Promise.reject()`'
+  id: totrans-276
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 原始函数包括：`Promise.resolve()`、`Promise.reject()`
 - en: 'Combinators include: `Promise.all()`, `Promise.race()`, `Promise.any()`, `Promise.allSettled()`.
     In each of these cases:'
+  id: totrans-277
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 组合器包括：`Promise.all()`、`Promise.race()`、`Promise.any()`、`Promise.allSettled()`。在这些情况下：
 - en: Input is an iterable over zero or more Promises.
+  id: totrans-278
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入是零个或多个Promise的可迭代对象。
 - en: Output is a single Promise.
+  id: totrans-279
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出是一个单独的Promise。
 - en: Next, we’ll take a closer look at the mentioned Promise combinators.
+  id: totrans-280
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来，我们将更详细地研究提到的Promise组合器。
 - en: '[43.5.2 `Promise.all()`](#Promise.all)'
+  id: totrans-281
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.5.2 `Promise.all()`](#Promise.all)'
 - en: 'This is the type signature of `Promise.all()`:'
+  id: totrans-282
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`Promise.all()`的类型签名：
 - en: '[PRE46]'
+  id: totrans-283
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: '`Promise.all()` returns a Promise which is:'
+  id: totrans-284
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.all()`返回一个Promise，它是：'
 - en: Fulfilled if all `promises` are fulfilled.
+  id: totrans-285
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果所有`promises`都得到履行，则满足条件。
 - en: Then its fulfillment value is an Array with the fulfillment values of `promises`.
+  id: totrans-286
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后，其履行值是一个包含`promises`履行值的数组。
 - en: Rejected if at least one Promise is rejected.
+  id: totrans-287
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果至少有一个Promise被拒绝，则拒绝。
 - en: Then its rejection value is the rejection value of that Promise.
+  id: totrans-288
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后，其拒绝值是那个Promise的拒绝值。
 - en: 'This is a quick demo of the output Promise being fulfilled:'
+  id: totrans-289
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个输出Promise被履行的快速演示：
 - en: '[PRE47]'
+  id: totrans-290
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 'The following example demonstrates what happens if at least one of the input
     Promises is rejected:'
+  id: totrans-291
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例演示了如果至少有一个输入Promise被拒绝会发生什么：
 - en: '[PRE48]'
+  id: totrans-292
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: '[Figure 43.2](#fig:combinator-promise-all) illustrates how `Promise.all()`
     works.'
+  id: totrans-293
   prefs: []
   type: TYPE_NORMAL
+  zh: '[图43.2](#fig:combinator-promise-all)说明了`Promise.all()`的工作原理。'
 - en: '![](../Images/304b67c9d82e5f471ff49a4f60ee10e2.png)'
+  id: totrans-294
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/304b67c9d82e5f471ff49a4f60ee10e2.png)'
 - en: 'Figure 43.2: The Promise combinator `Promise.all()`.'
+  id: totrans-295
   prefs: []
   type: TYPE_NORMAL
+  zh: 图43.2：Promise组合器`Promise.all()`。
 - en: '[43.5.2.1 Asynchronous `.map()` via `Promise.all()`](#asynchronous-map-via-promiseall)'
+  id: totrans-296
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.2.1 通过`Promise.all()`实现异步`.map()`](#asynchronous-map-via-promiseall)'
 - en: 'Array transformation methods such as `.map()`, `.filter()`, etc., are made
     for synchronous computations. For example:'
+  id: totrans-297
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组转换方法，如`.map()`、`.filter()`等，是为了同步计算而设计的。例如：
 - en: '[PRE49]'
+  id: totrans-298
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: 'What happens if the callback of `.map()` is a Promise-based function (a function
     that maps normal values to Promises)? Then the result of `.map()` is an Array
     of Promises. Alas, that is not data that normal code can work with. Thankfully,
     we can fix that via `Promise.all()`: It converts an Array of Promises into a Promise
     that is fulfilled with an Array of normal values.'
+  id: totrans-299
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 `.map()` 的回调是一个基于 Promise 的函数（将正常值映射到 Promise 的函数），那么 `.map()` 的结果是一个 Promise
+    数组。不幸的是，这不是普通代码可以处理的数据。幸运的是，我们可以通过 `Promise.all()` 来修复这个问题：它将 Promise 数组转换为解决为正常值数组的
+    Promise。
 - en: '[PRE50]'
+  id: totrans-300
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: '[43.5.2.2 A more realistic `.map()` example](#promise-all-download-text)'
+  id: totrans-301
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.2.2 一个更现实的 `.map()` 示例](#promise-all-download-text)'
 - en: 'Next, we’ll use `.map()` and `Promise.all()` to downlooad text files from the
     web. For that, we need the following tool function:'
+  id: totrans-302
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来，我们将使用 `.map()` 和 `Promise.all()` 从网络下载文本文件。为此，我们需要以下工具函数：
 - en: '[PRE51]'
+  id: totrans-303
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: '`downloadText()` uses the Promise-based [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
     to download a text file as a string:'
+  id: totrans-304
   prefs: []
   type: TYPE_NORMAL
+  zh: '`downloadText()` 使用基于 Promise 的 [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+    将文本文件作为字符串下载：'
 - en: First, it asynchronously retrieves a `response` (line A).
+  id: totrans-305
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 首先，它异步检索一个 `response`（行 A）。
 - en: '`response.ok` (line B) checks if there were errors such as “file not found”.'
+  id: totrans-306
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`response.ok`（行 B）检查是否存在错误，例如“文件未找到”。'
 - en: If there weren’t any, we use `.text()` (line C) to retrieve the content of the
     file as a string.
+  id: totrans-307
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果没有，我们使用 `.text()`（行 C）来检索文件的内容作为字符串。
 - en: 'In the following example, we download two text files:'
+  id: totrans-308
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，我们下载了两个文本文件：
 - en: '[PRE52]'
+  id: totrans-309
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: '[43.5.2.3 A simple implementation of `Promise.all()`](#a-simple-implementation-of-promiseall)'
+  id: totrans-310
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.2.3 `Promise.all()` 的简单实现](#a-simple-implementation-of-promiseall)'
 - en: 'This is a simplified implementation of `Promise.all()` (e.g., it performs no
     safety checks):'
+  id: totrans-311
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `Promise.all()` 的简化实现（例如，它不执行安全检查）：
 - en: '[PRE53]'
+  id: totrans-312
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: The two main locations where the result Promise is settled are line A and line
     B. After one of them settled, the other can’t change the settlement value anymore
     because a Promise can only be settled once.
+  id: totrans-313
   prefs: []
   type: TYPE_NORMAL
+  zh: 结果 Promise 解决的两个主要位置是行 A 和行 B。在其中一个解决之后，另一个不能再改变解决值，因为 Promise 只能解决一次。
 - en: '[43.5.3 `Promise.race()`](#Promise.race)'
+  id: totrans-314
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.5.3 `Promise.race()`](#Promise.race)'
 - en: 'This is the type signature of `Promise.race()`:'
+  id: totrans-315
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `Promise.race()` 的类型签名：
 - en: '[PRE54]'
+  id: totrans-316
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: '`Promise.race()` returns a Promise `q` which is settled as soon as the first
     Promise `p` among `promises` is settled. `q` has the same settlement value as
     `p`.'
+  id: totrans-317
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.race()` 返回一个 Promise `q`，它在 `promises` 中的第一个 Promise `p` 解决时立即解决。`q`
+    具有与 `p` 相同的解决值。'
 - en: In the following demo, the settlement of the fulfilled Promise (line A) happens
     before the settlement of the rejected Promise (line B). Therefore, the result
     is also fulfilled (line C).
+  id: totrans-318
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下面的示例中，已解决的 Promise（行 A）的解决发生在拒绝的 Promise（行 B）的解决之前。因此，结果也是已解决的（行 C）。
 - en: '[PRE55]'
+  id: totrans-319
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: 'In the next demo, the rejection happens first:'
+  id: totrans-320
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，拒绝首先发生：
 - en: '[PRE56]'
+  id: totrans-321
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: Note that the Promise returned by `Promise.race()` is settled as soon as the
     first among its input Promises is settled. That means that the result of `Promise.race([])`
     is never settled.
+  id: totrans-322
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`Promise.race()` 返回的 Promise 在其输入的 Promise 中第一个解决时立即解决。这意味着 `Promise.race([])`
+    的结果永远不会解决。
 - en: '[Figure 43.3](#fig:combinator-promise-race) illustrates how `Promise.race()`
     works.'
+  id: totrans-323
   prefs: []
   type: TYPE_NORMAL
+  zh: '[图 43.3](#fig:combinator-promise-race) 展示了 `Promise.race()` 的工作原理。'
 - en: '![](../Images/3728be0c72a2536ecd233d4e9ef7d204.png)'
+  id: totrans-324
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/3728be0c72a2536ecd233d4e9ef7d204.png)'
 - en: 'Figure 43.3: The Promise combinator `Promise.race()`.'
+  id: totrans-325
   prefs: []
   type: TYPE_NORMAL
+  zh: 图 43.3：Promise 组合器 `Promise.race()`。
 - en: '[43.5.3.1 Using `Promise.race()` to time out a Promise](#timing-out-via-race)'
+  id: totrans-326
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.3.1 使用 `Promise.race()` 来超时一个 Promise](#timing-out-via-race)'
 - en: 'In this section, we are going to use `Promise.race()` to time out Promises.
     We will be using the following helper functions:'
+  id: totrans-327
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们将使用 `Promise.race()` 来超时 Promise。我们将使用以下辅助函数：
 - en: '[PRE57]'
+  id: totrans-328
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: 'This function times out a Promise:'
+  id: totrans-329
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个函数超时一个 Promise：
 - en: '[PRE58]'
+  id: totrans-330
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: '`timeout()` returns a Promise whose settlement is the same as the one of whichever
     Promise settles first among the following two:'
+  id: totrans-331
   prefs: []
   type: TYPE_NORMAL
+  zh: '`timeout()` 返回一个 Promise，其解决与以下两个 Promise 中首先解决的 Promise 相同。'
 - en: The parameter `promise`
+  id: totrans-332
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 参数 `promise`
 - en: A Promise that is rejected after `timeoutInMs` milliseconds
+  id: totrans-333
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在 `timeoutInMs` 毫秒后拒绝的 Promise
 - en: To produce the second Promise, `timeout()` uses the fact that resolving a pending
     Promise with a rejected Promise leads to the former being rejected.
+  id: totrans-334
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了产生第二个 Promise，`timeout()` 使用了这样一个事实：用拒绝的 Promise 解决挂起的 Promise 会导致前者被拒绝。
 - en: Let’s see `timeout()` in action. Here, the input Promise is fulfilled before
     the timeout. Therefore, the output Promise is fulfilled.
+  id: totrans-335
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看 `timeout()` 的实际效果。在这里，输入 Promise 在超时之前被解决。因此，输出 Promise 被解决。
 - en: '[PRE59]'
+  id: totrans-336
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: Here, the timeout happens before the input Promise is fulfilled. Therefore,
     the output Promise is rejected.
+  id: totrans-337
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，超时发生在输入 Promise 被解决之前。因此，输出 Promise 被拒绝。
 - en: '[PRE60]'
+  id: totrans-338
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: 'It is important to understand what “timing out a Promise” really means:'
+  id: totrans-339
   prefs: []
   type: TYPE_NORMAL
+  zh: 理解“Promise超时”的真正含义很重要：
 - en: If the input Promise is settled quickly enough, its settlement is passed on
     to the output Promise.
+  id: totrans-340
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果输入 Promise 足够快地解决，其解决会被传递到输出 Promise。
 - en: If it isn’t settled quickly enough, the output Promise is rejected.
+  id: totrans-341
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果它没有足够快地解决，输出 Promise 会被拒绝。
 - en: That is, timing out only prevents the input Promise from affecting the output
     (since a Promise can only be settled once). But it does not stop the asynchronous
     operation that produced the input Promise.
+  id: totrans-342
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说，超时仅阻止输入 Promise 影响输出（因为 Promise 只能解决一次）。但它不会停止产生输入 Promise 的异步操作。
 - en: '[43.5.3.2 A simple implementation of `Promise.race()`](#a-simple-implementation-of-promiserace)'
+  id: totrans-343
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.3.2 `Promise.race()` 的简单实现](#a-simple-implementation-of-promiserace)'
 - en: 'This is a simplified implementation of `Promise.race()` (e.g., it performs
     no safety checks):'
+  id: totrans-344
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个 `Promise.race()` 的简化实现（例如，它不执行任何安全检查）：
 - en: '[PRE61]'
+  id: totrans-345
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: The result Promise is settled in either line A or line B. Once it is, the settlement
     value can’t be changed anymore.
+  id: totrans-346
   prefs: []
   type: TYPE_NORMAL
+  zh: 结果 Promise 在 A 行或 B 行解决。一旦解决，解决值就不能再更改。
 - en: '[43.5.4 `Promise.any()` ^(ES2021)](#Promise.any)'
+  id: totrans-347
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.5.4 `Promise.any()` (ES2021)](#Promise.any)'
 - en: 'This is the type signature of `Promise.any()`:'
+  id: totrans-348
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `Promise.any()` 的类型签名：
 - en: '[PRE62]'
+  id: totrans-349
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE62]'
 - en: '`Promise.any()` returns a Promise `p`. How it is settled, depends on the parameter
     `promises` (which refers to an iterable over Promises):'
+  id: totrans-350
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.any()` 返回一个 Promise `p`。它如何解决取决于参数 `promises`（它指的是一个 Promise 的可迭代对象）：'
 - en: If and when the first Promise is fulfilled, `p` is resolved with that Promise.
+  id: totrans-351
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果第一个 Promise 被解决，`p` 就会使用那个 Promise 解决。
 - en: If all Promises are rejected, `p` is rejected with an instance of `AggregateError`
     that contains all rejection values.
+  id: totrans-352
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果所有 Promise 都被拒绝，`p` 会使用包含所有拒绝值的 `AggregateError` 实例被拒绝。
 - en: '[Figure 43.4](#fig:combinator-promise-any) illustrates how `Promise.any()`
     works.'
+  id: totrans-353
   prefs: []
   type: TYPE_NORMAL
+  zh: '[图 43.4](#fig:combinator-promise-any) 展示了 `Promise.any()` 的工作原理。'
 - en: '![](../Images/e8a5def71f107f982eeb0cdeee8e7f86.png)'
+  id: totrans-354
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/e8a5def71f107f982eeb0cdeee8e7f86.png)'
 - en: 'Figure 43.4: The Promise combinator `Promise.any()`.'
+  id: totrans-355
   prefs: []
   type: TYPE_NORMAL
+  zh: 图 43.4：Promise 组合器 `Promise.any()`。
 - en: '[43.5.4.1 `AggregateError` ^(ES2021)](#AggregateError)'
+  id: totrans-356
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.4.1 `AggregateError` (ES2021)](#AggregateError)'
 - en: 'This is the type signature of `AggregateError` (a subclass of [`Error`](ch_exception-handling.html#class-Error)):'
+  id: totrans-357
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `AggregateError` 的类型签名（`Error` 类的子类）：
 - en: '[PRE63]'
+  id: totrans-358
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE63]'
 - en: '[43.5.4.2 Two first examples](#two-first-examples)'
+  id: totrans-359
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.4.2 两个初始示例](#two-first-examples)'
 - en: 'This is what happens if one Promise is fulfilled:'
+  id: totrans-360
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个 Promise 被解决会发生这种情况：
 - en: '[PRE64]'
+  id: totrans-361
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE64]'
 - en: 'This is what happens if all Promises are rejected:'
+  id: totrans-362
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果所有 Promise 都被拒绝会发生这种情况：
 - en: '[PRE65]'
+  id: totrans-363
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE65]'
 - en: '[43.5.4.3 `Promise.any()` vs. `Promise.all()`](#promiseany-vs-promiseall)'
+  id: totrans-364
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.4.3 `Promise.any()` 与 `Promise.all()`](#promiseany-vs-promiseall)'
 - en: 'There are two ways in which `Promise.any()` and `Promise.all()` can be compared:'
+  id: totrans-365
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.any()` 和 `Promise.all()` 可以从两种方式进行比较：'
 - en: 'They are inverses of each other:'
+  id: totrans-366
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们是彼此的逆：
 - en: '`Promise.all()`: First input rejection rejects the result Promise or its fulfillment
     value is an Array with input fulfillment values.'
+  id: totrans-367
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.all()`：第一个输入拒绝会拒绝结果 Promise 或其解决值是一个包含输入解决值的数组。'
 - en: '`Promise.any()`: First input fulfillment fulfills the result Promise or its
     rejection value is an Array with input rejection values (inside an error object).'
+  id: totrans-368
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.any()`：第一个输入解决会解决结果 Promise 或其拒绝值是一个包含输入拒绝值的数组（在错误对象内部）。'
 - en: 'They have different focuses:'
+  id: totrans-369
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们有不同的焦点：
 - en: '`Promise.all()` is interested in *all* fulfillments. The opposite case (at
     least one rejection) leads to a rejection.'
+  id: totrans-370
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.all()` 关注的是 *所有* 解决。相反的情况（至少一个拒绝）会导致拒绝。'
 - en: '`Promise.any()` is interested in the first fulfillment. The opposite case (only
     rejections) leads to a rejection.'
+  id: totrans-371
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.any()` 关注第一个解决。相反的情况（只有拒绝）会导致拒绝。'
 - en: '[43.5.4.4 `Promise.any()` vs. `Promise.race()`](#promiseany-vs-promiserace)'
+  id: totrans-372
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[43.5.4.4 `Promise.any()` 与 `Promise.race()`](#promiseany-vs-promiserace)'
 - en: '`Promise.any()` and `Promise.race()` are also related, but interested in different
     things:'
+  id: totrans-373
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.any()` 和 `Promise.race()` 也有关联，但关注点不同：'
 - en: '`Promise.race()` is interested in settlements. The Promise which is settled
     first, “wins”. In other words: We want to know about the asynchronous computation
     that terminates first.'
+  id: totrans-374
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '`Promise.any()` is interested in fulfillments. The Promise which is fulfilled
     first, “wins”. In other words: We want to know about the asynchronous computation
     that succeeds first.'
+  id: totrans-375
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: The main – relatively rare – use case for `.race()` is timing out Promises.
     The use cases for `.any()` are broader. We’ll look at them next.
+  id: totrans-376
   prefs: []
   type: TYPE_NORMAL
 - en: '[43.5.4.5 Use cases for `Promise.any()`](#use-cases-for-promiseany)'
+  id: totrans-377
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: We use `Promise.any()` if we have multiple asynchronous computations and we
     are only interested in the first successful one. In a way, we let the computations
     compete with each other and use whichever one is fastest.
+  id: totrans-378
   prefs: []
   type: TYPE_NORMAL
 - en: 'The following code demonstrates what that looks like when downloading resources:'
+  id: totrans-379
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE66]'
+  id: totrans-380
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE66]'
 - en: 'The same pattern enables us to use whichever module downloads more quickly:'
+  id: totrans-381
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE67]'
+  id: totrans-382
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE67]'
 - en: 'For comparison, this is the code we’d use if the secondary server is only a
     fallback – in case the primary server fails:'
+  id: totrans-383
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE68]'
+  id: totrans-384
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE68]'
 - en: '[43.5.4.6 How would we implement `Promise.any()`?](#how-would-we-implement-promiseany)'
+  id: totrans-385
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: A simple implementation of `Promise.any()` is basically a mirror version of
     the implementation of `Promise.all()`.
+  id: totrans-386
   prefs: []
   type: TYPE_NORMAL
 - en: '[43.5.5 `Promise.allSettled()` ^(ES2020)](#Promise.allSettled)'
+  id: totrans-387
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: This time, the type signatures are a little more complicated. Feel free to skip
     ahead to the first demo, which should be easier to understand.
+  id: totrans-388
   prefs: []
   type: TYPE_NORMAL
 - en: 'This is the type signature of `Promise.allSettled()`:'
+  id: totrans-389
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE69]'
+  id: totrans-390
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE69]'
 - en: 'It returns a Promise for an Array whose elements have the following type signature:'
+  id: totrans-391
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE70]'
+  id: totrans-392
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE70]'
 - en: '`Promise.allSettled()` returns a Promise `out`. Once all `promises` are settled,
     `out` is fulfilled with an Array. Each element `e` of that Array corresponds to
     one Promise `p` of `promises`:'
+  id: totrans-393
   prefs: []
   type: TYPE_NORMAL
 - en: If `p` is fulfilled with the fulfillment value `v`, then `e` is
+  id: totrans-394
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE71]'
+  id: totrans-395
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE71]'
 - en: If `p` is rejected with the rejection value `r`, then `e` is
+  id: totrans-396
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE72]'
+  id: totrans-397
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE72]'
 - en: Unless there is an error when iterating over `promises`, the output Promise
     `out` is never rejected.
+  id: totrans-398
   prefs: []
   type: TYPE_NORMAL
 - en: '[Figure 43.5](#fig:combinator-promise-all-settled) illustrates how `Promise.allSettled()`
     works.'
+  id: totrans-399
   prefs: []
   type: TYPE_NORMAL
 - en: '![](../Images/3bb559e958e51edd426fc59d90d5a465.png)'
+  id: totrans-400
   prefs: []
   type: TYPE_IMG
 - en: 'Figure 43.5: The Promise combinator `Promise.allSettled()`.'
+  id: totrans-401
   prefs: []
   type: TYPE_NORMAL
 - en: '[43.5.5.1 A first demo of `Promise.allSettled()`](#a-first-demo-of-promiseallsettled)'
+  id: totrans-402
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'This is a quick first demo of how `Promise.allSettled()` works:'
+  id: totrans-403
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE73]'
+  id: totrans-404
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE73]'
 - en: '[43.5.5.2 A longer example of `Promise.allSettled()`](#a-longer-example-of-promiseallsettled)'
+  id: totrans-405
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
@@ -1660,226 +2430,333 @@
     multiple text files whose URLs are stored in an Array. However, this time, we
     don’t want to stop when there is an error, we want to keep going. `Promise.allSettled()`
     allows us to do that:'
+  id: totrans-406
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE74]'
+  id: totrans-407
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE74]'
 - en: '[43.5.5.3 A simple implementation of `Promise.allSettled()`](#a-simple-implementation-of-promiseallsettled)'
+  id: totrans-408
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
 - en: 'This is a simplified implementation of `Promise.allSettled()` (e.g., it performs
     no safety checks):'
+  id: totrans-409
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `Promise.allSettled()` 的简化实现（例如，它不执行任何安全检查）：
 - en: '[PRE75]'
+  id: totrans-410
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE75]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercises:
     Promise combinator methods**'
+  id: totrans-411
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：Promise 组合方法**'
 - en: 'Getting the highest fulfillment value of an iterable over Promises: `exercises/promises/get-highest-fulfillment_test.mjs`'
+  id: totrans-412
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 获取 Promise 可迭代对象中的最高满足值：`exercises/promises/get-highest-fulfillment_test.mjs`
 - en: 'Implementing `Promise.anySettled()`: `exercises/promises/promise-any-settled_test.mjs`'
+  id: totrans-413
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 实现 `Promise.anySettled()`：`exercises/promises/promise-any-settled_test.mjs`
 - en: '[43.5.6 Short-circuiting (advanced)](#shortcircuiting-advanced)'
+  id: totrans-414
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.5.6 短路（高级）](#shortcircuiting-advanced)'
 - en: 'For a Promise combinator, *short-circuiting* means that the output Promise
     is settled early – before all input Promises are settled. The following combinators
     short-circuit:'
+  id: totrans-415
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于 Promise 组合器，*短路*意味着输出 Promise 提前解决——在所有输入 Promise 解决之前。以下组合器会短路：
 - en: '`Promise.all()`: The output Promise is rejected as soon as one input Promise
     is rejected.'
+  id: totrans-416
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.all()`：只要有一个输入 Promise 被拒绝，输出 Promise 就会被拒绝。'
 - en: '`Promise.race()`: The output Promise is settled as soon as one input Promise
     is settled.'
+  id: totrans-417
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.race()`：只要有一个输入 Promise 被解决，输出 Promise 就会被解决。'
 - en: '`Promise.any()`: The output Promise is fulfilled as soon as one input Promise
     is fulfilled.'
+  id: totrans-418
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.any()`：只要有一个输入 Promise 被满足，输出 Promise 就会被满足。'
 - en: Once again, settling early does not mean that the operations behind the ignored
     Promises are stopped. It just means that their settlements are ignored.
+  id: totrans-419
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次强调，提前解决并不意味着忽略的 Promises 后面的操作停止。它只是意味着它们的解决被忽略。
 - en: '[43.6 Concurrency and `Promise.all()` (advanced)](#concurrency-and-promiseall-advanced)'
+  id: totrans-420
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[43.6 并发和 `Promise.all()`（高级）](#concurrency-and-promiseall-advanced)'
 - en: '[43.6.1 Sequential execution vs. concurrent execution](#sequential-execution-vs-concurrent-execution)'
+  id: totrans-421
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.6.1 顺序执行与并发执行](#sequential-execution-vs-concurrent-execution)'
 - en: 'Consider the following code:'
+  id: totrans-422
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下代码：
 - en: '[PRE76]'
+  id: totrans-423
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE76]'
 - en: 'Using `.then()` in this manner executes Promise-based functions *sequentially*:
     only after the result of `asyncFunc1()` is settled will `asyncFunc2()` be executed.'
+  id: totrans-424
   prefs: []
   type: TYPE_NORMAL
+  zh: 以这种方式使用 `.then()` 会顺序执行基于 Promise 的函数：只有当 `asyncFunc1()` 的结果解决后，`asyncFunc2()`
+    才会执行。
 - en: '`Promise.all()` helps execute Promise-based functions more concurrently:'
+  id: totrans-425
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.all()` 有助于更并发地执行基于 Promise 的函数：'
 - en: '[PRE77]'
+  id: totrans-426
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE77]'
 - en: '[43.6.2 Concurrency tip: focus on when operations start](#focus-on-async-start)'
+  id: totrans-427
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.6.2 并发技巧：关注操作开始的时间](#focus-on-async-start)'
 - en: 'Tip for determining how “concurrent” asynchronous code is: Focus on when asynchronous
     operations start, not on how their Promises are handled.'
+  id: totrans-428
   prefs: []
   type: TYPE_NORMAL
+  zh: 确定异步代码“并发”程度的技巧：关注异步操作开始的时间，而不是它们 Promise 的处理方式。
 - en: For example, each of the following functions executes `asyncFunc1()` and `asyncFunc2()`
     concurrently because they are started at nearly the same time.
+  id: totrans-429
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，以下每个函数都是并发执行 `asyncFunc1()` 和 `asyncFunc2()`，因为它们几乎同时开始。
 - en: '[PRE78]'
+  id: totrans-430
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE78]'
 - en: 'On the other hand, both of the following functions execute `asyncFunc1()` and
     `asyncFunc2()` sequentially: `asyncFunc2()` is only invoked after the Promise
     of `asyncFunc1()` is fulfilled.'
+  id: totrans-431
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，以下两个函数都是顺序执行 `asyncFunc1()` 和 `asyncFunc2()`：`asyncFunc2()` 只有在 `asyncFunc1()`
+    的 Promise 被满足后才会被调用。
 - en: '[PRE79]'
+  id: totrans-432
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE79]'
 - en: '[43.6.3 `Promise.all()` is fork-join](#promise-all-is-fork-join)'
+  id: totrans-433
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.6.3 `Promise.all()` 是分叉-合并](#promise-all-is-fork-join)'
 - en: '`Promise.all()` is loosely related to the concurrency pattern “fork join”.
     Let’s revisit an example that we have encountered [previously](#promise-all-download-text):'
+  id: totrans-434
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Promise.all()` 与并发模式“分叉-合并”松相关。让我们回顾一下我们之前遇到的例子 [之前](#promise-all-download-text)：'
 - en: '[PRE80]'
+  id: totrans-435
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE80]'
 - en: 'Fork: In line A, we are forking two asynchronous computations and executing
     them concurrently.'
+  id: totrans-436
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 分叉：在行 A 中，我们正在分叉两个异步计算并并发执行它们。
 - en: 'Join: In line B, we are joining these computations into a single “thread” which
     is started once all of them are done.'
+  id: totrans-437
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 合并：在行 B 中，我们将这些计算合并成一个“线程”，一旦它们都完成，这个线程就会启动。
 - en: '[43.7 Tips for chaining Promises](#tips-for-chaining-promises)'
+  id: totrans-438
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[43.7 链式 Promise 的技巧](#tips-for-chaining-promises)'
 - en: This section gives tips for chaining Promises.
+  id: totrans-439
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节提供了链式 Promise 的技巧。
 - en: '[43.7.1 Chaining mistake: losing the tail](#chaining-mistake-losing-thetail)'
+  id: totrans-440
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.7.1 链式错误：丢失尾部](#chaining-mistake-losing-thetail)'
 - en: 'Problem:'
+  id: totrans-441
   prefs: []
   type: TYPE_NORMAL
+  zh: 问题：
 - en: '[PRE81]'
+  id: totrans-442
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE81]'
 - en: 'Computation starts with the Promise returned by `asyncFunc()`. But afterward,
     computation continues and another Promise is created via `.then()`. `foo()` returns
     the former Promise, but should return the latter. This is how to fix it:'
+  id: totrans-443
   prefs: []
   type: TYPE_NORMAL
+  zh: 计算从 `asyncFunc()` 返回的 Promise 开始。但之后，计算继续，并通过 `.then()` 创建另一个 Promise。`foo()`
+    返回前一个 Promise，但应该返回后一个。这是如何修复它的：
 - en: '[PRE82]'
+  id: totrans-444
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE82]'
 - en: '[43.7.2 Chaining mistake: nesting](#chaining-mistake-nesting)'
+  id: totrans-445
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Problem:'
+  id: totrans-446
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE83]'
+  id: totrans-447
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE83]'
 - en: 'The `.then()` in line A is nested. A flat structure would be better:'
+  id: totrans-448
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE84]'
+  id: totrans-449
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE84]'
 - en: '[43.7.3 Chaining mistake: more nesting than necessary](#chaining-mistake-more-nesting-than-necessary)'
+  id: totrans-450
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'This is another example of avoidable nesting:'
+  id: totrans-451
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE85]'
+  id: totrans-452
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE85]'
 - en: 'We can once again get a flat structure:'
+  id: totrans-453
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE86]'
+  id: totrans-454
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE86]'
 - en: '[43.7.4 Not all nesting is bad](#not-all-nesting-is-bad)'
+  id: totrans-455
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'In the following code, we actually benefit from nesting:'
+  id: totrans-456
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE87]'
+  id: totrans-457
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE87]'
 - en: We are receiving an asynchronous result in line A. In line B, we are nesting
     so that we have access to variable `connection` inside the callback and in line
     C.
+  id: totrans-458
   prefs: []
   type: TYPE_NORMAL
 - en: '[43.7.5 Chaining mistake: creating Promises instead of chaining](#chaining-mistake-creating-promises-instead-of-chaining)'
+  id: totrans-459
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'Problem:'
+  id: totrans-460
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE88]'
+  id: totrans-461
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE88]'
 - en: 'In line A, we are creating a Promise to deliver the result of `db.insert()`.
     That is unnecessarily verbose and can be simplified:'
+  id: totrans-462
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE89]'
+  id: totrans-463
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE89]'
 - en: The key idea is that we don’t need to create a Promise; we can return the result
     of the `.then()` call. An additional benefit is that we don’t need to catch and
     re-reject the failure of `db.insert()`. We simply pass its rejection on to the
     caller of `.insertInto()`.
+  id: totrans-464
   prefs: []
   type: TYPE_NORMAL
 - en: '[43.8 Thenables (Promise-like objects) (advanced)](#thenables-promiselike-objects-advanced)'
+  id: totrans-465
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
@@ -1889,420 +2766,599 @@
     objects that is compatible with most of those libraries. As often as possible,
     the API does not require objects to be Promises – it’s enough if they are Promise-like.
     If necessary, the API transparently converts Promise-like objects to API Promises.
+  id: totrans-466
   prefs: []
   type: TYPE_NORMAL
 - en: 'So what minimal interface describes the essence of Promises? It only needs
     a method `.then()` that lets us register callbacks:'
+  id: totrans-467
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE90]'
+  id: totrans-468
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE90]'
 - en: 'This is a simplified version of TypeScript’s type for Promise-like objects:'
+  id: totrans-469
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE91]'
+  id: totrans-470
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE91]'
 - en: 'This interface is sufficient because `.catch()` is actually just a convenient
     way of invoking `.then()` (whose second parameter we have ignored previously)
     – the following two invocations are equivalent:'
+  id: totrans-471
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE92]'
+  id: totrans-472
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE92]'
 - en: Because Promise-like objects only have a method `.then()`, they are also called
     *thenables*.
+  id: totrans-473
   prefs: []
   type: TYPE_NORMAL
 - en: '[43.8.1 Example: a fulfilled thenable](#example-a-fulfilled-thenable)'
+  id: totrans-474
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'The following object is a fulfilled thenable:'
+  id: totrans-475
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE93]'
+  id: totrans-476
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE93]'
 - en: 'If we pass the thenable to `Promise.resolve()`, it converts it to a Promise:'
+  id: totrans-477
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE94]'
+  id: totrans-478
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE94]'
 - en: 'Returning the thenable from a callback is equivalent to returning a Promise:'
+  id: totrans-479
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE95]'
+  id: totrans-480
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE95]'
 - en: 'We can also resolve a new Promise with a thenable:'
+  id: totrans-481
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE96]'
+  id: totrans-482
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE96]'
 - en: '[43.8.2 Example: a rejected thenable](#example-a-rejected-thenable)'
+  id: totrans-483
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: 'The following code demonstrates a rejected thenable:'
+  id: totrans-484
   prefs: []
   type: TYPE_NORMAL
 - en: '[PRE97]'
+  id: totrans-485
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE97]'
 - en: '[43.9 Quick reference: `Promise`](#quickref-Promise)'
+  id: totrans-486
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
 - en: '[43.9.1 `new Promise()`](#new-promise)'
+  id: totrans-487
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '`new Promise(executor)` ES6'
+  id: totrans-488
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
 - en: '[PRE98]'
+  id: totrans-489
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE98]'
 - en: 'This constructor creates a new Promise. It passes functions to its callback
     with which that Promise can be resolved or rejected:'
+  id: totrans-490
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
 - en: '[PRE99]'
+  id: totrans-491
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE99]'
 - en: '[43.9.2 `Promise.*`: creating Promises](#promise-creating-promises)'
+  id: totrans-492
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
 - en: '`Promise.withResolvers()` ES2024'
+  id: totrans-493
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.withResolvers()` ES2024'
 - en: '[PRE100]'
+  id: totrans-494
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE100]'
 - en: This method creates a Promise and returns an object that contains that Promise
     plus functions for resolving or rejecting it.
+  id: totrans-495
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法创建一个Promise，并返回一个包含该Promise以及用于解决或拒绝它的函数的对象。
 - en: '`Promise.resolve(value?)` ES6'
+  id: totrans-496
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.resolve(value?)` ES6'
 - en: 'Creates a Promise, resolves it with `value` and returns it:'
+  id: totrans-497
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个Promise，用`value`解决它并返回它：
 - en: '[PRE101]'
+  id: totrans-498
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE101]'
 - en: '`Promise.reject(reason?)` ES6'
+  id: totrans-499
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.reject(reason?)` ES6'
 - en: 'Creates a Promise, rejects it with `value` and returns it:'
+  id: totrans-500
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个Promise，用`value`拒绝它并返回它：
 - en: '[PRE102]'
+  id: totrans-501
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE102]'
 - en: '[43.9.3 `Promise.*`: miscellaneous functionality](#promise-miscellaneous-functionality)'
+  id: totrans-502
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.9.3 `Promise.*`: 附加功能](#promise-miscellaneous-functionality)'
 - en: '`Promise.try(callback, ...args)` ES2025'
+  id: totrans-503
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.try(callback, ...args)` ES2025'
 - en: 'Creates a Promise by treating `callback` as if it were a `.then()` callback:'
+  id: totrans-504
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 通过将`callback`视为`.then()`回调来创建Promise：
 - en: It invokes `callback` with zero or more arguments.
+  id: totrans-505
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它使用零个或多个参数调用`callback`。
 - en: If `callback` throws an exception, `Promise.try()` turns it into a rejected
     Promise and returns it.
+  id: totrans-506
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`callback`抛出异常，`Promise.try()`将其转换为拒绝的Promise并返回它。
 - en: If `callback` returns a value, `Promise.try()` resolves it to a Promise and
     returns it.
+  id: totrans-507
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`callback`返回一个值，`Promise.try()`将其解决为Promise并返回它。
 - en: 'The use case for this method is starting a Promise chain with code that is
     not purely asynchronous – e.g.:'
+  id: totrans-508
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法的用例是使用非纯异步代码开始Promise链 - 例如：
 - en: '[PRE103]'
+  id: totrans-509
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE103]'
 - en: '[43.9.4 `Promise.*`: Promise combinators](#promise-promise-combinators)'
+  id: totrans-510
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.9.4 `Promise.*`: Promise组合器](#promise-promise-combinators)'
 - en: 'Glossary:'
+  id: totrans-511
   prefs: []
   type: TYPE_NORMAL
+  zh: 术语表：
 - en: '*Short-circuiting*: In some cases, the output Promise can be settled early
     (before every input Promise is settled). That is called short-circuiting.'
+  id: totrans-512
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*短路*：在某些情况下，输出Promise可以提前解决（在所有输入Promise解决之前）。这被称为短路。'
 - en: 'These are the Promise combinators:'
+  id: totrans-513
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是Promise组合器：
 - en: '`Promise.all(promises)` ES6'
+  id: totrans-514
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.all(promises)` ES6'
 - en: '[PRE104]'
+  id: totrans-515
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE104]'
 - en: '**Fulfillment** of `P`: if all input Promises are fulfilled.'
+  id: totrans-516
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**P的解决**：如果所有输入Promise都已解决。'
 - en: 'Value: Array with the fulfillment values of the input Promises'
+  id: totrans-517
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值：包含输入Promise的解决值的数组
 - en: '**Rejection** of `P`: if one input Promise is rejected.'
+  id: totrans-518
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**P的拒绝**：如果有一个输入Promise被拒绝。'
 - en: 'Value: rejection value of the input Promise'
+  id: totrans-519
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值：输入Promise的拒绝值
 - en: 'Short-circuits: yes'
+  id: totrans-520
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 短路：是
 - en: 'Use case: processing Arrays with Promises (rejections terminate processing)'
+  id: totrans-521
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 用例：使用Promise处理数组（拒绝会终止处理）
 - en: '`Promise.race(promises)` ES6'
+  id: totrans-522
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.race(promises)` ES6'
 - en: '[PRE105]'
+  id: totrans-523
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE105]'
 - en: '**Settlement** of `P`: if the first input Promise is settled.'
+  id: totrans-524
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**P的解决**：如果第一个输入Promise已解决。'
 - en: 'Value: settlement value of the input Promise'
+  id: totrans-525
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值：输入Promise的解决值
 - en: 'Short-circuits: yes'
+  id: totrans-526
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 短路：是
 - en: 'Use case: reacting to the first settlement among multiple Promises'
+  id: totrans-527
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 用例：对多个Promise中的第一个解决做出反应
 - en: '`Promise.any(promises)` ES2021'
+  id: totrans-528
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.any(promises)` ES2021'
 - en: '[PRE106]'
+  id: totrans-529
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE106]'
 - en: '**Fulfillment** of `P`: if one input Promise is fulfilled.'
+  id: totrans-530
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**P的解决**：如果有一个输入Promise被解决。'
 - en: 'Value: fulfillment value of the input Promise'
+  id: totrans-531
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值：输入Promise的解决值
 - en: '**Rejection** of `P`: if all input Promises are rejected.'
+  id: totrans-532
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**P的拒绝**：如果所有输入Promise都被拒绝。'
 - en: 'Value: `AggregateError` that contains the rejection values of the input Promises.'
+  id: totrans-533
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值：包含输入Promise拒绝值的`AggregateError`。
 - en: 'Short-circuits: yes'
+  id: totrans-534
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 短路：是
 - en: 'Use case: Among several asynchronous computations, we are only interested in
     the first successful one. That is, we are trying several approaches and the fastest
     one should win.'
+  id: totrans-535
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 用例：在多个异步计算中，我们只对第一个成功的结果感兴趣。也就是说，我们尝试了多种方法，最快的一个应该获胜。
 - en: 'This is the type signature of `AggregateError` (a few members were omitted):'
+  id: totrans-536
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 这是`AggregateError`的类型签名（省略了一些成员）：
 - en: '[PRE107]'
+  id: totrans-537
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE107]'
 - en: '`Promise.allSettled(promises)` ES2020'
+  id: totrans-538
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.allSettled(promises)` ES2020'
 - en: '[PRE108]'
+  id: totrans-539
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE108]'
 - en: '**Fulfillment** of `P`: if all input Promise are settled.'
+  id: totrans-540
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**P的解决**：如果所有输入Promise都已解决。'
 - en: 'Value: Array with one *settlement object* for each input Promise. A settlement
     object contains the kind of settlement and the settlement value.'
+  id: totrans-541
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值：包含每个输入Promise的一个*解决对象*的数组。解决对象包含解决类型和解决值。
 - en: '**Rejection** of `P`: if there is an error when iterating over the input Promises.'
+  id: totrans-542
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**P的拒绝**：如果在迭代输入Promise时发生错误。'
 - en: 'Short-circuits: no'
+  id: totrans-543
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 短路：否
 - en: 'Use case: processing Arrays with Promises (rejections don’t terminate processing)'
+  id: totrans-544
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 用例：使用Promise处理数组（拒绝不会终止处理）
 - en: 'This is the type signature of `SettlementObject`:'
+  id: totrans-545
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 这是`SettlementObject`的类型签名：
 - en: '[PRE109]'
+  id: totrans-546
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE109]'
 - en: '[43.9.5 `Promise.prototype.*`](#promiseprototype)'
+  id: totrans-547
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[43.9.5 `Promise.prototype.*`](#promiseprototype)'
 - en: '`Promise.prototype.then(onFulfilled?, onRejected?)` ES6'
+  id: totrans-548
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.prototype.then(onFulfilled?, onRejected?)` ES6'
 - en: '[PRE110]'
+  id: totrans-549
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE110]'
 - en: Registers callbacks for the fulfillment value and/or the rejection value of
     a Promise. Usually, only the first parameter `onFulfilled` is used. `.catch()`
     provides a more self-descriptive alternative to using the second parameter `onRejected`.
+  id: totrans-550
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 为 Promise 的实现值和/或拒绝值注册回调。通常，只使用第一个参数 `onFulfilled`。`.catch()` 提供了一个更具描述性的替代方案，用于使用第二个参数
+    `onRejected`。
 - en: '[PRE111]'
+  id: totrans-551
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE111]'
 - en: '`Promise.prototype.catch(onRejected)` ES6'
+  id: totrans-552
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.prototype.catch(onRejected)` ES6'
 - en: '[PRE112]'
+  id: totrans-553
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE112]'
 - en: 'Registers a callback for the rejection value of a Promise. A more self-descriptive
     alternative to using `.then()` for that purpose – the following two invocations
     are equivalent:'
+  id: totrans-554
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 为 Promise 的拒绝值注册回调。这是使用 `.then()` 实现该目的的一个更具描述性的替代方案——以下两种调用是等效的：
 - en: '[PRE113]'
+  id: totrans-555
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE113]'
 - en: 'Example:'
+  id: totrans-556
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 示例：
 - en: '[PRE114]'
+  id: totrans-557
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE114]'
 - en: '`Promise.prototype.finally(onFinally)` ES2018'
+  id: totrans-558
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Promise.prototype.finally(onFinally)` ES2018'
 - en: '[PRE115]'
+  id: totrans-559
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE115]'
 - en: 'Often used as follows:'
+  id: totrans-560
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 通常如下使用：
 - en: '[PRE116]'
+  id: totrans-561
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE116]'
 - en: The `.finally()` callback is always executed – independently of `somePromise`
     and the values returned by `.then()` and/or `.catch()`. The callback only has
     an effect if it returns a rejected Promise or throws an exception. Then the final
     Promise is rejected with the rejection value or the exception.
+  id: totrans-562
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`.finally()` 回调始终会被执行——无论 `somePromise` 的结果如何，以及 `.then()` 和/或 `.catch()` 返回的值。回调只有在其返回一个拒绝的
+    Promise 或抛出异常时才会产生效果。然后最终的 Promise 会因为拒绝值或异常而被拒绝。'

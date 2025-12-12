@@ -1,1654 +1,2479 @@
 - en: 32 Synchronous iteration ES6
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 32 同步迭代 ES6
 - en: 原文：[https://exploringjs.com/js/book/ch_sync-iteration.html](https://exploringjs.com/js/book/ch_sync-iteration.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_sync-iteration.html](https://exploringjs.com/js/book/ch_sync-iteration.html)
 - en: '[32.1 What is synchronous iteration about?](#motivation-sync-iteration)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.1 同步迭代是什么？](#motivation-sync-iteration)'
 - en: '[32.2 Core iteration roles: iterables and iterators](#iterable-iterator-iteratorresult)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.2 核心迭代角色：可迭代对象和迭代器](#iterable-iterator-iteratorresult)'
 - en: '[32.3 Iterating over data](#iterating-over-data)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3 遍历数据](#iterating-over-data)'
 - en: '[32.3.1 Manually iterating over data](#manually-iterating-over-data)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.1 手动遍历数据](#manually-iterating-over-data)'
 - en: '[32.3.2 Using `while` to iterate manually](#using-while-to-iterate-manually)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.2 使用 `while` 手动迭代](#using-while-to-iterate-manually)'
 - en: '[32.3.3 Retrieving an iterator via `Iterator.from()` ^(ES2024)](#retrieving-an-iterator-via-iteratorfrom-es2024)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.3 通过 `Iterator.from()` 获取迭代器 (ES2024)](#retrieving-an-iterator-via-iteratorfrom-es2024)'
 - en: '[32.3.4 Iterating via iteration-based language constructs](#iterating-via-iterationbased-language-constructs)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.4 通过基于迭代的语言结构进行迭代](#iterating-via-iterationbased-language-constructs)'
 - en: '[32.3.5 Converting iterables to Arrays: `[...i]` and `Array.from(i)`](#converting-iterables-to-arrays-i-and-arrayfromi)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.5 将可迭代对象转换为数组：`[...i]` 和 `Array.from(i)`](#converting-iterables-to-arrays-i-and-arrayfromi)'
 - en: '[32.4 Processing iterables via generators](#processing-iterables-via-generators)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.4 通过生成器处理可迭代对象](#processing-iterables-via-generators)'
 - en: '[32.5 The inheritance of the iteration API (advanced)](#the-inheritance-of-the-iteration-api-advanced)'
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.5 迭代 API 的继承（高级）](#the-inheritance-of-the-iteration-api-advanced)'
 - en: '[32.5.1 Array iterators](#array-iterators)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.5.1 数组迭代器](#array-iterators)'
 - en: '[32.5.2 Generator objects](#generator-objects)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.5.2 生成器对象](#generator-objects)'
 - en: '[32.6 Iterable iterators](#iterable-iterators)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.6 可迭代迭代器](#iterable-iterators)'
 - en: '[32.6.1 Why are the built-in iterators iterable?](#why-are-the-builtin-iterators-iterable)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.6.1 为什么内置迭代器是可迭代的？](#why-are-the-builtin-iterators-iterable)'
 - en: '[32.6.2 An iterator returns itself when asked for an iterator](#an-iterator-returns-itself-when-asked-for-an-iterator)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.6.2 当请求迭代器时，迭代器返回自身](#an-iterator-returns-itself-when-asked-for-an-iterator)'
 - en: '[32.6.3 Iteration quirk: two kinds of iterables](#one-time-iterable-vs-many-times-iterable)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.6.3 迭代怪癖：两种可迭代对象](#one-time-iterable-vs-many-times-iterable)'
 - en: '[32.7 Class `Iterator` and iterator helper methods ^(ES2025)](#class-iterator)'
+  id: totrans-18
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.7 `Iterator` 类和迭代器辅助方法 (ES2025)](#class-iterator)'
 - en: '[32.7.1 `Iterator.prototype.*` methods](#iteratorprototype-methods)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.7.1 `Iterator.prototype.*` 方法](#iteratorprototype-methods)'
 - en: '[32.7.2 The benefits of iterator helper methods](#benefits-of-iterator-helper-methods)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.7.2 迭代器辅助方法的好处](#benefits-of-iterator-helper-methods)'
 - en: '[32.7.3 `Iterator.from()`: creating API iterators](#Iterator.from)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.7.3 `Iterator.from()`：创建 API 迭代器](#Iterator.from)'
 - en: '[32.7.4 Iterator methods change how we use iteration](#iterator-methods-change-how-we-use-iteration)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.7.4 迭代器方法改变我们使用迭代的方式](#iterator-methods-change-how-we-use-iteration)'
 - en: '[32.7.5 Upgrading a legacy iterable to the `Iterator` API](#upgrading-a-legacy-iterable-to-the-iterator-api)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.7.5 将遗留的可迭代对象升级到 `Iterator` API](#upgrading-a-legacy-iterable-to-the-iterator-api)'
 - en: '[32.8 Grouping iterables ^(ES2024)](#grouping-sync-iterables)'
+  id: totrans-24
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.8 分组可迭代对象 (ES2024)](#grouping-sync-iterables)'
 - en: '[32.8.1 Choosing between `Map.groupBy()` and `Object.groupBy()`](#choosing-between-mapgroupby-and-objectgroupby)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.8.1 在 `Map.groupBy()` 和 `Object.groupBy()` 之间选择](#choosing-between-mapgroupby-and-objectgroupby)'
 - en: '[32.8.2 Example: handling cases](#example-handling-cases)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.8.2 示例：处理情况](#example-handling-cases)'
 - en: '[32.8.3 Example: grouping by property value](#example-grouping-by-property-value)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.8.3 示例：按属性值分组](#example-grouping-by-property-value)'
 - en: '[32.9 Quick reference: synchronous iteration](#quickref-sync-iteration)'
+  id: totrans-28
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.9 快速参考：同步迭代](#quickref-sync-iteration)'
 - en: '[32.9.1 Synchronous iteration: data producers](#synchronous-iteration-data-producers)'
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.9.1 同步迭代：数据生产者](#synchronous-iteration-data-producers)'
 - en: '[32.9.2 Synchronous iteration: data consumers](#synchronous-iteration-data-consumers)'
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.9.2 同步迭代：数据消费者](#synchronous-iteration-data-consumers)'
 - en: '[32.10 Quick reference: class `Iterator` ^(ES2025)](#quickref-iterator)'
+  id: totrans-31
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.10 快速参考：类 `Iterator` (ES2025)](#quickref-iterator)'
 - en: '[32.10.1 Creating iterators](#creating-iterators)'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.10.1 创建迭代器](#creating-iterators)'
 - en: '[32.10.2 `Iterator.*`](#iterator)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.10.2 `Iterator.*`](#iterator)'
 - en: '[32.10.3 `Iterator.prototype.*`: methods that pass indices to callbacks](#iteratorprototype-methods-that-pass-indices-to-callbacks)'
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.10.3 `Iterator.prototype.*`：将索引传递给回调的方法](#iteratorprototype-methods-that-pass-indices-to-callbacks)'
 - en: '[32.10.4 `Iterator.prototype.*`: methods that return iterators](#iteratorprototype-methods-that-return-iterators)'
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.10.4 `Iterator.prototype.*`：返回迭代器的方法](#iteratorprototype-methods-that-return-iterators)'
 - en: '[32.10.5 `Iterator.prototype.*`: methods that return booleans](#iteratorprototype-methods-that-return-booleans)'
+  id: totrans-36
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.10.5 `Iterator.prototype.*`: 返回布尔值的方法](#iteratorprototype-methods-that-return-booleans)'
 - en: '[32.10.6 `Iterator.prototype.*`: methods that return other kinds of values](#iteratorprototype-methods-that-return-other-kinds-of-values)'
+  id: totrans-37
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.10.6 `Iterator.prototype.*`: 返回其他类型值的方法](#iteratorprototype-methods-that-return-other-kinds-of-values)'
 - en: '[32.10.7 `Iterator.prototype.*`: other methods](#iteratorprototype-other-methods)'
+  id: totrans-38
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.10.7 `Iterator.prototype.*`: 其他方法](#iteratorprototype-other-methods)'
 - en: '[32.1 What is synchronous iteration about?](#motivation-sync-iteration)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.1 关于同步迭代的什么？](#motivation-sync-iteration)'
 - en: 'Synchronous iteration is a *protocol* (interfaces plus rules for using them)
     that connects two groups of entities in JavaScript:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 同步迭代是一种*协议*（接口及其使用规则），它将JavaScript中的两组实体连接起来：
 - en: '**Data sources:** On one hand, data comes in all shapes and sizes. In JavaScript’s
     standard library, we have the linear data structure Array, the ordered collection
     Set (elements are ordered by time of addition), the ordered dictionary Map (entries
     are ordered by time of addition), and more. In libraries, we may find tree-shaped
     data structures and more.'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**数据源：**一方面，数据以各种形状和大小存在。在JavaScript的标准库中，我们有线性数据结构数组（Array）、有序集合（Set，元素按添加时间排序）、有序字典（Map，条目按添加时间排序）等。在库中，我们可能还会找到树形数据结构等。'
 - en: '**Data consumers:** On the other hand, we have a whole class of constructs
     and algorithms that only need to access their input *sequentially*: one value
     at a time, until all values were visited. Examples include the `for-of` loop and
     spreading into Array literals (via `...`).'
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**数据消费者：**另一方面，我们有一类只需要按顺序访问其输入的构造和算法：例如`for-of`循环和将值展开到数组字面量中（通过`...`）。'
 - en: 'The iteration protocol connects these two groups via the interface `Iterable`:
     data sources deliver their contents sequentially “through it”; data consumers
     get their input from it.'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 迭代协议通过接口`Iterable`连接这两组对象：数据源通过它顺序地“传递”其内容；数据消费者从它那里获取输入。
 - en: '![](../Images/52bbdbeebda7e97eed377dd5c6cf02df.png)'
+  id: totrans-44
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/52bbdbeebda7e97eed377dd5c6cf02df.png)'
 - en: 'Figure 32.1: Data consumers such as the `for-of` loop use the interface `Iterable`.
     Data sources such as `Arrays` implement that interface.'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 图32.1：如`for-of`循环这样的数据消费者使用接口`Iterable`。如`Arrays`这样的数据源实现该接口。
 - en: '[Figure 32.1](#fig:iterable-implementers-clients) illustrates how iteration
     works: data consumers use the interface `Iterable`; data sources implement it.'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: '[图32.1](#fig:iterable-implementers-clients)说明了迭代是如何工作的：数据消费者使用接口`Iterable`；数据源实现它。'
 - en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **The JavaScript
     way of implementing interfaces**'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“详情”](../Images/38ba63de820aae6f94a019538ae0f222.png) **JavaScript实现接口的方式**'
 - en: In JavaScript, an object *implements* an interface if it has all the methods
     that it describes. The interfaces mentioned in this chapter only exist in the
     ECMAScript specification.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript中，一个对象如果实现了它所描述的所有方法，则认为它实现了接口。本章中提到的接口仅存在于ECMAScript规范中。
 - en: 'Both sources and consumers of data profit from this arrangement:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 数据的提供者和消费者都从这种安排中受益：
 - en: If we develop a new data structure, we only need to implement `Iterable` and
     a raft of tools can immediately be applied to it.
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们开发一个新的数据结构，我们只需要实现`Iterable`，然后就可以立即将其应用于一系列工具。
 - en: If we write code that uses iteration, it automatically works with many sources
     of data.
+  id: totrans-51
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们编写使用迭代的代码，它将自动与许多数据源一起工作。
 - en: '[32.2 Core iteration roles: iterables and iterators](#iterable-iterator-iteratorresult)'
+  id: totrans-52
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.2 核心迭代角色：可迭代对象和迭代器](#iterable-iterator-iteratorresult)'
 - en: 'Two roles (described by interfaces) form the core of iteration ([figure 32.2](#fig:iteration-protocol)):'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个角色（由接口描述）构成了迭代的核心（[图32.2](#fig:iteration-protocol)）：
 - en: An *iterable* is an object whose contents can be traversed sequentially.
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个*可迭代对象*是一个其内容可以被顺序遍历的对象。
 - en: An *iterator* is the pointer used for the traversal.
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个*迭代器*是用于遍历的指针。
 - en: '![](../Images/18a5343baba7051a9127cee5ee460844.png)'
+  id: totrans-56
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/18a5343baba7051a9127cee5ee460844.png)'
 - en: 'Figure 32.2: Iteration has two main interfaces: `Iterable` and `Iterator`.
     The former has a method that returns the latter.'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 图32.2：迭代有两个主要接口：`Iterable`和`Iterator`。前者有一个返回后者的方法。
 - en: 'These are type definitions (in TypeScript’s notation) for the interfaces of
     the iteration protocol:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是迭代协议接口的类型定义（以TypeScript的表示法）：
 - en: '[PRE0]'
+  id: totrans-59
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The interfaces are used as follows:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 接口的使用方法如下：
 - en: We ask an `Iterable` for an iterator via the method whose key is `Symbol.iterator`.
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们通过`Symbol.iterator`键的方法来请求一个`Iterable`。
 - en: An iterator extends the abstract class `Iterator` and returns the iterated values
     via its method `.next()`.
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个迭代器扩展了抽象类 `Iterator`，并通过其方法 `.next()` 返回迭代值。
 - en: 'Note: Before ECMAScript 2025, `Iterator` was simply an interface. No globally
     accessible class `Iterator` existed.'
+  id: totrans-63
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 注意：在 ECMAScript 2025 之前，`Iterator` 只是一个接口。不存在全局可访问的类 `Iterator`。
 - en: 'The values are not returned directly, but wrapped in objects with two properties:'
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值不是直接返回的，而是被包裹在具有两个属性的对象中：
 - en: '`.value` is the iterated value.'
+  id: totrans-65
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.value` 是迭代值。'
 - en: '`.done` indicates if the end of the iteration has been reached yet. It is `true`
     after the last iterated value and `false` beforehand.'
+  id: totrans-66
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.done` 表示迭代是否已到达末尾。在最后一个迭代值之后为 `true`，在此之前为 `false`。'
 - en: '[32.3 Iterating over data](#iterating-over-data)'
+  id: totrans-67
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.3 遍历数据](#iterating-over-data)'
 - en: '[32.3.1 Manually iterating over data](#manually-iterating-over-data)'
+  id: totrans-68
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.1 手动遍历数据](#manually-iterating-over-data)'
 - en: 'This is an example of using the iteration protocol:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是使用迭代协议的一个例子：
 - en: '[PRE1]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[32.3.2 Using `while` to iterate manually](#using-while-to-iterate-manually)'
+  id: totrans-71
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.2 使用 `while` 手动迭代](#using-while-to-iterate-manually)'
 - en: 'The following code demonstrates how to use a `while` loop to iterate over an
     iterable:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了如何使用 `while` 循环遍历可迭代对象：
 - en: '[PRE2]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Output:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE3]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Using sync iteration manually**'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：手动使用同步迭代**'
 - en: '`exercises/sync-iteration/sync_iteration_manually_exrc.mjs`'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/sync-iteration/sync_iteration_manually_exrc.mjs`'
 - en: '[32.3.3 Retrieving an iterator via `Iterator.from()` ^(ES2024)](#retrieving-an-iterator-via-iteratorfrom-es2024)'
+  id: totrans-78
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.3 通过 `Iterator.from()` 获取迭代器 (ES2024)](#retrieving-an-iterator-via-iteratorfrom-es2024)'
 - en: 'The built-in static method `Iterator.from()` provides us with a more elegant
     way of retrieving iterators:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 内置的静态方法 `Iterator.from()` 提供了一种更优雅的方式来检索迭代器：
 - en: '[PRE4]'
+  id: totrans-80
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[32.3.4 Iterating via iteration-based language constructs](#iterating-via-iterationbased-language-constructs)'
+  id: totrans-81
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.4 通过基于迭代的语言结构进行迭代](#iterating-via-iterationbased-language-constructs)'
 - en: We have seen how to use the iteration protocol manually and it is relatively
     cumbersome. But the protocol is not meant to be used directly – it is meant to
     be used via higher-level language constructs built on top of it. We’ll notice
     that we never see iterators when we do so. They are only used internally.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到了如何手动使用迭代协议，这相对比较繁琐。但协议并不是直接使用的目的——它是通过在其之上构建的高级语言结构来使用的。我们会注意到，当我们这样做时，我们从未看到迭代器。它们仅用于内部。
 - en: '[32.3.4.1 Iterating over Arrays](#iterating-over-arrays)'
+  id: totrans-83
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.3.4.1 遍历数组](#iterating-over-arrays)'
 - en: 'The most important iteration-based language construct is the `for-of` loop:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于迭代的最重要的语言结构是 `for-of` 循环：
 - en: '[PRE5]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Output:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE6]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Another iteration-based construct is spreading into Array literals:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个基于迭代的结构是将值扩展到数组字面量中：
 - en: '[PRE7]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '[Destructuring](ch_destructuring.html#ch_destructuring) via Array patterns
     also uses iteration under the hood:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: '[通过数组模式解构](ch_destructuring.html#ch_destructuring)也使用底层的迭代：'
 - en: '[PRE8]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[32.3.4.2 Iterating over Sets](#iterating-over-sets)'
+  id: totrans-92
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.3.4.2 遍历集合](#iterating-over-sets)'
 - en: 'Sets are also iterable. Note that the iterating code is the same: It sees neither
     Arrays nor Sets, only iterables.'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 集合也是可迭代的。请注意，迭代代码是相同的：它既看不到数组，也看不到集合，只看到可迭代对象。
 - en: '[PRE9]'
+  id: totrans-94
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[32.3.5 Converting iterables to Arrays: `[...i]` and `Array.from(i)`](#converting-iterables-to-arrays-i-and-arrayfromi)'
+  id: totrans-95
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.5 将可迭代对象转换为数组：`[...i]` 和 `Array.from(i)`](#converting-iterables-to-arrays-i-and-arrayfromi)'
 - en: 'These are ways of converting iterables to Arrays:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是将可迭代对象转换为数组的方法：
 - en: '[PRE10]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: I tend to prefer `Array.from()` because it’s more self-descriptive.
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 我倾向于更喜欢 `Array.from()`，因为它更具自描述性。
 - en: 'More information: [“Converting iterables, iterators and Array-like values to
     Arrays” (§34.6)](ch_arrays.html#converting-to-array)'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[“将可迭代对象、迭代器和类似数组的值转换为数组” (§34.6)](ch_arrays.html#converting-to-array)
 - en: We can also create an iterator and use an iterator method to create an Array.
     Iterator methods are explained later.
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以创建一个迭代器，并使用迭代器方法来创建一个数组。迭代器方法将在后面解释。
 - en: '[PRE11]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[32.4 Processing iterables via generators](#processing-iterables-via-generators)'
+  id: totrans-102
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.4 通过生成器处理可迭代对象](#processing-iterables-via-generators)'
 - en: 'Synchronous generator functions and methods expose their yielded values via
     iterators (that are also iterable) that they return:'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 同步生成器函数和方法通过它们返回的迭代器（也是可迭代的）来暴露它们的生成值：
 - en: '[PRE12]'
+  id: totrans-104
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Generators produce iterables, but they can also consume them. That makes them
     a versatile tool for transforming iterables:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 生成器产生可迭代对象，但它们也可以消费它们。这使得它们成为转换可迭代对象的通用工具：
 - en: '[PRE13]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'More information: [“Synchronous generators ^(ES6) (advanced)” (§33)](ch_sync-generators.html#ch_sync-generators)'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[“同步生成器（ES6）(高级)”（§33）](ch_sync-generators.html#ch_sync-generators)
 - en: '[32.5 The inheritance of the iteration API (advanced)](#the-inheritance-of-the-iteration-api-advanced)'
+  id: totrans-108
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.5 迭代API的继承（高级）](#the-inheritance-of-the-iteration-api-advanced)'
 - en: All of the iterators created by JavaScript’s standard library have a common
     prototype which the ECMAScript specification calls [`%IteratorPrototype%`](https://tc39.es/ecma262/#sec-%iteratorprototype%-object)
     and uses internally. We can access it from JavaScript via `Iterator.prototype`.
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript标准库创建的所有迭代器都有一个共同的原型，ECMAScript规范将其称为`[%IteratorPrototype%](https://tc39.es/ecma262/#sec-%iteratorprototype%-object)`并在内部使用。我们可以通过`Iterator.prototype`从JavaScript中访问它。
 - en: '[32.5.1 Array iterators](#array-iterators)'
+  id: totrans-110
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.5.1 数组迭代器](#array-iterators)'
 - en: 'We create an Array iterator like this:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以这样创建一个数组迭代器：
 - en: '[PRE14]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'This object has a prototype with two properties. Let’s call it `ArrayIteratorPrototype`:'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个对象有一个具有两个属性的原型。我们可以称它为`ArrayIteratorPrototype`：
 - en: '[PRE15]'
+  id: totrans-114
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: The prototype of `ArrayIteratorPrototype` is `%IteratorPrototype%`. This object
     has a method whose key is `Symbol.iterator`. Therefore, all built-in iterators
     are iterable.
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ArrayIteratorPrototype`的原型是`%IteratorPrototype%`。这个对象有一个键名为`Symbol.iterator`的方法。因此，所有内置迭代器都是可迭代的。'
 - en: '[PRE16]'
+  id: totrans-116
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: The prototype of `Iterator.prototype` is `Object.prototype`.
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype`的原型是`Object.prototype`。'
 - en: '[PRE17]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[Figure 32.3](#fig:inheritance-array-iterator) contains a diagram for this
     chain of prototypes.'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: '[图32.3](#fig:inheritance-array-iterator)包含了这个原型链的图示。'
 - en: '![](../Images/7114dc60cff41ea48eb99d0bb278db66.png)'
+  id: totrans-120
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/7114dc60cff41ea48eb99d0bb278db66.png)'
 - en: 'Figure 32.3: A chain of prototypes (from bottom to top):'
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: 图32.3：原型链（从下到上）：
 - en: First the result of `[][Symbol.iterator]()` (an instance of `%ArrayIterator%`)
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 首先是`[][Symbol.iterator]()`的结果（`%ArrayIterator%`的一个实例）
 - en: Then `%ArrayIteratorPrototype%`
+  id: totrans-123
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后`%ArrayIteratorPrototype%`
 - en: Then `%IteratorPrototype%`
+  id: totrans-124
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后`%IteratorPrototype%`
 - en: Finally `Object.prototype`
+  id: totrans-125
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最后`Object.prototype`
 - en: '[32.5.2 Generator objects](#generator-objects)'
+  id: totrans-126
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.5.2 生成器对象](#generator-objects)'
 - en: 'Roughly, a generator object is an iterator for the values yielded by a generator
     function `genFunc()`. We create it by calling `genFunc()`:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 大概来说，生成器对象是生成器函数`genFunc()`产生的值的迭代器。我们通过调用`genFunc()`来创建它：
 - en: '[PRE18]'
+  id: totrans-128
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'A generator object is an iterator:'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 生成器对象是一个迭代器：
 - en: '[PRE19]'
+  id: totrans-130
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '[32.6 Iterable iterators](#iterable-iterators)'
+  id: totrans-131
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.6 可迭代迭代器](#iterable-iterators)'
 - en: '[32.6.1 Why are the built-in iterators iterable?](#why-are-the-builtin-iterators-iterable)'
+  id: totrans-132
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.6.1 为什么内置迭代器是可迭代的？](#why-are-the-builtin-iterators-iterable)'
 - en: 'As we have seen, all built-in iterators are iterable:'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 正如我们所见，所有内置迭代器都是可迭代的：
 - en: '[PRE20]'
+  id: totrans-134
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: That has the benefit of us being able to iterate over the iterator’s values
     – e.g., via `for-of` and `Array.from()`.
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 它的好处是我们能够遍历迭代器的值——例如，通过`for-of`和`Array.from()`。
 - en: 'Another benefit is that generators become more versatile. On one hand, we can
     use them to implement iterators:'
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个好处是生成器变得更加灵活。一方面，我们可以使用它们来实现迭代器：
 - en: '[PRE21]'
+  id: totrans-137
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'On the other hand, we can use them to implement iterables:'
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，我们可以使用它们来实现可迭代对象：
 - en: '[PRE22]'
+  id: totrans-139
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: '[32.6.2 An iterator returns itself when asked for an iterator](#an-iterator-returns-itself-when-asked-for-an-iterator)'
+  id: totrans-140
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.6.2 迭代器在请求迭代器时返回自身](#an-iterator-returns-itself-when-asked-for-an-iterator)'
 - en: 'If an iterator is iterable: What are the iterators it produces? It simply returns
     itself when asked for an iterator:'
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个迭代器是可迭代的：它产生的迭代器是什么？当请求迭代器时，它简单地返回自身：
 - en: '[PRE23]'
+  id: totrans-142
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: '[32.6.3 Iteration quirk: two kinds of iterables](#one-time-iterable-vs-many-times-iterable)'
+  id: totrans-143
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.6.3 迭代怪癖：两种类型的可迭代对象](#one-time-iterable-vs-many-times-iterable)'
 - en: 'Alas, iterable iterators mean that there are two kinds of iterables:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 可惜，可迭代迭代器意味着存在两种类型的可迭代对象：
 - en: 'An iterable iterator is a *one-time iterable*: It always returns the same iterator
     (itself) when `[Symbol.iterator]()` is called (iteration continues).'
+  id: totrans-145
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 一个可迭代迭代器是*一次性可迭代的*：当调用`[Symbol.iterator]()`时，它总是返回相同的迭代器（自身）（迭代继续）。
 - en: 'A normal iterable (an Array, a Set, etc.) is a *many-times iterable*: It always
     returns a fresh iterator (iteration restarts).'
+  id: totrans-146
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 一个普通的可迭代对象（一个数组、一个集合等）是*多次可迭代的*：它总是返回一个新的迭代器（迭代重新开始）。
 - en: 'With a one-time iterable, each time we iterate, we remove more elements, until,
     eventually, no more are left:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于一次性可迭代，每次迭代都会移除更多元素，直到最终没有更多元素为止：
 - en: '[PRE24]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'With a many-times iterable, each iteration starts fresh:'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用多次可迭代的，每次迭代都是从新开始：
 - en: '[PRE25]'
+  id: totrans-150
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'The following code is another demonstration of the difference:'
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码是差异的另一个示例：
 - en: '[PRE26]'
+  id: totrans-152
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[32.7 Class `Iterator` and iterator helper methods ^(ES2025)](#class-iterator)'
+  id: totrans-153
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.7 类`Iterator`和迭代器辅助方法（ES2025）](#class-iterator)'
 - en: 'We have already seen that `%IteratorPrototype%` is the prototype of all built-in
     iterators. ECMAScript 2025 introduces a class `Iterator`:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到 `%IteratorPrototype%` 是所有内置迭代器的原型。ECMAScript 2025 引入了一个名为 `Iterator`
+    的类：
 - en: '`Iterator.prototype` refers to `%IteratorPrototype%`.'
+  id: totrans-155
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype` 指的是 `%IteratorPrototype%`。'
 - en: '`%IteratorPrototype%.constructor` refers to `Iterator`.'
+  id: totrans-156
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`%IteratorPrototype%.constructor` 指的是 `Iterator`。'
 - en: 'The class provides the following functionality:'
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: 该类提供了以下功能：
 - en: '`Iterator.from(iterable)` returns an iterator for `iterable`. We’ll explore
     it in detail [later](#Iterator.from).'
+  id: totrans-158
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.from(iterable)` 返回 `iterable` 的迭代器。我们将在后面详细探讨它。[稍后](#Iterator.from)。'
 - en: '`Iterator.prototype` contains various helper methods that are inherited by
     iterators.'
+  id: totrans-159
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype` 包含各种辅助方法，这些方法由迭代器继承。'
 - en: '[32.7.1 `Iterator.prototype.*` methods](#iteratorprototype-methods)'
+  id: totrans-160
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.7.1 `Iterator.prototype.*` 方法](#iteratorprototype-methods)'
 - en: 'The following iterator helper methods work like the Array methods with the
     same names:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下迭代器辅助方法与具有相同名称的数组方法类似：
 - en: 'Methods that return iterators:'
+  id: totrans-162
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回迭代器的函数：
 - en: '`iterator.filter(filterFn)`'
+  id: totrans-163
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.filter(filterFn)`'
 - en: '`iterator.map(mapFn)`'
+  id: totrans-164
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.map(mapFn)`'
 - en: '`iterator.flatMap(mapFn)`'
+  id: totrans-165
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.flatMap(mapFn)`'
 - en: 'Methods that return booleans:'
+  id: totrans-166
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回布尔值的函数：
 - en: '`iterator.some(fn)`'
+  id: totrans-167
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.some(fn)`'
 - en: '`iterator.every(fn)`'
+  id: totrans-168
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.every(fn)`'
 - en: 'Methods that return other values:'
+  id: totrans-169
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回其他值的函数：
 - en: '`iterator.find(fn)`'
+  id: totrans-170
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.find(fn)`'
 - en: '`iterator.reduce(reducer, initialValue?)`'
+  id: totrans-171
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.reduce(reducer, initialValue?)`'
 - en: 'Methods that return no values:'
+  id: totrans-172
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不返回值的函数：
 - en: '`iterator.forEach(fn)`'
+  id: totrans-173
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.forEach(fn)`'
 - en: 'These helper methods are unique to iterators:'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些辅助方法仅适用于迭代器：
 - en: '`iterator.drop(limit)`'
+  id: totrans-175
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.drop(limit)`'
 - en: Returns an iterator without the first `limit` elements of `iterator`.
+  id: totrans-176
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回没有前 `limit` 个元素的 `iterator` 的迭代器。
 - en: '`iterator.take(limit)`'
+  id: totrans-177
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.take(limit)`'
 - en: Returns an iterator with the first `limit` elements of `iterator`.
+  id: totrans-178
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回具有 `iterator` 的前 `limit` 个元素的迭代器。
 - en: '`iterator.toArray()`'
+  id: totrans-179
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterator.toArray()`'
 - en: Collects all remaining elements of `iterator` in an Array and returns it.
+  id: totrans-180
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将 `iterator` 的所有剩余元素收集到一个数组中并返回它。
 - en: 'For a brief description of each method, see [“Quick reference: class `Iterator`
     ^(ES2025)” (§32.10)](#quickref-iterator). These are examples of the methods in
     action:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个方法的简要说明，请参阅“快速参考：类 `Iterator` (ES2025)”（§32.10）。以下是这些方法实际应用的示例：
 - en: '[PRE27]'
+  id: totrans-182
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: The Array method `arr.values()` returns an iterator over the elements of `arr`.
+  id: totrans-183
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组方法 `arr.values()` 返回 `arr` 元素的迭代器。
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercises:
     Working with iterators**'
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：使用迭代器**'
 - en: 'Implementing `.at()` for iterators: `exercises/sync-iteration/iterator-at_test.mjs`'
+  id: totrans-185
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为迭代器实现 `.at()`：`exercises/sync-iteration/iterator-at_test.mjs`
 - en: 'Implementing `.findIndex()` for iterators: `exercises/sync-iteration/iterator-find-index_test.mjs`'
+  id: totrans-186
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为迭代器实现 `.findIndex()`：`exercises/sync-iteration/iterator-find-index_test.mjs`
 - en: 'Implementing `.slice()` for iterators: `exercises/sync-iteration/slice-iterator_test.mjs`'
+  id: totrans-187
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为迭代器实现 `.slice()`：`exercises/sync-iteration/slice-iterator_test.mjs`
 - en: 'Adding indices to iterator elements: `exercises/sync-iteration/add-index-to-iterator_test.mjs`'
+  id: totrans-188
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为迭代器元素添加索引：`exercises/sync-iteration/add-index-to-iterator_test.mjs`
 - en: 'Using `iterator.reduce()` to compute the length of an iterator: `exercises/sync-iteration/iterator-length_test.mjs`'
+  id: totrans-189
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用 `iterator.reduce()` 计算迭代器的长度：`exercises/sync-iteration/iterator-length_test.mjs`
 - en: '[32.7.2 The benefits of iterator helper methods](#benefits-of-iterator-helper-methods)'
+  id: totrans-190
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.7.2 迭代器辅助方法的益处](#benefits-of-iterator-helper-methods)'
 - en: '[32.7.2.1 Benefit: more operations for data structures that support iteration](#benefit-more-operations-for-data-structures-that-support-iteration)'
+  id: totrans-191
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.7.2.1 利益：支持迭代的数组的更多操作](#benefit-more-operations-for-data-structures-that-support-iteration)'
 - en: With iterator helper methods, any data structure that supports iteration automatically
     gains functionality.
+  id: totrans-192
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用迭代器辅助方法，任何支持迭代的数结构自动获得功能。
 - en: 'For example, Sets don’t support the operations `filter` and `map`, but we can
     get them via iterator methods:'
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，集合不支持 `filter` 和 `map` 操作，但我们可以通过迭代器方法获得它们：
 - en: '[PRE28]'
+  id: totrans-194
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: Note that `new Set()` accepts iterables and therefore iterable iterators (line
     A and line B).
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`new Set()` 接受可迭代对象，因此可迭代的迭代器（行 A 和行 B）。
 - en: 'DOM collections also don’t have the methods `.filter()` and `.map()`:'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: DOM 集合也没有 `.filter()` 和 `.map()` 方法：
 - en: '[PRE29]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Implementing `.filter()` and `.map()` for Sets via iterator methods**'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：通过迭代器方法实现 `.filter()`
+    和 `.map()`**'
 - en: '`exercises/sync-iteration/set-operations-via-iterators_test.mjs`'
+  id: totrans-199
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/sync-iteration/set-operations-via-iterators_test.mjs`'
 - en: '[32.7.2.2 Benefit: no intermediate Arrays and incremental processing](#benefit-no-intermediate-arrays-and-incremental-processing)'
+  id: totrans-200
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.7.2.2 优势：没有中间数组，增量处理](#benefit-no-intermediate-arrays-and-incremental-processing)'
 - en: 'If we chain operations that return Arrays (line A, line B, line C) then each
     operation produces a new Array:'
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们链式操作返回数组的操作（行A、行B、行C），那么每个操作都会产生一个新的数组：
 - en: '[PRE30]'
+  id: totrans-202
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: The regular expression in line A contains [a lookbehind assertion](ch_regexps.html#regexp-lookbehind-assertions)
     which ensures that the lines returned by `.split()` includes line terminators.
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 行A中的正则表达式包含一个[后视断言](ch_regexps.html#regexp-lookbehind-assertions)，这确保了`.split()`返回的行包括行终止符。
 - en: 'In contrast, each operation (line A, line B, line C) in the following code
     returns an iterator and no intermediate Arrays are created:'
+  id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: 相比之下，以下代码中的每个操作（行A、行B、行C）都返回一个迭代器，并且不会创建任何中间数组：
 - en: '[PRE31]'
+  id: totrans-205
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'Example of using `quoteNonEmptyLinesIter()`:'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用`quoteNonEmptyLinesIter()`的示例：
 - en: '[PRE32]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: Note that the empty lines between the three lines of text were filtered out.
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，三行文本之间的空行已被过滤掉。
 - en: 'In addition to no intermediate Arrays being created, iterators also give us
     incremental processing:'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了不创建中间数组之外，迭代器还提供了增量处理：
 - en: '[PRE33]'
+  id: totrans-210
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: In contrast, `quoteNonEmptyLinesArray()` first splits all lines, then filters
     all lines and then maps all lines. Incremental processing matters when dealing
     with a large amount of data. Iterator helper methods complement generators as
     tools for incremental processing.
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 相比之下，`quoteNonEmptyLinesArray()`首先拆分所有行，然后过滤所有行，最后映射所有行。在处理大量数据时，增量处理很重要。迭代器辅助方法作为增量处理工具补充了生成器。
 - en: '[32.7.3 `Iterator.from()`: creating API iterators](#Iterator.from)'
+  id: totrans-212
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.7.3 `Iterator.from()`: 创建API迭代器](#Iterator.from)'
 - en: All built-in iterables automatically support the new API because their iterators
     already have `Iterator.prototype` as a prototype (and are therefore instances
     of `Iterator`). However, that’s not the case for all iterables in libraries and
     user code.
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有内置的可迭代对象都自动支持新的API，因为它们的迭代器已经具有`Iterator.prototype`作为原型（因此是`Iterator`的实例）。然而，并非所有库和用户代码中的可迭代对象都是这样。
 - en: 'Terminology:'
+  id: totrans-214
   prefs: []
   type: TYPE_NORMAL
+  zh: 术语：
 - en: 'Entities that support the `Iterator` API: *API iterators* and *API iterables*'
+  id: totrans-215
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 支持`Iterator` API的实体：*API迭代器*和*API可迭代对象*
 - en: 'Entities that don’t: *legacy iterators* and *legacy iterables*'
+  id: totrans-216
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不支持的实体：*遗留迭代器*和*遗留可迭代对象*
 - en: How does `Iterator.from(obj)` work?
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Iterator.from(obj)`是如何工作的？'
 - en: If `obj` is iterable, then it creates an iterator by calling `obj[Symbol.iterator]()`.
+  id: totrans-218
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`obj`是可迭代的，那么它通过调用`obj[Symbol.iterator]()`来创建一个迭代器。
 - en: If the new iterator is an instance of `Iterator`, it is returned as is.
+  id: totrans-219
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果新的迭代器是一个`Iterator`实例，它将按原样返回。
 - en: Otherwise, it is wrapped so that it becomes an instance of `Iterator`.
+  id: totrans-220
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，它会包装起来，使其成为一个`Iterator`实例。
 - en: If `obj` is an iterator, `Iterator.from()` ensures that it is an instance of
     `Iterator` and returns it.
+  id: totrans-221
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`obj`是一个迭代器，`Iterator.from()`确保它是一个`Iterator`实例，并返回它。
 - en: 'In the following example, we use `Iterator.from()` to convert a legacy iterator
     to an API iterator:'
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，我们使用`Iterator.from()`将遗留迭代器转换为API迭代器：
 - en: '[PRE34]'
+  id: totrans-223
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '[32.7.4 Iterator methods change how we use iteration](#iterator-methods-change-how-we-use-iteration)'
+  id: totrans-224
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.7.4 迭代器方法改变了我们使用迭代的方式](#iterator-methods-change-how-we-use-iteration)'
 - en: 'The iterator methods change how we use iteration:'
+  id: totrans-225
   prefs: []
   type: TYPE_NORMAL
+  zh: 迭代器方法改变了我们使用迭代的方式：
 - en: Previously, we never saw iterators and always worked with iterables, e.g. via
     `for-of` or `Array.from()`.
+  id: totrans-226
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 以前，我们从未见过迭代器，总是与可迭代对象一起工作，例如通过`for-of`或`Array.from()`。
 - en: Now, using iterators is useful, too, and we have to be aware of how to create
     them.
+  id: totrans-227
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 现在，使用迭代器也是有用的，我们必须注意如何创建它们。
 - en: 'It’s interesting how our focus shifts with methods such as `Array.prototype.keys()`
     that return iterable iterators: Before iterator methods, we used the result as
     an iterable. With iterator methods, we also use them as iterators:'
+  id: totrans-228
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，我们的关注点如何随着`Array.prototype.keys()`等方法的改变而转移，这些方法返回可迭代迭代器：在迭代器方法之前，我们使用结果作为可迭代对象。使用迭代器方法时，我们也将它们用作迭代器：
 - en: '[PRE35]'
+  id: totrans-229
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: For more information, see [“Creating iterators” (§32.10.1)](#creating-iterators).
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息，请参阅[“创建迭代器”（§32.10.1）](#creating-iterators)。
 - en: '[32.7.5 Upgrading a legacy iterable to the `Iterator` API](#upgrading-a-legacy-iterable-to-the-iterator-api)'
+  id: totrans-231
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.7.5 将遗留可迭代对象升级到`Iterator` API](#upgrading-a-legacy-iterable-to-the-iterator-api)'
 - en: 'This is an example of a legacy iterable:'
+  id: totrans-232
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个遗留可迭代对象的示例：
 - en: '[PRE36]'
+  id: totrans-233
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'If we want `ValueIterable` to support the `Iterator` API, we have to make its
     iterators instances of `Iterator`:'
+  id: totrans-234
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想让`ValueIterable`支持`Iterator` API，我们必须使其迭代器成为`Iterator`实例：
 - en: '[PRE37]'
+  id: totrans-235
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'This is another option (albeit a less efficient one):'
+  id: totrans-236
   prefs: []
   type: TYPE_NORMAL
+  zh: 这又是一个选项（尽管效率较低）：
 - en: '[PRE38]'
+  id: totrans-237
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 'We can also create a class for iterators:'
+  id: totrans-238
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以为迭代器创建一个类：
 - en: '[PRE39]'
+  id: totrans-239
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '[32.8 Grouping iterables ^(ES2024)](#grouping-sync-iterables)'
+  id: totrans-240
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.8 分组可迭代对象（ES2024）](#grouping-sync-iterables)'
 - en: '`Map.groupBy()` groups the items of an iterable into Map entries whose keys
     are provided by a callback:'
+  id: totrans-241
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Map.groupBy()` 将可迭代对象的项分组到 Map 条目中，其键由回调函数提供：'
 - en: '[PRE40]'
+  id: totrans-242
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'The items to be grouped can come from any iterable:'
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: 要分组的项可以来自任何可迭代对象：
 - en: '[PRE41]'
+  id: totrans-244
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'There is also `Object.groupBy()` which produces an object instead of a Map:'
+  id: totrans-245
   prefs: []
   type: TYPE_NORMAL
+  zh: 此外还有 `Object.groupBy()`，它生成一个对象而不是 Map：
 - en: '[PRE42]'
+  id: totrans-246
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: '[32.8.1 Choosing between `Map.groupBy()` and `Object.groupBy()`](#choosing-between-mapgroupby-and-objectgroupby)'
+  id: totrans-247
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.8.1 在 `Map.groupBy()` 和 `Object.groupBy()` 之间选择](#choosing-between-mapgroupby-and-objectgroupby)'
 - en: Do you want group keys other than strings and symbols?
+  id: totrans-248
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 你想按字符串和符号以外的键进行分组吗？
 - en: Then you need a Map. Objects can only have strings and symbols as keys.
+  id: totrans-249
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后你需要一个 Map。对象只能有字符串和符号作为键。
 - en: Do you want to destructure the result of `.groupBy()` (see example later in
     this section)?
+  id: totrans-250
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 你想解构 `.groupBy()` 的结果（请参阅本节后面的示例）吗？
 - en: Then you need an object.
+  id: totrans-251
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后你需要一个对象。
 - en: Otherwise, you are free to choose what you prefer.
+  id: totrans-252
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，你可以自由选择你喜欢的。
 - en: '[32.8.2 Example: handling cases](#example-handling-cases)'
+  id: totrans-253
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.8.2 示例：处理情况](#example-handling-cases)'
 - en: 'The Promise combinator [`Promise.allSettled()`](ch_promises.html#Promise.allSettled)
     returns Arrays such as the following one:'
+  id: totrans-254
   prefs: []
   type: TYPE_NORMAL
+  zh: Promise 组合器 `Promise.allSettled()`（[Promise.allSettled()](ch_promises.html#Promise.allSettled)）返回如下数组：
 - en: '[PRE43]'
+  id: totrans-255
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'We can group the Array elements as follows:'
+  id: totrans-256
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以按如下方式对数组元素进行分组：
 - en: '[PRE44]'
+  id: totrans-257
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: For this use case, `Object.groupBy()` works better because we can use destructuring
     (line A).
+  id: totrans-258
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于此用例，`Object.groupBy()` 工作得更好，因为我们可以在 Map 中使用任意键，而在对象中，键仅限于字符串和符号。
 - en: '[32.8.3 Example: grouping by property value](#example-grouping-by-property-value)'
+  id: totrans-259
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.8.3 示例：按属性值分组](#example-grouping-by-property-value)'
 - en: 'In the next example, we’d like to group persons by country:'
+  id: totrans-260
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，我们想要按国家分组人员：
 - en: '[PRE45]'
+  id: totrans-261
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: For this use case, `Map.groupBy()` is a better choice because we can use arbitrary
     keys in Maps whereas in objects, keys are limited to strings and symbols.
+  id: totrans-262
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于此用例，`Map.groupBy()` 是更好的选择，因为我们可以在 Map 中使用任意键，而在对象中，键仅限于字符串和符号。
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Using `Map.groupBy()` for an Array of objects**'
+  id: totrans-263
   prefs: []
   type: TYPE_NORMAL
+  zh: '![“练习”图标](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：使用 `Map.groupBy()`
+    对对象数组进行分组**'
 - en: '`exercises/sync-iteration/count-cities_test.mjs`'
+  id: totrans-264
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/sync-iteration/count-cities_test.mjs`'
 - en: '[32.9 Quick reference: synchronous iteration](#quickref-sync-iteration)'
+  id: totrans-265
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.9 快速参考：同步迭代](#quickref-sync-iteration)'
 - en: '[32.9.1 Synchronous iteration: data producers](#synchronous-iteration-data-producers)'
+  id: totrans-266
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.9.1 同步迭代：数据生产者](#synchronous-iteration-data-producers)'
 - en: 'These data structures are iterable:'
+  id: totrans-267
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些数据结构是可迭代的：
 - en: Strings
+  id: totrans-268
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串
 - en: Arrays
+  id: totrans-269
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组
 - en: Sets
+  id: totrans-270
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 集合
 - en: Maps
+  id: totrans-271
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Map
 - en: '(Browsers: DOM data structures)'
+  id: totrans-272
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （浏览器：DOM 数据结构）
 - en: 'The following data structures have the methods `.keys()`, `.values()`, and
     `.entries()` that return iterables that are not Arrays:'
+  id: totrans-273
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下数据结构具有 `.keys()`、`.values()` 和 `.entries()` 方法，这些方法返回的不是数组：
 - en: Arrays
+  id: totrans-274
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组
 - en: Sets
+  id: totrans-275
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 集合
 - en: Maps
+  id: totrans-276
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Map
 - en: As an aside – the following static methods list property keys, values and entries
     (they are not normal methods because those can be accidentally overridden). They
     return Arrays.
+  id: totrans-277
   prefs: []
   type: TYPE_NORMAL
+  zh: 顺便提一下 - 以下静态方法列出属性键、值和条目（它们不是普通方法，因为那些可能会意外覆盖）。它们返回数组。
 - en: '`Object.keys(obj)`'
+  id: totrans-278
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.keys(obj)`'
 - en: '`Object.values(obj)`'
+  id: totrans-279
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.values(obj)`'
 - en: '`Object.entries(obj)`'
+  id: totrans-280
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Object.entries(obj)`'
 - en: 'Synchronous generator functions and methods expose their yielded values via
     iterable objects that they return:'
+  id: totrans-281
   prefs: []
   type: TYPE_NORMAL
+  zh: 同步生成器函数和方法通过它们返回的可迭代对象暴露其产生的值：
 - en: '[PRE46]'
+  id: totrans-282
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: '[32.9.2 Synchronous iteration: data consumers](#synchronous-iteration-data-consumers)'
+  id: totrans-283
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.9.2 同步迭代：数据消费者](#synchronous-iteration-data-consumers)'
 - en: This section lists constructs that consume data via synchronous iteration.
+  id: totrans-284
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节列出了通过同步迭代消耗数据的结构。
 - en: '[32.9.2.1 Language constructs that iterate](#language-constructs-that-iterate)'
+  id: totrans-285
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.9.2.1 语言迭代结构](#language-constructs-that-iterate)'
 - en: 'The `for-of` loop:'
+  id: totrans-286
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`for-of` 循环：'
 - en: '[PRE47]'
+  id: totrans-287
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 'Spreading (via `...`) into Array literals and function calls:'
+  id: totrans-288
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过（`...`）扩展到数组字面量和函数调用：
 - en: '[PRE48]'
+  id: totrans-289
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: 'Destructuring via an Array pattern:'
+  id: totrans-290
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通过数组模式进行解构：
 - en: '[PRE49]'
+  id: totrans-291
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: '`yield*`:'
+  id: totrans-292
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`yield*`:'
 - en: '[PRE50]'
+  id: totrans-293
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: '[32.9.2.2 Converting iterables to data structures](#converting-iterables-to-data-structures)'
+  id: totrans-294
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.9.2.2 将可迭代对象转换为数据结构](#converting-iterables-to-data-structures)'
 - en: '[`Object.fromEntries()`](ch_objects.html#Object.fromEntries):'
+  id: totrans-295
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Object.fromEntries()](ch_objects.html#Object.fromEntries):'
 - en: '[PRE51]'
+  id: totrans-296
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: '[`Array.from()`](ch_arrays.html#Array.from):'
+  id: totrans-297
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Array.from()](ch_arrays.html#Array.from):'
 - en: '[PRE52]'
+  id: totrans-298
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: 'Alternative – [spreading](ch_arrays.html#spreading-into-array-literals):'
+  id: totrans-299
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '替代方案 - [扩展](ch_arrays.html#spreading-into-array-literals):'
 - en: '[PRE53]'
+  id: totrans-300
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: '[`new Map()`](ch_maps.html#ch_maps) and [`new WeakMap()`](ch_weakmaps.html#ch_weakmaps):'
+  id: totrans-301
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new Map()`和`new WeakMap()`：'
 - en: '[PRE54]'
+  id: totrans-302
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: '[`new Set()`](ch_sets.html#ch_sets) and [`new WeakSet()`](ch_weaksets.html#ch_weaksets):'
+  id: totrans-303
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new Set()`和`new WeakSet()`：'
 - en: '[PRE55]'
+  id: totrans-304
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: '[32.9.2.3 Converting iterables over Promises to Promises](#converting-iterables-over-promises-to-promises)'
+  id: totrans-305
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.9.2.3 将Promise的可迭代对象转换为Promises](#converting-iterables-over-promises-to-promises)'
 - en: '[Promise combinator functions](ch_promises.html#promise-combinators): `Promise.all()`
     etc.'
+  id: totrans-306
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Promise组合函数](ch_promises.html#promise-combinators): `Promise.all()`等。'
 - en: '[PRE56]'
+  id: totrans-307
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: '[32.9.2.4 Grouping an iterable into a Map or an object](#grouping-an-iterable-into-a-map-or-an-object)'
+  id: totrans-308
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.9.2.4 将可迭代对象分组到Map或对象中](#grouping-an-iterable-into-a-map-or-an-object)'
 - en: '[“`Map.groupBy(items, computeGroupKey)`”](ch_maps.html#qref-Map.groupBy)'
+  id: totrans-309
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“`Map.groupBy(items, computeGroupKey)`”](ch_maps.html#qref-Map.groupBy)'
 - en: '[“`Object.groupBy(items, computeGroupKey)`”](ch_objects.html#qref-Object.groupBy)'
+  id: totrans-310
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“`Object.groupBy(items, computeGroupKey)`”](ch_objects.html#qref-Object.groupBy)'
 - en: '[32.10 Quick reference: class `Iterator` ^(ES2025)](#quickref-iterator)'
+  id: totrans-311
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.10 快速参考：`Iterator`类 (ES2025)](#quickref-iterator)'
 - en: '[32.10.1 Creating iterators](#creating-iterators)'
+  id: totrans-312
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.10.1 创建迭代器](#creating-iterators)'
 - en: The methods of class `Iterator` let us process data incrementally. Let’s explore
     where we can use them.
+  id: totrans-313
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Iterator`类的这些方法允许我们增量地处理数据。让我们看看我们可以在哪里使用它们。'
 - en: '[32.10.1.1 Getting iterators from iterables](#getting-iterators-from-iterables)'
+  id: totrans-314
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.10.1.1 从可迭代对象获取迭代器](#getting-iterators-from-iterables)'
 - en: '`Iterator.from(iterable)` always returns instances of `Iterator` (converting
     non-instances to instances as needed).'
+  id: totrans-315
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.from(iterable)`总是返回`Iterator`的实例（在需要时将非实例转换为实例）。'
 - en: '`iterable[Symbol.iterator]()` returns an iterator:'
+  id: totrans-316
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`iterable[Symbol.iterator]()`返回一个迭代器：'
 - en: With all built-in data structures, the result is an instance of `Iterator`.
+  id: totrans-317
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有内置的数据结构的结果都是一个`Iterator`的实例。
 - en: With other, older iterable objects, the result may not be an instance of `Iterator`.
+  id: totrans-318
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用其他较旧的可迭代对象时，结果可能不是`Iterator`的实例。
 - en: '[32.10.1.2 Built-in methods that return iterators](#builtin-methods-that-return-iterators)'
+  id: totrans-319
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.10.1.2 内置方法返回迭代器](#builtin-methods-that-return-iterators)'
 - en: 'Arrays, Typed Arrays, Sets and Maps have additional methods that return iterators:'
+  id: totrans-320
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组、类型化数组、集合和Map有额外的返回迭代器的方法：
 - en: 'Arrays (similarly: Typed Arrays):'
+  id: totrans-321
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组（类似地：类型化数组）：
 - en: '`Array.prototype.keys()` returns an iterator over numbers.'
+  id: totrans-322
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array.prototype.keys()`返回一个数字的迭代器。'
 - en: '`Array.prototype.values()` returns an iterator.'
+  id: totrans-323
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array.prototype.values()`返回一个迭代器。'
 - en: '`Array.prototype.entries()` returns an iterator over key-value pairs. The keys
     are numbers.'
+  id: totrans-324
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array.prototype.entries()`返回一个键值对的迭代器。键是数字。'
 - en: 'Sets:'
+  id: totrans-325
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 集合：
 - en: '`Set.prototype.values()` returns an iterator.'
+  id: totrans-326
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Set.prototype.values()`返回一个迭代器。'
 - en: '`Set.prototype.keys()` returns an iterator. Equivalent to `.values()`.'
+  id: totrans-327
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Set.prototype.keys()`返回一个迭代器。等同于`.values()`。'
 - en: '`Set.prototype.entries()` returns an iterator over value-value pairs (i.e.,
     both components of the pair are the same value).'
+  id: totrans-328
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Set.prototype.entries()`返回一个值值对的迭代器（即，对的两个组件都是相同的值）。'
 - en: 'Maps:'
+  id: totrans-329
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Map：
 - en: '`Map.prototype.keys()` returns an iterator.'
+  id: totrans-330
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Map.prototype.keys()`返回一个迭代器。'
 - en: '`Map.prototype.values()` returns an iterator.'
+  id: totrans-331
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Map.prototype.values()`返回一个迭代器。'
 - en: '`Map.prototype.entries()` returns an iterator over key-value pairs.'
+  id: totrans-332
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Map.prototype.entries()`返回一个键值对的迭代器。'
 - en: 'The following methods return iterators:'
+  id: totrans-333
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下方法返回迭代器：
 - en: '`String.prototype.matchAll()` returns an iterator over match objects.'
+  id: totrans-334
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`String.prototype.matchAll()`返回一个匹配对象的迭代器。'
 - en: '[32.10.1.3 Other sources of iterators](#other-sources-of-iterators)'
+  id: totrans-335
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.10.1.3 迭代器的其他来源](#other-sources-of-iterators)'
 - en: 'Generators also return iterators:'
+  id: totrans-336
   prefs: []
   type: TYPE_NORMAL
+  zh: 生成器也返回迭代器：
 - en: '[PRE57]'
+  id: totrans-337
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: '[32.10.2 `Iterator.*`](#iterator)'
+  id: totrans-338
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.10.2 `Iterator.*`](#iterator)'
 - en: '`Iterator.from(iterableOrIterator)` returns an iterator that is guaranteed
     to be an instance of `Iterator`. If the parameter is a legacy iterable or a legacy
     iterator, it wraps the result so that it becomes an instance of `Iterator`.'
+  id: totrans-339
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.from(iterableOrIterator)`返回一个保证是`Iterator`实例的迭代器。如果参数是旧的可迭代对象或旧迭代器，它将包装结果，使其成为`Iterator`的实例。'
 - en: '[32.10.3 `Iterator.prototype.*`: methods that pass indices to callbacks](#iteratorprototype-methods-that-pass-indices-to-callbacks)'
+  id: totrans-340
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.10.3 `Iterator.prototype.*`: 将索引传递给回调的方法](#iteratorprototype-methods-that-pass-indices-to-callbacks)'
 - en: 'Some of the iterator methods keep a counter for the iterated values and pass
     it on to their callbacks:'
+  id: totrans-341
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些迭代器方法会为迭代的值保持一个计数器，并将其传递给它们的回调：
 - en: '`.every()`'
+  id: totrans-342
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.every()`'
 - en: '`.filter()`'
+  id: totrans-343
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.filter()`'
 - en: '`.find()`'
+  id: totrans-344
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.find()`'
 - en: '`.flatMap()`'
+  id: totrans-345
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.flatMap()`'
 - en: '`.forEach()`'
+  id: totrans-346
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.forEach()`'
 - en: '`.map()`'
+  id: totrans-347
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.map()`'
 - en: '`.reduce()`'
+  id: totrans-348
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.reduce()`'
 - en: '`.some()`'
+  id: totrans-349
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.some()`'
 - en: '[32.10.4 `Iterator.prototype.*`: methods that return iterators](#iteratorprototype-methods-that-return-iterators)'
+  id: totrans-350
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.10.4 `Iterator.prototype.*`: 返回迭代器的函数](#iteratorprototype-methods-that-return-iterators)'
 - en: '`Iterator.prototype.drop(limit)` ES2025'
+  id: totrans-351
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.drop(limit)` ES2025'
 - en: '[PRE58]'
+  id: totrans-352
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: This method returns an iterator that with all values of `iterator`, except for
     the first `limit` ones. That is, iteration starts when the iteration counter is
     `limit`.
+  id: totrans-353
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法返回一个迭代器，包含 `iterator` 的所有值，除了前 `limit` 个。也就是说，迭代从迭代计数器为 `limit` 时开始。
 - en: '[PRE59]'
+  id: totrans-354
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: '`Iterator.prototype.filter(filterFn)`'
+  id: totrans-355
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.filter(filterFn)`'
 - en: ES2025 | Callback gets counter
+  id: totrans-356
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: ES2025 | 回调获取计数器
 - en: '[PRE60]'
+  id: totrans-357
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: This method returns an iterator whose values are the values of `iterator` for
     which `filterFn` returns `true`.
+  id: totrans-358
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法返回一个迭代器，其值是 `iterator` 中 `filterFn` 返回 `true` 的值。
 - en: '[PRE61]'
+  id: totrans-359
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: '`Iterator.prototype.flatMap(mapFn)`'
+  id: totrans-360
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.flatMap(mapFn)`'
 - en: ES2025 | Callback gets counter
+  id: totrans-361
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: ES2025 | 回调获取计数器
 - en: '[PRE62]'
+  id: totrans-362
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE62]'
 - en: This method returns an iterator whose values are the values of the iterables
     or iterators that are the results of applying `mapFn` to the values of `iterator`.
+  id: totrans-363
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法返回一个迭代器，其值是应用 `mapFn` 到 `iterator` 的值的结果的迭代器或可迭代对象。
 - en: '[PRE63]'
+  id: totrans-364
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE63]'
 - en: 'For more information see the section on the Array method with the same name:
     [“`.flatMap()`: Each input element produces zero or more output elements ^(ES2019)”
     (§34.14.3)](ch_arrays.html#Array.prototype.flatMap).'
+  id: totrans-365
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '更多信息请参阅具有相同名称的数组方法部分：“`.flatMap()`: 每个输入元素产生零个或多个输出元素 (ES2019)” (§34.14.3)[(ch_arrays.html#Array.prototype.flatMap)]。'
 - en: '`Iterator.prototype.map(mapFn)`'
+  id: totrans-366
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.map(mapFn)`'
 - en: ES2025 | Callback gets counter
+  id: totrans-367
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: ES2025 | 回调获取计数器
 - en: '[PRE64]'
+  id: totrans-368
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE64]'
 - en: This method returns an iterator whose values are the result of applying `mapFn`
     to the values of `iterator`.
+  id: totrans-369
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法返回一个迭代器，其值是应用 `mapFn` 到 `iterator` 的值的结果。
 - en: '[PRE65]'
+  id: totrans-370
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE65]'
 - en: '`Iterator.prototype.take(limit)` ES2025'
+  id: totrans-371
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.take(limit)` ES2025'
 - en: '[PRE66]'
+  id: totrans-372
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE66]'
 - en: This method returns an iterator with the first `limit` values of `iterator`.
+  id: totrans-373
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法返回一个迭代器，包含 `iterator` 的前 `limit` 个值。
 - en: '[PRE67]'
+  id: totrans-374
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE67]'
 - en: '[32.10.5 `Iterator.prototype.*`: methods that return booleans](#iteratorprototype-methods-that-return-booleans)'
+  id: totrans-375
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.10.5 `Iterator.prototype.*`: 返回布尔值的函数](#iteratorprototype-methods-that-return-booleans)'
 - en: '`Iterator.prototype.every(fn)`'
+  id: totrans-376
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.every(fn)`'
 - en: ES2025 | Callback gets counter
+  id: totrans-377
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: ES2025 | 回调获取计数器
 - en: '[PRE68]'
+  id: totrans-378
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE68]'
 - en: This method returns `true` if `fn` returns `true` for every value of `iterator`.
     Otherwise, it returns `false`.
+  id: totrans-379
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果 `fn` 对 `iterator` 的每个值都返回 `true`，则此方法返回 `true`。否则，它返回 `false`。
 - en: '[PRE69]'
+  id: totrans-380
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE69]'
 - en: '`Iterator.prototype.some(fn)`'
+  id: totrans-381
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.some(fn)`'
 - en: ES2025 | Callback gets counter
+  id: totrans-382
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: ES2025 | 回调获取计数器
 - en: '[PRE70]'
+  id: totrans-383
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE70]'
 - en: This method returns `true` if `fn` returns `true` for at least one value of
     `iterator`. Otherwise, it returns `false`.
+  id: totrans-384
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果 `fn` 对 `iterator` 的至少一个值返回 `true`，则此方法返回 `true`。否则，它返回 `false`。
 - en: '[PRE71]'
+  id: totrans-385
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE71]'
 - en: '[32.10.6 `Iterator.prototype.*`: methods that return other kinds of values](#iteratorprototype-methods-that-return-other-kinds-of-values)'
+  id: totrans-386
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.10.6 `Iterator.prototype.*`: 返回其他类型值的函数](#iteratorprototype-methods-that-return-other-kinds-of-values)'
 - en: '`Iterator.prototype.find(fn)`'
+  id: totrans-387
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.find(fn)`'
 - en: ES2025 | Callback gets counter
+  id: totrans-388
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: ES2025 | 回调获取计数器
 - en: '[PRE72]'
+  id: totrans-389
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE72]'
 - en: This method returns the first value of `iterator` for which `fn` returns `true`.
     If there is no such value, it returns `undefined`.
+  id: totrans-390
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法返回 `iterator` 中 `fn` 返回 `true` 的第一个值。如果没有这样的值，则返回 `undefined`。
 - en: '[PRE73]'
+  id: totrans-391
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE73]'
 - en: '`Iterator.prototype.reduce(reducer, initialValue?)`'
+  id: totrans-392
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.reduce(reducer, initialValue?)`'
 - en: ES2025 | Callback gets counter
+  id: totrans-393
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: ES2025 | 回调获取计数器
 - en: '[PRE74]'
+  id: totrans-394
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE74]'
 - en: This method uses the function `reducer` to combine the values of `iterator`
     into a single value.
+  id: totrans-395
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法使用函数 `reducer` 将 `iterator` 的值合并成一个单一值。
 - en: 'Example – concatenating the strings of an iterator:'
+  id: totrans-396
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 示例 - 连接迭代器的字符串：
 - en: '[PRE75]'
+  id: totrans-397
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE75]'
 - en: 'Example – computing the minimum of a Set of numbers:'
+  id: totrans-398
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 示例 - 计算一组数字的最小值：
 - en: '[PRE76]'
+  id: totrans-399
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE76]'
 - en: 'For more information see the section on the Array method with the same name:
     [“`.reduce()`: computing a summary for an Array” (§34.15)](ch_arrays.html#Array.prototype.reduce).'
+  id: totrans-400
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '更多信息请参阅具有相同名称的数组方法部分：“`.reduce()`: 计算数组的摘要” (§34.15)[(ch_arrays.html#Array.prototype.reduce)]。'
 - en: '`Iterator.prototype.toArray()` ES2025'
+  id: totrans-401
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.toArray()` ES2025'
 - en: '[PRE77]'
+  id: totrans-402
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE77]'
 - en: This method returns the values of `iterator` in an Array.
+  id: totrans-403
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法返回 `iterator` 的值在数组中的值。
 - en: '[PRE78]'
+  id: totrans-404
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE78]'
 - en: '[32.10.7 `Iterator.prototype.*`: other methods](#iteratorprototype-other-methods)'
+  id: totrans-405
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.10.7 `Iterator.prototype.*`: 其他方法](#iteratorprototype-other-methods)'
 - en: '`Iterator.prototype.forEach(fn)`'
+  id: totrans-406
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Iterator.prototype.forEach(fn)`'
 - en: ES2025 | Callback gets counter
+  id: totrans-407
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: ES2025 | 回调获取计数器
 - en: '[PRE79]'
+  id: totrans-408
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE79]'
 - en: This method applies `fn` to each value in `iterator`.
+  id: totrans-409
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 此方法将 `fn` 应用到 `iterator` 的每个值上。
 - en: '[PRE80]'
+  id: totrans-410
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE80]'

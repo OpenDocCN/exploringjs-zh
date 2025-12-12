@@ -1,1900 +1,2818 @@
 - en: '35 Typed Arrays: handling binary data ES6 (advanced)'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 35 类型化数组：处理二进制数据 ES6 (高级)
 - en: 原文：[https://exploringjs.com/js/book/ch_typed-arrays.html](https://exploringjs.com/js/book/ch_typed-arrays.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_typed-arrays.html](https://exploringjs.com/js/book/ch_typed-arrays.html)
 - en: '[35.1 The Typed Array API: containers for binary data](#the-typed-array-api-containers-for-binary-data)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.1 类型化数组 API：二进制数据的容器](#the-typed-array-api-containers-for-binary-data)'
 - en: '[35.1.1 Use cases for Typed Arrays](#use-cases-for-typed-arrays)'
+  id: totrans-3
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.1.1 类型化数组的用例](#use-cases-for-typed-arrays)'
 - en: '[35.1.2 The core classes: `ArrayBuffer`, Typed Arrays, `DataView`](#typed-array-api-classes)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.1.2 核心类：`ArrayBuffer`、类型化数组、`DataView`](#typed-array-api-classes)'
 - en: '[35.1.3 `SharedArrayBuffer` ^(ES2017)](#SharedArrayBuffer)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.1.3 `SharedArrayBuffer` (ES2017)](#SharedArrayBuffer)'
 - en: '[35.2 Using Typed Arrays](#using-typed-arrays)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.2 使用类型化数组](#using-typed-arrays)'
 - en: '[35.2.1 Creating Typed Arrays](#creating-typed-arrays)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.2.1 创建类型化数组](#creating-typed-arrays)'
 - en: '[35.2.2 The wrapped ArrayBuffer](#the-wrapped-arraybuffer)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.2.2 包装的 ArrayBuffer](#the-wrapped-arraybuffer)'
 - en: '[35.2.3 Getting and setting elements](#getting-and-setting-elements)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.2.3 获取和设置元素](#getting-and-setting-elements)'
 - en: '[35.2.4 Concatenating Typed Arrays](#concatenating-typed-arrays)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.2.4 连接类型化数组](#concatenating-typed-arrays)'
 - en: '[35.2.5 Typed Arrays vs. normal Arrays](#typed-arrays-vs-arrays)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.2.5 类型化数组与普通数组](#typed-arrays-vs-arrays)'
 - en: '[35.3 Using DataViews](#using-dataviews)'
+  id: totrans-12
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.3 使用 DataView](#using-dataviews)'
 - en: '[35.4 Element types](#typed-array-element-types)'
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.4 元素类型](#typed-array-element-types)'
 - en: '[35.4.1 Handling overflow and underflow](#handling-overflow-underflow)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.4.1 处理溢出和下溢](#handling-overflow-underflow)'
 - en: '[35.4.2 Endianness](#typed-arrays-endianness)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.4.2 字节序](#typed-arrays-endianness)'
 - en: '[35.5 Converting to and from Typed Arrays](#converting-to-and-from-typed-arrays)'
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.5 转换为和从类型化数组转换](#converting-to-and-from-typed-arrays)'
 - en: '[35.5.1 The static method `«ElementType»Array.from()`](#the-static-method-elementtypearrayfrom)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.5.1 静态方法 `«ElementType»Array.from()`](#the-static-method-elementtypearrayfrom)'
 - en: '[35.5.2 Typed Arrays are iterable](#typed-arrays-are-iterable)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.5.2 类型化数组是可迭代的](#typed-arrays-are-iterable)'
 - en: '[35.5.3 Converting Typed Arrays to and from normal Arrays](#converting-typed-arrays-to-and-from-normal-arrays)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.5.3 将类型化数组转换为普通数组以及反之](#converting-typed-arrays-to-and-from-normal-arrays)'
 - en: '[35.5.4 Converting a `Uint8Array` (UTF-8) to and from a string](#uint8array-to-from-string)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.5.4 将 `Uint8Array` (UTF-8) 转换为字符串以及反之](#uint8array-to-from-string)'
 - en: '[35.6 Resizing ArrayBuffers ^(ES2024)](#resizing-array-buffers)'
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.6 调整 ArrayBuffer 的大小 (ES2024)](#resizing-array-buffers)'
 - en: '[35.6.1 New features for ArrayBuffers](#new-features-for-arraybuffers)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.6.1 ArrayBuffer 的新特性](#new-features-for-arraybuffers)'
 - en: '[35.6.2 How Typed Arrays react to changing ArrayBuffer sizes](#how-typed-arrays-react-to-changing-arraybuffer-sizes)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.6.2 类型化数组如何响应 ArrayBuffer 大小的变化](#how-typed-arrays-react-to-changing-arraybuffer-sizes)'
 - en: '[35.6.3 Guidelines given by the ECMAScript specification](#guidelines-given-by-the-ecmascript-specification)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.6.3 ECMAScript 规范提供的指南](#guidelines-given-by-the-ecmascript-specification)'
 - en: '[35.7 Transferring and detaching ArrayBuffers ^(ES2024)](#transferring-detaching-array-buffers)'
+  id: totrans-25
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.7 传输和分离 ArrayBuffer (ES2024)](#transferring-detaching-array-buffers)'
 - en: '[35.7.1 Preparation: transferring data and detaching](#preparation-transferring-data-and-detaching)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.7.1 准备：数据传输和分离](#preparation-transferring-data-and-detaching)'
 - en: '[35.7.2 Methods related to transferring and detaching](#methods-related-to-transferring-and-detaching)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.7.2 与传输和分离相关的方法](#methods-related-to-transferring-and-detaching)'
 - en: '[35.7.3 Transferring ArrayBuffers via `structuredClone()`](#transferring-arraybuffers-via-structuredclone)'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.7.3 通过 `structuredClone()` 传输 ArrayBuffer](#transferring-arraybuffers-via-structuredclone)'
 - en: '[35.7.4 Transferring an ArrayBuffer within the same agent](#transferring-an-arraybuffer-within-the-same-agent)'
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.7.4 在同一代理内传输 ArrayBuffer](#transferring-an-arraybuffer-within-the-same-agent)'
 - en: '[35.7.5 How does detaching an ArrayBuffer affect its wrappers?](#how-does-detaching-an-arraybuffer-affect-its-wrappers)'
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.7.5 分离 ArrayBuffer 会如何影响其包装器？](#how-does-detaching-an-arraybuffer-affect-its-wrappers)'
 - en: '[35.7.6 `ArrayBuffer.prototype.transferToFixedLength()`](#arraybufferprototypetransfertofixedlength)'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.7.6 `ArrayBuffer.prototype.transferToFixedLength()`](#arraybufferprototypetransfertofixedlength)'
 - en: '[35.8 Quick references: indices vs. offsets](#typed-arrays-indices-offsets)'
+  id: totrans-32
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.8 快速参考：索引与偏移量](#typed-arrays-indices-offsets)'
 - en: '[35.9 Quick reference: ArrayBuffers](#quick-reference-arraybuffers)'
+  id: totrans-33
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.9 快速参考：ArrayBuffer](#quick-reference-arraybuffers)'
 - en: '[35.9.1 `new ArrayBuffer()`](#new-arraybuffer)'
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.9.1 `new ArrayBuffer()`](#new-arraybuffer)'
 - en: '[35.9.2 `ArrayBuffer.*`](#arraybuffer)'
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.9.2 `ArrayBuffer.*`](#arraybuffer)'
 - en: '[35.9.3 `ArrayBuffer.prototype.*`: getting and slicing](#arraybufferprototype-getting-and-slicing)'
+  id: totrans-36
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.9.3 `ArrayBuffer.prototype.*`: 获取和切片](#arraybufferprototype-getting-and-slicing)'
 - en: '[35.9.4 `ArrayBuffer.prototype.*`: resizing](#arraybufferprototype-resizing)'
+  id: totrans-37
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.9.4 `ArrayBuffer.prototype.*`: 调整大小](#arraybufferprototype-resizing)'
 - en: '[35.10 Quick reference: Typed Arrays](#quick-reference-typed-arrays)'
+  id: totrans-38
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.10 快速参考：Typed Arrays](#quick-reference-typed-arrays)'
 - en: '[35.10.1 `TypedArray.*`](#typedarray)'
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.10.1 `TypedArray.*`](#typedarray)'
 - en: '[35.10.2 `TypedArray.prototype.*`](#typedarrayprototype)'
+  id: totrans-40
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.10.2 `TypedArray.prototype.*`](#typedarrayprototype)'
 - en: '[35.10.3 `new «ElementType»Array()`](#new-elementtypearray)'
+  id: totrans-41
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.10.3 `new «ElementType»Array()`](#new-elementtypearray)'
 - en: '[35.10.4 `«ElementType»Array.*`](#elementtypearray)'
+  id: totrans-42
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.10.4 `«ElementType»Array.*`](#elementtypearray)'
 - en: '[35.10.5 `«ElementType»Array.prototype.*`](#elementtypearrayprototype)'
+  id: totrans-43
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.10.5 `«ElementType»Array.prototype.*`](#elementtypearrayprototype)'
 - en: '[35.11 Quick reference: DataViews](#quick-reference-dataviews)'
+  id: totrans-44
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.11 快速参考：DataViews](#quick-reference-dataviews)'
 - en: '[35.11.1 `new DataView()`](#new-dataview)'
+  id: totrans-45
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.11.1 `new DataView()`](#new-dataview)'
 - en: '[35.11.2 `DataView.prototype.*`](#dataviewprototype)'
+  id: totrans-46
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.11.2 `DataView.prototype.*`](#dataviewprototype)'
 - en: '[35.1 The Typed Array API: containers for binary data](#the-typed-array-api-containers-for-binary-data)'
+  id: totrans-47
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.1 The Typed Array API: containers for binary data](#the-typed-array-api-containers-for-binary-data)'
 - en: 'Much data on the web is text: JSON files, HTML files, CSS files, JavaScript
     code, etc. JavaScript handles such data well via its built-in strings.'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 网络上的大量数据是文本：JSON文件、HTML文件、CSS文件、JavaScript代码等。JavaScript通过其内置的字符串很好地处理这类数据。
 - en: However, before 2011, it did not handle binary data well. [The Typed Array Specification
     1.0](https://web.archive.org/web/20160529225618/https://www.khronos.org/registry/typedarray/specs/1.0/)
     was introduced on February 8, 2011 and provides tools for working with binary
     data. With ECMAScript 6, Typed Arrays were added to the core language and gained
     methods that were previously only available for normal Arrays (`.map()`, `.filter()`,
     etc.).
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，在2011年之前，它并没有很好地处理二进制数据。[Typed Array规范1.0](https://web.archive.org/web/20160529225618/https://www.khronos.org/registry/typedarray/specs/1.0/)于2011年2月8日推出，为处理二进制数据提供了工具。随着ECMAScript
+    6的推出，Typed Arrays被添加到核心语言中，并获得了之前仅适用于普通数组的方法（`.map()`、`.filter()`等）。
 - en: '[35.1.1 Use cases for Typed Arrays](#use-cases-for-typed-arrays)'
+  id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.1.1 Use cases for Typed Arrays](#use-cases-for-typed-arrays)'
 - en: 'The main uses cases for Typed Arrays are:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: Typed Arrays的主要用途包括：
 - en: 'Processing binary data: managing image data, manipulating binary files, handling
     binary network protocols, etc.'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 处理二进制数据：管理图像数据、操作二进制文件、处理二进制网络协议等。
 - en: 'Interacting with native APIs: Native APIs often receive and return data in
     a binary format, which we could neither store nor manipulate well in pre-ES6 JavaScript.
     That meant that whenever we were communicating with such an API, data had to be
     converted from JavaScript to binary and back for every call. Typed Arrays eliminate
     this bottleneck. Examples include:'
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与原生API交互：原生API通常以二进制格式接收和返回数据，在ES6之前的JavaScript中，我们无法很好地存储或操作这些数据。这意味着每次与这样的API通信时，数据都必须在每次调用时从JavaScript转换为二进制格式，然后再转换回来。Typed
+    Arrays消除了这个瓶颈。例如包括：
 - en: '[WebGL](https://www.khronos.org/webgl/), “a low-level 3D graphics API based
     on OpenGL ES, exposed to ECMAScript via the HTML5 Canvas element”. Typed Arrays
     were initially created for WebGL. Section [“History of Typed Arrays”](https://web.dev/articles/webgl-typed-arrays#toc-history)
     of the article [“Typed Arrays: Binary Data in the Browser”](https://web.dev/articles/webgl-typed-arrays#toc-history)
     (by Ilmari Heikkinen for HTML5 Rocks) has more information.'
+  id: totrans-54
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[WebGL](https://www.khronos.org/webgl/)，"基于OpenGL ES的低级3D图形API，通过HTML5 Canvas元素暴露给ECMAScript"。Typed
+    Arrays最初是为WebGL创建的。文章[“Typed Arrays: Binary Data in the Browser”](https://web.dev/articles/webgl-typed-arrays#toc-history)（由Ilmari
+    Heikkinen为HTML5 Rocks撰写）的[“Typed Arrays的历程”](https://web.dev/articles/webgl-typed-arrays#toc-history)部分提供了更多信息。'
 - en: '[WebGPU](https://www.w3.org/TR/webgpu/), “an API for performing operations,
     such as rendering and computation, on a Graphics Processing Unit”. For example,
     WebGPU uses ArrayBuffers as wrappers for backing stores.'
+  id: totrans-55
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[WebGPU](https://www.w3.org/TR/webgpu/)，"一个用于在图形处理单元上执行操作（如渲染和计算）的API"。例如，WebGPU使用ArrayBuffer作为后备存储的包装器。'
 - en: '[WebAssembly](https://webassembly.org) (short: “Wasm”), “a binary instruction
     format for a stack-based virtual machine. Wasm is designed as a portable compilation
     target for programming languages, enabling deployment on the web for client and
     server applications.” For example, the memory of WebAssembly code is stored in
     an ArrayBuffer or a SharedArrayBuffer ([details](https://developer.mozilla.org/en-US/docs/WebAssembly/JavaScript_interface/Memory)).'
+  id: totrans-56
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[WebAssembly](https://webassembly.org)（简称“Wasm”），"一种基于栈的虚拟机的二进制指令格式。Wasm被设计为编程语言的便携式编译目标，使得客户端和服务器应用程序能够在网络上部署。"例如，WebAssembly代码的内存存储在ArrayBuffer或SharedArrayBuffer中（[详情](https://developer.mozilla.org/en-US/docs/WebAssembly/JavaScript_interface/Memory)）。'
 - en: '[35.1.2 The core classes: `ArrayBuffer`, Typed Arrays, `DataView`](#typed-array-api-classes)'
+  id: totrans-57
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.1.2   核心类：`ArrayBuffer`、类型数组、`DataView`](#typed-array-api-classes)'
 - en: 'The Typed Array API stores binary data in instances of `ArrayBuffer`:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型数组API将二进制数据存储在`ArrayBuffer`的实例中：
 - en: '[PRE0]'
+  id: totrans-59
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'An ArrayBuffer itself is a black box: if we want to access its data, we must
     wrap it in another object – a *view object*. Two kinds of view objects are available:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组缓冲区本身是一个黑盒：如果我们想访问其数据，我们必须将其包装在另一个对象中——一个*视图对象*。有两种类型的视图对象可用：
 - en: '*Typed Arrays* work similarly to normal Arrays and let us access the data as
     an indexed sequence of elements that all have the same type. Examples include:'
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*类型数组*与普通数组的工作方式相似，并允许我们将数据作为具有相同类型的索引元素序列访问。例如包括：'
 - en: '`Uint8Array`: Elements are unsigned 8-bit integers. *Unsigned* means that their
     ranges start at zero.'
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Uint8Array`：元素是无符号的8位整数。*无符号*意味着它们的范围从零开始。'
 - en: '`Int16Array`: Elements are signed 16-bit integers. *Signed* means that they
     have a sign and can be negative, zero, or positive.'
+  id: totrans-63
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Int16Array`：元素是带符号的16位整数。*带符号*意味着它们有符号，可以是负数、零或正数。'
 - en: '`Float16Array`: Elements are 16-bit floating point numbers.'
+  id: totrans-64
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Float16Array`：元素是16位浮点数。'
 - en: '*DataViews* let us interpret the data as various types (`Uint8`, `Int16`, `Float16`,
     etc.) that we can read and write at any byte offset.'
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*数据视图*允许我们将数据解释为各种类型（`Uint8`、`Int16`、`Float16`等），我们可以在任何字节偏移量处读取和写入这些类型。'
 - en: '[Figure 35.1](#fig:typed_arrays_class_diagram) shows a class diagram of the
     API.'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: '[图35.1](#fig:typed_arrays_class_diagram)显示了API的类图。'
 - en: '![](../Images/a115834d4de67018f7d77365cf61bfce.png)'
+  id: totrans-67
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/a115834d4de67018f7d77365cf61bfce.png)'
 - en: 'Figure 35.1: The classes of the Typed Array API.'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 图35.1：类型数组API的类。
 - en: '[35.1.3 `SharedArrayBuffer` ^(ES2017)](#SharedArrayBuffer)'
+  id: totrans-69
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.1.3   `SharedArrayBuffer` (ES2017)](#SharedArrayBuffer)'
 - en: SharedArrayBuffer is an ArrayBuffer whose memory can be accessed by multiple
     *agents* (an agent being the main thread or a web worker) concurrently.
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 共享数组缓冲区是一个数组缓冲区，其内存可以被多个*代理*（代理可以是主线程或Web Worker）同时访问。
 - en: Where ArrayBuffers can be [*transferred*](#transferring-detaching-array-buffers)
     (moved, not copied) between agents, SharedArrayBuffers are not transferable and
     must be cloned. However, that only clones their outer parts. The data storage
     itself is shared.
+  id: totrans-71
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在数组缓冲区可以在代理之间[*传输*](#transferring-detaching-array-buffers)（移动，而不是复制）的情况下，共享数组缓冲区是不可传输的，必须进行克隆。然而，这仅克隆了它们的表层部分。数据存储本身是共享的。
 - en: SharedArrayBuffers can be [resized](#resizing-array-buffers) but they can only
     grow not shrink because shrinking shared memory is too complicated.
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 共享数组缓冲区可以[*调整大小*](#resizing-array-buffers)，但它们只能增长而不能缩小，因为缩小共享内存太复杂了。
 - en: '`Atomics` is a global namespace for an API that complements SharedArrayBuffers.
     The ECMAScript specification [describes it](https://tc39.es/ecma262/#sec-atomics-object)
     as “functions that operate indivisibly (atomically) on shared memory array cells
     as well as functions that let agents wait for and dispatch primitive events. When
     used with discipline, the Atomics functions allow multi-agent programs that communicate
     through shared memory to execute in a well-understood order even on parallel CPUs.”'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Atomics`是一个全局命名空间，用于补充共享数组缓冲区的API。ECMAScript规范[描述它](https://tc39.es/ecma262/#sec-atomics-object)为“在共享内存数组单元上操作不可分割（原子）的函数以及允许代理等待和调度原始事件的函数。当有纪律地使用时，Atomics函数允许通过共享内存通信的多代理程序在并行CPU上以可理解的方式执行。”'
 - en: See MDN Web Docs for more information on [`SharedArrayBuffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer)
     and [`Atomics`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics).
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关`SharedArrayBuffer`（[SharedArrayBuffer](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer)）和`Atomics`（[Atomics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics)）的更多信息，请参阅MDN
+    Web文档。
 - en: '[35.2 Using Typed Arrays](#using-typed-arrays)'
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.2   使用类型数组](#using-typed-arrays)'
 - en: Typed Arrays are used much like normal Arrays.
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型数组的使用方式与普通数组非常相似。
 - en: '[35.2.1 Creating Typed Arrays](#creating-typed-arrays)'
+  id: totrans-77
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.2.1   创建类型数组](#creating-typed-arrays)'
 - en: 'The following code shows three different ways of creating the same Typed Array:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码展示了创建相同类型数组的三种不同方法：
 - en: '[PRE1]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[35.2.2 The wrapped ArrayBuffer](#the-wrapped-arraybuffer)'
+  id: totrans-80
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.2.2   包装的`ArrayBuffer`](#the-wrapped-arraybuffer)'
 - en: '[PRE2]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[35.2.3 Getting and setting elements](#getting-and-setting-elements)'
+  id: totrans-82
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.2.3   获取和设置元素](#getting-and-setting-elements)'
 - en: '[PRE3]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[35.2.4 Concatenating Typed Arrays](#concatenating-typed-arrays)'
+  id: totrans-84
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.2.4   连接类型数组](#concatenating-typed-arrays)'
 - en: 'Typed Arrays don’t have a method `.concat()`, like normal Arrays do. The workaround
     is to use their overloaded method `.set()`:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型化数组没有像普通数组那样的 `.concat()` 方法。解决方案是使用它们的重载方法 `.set()`：
 - en: '[PRE4]'
+  id: totrans-86
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: It copies the existing `typedArray` or `arrayLike` into the receiver, at index
     `offset`. `TypedArray` is an internal abstract superclass of all concrete Typed
     Array classes (that doesn’t actually have a global name).
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 它将现有的 `typedArray` 或 `arrayLike` 复制到接收器中的 `offset` 索引处。`TypedArray` 是所有具体类型化数组类的内部抽象超类（实际上没有全局名称）。
 - en: 'The following function uses that method to copy zero or more Typed Arrays (or
     Array-like objects) into an instance of `resultConstructor`:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数使用该方法将零个或多个类型化数组（或类似数组的对象）复制到 `resultConstructor` 的一个实例中：
 - en: '[PRE5]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[35.2.5 Typed Arrays vs. normal Arrays](#typed-arrays-vs-arrays)'
+  id: totrans-90
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.2.5 类型化数组与普通数组](#typed-arrays-vs-arrays)'
 - en: 'Typed Arrays are much like normal Arrays: they have a `.length`, elements can
     be accessed via the bracket operator `[]`, and they have most of the standard
     Array methods. They differ from normal Arrays in the following ways:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型化数组与普通数组非常相似：它们都有一个 `.length`，可以通过中括号运算符 `[]` 访问元素，并且具有大多数标准数组方法。它们与普通数组在以下方面有所不同：
 - en: 'Typed Arrays have buffers. The elements of a Typed Array `ta` are not stored
     in `ta`, they are stored in an associated ArrayBuffer that can be accessed via
     `ta.buffer`:'
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型化数组有缓冲区。类型化数组 `ta` 的元素不存储在 `ta` 中，而是存储在关联的 ArrayBuffer 中，可以通过 `ta.buffer`
+    访问：
 - en: '[PRE6]'
+  id: totrans-93
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Typed Arrays are initialized with zeros:'
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型化数组以零初始化：
 - en: '`new Array(4)` creates a normal Array without any elements. It only has four
     *holes* (indices less than the `.length` that have no associated elements).'
+  id: totrans-95
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new Array(4)` 创建一个没有任何元素的普通数组。它只有四个*空洞*（小于 `.length` 的索引没有关联的元素）。'
 - en: '`new Uint8Array(4)` creates a Typed Array whose four elements are all 0.'
+  id: totrans-96
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new Uint8Array(4)` 创建一个类型化数组，其四个元素都是 0。'
 - en: '[PRE7]'
+  id: totrans-97
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'All of the elements of a Typed Array have the same type:'
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型化数组的所有元素都具有相同的类型：
 - en: Setting elements converts values to that type.
+  id: totrans-99
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 设置元素会将值转换为该类型。
 - en: '[PRE8]'
+  id: totrans-100
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Getting elements returns numbers or bigints.
+  id: totrans-101
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 获取元素返回数字或大整数。
 - en: '[PRE9]'
+  id: totrans-102
   prefs:
   - PREF_IND
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: The `.length` of a Typed Array is derived from its ArrayBuffer and never changes
     (unless we switch to a different ArrayBuffer).
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型化数组的 `.length` 从其 ArrayBuffer 中派生，永远不会改变（除非我们切换到不同的 ArrayBuffer）。
 - en: Normal Arrays can have holes; Typed Arrays can’t.
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 普通数组可以有空洞；类型化数组不能。
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Converting between strings and UTF-16**'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：字符串与
+    UTF-16 之间的转换**'
 - en: '`exercises/typed-arrays/utf-16-conversion_test.mjs`'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/typed-arrays/utf-16-conversion_test.mjs`'
 - en: '[35.3 Using DataViews](#using-dataviews)'
+  id: totrans-107
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.3 使用 DataViews](#using-dataviews)'
 - en: 'This is how DataViews are used:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是如何使用 DataViews：
 - en: '[PRE10]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[35.4 Element types](#typed-array-element-types)'
+  id: totrans-110
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.4 元素类型](#typed-array-element-types)'
 - en: '| Element | Typed Array | Bytes | Description | Get/Set |  |'
+  id: totrans-111
   prefs: []
   type: TYPE_TB
+  zh: '| 元素 | 类型化数组 | 字节 | 描述 | 获取/设置 |  |'
 - en: '| --- | --- | --- | --- | --- | --- |'
+  id: totrans-112
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- | --- | --- | --- |'
 - en: '| `Int8` | `Int8Array` | 1 | 8-bit signed integer | `number` | ES6 |'
+  id: totrans-113
   prefs: []
   type: TYPE_TB
+  zh: '| `Int8` | `Int8Array` | 1 | 8-bit signed integer | `number` | ES6 |'
 - en: '| `Uint8` | `Uint8Array` | 1 | 8-bit unsigned int | `number` | ES6 |'
+  id: totrans-114
   prefs: []
   type: TYPE_TB
+  zh: '| `Uint8` | `Uint8Array` | 1 | 8-bit unsigned int | `number` | ES6 |'
 - en: '| (`Uint8C`) | `Uint8ClampedArray` | 1 | 8-bit unsigned int | `number` | ES6
     |'
+  id: totrans-115
   prefs: []
   type: TYPE_TB
+  zh: '| (`Uint8C`) | `Uint8ClampedArray` | 1 | 8-bit unsigned int | `number` | ES6
+    |'
 - en: '| `Int16` | `Int16Array` | 2 | 16-bit signed int | `number` | ES6 |'
+  id: totrans-116
   prefs: []
   type: TYPE_TB
+  zh: '| `Int16` | `Int16Array` | 2 | 16-bit signed int | `number` | ES6 |'
 - en: '| `Uint16` | `Uint16Array` | 2 | 16-bit unsigned int | `number` | ES6 |'
+  id: totrans-117
   prefs: []
   type: TYPE_TB
+  zh: '| `Uint16` | `Uint16Array` | 2 | 16-bit unsigned int | `number` | ES6 |'
 - en: '| `Int32` | `Int32Array` | 4 | 32-bit signed int | `number` | ES6 |'
+  id: totrans-118
   prefs: []
   type: TYPE_TB
+  zh: '| `Int32` | `Int32Array` | 4 | 32-bit signed int | `number` | ES6 |'
 - en: '| `Uint32` | `Uint32Array` | 4 | 32-bit unsigned int | `number` | ES6 |'
+  id: totrans-119
   prefs: []
   type: TYPE_TB
+  zh: '| `Uint32` | `Uint32Array` | 4 | 32-bit unsigned int | `number` | ES6 |'
 - en: '| `BigInt64` | `BigInt64Array` | 8 | 64-bit signed int | `bigint` | ES2020
     |'
+  id: totrans-120
   prefs: []
   type: TYPE_TB
+  zh: '| `BigInt64` | `BigInt64Array` | 8 | 64-bit signed int | `bigint` | ES2020
+    |'
 - en: '| `BigUint64` | `BigUint64Array` | 8 | 64-bit unsigned int | `bigint` | ES2020
     |'
+  id: totrans-121
   prefs: []
   type: TYPE_TB
+  zh: '| `BigUint64` | `BigUint64Array` | 8 | 64-bit unsigned int | `bigint` | ES2020
+    |'
 - en: '| `Float16` | `Float16Array` | 2 | 16-bit floating point | `number` | ES2025
     |'
+  id: totrans-122
   prefs: []
   type: TYPE_TB
+  zh: '| `Float16` | `Float16Array` | 2 | 16-bit floating point | `number` | ES2025
+    |'
 - en: '| `Float32` | `Float32Array` | 4 | 32-bit floating point | `number` | ES6 |'
+  id: totrans-123
   prefs: []
   type: TYPE_TB
+  zh: '| `Float32` | `Float32Array` | 4 | 32-bit floating point | `number` | ES6 |'
 - en: '| `Float64` | `Float64Array` | 8 | 64-bit floating point | `number` | ES6 |'
+  id: totrans-124
   prefs: []
   type: TYPE_TB
+  zh: '| `Float64` | `Float64Array` | 8 | 64-bit floating point | `number` | ES6 |'
 - en: 'Table 35.1: Element types supported by the Typed Array API.'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 表 35.1：类型化数组 API 支持的元素类型。
 - en: '[Table 35.1](#tbl:typed-array-element-types) lists the available element types.
     These types (e.g., `Int32`) show up in two locations:'
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: '[表35.1](#tbl:typed-array-element-types) 列出了可用的元素类型。这些类型（例如，`Int32`）出现在两个位置：'
 - en: In Typed Arrays, they specify the types of the elements. For example, all elements
     of a `Int32Array` have the type `Int32`. The element type is the only aspect of
     Typed Arrays that differs.
+  id: totrans-127
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在类型数组中，它们指定了元素的类型。例如，`Int32Array`的所有元素都具有`Int32`类型。元素类型是类型数组唯一不同的方面。
 - en: In DataViews, they are the lenses through which they access their ArrayBuffers
     when we use methods such as `.getInt32()` and `.setInt32()`.
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在数据视图中，它们是我们使用`.getInt32()`和`.setInt32()`等方法访问其ArrayBuffers时的透镜。
 - en: 'The element type `Uint8C` is special: it is not supported by `DataView` and
     only exists to enable `Uint8ClampedArray`. This Typed Array is used by the `canvas`
     element (where it replaces `CanvasPixelArray`) and should otherwise be avoided.
     The only difference between `Uint8C` and `Uint8` is how overflow is handled (as
     explained next).'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 元素类型`Uint8C`是特殊的：它不被`DataView`支持，仅存在以启用`Uint8ClampedArray`。此类型数组由`canvas`元素使用（其中它取代了`CanvasPixelArray`），应避免使用。`Uint8C`和`Uint8`之间的唯一区别是它们处理溢出的方式（如下所述）。
 - en: 'Typed Arrays and Array Buffers use numbers and bigints to import and export
     values:'
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型数组和数组缓冲区使用数字和大整数来导入和导出值：
 - en: The types `BigInt64` and `BigUint64` are handled via bigints. For example, setters
     accept bigints and getters return bigints.
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt64`和`BigUint64`类型通过大整数处理。例如，设置器接受大整数，获取器返回大整数。'
 - en: All other element types are handled via numbers.
+  id: totrans-132
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有其他元素类型都通过数字处理。
 - en: '[35.4.1 Handling overflow and underflow](#handling-overflow-underflow)'
+  id: totrans-133
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.4.1 处理溢出和下溢](#handling-overflow-underflow)'
 - en: '[35.4.1.1 Handling overflow for integers](#handling-overflow-for-integers)'
+  id: totrans-134
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[35.4.1.1 处理整数的溢出](#handling-overflow-for-integers)'
 - en: 'Normally, when a value is out of the range of the element type, modulo arithmetic
     is used to convert it to a value within range. For signed and unsigned integers
     that means that:'
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常，当值超出元素类型范围时，使用模运算将其转换为范围内的值。对于有符号和无符号整数，这意味着：
 - en: The highest value plus one is converted to the lowest value (0 for unsigned
     integers).
+  id: totrans-136
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最高值加一转换为最低值（对于无符号整数来说是0）。
 - en: The lowest value minus one is converted to the highest value.
+  id: totrans-137
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最低值减一转换为最高值。
 - en: 'The following function helps illustrate how conversion works:'
+  id: totrans-138
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数有助于说明转换是如何工作的：
 - en: '[PRE11]'
+  id: totrans-139
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'Modulo conversion for unsigned 8-bit integers:'
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 无符号8位整数的模转换：
 - en: '[PRE12]'
+  id: totrans-141
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Modulo conversion for signed 8-bit integers:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 有符号8位整数的模转换：
 - en: '[PRE13]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Clamped conversion is different:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 限制转换不同：
 - en: All negatively overflowing values are converted to the lowest value.
+  id: totrans-145
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有负溢出值都转换为最低值。
 - en: All positively overflowing values are converted to the highest value.
+  id: totrans-146
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有正溢出值都转换为最高值。
 - en: '[PRE14]'
+  id: totrans-147
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[35.4.1.2 Handling overflow and underflow for floats](#handling-overflow-and-underflow-for-floats)'
+  id: totrans-148
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[35.4.1.2 处理浮点数的溢出和下溢](#handling-overflow-and-underflow-for-floats)'
 - en: '[PRE15]'
+  id: totrans-149
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'If there is positive overflow (positive numbers being too far away from zero),
     the result is positive infinity:'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果发生正溢出（正数离零太远），结果是正无穷大：
 - en: '[PRE16]'
+  id: totrans-151
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'If there is negative overflow (negative numbers being too far away from zero),
     the result is negative infinity:'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果发生负溢出（负数离零太远），结果是负无穷大：
 - en: '[PRE17]'
+  id: totrans-153
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'Arithmetic underflow means that a number has too many digits after a binary
     point (it is too close to an integer). If that happens, digits that can’t be represented
     are omitted:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 算术下溢意味着一个数字在二进制小数点后有太多数字（它太接近整数）。如果发生这种情况，无法表示的数字将被省略：
 - en: '[PRE18]'
+  id: totrans-155
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'Useful related function: [`Math.f16round(x)`](ch_math.html#qref-Math.f16round)
     rounds `x` to 16 bits (within a 64-bit float).'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 有用的相关函数：[`Math.f16round(x)`](ch_math.html#qref-Math.f16round) 将`x`四舍五入到16位（在64位浮点数内）。
 - en: '[35.4.2 Endianness](#typed-arrays-endianness)'
+  id: totrans-157
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.4.2 字节序](#typed-arrays-endianness)'
 - en: 'Whenever a type (such as `Uint16`) is stored as a sequence of multiple bytes,
     *endianness* matters:'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 当一个类型（如`Uint16`）作为多个字节的序列存储时，*字节序*很重要：
 - en: 'Big endian: the most significant byte comes first. For example, the `Uint16`
     value 0x4321 is stored as two bytes – first 0x43, then 0x21.'
+  id: totrans-159
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 大端序：最高有效字节最先。例如，`Uint16`值0x4321存储为两个字节——首先是0x43，然后是0x21。
 - en: 'Little endian: the least significant byte comes first. For example, the `Uint16`
     value 0x4321 is stored as two bytes – first 0x21, then 0x43.'
+  id: totrans-160
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 小端序：最低有效字节最先。例如，`Uint16`值0x4321存储为两个字节——首先是0x21，然后是0x43。
 - en: Endianness tends to be fixed per CPU architecture and consistent across native
     APIs. Typed Arrays are used to communicate with those APIs, which is why their
     endianness follows the endianness of the platform and can’t be changed.
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 字节序通常在每个CPU架构中是固定的，并且与原生API保持一致。类型数组用于与这些API通信，这就是为什么它们的字节序遵循平台的字节序，并且不能更改。
 - en: On the other hand, the endianness of protocols and binary files varies, but
     is fixed per format, across platforms. Therefore, we must be able to access data
     with either endianness. DataViews serve this use case and let us specify endianness
     when we get or set a value.
+  id: totrans-162
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，协议和二进制文件的字节序可能不同，但每个格式在平台间是固定的。因此，我们必须能够以任意的字节序访问数据。DataViews用于满足这一需求，并允许我们在获取或设置值时指定字节序。
 - en: '[Quoting Wikipedia on Endianness](https://en.wikipedia.org/wiki/Endianness):'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: '[引用维基百科关于字节序](https://en.wikipedia.org/wiki/Endianness):'
 - en: Big-endian representation is the most common convention in data networking;
     fields in the protocols of the Internet protocol suite, such as IPv4, IPv6, TCP,
     and UDP, are transmitted in big-endian order. For this reason, big-endian byte
     order is also referred to as network byte order.
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 大端表示法是数据网络中最常见的约定；在互联网协议套件的协议中，如IPv4、IPv6、TCP和UDP，字段以大端顺序传输。因此，大端字节序也被称为网络字节序。
 - en: Little-endian storage is popular for microprocessors in part due to significant
     historical influence on microprocessor designs by Intel Corporation.
+  id: totrans-165
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 小端存储在微处理器中很受欢迎，部分原因是英特尔公司对微处理器设计产生了重大历史影响。
 - en: Other orderings are also possible. Those are generically called *middle-endian*
     or *mixed-endian*.
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 其他排序也是可能的。这些通常被称为*中间端序*或*混合端序*。
 - en: '[35.5 Converting to and from Typed Arrays](#converting-to-and-from-typed-arrays)'
+  id: totrans-167
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.5 将数据转换为和从类型数组转换](#将数据转换为和从类型数组转换)'
 - en: In this section, `«ElementType»Array` stands for `Int8Array`, `Uint8Array`,
     etc. `ElementType` is `Int8`, `Uint8`, etc.
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，`「ElementType」Array`代表`Int8Array`、`Uint8Array`等。`ElementType`是`Int8`、`Uint8`等。
 - en: '[35.5.1 The static method `«ElementType»Array.from()`](#the-static-method-elementtypearrayfrom)'
+  id: totrans-169
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.5.1 静态方法「ElementType」Array.from()](#静态方法-elementtypearrayfrom)'
 - en: 'This method has the type signature:'
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: 此方法具有以下类型签名：
 - en: '[PRE19]'
+  id: totrans-171
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '`.from()` converts `source` into an instance of `this` (a Typed Array).'
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.from()`将`source`转换为`this`（一个类型数组）的实例。'
 - en: 'For example, normal Arrays are iterable and can be converted with this method:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，普通数组是可迭代的，并且可以使用此方法进行转换：
 - en: '[PRE20]'
+  id: totrans-174
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'Typed Arrays are also iterable:'
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型数组也是可迭代的：
 - en: '[PRE21]'
+  id: totrans-176
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '`source` can also be [an *Array-like object*](ch_arrays.html#array-like-objects):'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: '`source`也可以是[一个类似数组的对象](ch_arrays.html#array-like-objects)：'
 - en: '[PRE22]'
+  id: totrans-178
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'The optional `mapfn` lets us transform the elements of `source` before they
     become elements of the result. Why perform the two steps *mapping* and *conversion*
     in one go? Compared to mapping separately via `.map()`, there are two advantages:'
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 可选的`mapfn`允许我们在`source`的元素成为结果元素之前对其进行转换。为什么一次性执行两个步骤*映射*和*转换*？与通过`.map()`单独映射相比，有两个优点：
 - en: No intermediate Array or Typed Array is needed.
+  id: totrans-180
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 不需要中间的数组或类型数组。
 - en: When converting between Typed Arrays with different precisions, less can go
     wrong.
+  id: totrans-181
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 在将不同精度的类型数组之间进行转换时，出错的可能性更小。
 - en: Read on for an explanation of the second advantage.
+  id: totrans-182
   prefs: []
   type: TYPE_NORMAL
+  zh: 继续阅读以了解第二个优势的解释。
 - en: '[35.5.1.1 Pitfall: mapping while converting between Typed Array types](#pitfall-mapping-while-converting-between-typed-array-types)'
+  id: totrans-183
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[35.5.1.1 陷阱：在转换类型数组时映射](#陷阱-在转换类型数组时映射)'
 - en: The static method `.from()` can optionally both map and convert between Typed
     Array types. Less can go wrong if we use that method.
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.from()`静态方法可以选择性地在类型数组之间进行映射和转换。如果我们使用该方法，出错的可能性会更小。'
 - en: To see why that is, let us first convert a Typed Array to a Typed Array with
     a higher precision. If we use `.from()` to map, the result is automatically correct.
     Otherwise, we must first convert and then map.
+  id: totrans-185
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了了解为什么是这样，让我们首先将类型数组转换为具有更高精度的类型数组。如果我们使用`.from()`进行映射，结果将自动正确。否则，我们必须先转换然后映射。
 - en: '[PRE23]'
+  id: totrans-186
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: If we go from a Typed Array to a Typed Array with a lower precision, mapping
     via `.from()` produces the correct result. Otherwise, we must first map and then
     convert.
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们从类型数组转换为具有较低精度的类型数组，通过`.from()`进行映射会产生正确的结果。否则，我们必须先映射然后转换。
 - en: '[PRE24]'
+  id: totrans-188
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: The problem is that if we map via `.map()`, then input type and output type
     are the same. In contrast, `.from()` goes from an arbitrary input type to an output
     type that we specify via its receiver.
+  id: totrans-189
   prefs: []
   type: TYPE_NORMAL
+  zh: 问题在于，如果我们通过`.map()`进行映射，则输入类型和输出类型是相同的。相比之下，`.from()`从任意输入类型映射到我们通过其接收器指定的输出类型。
 - en: '[35.5.2 Typed Arrays are iterable](#typed-arrays-are-iterable)'
+  id: totrans-190
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.5.2 Typed Arrays是可迭代的](#typed-arrays-are-iterable)'
 - en: 'Typed Arrays are [iterable](ch_sync-iteration.html#ch_sync-iteration). That
     means that we can use the `for-of` loop and other iteration-based mechanisms:'
+  id: totrans-191
   prefs: []
   type: TYPE_NORMAL
+  zh: Typed Arrays是[可迭代的](ch_sync-iteration.html#ch_sync-iteration)。这意味着我们可以使用`for-of`循环和其他基于迭代的机制：
 - en: '[PRE25]'
+  id: totrans-192
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Output:'
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE26]'
+  id: totrans-194
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: ArrayBuffers and DataViews are not iterable.
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: ArrayBuffer和DataViews是不可迭代的。
 - en: '[35.5.3 Converting Typed Arrays to and from normal Arrays](#converting-typed-arrays-to-and-from-normal-arrays)'
+  id: totrans-196
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.5.3 将Typed Arrays转换为普通数组以及从普通数组转换回来](#converting-typed-arrays-to-and-from-normal-arrays)'
 - en: 'To convert a normal Array to a Typed Array, we pass it to:'
+  id: totrans-197
   prefs: []
   type: TYPE_NORMAL
+  zh: 要将普通数组转换为Typed Array，我们将其传递给：
 - en: A Typed Array constructor – which accepts Typed Arrays, iterable values and
     Array-like objects.
+  id: totrans-198
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Typed Array构造函数接受Typed Arrays、可迭代值和类似数组的对象。
 - en: '`«ElementType»Array.from()` – which accepts iterable values and Array-like
     values.'
+  id: totrans-199
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`«ElementType»Array.from()`接受可迭代值和类似数组的值。'
 - en: 'For example:'
+  id: totrans-200
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE27]'
+  id: totrans-201
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'To convert a Typed Array to a normal Array, we can use `Array.from()` or spreading
     (because Typed Arrays are iterable):'
+  id: totrans-202
   prefs: []
   type: TYPE_NORMAL
+  zh: 要将Typed Array转换为普通数组，我们可以使用`Array.from()`或展开（因为Typed Arrays是可迭代的）：
 - en: '[PRE28]'
+  id: totrans-203
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: '[35.5.4 Converting a `Uint8Array` (UTF-8) to and from a string](#uint8array-to-from-string)'
+  id: totrans-204
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.5.4 将`Uint8Array`（UTF-8）转换为字符串以及从字符串转换回来](#uint8array-to-from-string)'
 - en: The class `TextEncoder` and `TextDecoder` are not part of ECMAScript proper
     but supported by all major JavaScript platforms (browsers, Node.js, etc.). Therefore,
     we can use them to convert between `Uint8Array` and string.
+  id: totrans-205
   prefs: []
   type: TYPE_NORMAL
+  zh: 类`TextEncoder`和`TextDecoder`不是ECMAScript本身的一部分，但所有主要的JavaScript平台（浏览器、Node.js等）都支持它们。因此，我们可以使用它们在`Uint8Array`和字符串之间进行转换。
 - en: 'Converting a string to UTF-8-encoded bytes:'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 将字符串转换为UTF-8编码的字节：
 - en: '[PRE29]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'Converting UTF-8-encoded bytes to a string:'
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 将UTF-8编码的字节转换为字符串：
 - en: '[PRE30]'
+  id: totrans-209
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[35.6 Resizing ArrayBuffers ^(ES2024)](#resizing-array-buffers)'
+  id: totrans-210
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.6 调整ArrayBuffers（ES2024）](#resizing-array-buffers)'
 - en: Before ArrayBuffers became resizable, they had fixed sizes. If we wanted one
     to grow or shrink, we had to allocate a new one and copy the old one over. That
     costs time and can fragment the address space on 32-bit systems.
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 在ArrayBuffers变得可调整大小之前，它们具有固定的大小。如果我们想要一个增长或缩小，我们必须分配一个新的，并将旧的复制过来。这会花费时间，并且可以在32位系统上破坏地址空间。
 - en: '[35.6.1 New features for ArrayBuffers](#new-features-for-arraybuffers)'
+  id: totrans-212
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.6.1 ArrayBuffer的新特性](#new-features-for-arraybuffers)'
 - en: 'These are the changes introduced by resizing:'
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是调整大小引入的变化：
 - en: 'The existing constructor gets one more parameter:'
+  id: totrans-214
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 现有的构造函数多了一个参数：
 - en: '[PRE31]'
+  id: totrans-215
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'There is one new method and two new getters:'
+  id: totrans-216
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有一个新方法和两个新属性：
 - en: '`ArrayBuffer.prototype.resize(newByteLength: number)`'
+  id: totrans-217
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ArrayBuffer.prototype.resize(newByteLength: number)`'
 - en: Resizes the ArrayBuffer.
+  id: totrans-218
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 调整ArrayBuffer的大小。
 - en: '`get ArrayBuffer.prototype.resizable`'
+  id: totrans-219
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get ArrayBuffer.prototype.resizable`'
 - en: Returns a boolean indicating if this ArrayBuffer is resizable.
+  id: totrans-220
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 返回一个布尔值，表示此ArrayBuffer是否可调整大小。
 - en: '`get ArrayBuffer.prototype.maxByteLength`'
+  id: totrans-221
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get ArrayBuffer.prototype.maxByteLength`'
 - en: Returns `options.maxByteLength` if it was provided to the constructor. Otherwise,
     it returns `this.byteLength`.
+  id: totrans-222
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果在构造函数中提供了`options.maxByteLength`，则返回`options.maxByteLength`。否则，返回`this.byteLength`。
 - en: The existing method `.slice()` always returns non-resizable ArrayBuffers.
+  id: totrans-223
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 现有的`.slice()`方法始终返回不可调整大小的ArrayBuffer。
 - en: 'The `options` object of the constructor determines whether or not an ArrayBuffer
     is resizable:'
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: 构造函数的`options`对象决定了ArrayBuffer是否可调整大小：
 - en: '[PRE32]'
+  id: totrans-225
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: '[35.6.2 How Typed Arrays react to changing ArrayBuffer sizes](#how-typed-arrays-react-to-changing-arraybuffer-sizes)'
+  id: totrans-226
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.6.2 如何处理Typed Arrays对ArrayBuffer大小的变化](#how-typed-arrays-react-to-changing-arraybuffer-sizes)'
 - en: 'This is what constructors of Typed Arrays look like:'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: Typed Array的构造函数看起来是这样的：
 - en: '[PRE33]'
+  id: totrans-228
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'If `length` is `undefined` then the `.length` and `.byteLength` of the Typed
     Array instance automatically tracks the length of a resizable `buffer`:'
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果`length`是`undefined`，则Typed Array实例的`.length`和`.byteLength`会自动跟踪可调整大小的`buffer`的长度：
 - en: '[PRE34]'
+  id: totrans-230
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'If an ArrayBuffer is resized then a wrapper with a fixed length can *go out
     of bounds*: The wrapper’s range isn’t covered by the ArrayBuffer anymore. That
     is treated by JavaScript as if the ArrayBuffer were [*detached*](#transferring-detaching-array-buffers):'
+  id: totrans-231
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果ArrayBuffer被调整大小，则具有固定长度的包装器可能会*超出范围*：包装器的范围不再由ArrayBuffer覆盖。JavaScript将其视为如果ArrayBuffer被[*断开连接*](#transferring-detaching-array-buffers)：
 - en: '`.length`, `.byteLength` and `.byteOffset` are zero.'
+  id: totrans-232
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.length`、`.byteLength`和`.byteOffset`为零。'
 - en: Getting elements returns `undefined`.
+  id: totrans-233
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 获取元素返回`undefined`。
 - en: Setting elements is silently ignored.
+  id: totrans-234
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 设置元素会被静默忽略。
 - en: All element-related methods throw errors.
+  id: totrans-235
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有与元素相关的方法都会抛出错误。
 - en: '[PRE35]'
+  id: totrans-236
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '[35.6.3 Guidelines given by the ECMAScript specification](#guidelines-given-by-the-ecmascript-specification)'
+  id: totrans-237
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.6.3 ECMAScript 规范提供的指南](#guidelines-given-by-the-ecmascript-specification)'
 - en: 'The ECMAScript specification gives [the following guidelines](https://tc39.es/ecma262/#sec-resizable-arraybuffer-guidelines)
     for working with resizable ArrayBuffers:'
+  id: totrans-238
   prefs: []
   type: TYPE_NORMAL
+  zh: ECMAScript 规范为使用可调整大小的 ArrayBuffer 提供了[以下指南](https://tc39.es/ecma262/#sec-resizable-arraybuffer-guidelines)：
 - en: We recommend that programs be tested in their deployment environments where
     possible. The amount of available physical memory differs greatly between hardware
     devices. Similarly, virtual memory subsystems also differ greatly between hardware
     devices as well as operating systems. An application that runs without out-of-memory
     errors on a 64-bit desktop web browser could run out of memory on a 32-bit mobile
     web browser.
+  id: totrans-239
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们建议尽可能在部署环境中测试程序。不同硬件设备之间的可用物理内存差异很大。同样，虚拟内存子系统在硬件设备和操作系统之间也存在很大差异。一个在 64 位桌面网络浏览器上运行且没有内存不足错误的程序，可能在
+    32 位移动网络浏览器上耗尽内存。
 - en: When choosing a value for the `maxByteLength` option for resizable ArrayBuffer,
     we recommend that the smallest possible size for the application be chosen. We
     recommend that `maxByteLength` does not exceed 1,073,741,824 (2^(30) bytes or
     1 GiB).
+  id: totrans-240
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当为可调整大小的 ArrayBuffer 选择 `maxByteLength` 选项的值时，我们建议选择应用程序可能的最小大小。我们建议 `maxByteLength`
+    不要超过 1,073,741,824 (2^(30) 字节或 1 GiB)。
 - en: Please note that successfully constructing a resizable ArrayBuffer for a particular
     maximum size does not guarantee that future resizes will succeed.
+  id: totrans-241
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 请注意，成功构造特定最大大小的可调整大小 ArrayBuffer 并不保证未来的调整大小操作将成功。
 - en: '[35.7 Transferring and detaching ArrayBuffers ^(ES2024)](#transferring-detaching-array-buffers)'
+  id: totrans-242
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.7 转移和断开 ArrayBuffer^(ES2024)](#transferring-detaching-array-buffers)'
 - en: '[35.7.1 Preparation: transferring data and detaching](#preparation-transferring-data-and-detaching)'
+  id: totrans-243
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.7.1 准备：转移数据和断开连接](#preparation-transferring-data-and-detaching)'
 - en: 'The web API (not the ECMAScript standard) has long supported [*structured cloning*](https://html.spec.whatwg.org/multipage/structured-data.html#safe-passing-of-structured-data)
     for safely moving values across realms (`globalThis`, iframes, web workers, etc.).
     Some objects can also be *transferred*: After cloning, the original becomes *detached*
     (inaccessible) and ownership switches from the original to the clone. Transferring
     is usually faster than copying, especially if large amounts of memory are involved.
     These are the most common classes of [*transferable objects*](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Transferable_objects):'
+  id: totrans-244
   prefs: []
   type: TYPE_NORMAL
+  zh: 网络API（不是 ECMAScript 标准）长期以来一直支持[*结构化克隆*](https://html.spec.whatwg.org/multipage/structured-data.html#safe-passing-of-structured-data)，以安全地在领域之间移动值（`globalThis`、iframe、web
+    workers 等）。某些对象也可以被[*转移*]：在克隆之后，原始对象变为*断开连接*（不可访问），所有权从原始对象转移到克隆对象。转移通常比复制更快，尤其是涉及大量内存时。这些是最常见的[*可转移对象*](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Transferable_objects)类别：
 - en: '`ArrayBuffer`'
+  id: totrans-245
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ArrayBuffer`'
 - en: 'Streams:'
+  id: totrans-246
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 流：
 - en: '`ReadableStream`'
+  id: totrans-247
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ReadableStream`'
 - en: '`TransformStream`'
+  id: totrans-248
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TransformStream`'
 - en: '`WritableStream`'
+  id: totrans-249
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`WritableStream`'
 - en: 'DOM-related data:'
+  id: totrans-250
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与 DOM 相关的数据：
 - en: '`ImageBitmap`'
+  id: totrans-251
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ImageBitmap`'
 - en: '`OffscreenCanvas`'
+  id: totrans-252
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`OffscreenCanvas`'
 - en: 'Miscellaneous communication:'
+  id: totrans-253
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 杂项通信：
 - en: '`MessagePort`'
+  id: totrans-254
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`MessagePort`'
 - en: '`RTCDataChannel`'
+  id: totrans-255
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`RTCDataChannel`'
 - en: '[35.7.2 Methods related to transferring and detaching](#methods-related-to-transferring-and-detaching)'
+  id: totrans-256
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.7.2 与转移和断开连接相关的方法](#methods-related-to-transferring-and-detaching)'
 - en: 'Two methods let us explicitly transfer an ArrayBuffer to a new object (we’ll
     see soon why that is useful):'
+  id: totrans-257
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 两个方法让我们可以显式地将一个 ArrayBuffer 转移到新对象（我们很快就会看到为什么这很有用）：
 - en: '`ArrayBuffer.prototype.transfer(newLength?: number)`'
+  id: totrans-258
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ArrayBuffer.prototype.transfer(newLength?: number)`'
 - en: '`ArrayBuffer.prototype.transferToFixedLength(newLength?: number)`'
+  id: totrans-259
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ArrayBuffer.prototype.transferToFixedLength(newLength?: number)`'
 - en: 'One getter tells us if an ArrayBuffer is detached:'
+  id: totrans-260
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个获取器告诉我们一个 ArrayBuffer 是否已断开连接：
 - en: '`get ArrayBuffer.prototype.detached`'
+  id: totrans-261
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get ArrayBuffer.prototype.detached`'
 - en: '[35.7.3 Transferring ArrayBuffers via `structuredClone()`](#transferring-arraybuffers-via-structuredclone)'
+  id: totrans-262
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.7.3 通过 `structuredClone()` 转移 ArrayBuffer](#transferring-arraybuffers-via-structuredclone)'
 - en: 'The broadly supported [`structuredClone()`](ch_objects.html#structuredClone)
     also lets us transfer (and therefore detach) ArrayBuffers:'
+  id: totrans-263
   prefs: []
   type: TYPE_NORMAL
+  zh: 广泛支持的[`structuredClone()`](ch_objects.html#structuredClone)也允许我们转移（因此断开）ArrayBuffer：
 - en: '[PRE36]'
+  id: totrans-264
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '[PRE37]'
+  id: totrans-265
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'The ArrayBuffer method `.transfer()` simply gives us a more concise way to
     detach an ArrayBuffer:'
+  id: totrans-266
   prefs: []
   type: TYPE_NORMAL
+  zh: ArrayBuffer 的 `.transfer()` 方法仅仅提供了一个更简洁的方式来断开 ArrayBuffer：
 - en: '[PRE38]'
+  id: totrans-267
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: '[35.7.4 Transferring an ArrayBuffer within the same agent](#transferring-an-arraybuffer-within-the-same-agent)'
+  id: totrans-268
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.7.4 在同一代理内传输 ArrayBuffer](#transferring-an-arraybuffer-within-the-same-agent)'
 - en: 'Transferring is most often used between two *agents* (an agent being the main
     thread or a web worker). However, transferring within the same agent can make
     sense too: If a function gets a (potentially shared) ArrayBuffer as a parameter,
     it can transfer it so that no external code can interfere with what it does. Example
     (taken from [the ECMAScript proposal](https://github.com/tc39/proposal-arraybuffer-transfer?tab=readme-ov-file#ownership)
     and slightly edited):'
+  id: totrans-269
   prefs: []
   type: TYPE_NORMAL
+  zh: 转移通常用于两个 *代理*（代理可以是主线程或 Web Worker）之间。然而，在同一代理内进行转移也是有意义的：如果函数将（可能共享的）ArrayBuffer
+    作为参数传递，则可以将其转移，这样外部代码就无法干扰其操作。示例（取自 [ECMAScript 提案](https://github.com/tc39/proposal-arraybuffer-transfer?tab=readme-ov-file#ownership)
+    并稍作编辑）：
 - en: '[PRE39]'
+  id: totrans-270
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '[35.7.5 How does detaching an ArrayBuffer affect its wrappers?](#how-does-detaching-an-arraybuffer-affect-its-wrappers)'
+  id: totrans-271
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.7.5 解除 ArrayBuffer 的连接会如何影响其包装器？](#how-does-detaching-an-arraybuffer-affect-its-wrappers)'
 - en: '[35.7.5.1 Typed Arrays with detached ArrayBuffers](#typed-arrays-with-detached-arraybuffers)'
+  id: totrans-272
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[35.7.5.1 解除连接的 ArrayBuffer 的类型化数组](#typed-arrays-with-detached-arraybuffers)'
 - en: 'Preparation:'
+  id: totrans-273
   prefs: []
   type: TYPE_NORMAL
+  zh: 准备：
 - en: '[PRE40]'
+  id: totrans-274
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'Lengths and offsets are all zero:'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 长度和偏移量都是零：
 - en: '[PRE41]'
+  id: totrans-276
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'Getting elements returns `undefined`; setting elements fails silently:'
+  id: totrans-277
   prefs: []
   type: TYPE_NORMAL
+  zh: 获取元素返回 `undefined`；设置元素会静默失败：
 - en: '[PRE42]'
+  id: totrans-278
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: 'All element-related methods throw exceptions:'
+  id: totrans-279
   prefs: []
   type: TYPE_NORMAL
+  zh: 所有与元素相关的都会抛出异常：
 - en: '[PRE43]'
+  id: totrans-280
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: '[35.7.5.2 DataViews with detached ArrayBuffers](#dataviews-with-detached-arraybuffers)'
+  id: totrans-281
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[35.7.5.2 解除连接的 ArrayBuffer 的 DataView](#dataviews-with-detached-arraybuffers)'
 - en: 'All data-related methods of DataViews throw:'
+  id: totrans-282
   prefs: []
   type: TYPE_NORMAL
+  zh: DataView 的所有数据相关方法都会抛出：
 - en: '[PRE44]'
+  id: totrans-283
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: '[35.7.5.3 We can’t create new wrappers with detached ArrayBuffers](#we-cant-create-new-wrappers-with-detached-arraybuffers)'
+  id: totrans-284
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[35.7.5.3 我们无法使用解除连接的 ArrayBuffer 创建新的包装器](#we-cant-create-new-wrappers-with-detached-arraybuffers)'
 - en: '[PRE45]'
+  id: totrans-285
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: '[35.7.6 `ArrayBuffer.prototype.transferToFixedLength()`](#arraybufferprototypetransfertofixedlength)'
+  id: totrans-286
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.7.6 `ArrayBuffer.prototype.transferToFixedLength()`](#arraybufferprototypetransfertofixedlength)'
 - en: 'This method rounds out the API: It transfers and converts a resizable ArrayBuffer
     to one with a fixed length. That may free up memory that was held in preparation
     for growth.'
+  id: totrans-287
   prefs: []
   type: TYPE_NORMAL
+  zh: 此方法完善了 API：它将可调整大小的 ArrayBuffer 转换为固定长度的 ArrayBuffer。这可能会释放为增长而保留的内存。
 - en: '[35.8 Quick references: indices vs. offsets](#typed-arrays-indices-offsets)'
+  id: totrans-288
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.8 快速参考：索引与偏移量](#typed-arrays-indices-offsets)'
 - en: 'In preparation for the quick references on ArrayBuffers, Typed Arrays, and
     DataViews, we need learn the differences between indices and offsets:'
+  id: totrans-289
   prefs: []
   type: TYPE_NORMAL
+  zh: 在准备 ArrayBuffer、类型化数组和 DataView 的快速参考之前，我们需要了解索引和偏移量之间的区别：
 - en: 'Indices for the bracket operator `[ ]`: We can only use non-negative indices
     (starting at 0).'
+  id: totrans-290
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方括号运算符 `[ ]` 的索引：我们只能使用非负索引（从 0 开始）。
 - en: 'In normal Arrays, writing to negative indices creates properties:'
+  id: totrans-291
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 在正常数组中，写入负索引会创建属性：
 - en: '[PRE46]'
+  id: totrans-292
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: 'In Typed Arrays, writing to negative indices is ignored:'
+  id: totrans-293
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 在类型化数组中，写入负索引会被忽略：
 - en: '[PRE47]'
+  id: totrans-294
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 'Indices for methods of ArrayBuffers, Typed Arrays, and DataViews: Every index
     can be negative. If it is, it is added to the length of the entity to produce
     the actual index. Therefore, `-1` refers to the last element, `-2` to the second-last,
     etc. Methods of normal Arrays work the same way.'
+  id: totrans-295
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: ArrayBuffer、类型化数组和 DataView 方法的索引：每个索引都可以是负数。如果是，则将其添加到实体的长度以产生实际索引。因此，`-1`
+    指的是最后一个元素，`-2` 指的是倒数第二个，等等。正常数组的方法也是这样工作的。
 - en: '[PRE48]'
+  id: totrans-296
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: 'Offsets passed to methods of Typed Arrays and DataViews: must be non-negative
     – for example:'
+  id: totrans-297
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 传递给类型化数组和 DataView 方法的偏移量：必须是非负数——例如：
 - en: '[PRE49]'
+  id: totrans-298
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: Whether a parameter is an index or an offset can only be determined by looking
     at documentation; there is no simple rule.
+  id: totrans-299
   prefs: []
   type: TYPE_NORMAL
+  zh: 是否是索引或偏移量只能通过查看文档来确定；没有简单的规则。
 - en: '[35.9 Quick reference: ArrayBuffers](#quick-reference-arraybuffers)'
+  id: totrans-300
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.9 快速参考：ArrayBuffer](#quick-reference-arraybuffers)'
 - en: ArrayBuffers store binary data, which is meant to be accessed via Typed Arrays
     and DataViews.
+  id: totrans-301
   prefs: []
   type: TYPE_NORMAL
+  zh: ArrayBuffer 存储二进制数据，这些数据应通过类型化数组和 DataView 访问。
 - en: '[35.9.1 `new ArrayBuffer()`](#new-arraybuffer)'
+  id: totrans-302
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.9.1 `new ArrayBuffer()`](#new-arraybuffer)'
 - en: '`new ArrayBuffer(byteLength, options?)` ES6'
+  id: totrans-303
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new ArrayBuffer(byteLength, options?)` ES6'
 - en: '[PRE50]'
+  id: totrans-304
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: Invoking this constructor via `new` creates an instance whose capacity is `length`
     bytes. Each of those bytes is initially 0.
+  id: totrans-305
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 通过 `new` 调用此构造函数会创建一个容量为 `length` 字节的实例。每个字节最初都是 0。
 - en: If `options.maxByteLength` is provided, the ArrayBuffer can be resized. Otherwise,
     it has a fixed length.
+  id: totrans-306
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果提供了 `options.maxByteLength`，则 ArrayBuffer 可以调整大小。否则，它具有固定长度。
 - en: '[35.9.2 `ArrayBuffer.*`](#arraybuffer)'
+  id: totrans-307
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.9.2 `ArrayBuffer.*`](#arraybuffer)'
 - en: '`ArrayBuffer.isView(arg)` ES6'
+  id: totrans-308
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ArrayBuffer.isView(arg)` ES6'
 - en: Returns `true` if `arg` is a *view* for an ArrayBuffer (i.e., if it is a Typed
     Array or a DataView).
+  id: totrans-309
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果`arg`是`ArrayBuffer`的视图（即，如果它是类型化数组或`DataView`），则返回`true`。
 - en: '[PRE51]'
+  id: totrans-310
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: '[35.9.3 `ArrayBuffer.prototype.*`: getting and slicing](#arraybufferprototype-getting-and-slicing)'
+  id: totrans-311
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.9.3 `ArrayBuffer.prototype.*`：获取和切片](#arraybufferprototype-getting-and-slicing)'
 - en: '`get ArrayBuffer.prototype.byteLength` ES6'
+  id: totrans-312
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get ArrayBuffer.prototype.byteLength` ES6'
 - en: Returns the capacity of this ArrayBuffer in bytes.
+  id: totrans-313
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回此`ArrayBuffer`的字节容量。
 - en: '`ArrayBuffer.prototype.slice(startIndex=0, endIndex=this.byteLength)` ES6'
+  id: totrans-314
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ArrayBuffer.prototype.slice(startIndex=0, endIndex=this.byteLength)` ES6'
 - en: 'Creates a new ArrayBuffer that contains the bytes of this ArrayBuffer whose
     indices are greater than or equal to `startIndex` and less than `endIndex`. `start`
     and `endIndex` can be negative (see [“Quick references: indices vs. offsets” (§35.8)](#typed-arrays-indices-offsets)).'
+  id: totrans-315
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个新的`ArrayBuffer`，它包含此`ArrayBuffer`中索引大于或等于`startIndex`且小于`endIndex`的字节。`start`和`endIndex`可以是负数（参见[“快速参考：索引与偏移量”（§35.8）](#typed-arrays-indices-offsets)）。
 - en: '[35.9.4 `ArrayBuffer.prototype.*`: resizing](#arraybufferprototype-resizing)'
+  id: totrans-316
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.9.4 `ArrayBuffer.prototype.*`：调整大小](#arraybufferprototype-resizing)'
 - en: '`ArrayBuffer.prototype.resize(newByteLength)` ES2024'
+  id: totrans-317
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ArrayBuffer.prototype.resize(newByteLength)` ES2024'
 - en: Changes the size of this ArrayBuffer. For more information, see [“Resizing ArrayBuffers
     ^(ES2024)” (§35.6)](#resizing-array-buffers).
+  id: totrans-318
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 改变此`ArrayBuffer`的大小。更多信息，请参见[“调整`ArrayBuffer`大小”（§35.6）](#resizing-array-buffers)。
 - en: '`get ArrayBuffer.prototype.resizable` ES2024'
+  id: totrans-319
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get ArrayBuffer.prototype.resizable` ES2024'
 - en: Returns `true` if this ArrayBuffer is resizable and `false` if it is not.
+  id: totrans-320
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果此`ArrayBuffer`可调整大小，则返回`true`；如果不可以，则返回`false`。
 - en: '`get ArrayBuffer.prototype.maxByteLength` ES2024'
+  id: totrans-321
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get ArrayBuffer.prototype.maxByteLength` ES2024'
 - en: Returns `options.maxByteLength` if it was provided to the constructor. Otherwise,
     it returns `this.byteLength`.
+  id: totrans-322
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 如果在构造函数中提供了`options.maxByteLength`，则返回`options.maxByteLength`。否则，返回`this.byteLength`。
 - en: '[35.10 Quick reference: Typed Arrays](#quick-reference-typed-arrays)'
+  id: totrans-323
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.10 快速参考：类型化数组](#quick-reference-typed-arrays)'
 - en: 'The properties of the various Typed Array objects are introduced in two steps:'
+  id: totrans-324
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型化数组对象的属性分两步介绍：
 - en: '`TypedArray`: First, we look at the abstract superclass of all Typed Array
     classes (which was shown in the class diagram [at the beginning of this chapter](#fig:typed_arrays_class_diagram)).
     That superclass is called `TypedArray` but it does not have a global name in JavaScript:'
+  id: totrans-325
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`TypedArray`：首先，我们来看所有类型化数组类的抽象超类（在本书开头的类图中已展示）。这个超类称为`TypedArray`，但在JavaScript中没有全局名称：'
 - en: '[PRE52]'
+  id: totrans-326
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: '`«ElementType»Array`: The concrete Typed Array classes are called `Uint8Array`,
     `Int16Array`, `Float16Array`, etc. These are the classes that we use via `new`,
     `.of`, and `.from()`.'
+  id: totrans-327
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '`«ElementType»Array`：具体的类型化数组类称为`Uint8Array`、`Int16Array`、`Float16Array`等。这些是我们通过`new`、`.of`和`.from()`使用的类。'
 - en: '[35.10.1 `TypedArray.*`](#typedarray)'
+  id: totrans-328
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.10.1 `TypedArray.*`](#typedarray)'
 - en: Both static `TypedArray` methods are inherited by its subclasses (`Uint8Array`,
     etc.). Therefore, we can use these methods via the subclasses, which are concrete
     and can have direct instances.
+  id: totrans-329
   prefs: []
   type: TYPE_NORMAL
+  zh: 静态`TypedArray`方法由其子类（`Uint8Array`等）继承。因此，我们可以通过子类使用这些方法，这些子类是具体的，可以直接实例化。
 - en: '`TypedArray.from(iterableOrArrayLike, mapFunc?)` ES6'
+  id: totrans-330
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.from(iterableOrArrayLike, mapFunc?)` ES6'
 - en: '[PRE53]'
+  id: totrans-331
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: Converts an iterable (including Arrays and Typed Arrays) or [an Array-like object](ch_arrays.html#array-like-objects)
     to an instance of the Typed Array class.
+  id: totrans-332
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 将可迭代对象（包括数组和类型化数组）或[类似数组的对象](ch_arrays.html#array-like-objects)转换为类型化数组类的实例。
 - en: '[PRE54]'
+  id: totrans-333
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: The optional `mapFunc` lets us transform the elements of `source` before they
     become elements of the result.
+  id: totrans-334
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 可选的`mapFunc`允许我们在`source`元素成为结果元素之前对其进行转换。
 - en: '[PRE55]'
+  id: totrans-335
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: '`TypedArray.of(...items)` ES6'
+  id: totrans-336
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.of(...items)` ES6'
 - en: '[PRE56]'
+  id: totrans-337
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: Creates a new instance of the Typed Array class whose elements are `items` (coerced
     to the element type).
+  id: totrans-338
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个类型化数组类的新实例，其元素是`items`（强制转换为元素类型）。
 - en: '[PRE57]'
+  id: totrans-339
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: '[35.10.2 `TypedArray.prototype.*`](#typedarrayprototype)'
+  id: totrans-340
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.10.2 `TypedArray.prototype.*`](#typedarrayprototype)'
 - en: 'Indices accepted by Typed Array methods can be negative (they work like traditional
     Array methods that way). Offsets must be non-negative. For details, see [“Quick
     references: indices vs. offsets” (§35.8)](#typed-arrays-indices-offsets).'
+  id: totrans-341
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型化数组方法接受的索引可以是负数（它们以这种方式像传统的数组方法一样工作）。偏移量必须是正数。有关详细信息，请参见[“快速参考：索引与偏移量”（§35.8）](#typed-arrays-indices-offsets)。
 - en: '[35.10.2.1 Properties specific to Typed Arrays](#properties-specific-to-typed-arrays)'
+  id: totrans-342
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[35.10.2.1 特定于类型化数组的属性](#properties-specific-to-typed-arrays)'
 - en: 'The following properties are specific to Typed Arrays; normal Arrays don’t
     have them:'
+  id: totrans-343
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下属性特定于类型化数组；普通数组没有这些属性：
 - en: '`get TypedArray.prototype.buffer` ES6'
+  id: totrans-344
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get TypedArray.prototype.buffer` ES6'
 - en: Returns the ArrayBuffer backing this Typed Array.
+  id: totrans-345
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回支持此Typed Array的ArrayBuffer。
 - en: '`get TypedArray.prototype.length` ES6'
+  id: totrans-346
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`获取 TypedArray.prototype.length` ES6'
 - en: Returns the length in elements of this Typed Array’s buffer.
+  id: totrans-347
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回此Typed Array缓冲区的元素长度。
 - en: '[PRE58]'
+  id: totrans-348
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: '`get TypedArray.prototype.byteLength` ES6'
+  id: totrans-349
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`获取 TypedArray.prototype.byteLength` ES6'
 - en: Returns the size in bytes of this Typed Array’s buffer.
+  id: totrans-350
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回此Typed Array缓冲区的字节大小。
 - en: '[PRE59]'
+  id: totrans-351
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: '`get TypedArray.prototype.byteOffset` ES6'
+  id: totrans-352
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`获取 TypedArray.prototype.byteOffset` ES6'
 - en: Returns the offset where this Typed Array “starts” inside its ArrayBuffer.
+  id: totrans-353
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回此Typed Array在其ArrayBuffer中的起始偏移量。
 - en: '`TypedArray.prototype.set(typedArrayOrArrayLike, offset=0)` ES6'
+  id: totrans-354
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.set(typedArrayOrArrayLike, offset=0)` (ES6)'
 - en: Copies all elements of the first parameter to this Typed Array. The element
     at index 0 of the parameter is written to index `offset` of this Typed Array (etc.).
     For more information on Array-like objects, see [“Array-like objects” (§34.5)](ch_arrays.html#array-like-objects).
+  id: totrans-355
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 将第一个参数的所有元素复制到这个Typed Array中。参数的索引0处的元素写入此Typed Array的`offset`索引（等等）。有关类似数组的更多信息，请参阅[“类似数组的对象”（§34.5）](ch_arrays.html#array-like-objects)。
 - en: '`TypedArray.prototype.subarray(startIndex=0, endIndex=this.length)` ES6'
+  id: totrans-356
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.subarray(startIndex=0, endIndex=this.length)` ES6'
 - en: Returns a new Typed Array that has the same buffer as this Typed Array, but
     a (generally) smaller range. If `startIndex` is non-negative then the first element
     of the resulting Typed Array is `this[startIndex]`, the second `this[startIndex+1]`
     (etc.). If `startIndex` in negative, it is converted appropriately.
+  id: totrans-357
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回一个新的Typed Array，它具有与这个Typed Array相同的缓冲区，但范围（通常）更小。如果`startIndex`为非负数，则结果Typed
+    Array的第一个元素是`this[startIndex]`，第二个是`this[startIndex+1]`（等等）。如果`startIndex`为负数，则相应地转换。
 - en: '[35.10.2.2 Array methods](#array-methods)'
+  id: totrans-358
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[35.10.2.2 数组方法](#array-methods)'
 - en: 'The following methods are basically the same as the methods of normal Arrays
     (the ECMAScript versions specify when the methods were added to Arrays – Typed
     Arrays didn’t exist in ECMAScript before ES6):'
+  id: totrans-359
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下方法基本上与普通数组的 方法相同（ECMAScript版本指定了方法何时添加到数组中 - 在ES6之前，Typed Arrays不存在于ECMAScript中）：
 - en: '`TypedArray.prototype.at(index)` ^(ES2022, R)'
+  id: totrans-360
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.at(index)` (ES2022, R)'
 - en: '`TypedArray.prototype.copyWithin(target, start, end=this.length)` ^(ES6, W)'
+  id: totrans-361
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.copyWithin(target, start, end=this.length)` (ES6, W)'
 - en: '`TypedArray.prototype.entries()` ^(ES6, R)'
+  id: totrans-362
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.entries()` (ES6, R)'
 - en: '`TypedArray.prototype.every(predicate, thisArg?)` ^(ES5, R)'
+  id: totrans-363
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.every(predicate, thisArg?)` (ES5, R)'
 - en: '`TypedArray.prototype.fill(start=0, end=this.length)` ^(ES6, W)'
+  id: totrans-364
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.fill(start=0, end=this.length)` (ES6, W)'
 - en: '`TypedArray.prototype.filter(predicate, thisArg?)` ^(ES5, R)'
+  id: totrans-365
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.filter(predicate, thisArg?)` (ES5, R)'
 - en: '`TypedArray.prototype.find(predicate, thisArg?)` ^(ES6, R)'
+  id: totrans-366
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.find(predicate, thisArg?)` (ES6, R)'
 - en: '`TypedArray.prototype.findIndex(predicate, thisArg?)` ^(ES6, R)'
+  id: totrans-367
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.findIndex(predicate, thisArg?)` (ES6, R)'
 - en: '`TypedArray.prototype.findLast(predicate, thisArg?)` ^(ES2023, R)'
+  id: totrans-368
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.findLast(predicate, thisArg?)` (ES2023, R)'
 - en: '`TypedArray.prototype.findLastIndex(predicate, thisArg?)` ^(ES2023, R)'
+  id: totrans-369
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.findLastIndex(predicate, thisArg?)` (ES2023, R)'
 - en: '`TypedArray.prototype.forEach(callback)` ^(ES5, R)'
+  id: totrans-370
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.forEach(callback)` (ES5, R)'
 - en: '`TypedArray.prototype.includes(searchElement, fromIndex)` ^(ES2016, R)'
+  id: totrans-371
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.includes(searchElement, fromIndex)` (ES2016, R)'
 - en: '`TypedArray.prototype.indexOf(searchElement, fromIndex)` ^(ES5, R)'
+  id: totrans-372
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.indexOf(searchElement, fromIndex)` (ES5, R)'
 - en: '`TypedArray.prototype.join(separator = '','')` ^(ES1, R)'
+  id: totrans-373
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.join(separator = '','')` (ES1, R)'
 - en: '`TypedArray.prototype.keys()` ^(ES6, R)'
+  id: totrans-374
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.keys()` (ES6, R)'
 - en: '`TypedArray.prototype.lastIndexOf(searchElement, fromIndex)` ^(ES5, R)'
+  id: totrans-375
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.lastIndexOf(searchElement, fromIndex)` (ES5, R)'
 - en: '`TypedArray.prototype.map(callback, thisArg?)` ^(ES5, R)'
+  id: totrans-376
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.map(callback, thisArg?)` (ES5, R)'
 - en: '`TypedArray.prototype.reduce(callback, initialValue?)` ^(ES5, R)'
+  id: totrans-377
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.reduce(callback, initialValue?)` (ES5, R)'
 - en: '`TypedArray.prototype.reduceRight(callback, initialValue?)` ^(ES5, R)'
+  id: totrans-378
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.reduceRight(callback, initialValue?)` (ES5, R)'
 - en: '`TypedArray.prototype.reverse()` ^(ES1, W)'
+  id: totrans-379
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.reverse()` (ES1, W)'
 - en: '`TypedArray.prototype.slice(start?, end?)` ^(ES3, R)'
+  id: totrans-380
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.slice(start?, end?)` (ES3, R)'
 - en: '`TypedArray.prototype.some(predicate, thisArg?)` ^(ES5, R)'
+  id: totrans-381
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.some(predicate, thisArg?)` (ES5, R)'
 - en: '`TypedArray.prototype.sort(compareFunc?)` ^(ES1, W)'
+  id: totrans-382
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.sort(compareFunc?)` (ES1, W)'
 - en: '`TypedArray.prototype.toLocaleString()` ^(ES3, R)'
+  id: totrans-383
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.toLocaleString()` (ES3, R)'
 - en: '`TypedArray.prototype.toReversed()` ^(ES2023, R)'
+  id: totrans-384
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.toReversed()` (ES2023, R)'
 - en: '`TypedArray.prototype.toSorted(compareFunc?)` ^(ES2023, R)'
+  id: totrans-385
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.toSorted(compareFunc?)` (ES2023, R)'
 - en: '`TypedArray.prototype.toSpliced(start?, deleteCount?, ...items)` ^(ES2023,
     R)'
+  id: totrans-386
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.toSpliced(start?, deleteCount?, ...items)` (ES2023, R)'
 - en: '`TypedArray.prototype.toString()` ^(ES1, R)'
+  id: totrans-387
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.toString()` (ES1, R)'
 - en: '`TypedArray.prototype.values()` ^(ES6, R)'
+  id: totrans-388
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.values()` ^ (ES6, R)'
 - en: '`TypedArray.prototype.with(index, value)` ^(ES2023, R)'
+  id: totrans-389
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypedArray.prototype.with(index, value)` ^ (ES2023, R)'
 - en: 'For details on how these methods work, see [“Quick reference: `Array`” (§34.18)](ch_arrays.html#quickref-Array).'
+  id: totrans-390
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于这些方法如何工作的详细信息，请参阅[“快速参考：`Array`” (§34.18)](ch_arrays.html#quickref-Array)。
 - en: '[35.10.3 `new «ElementType»Array()`](#new-elementtypearray)'
+  id: totrans-391
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.10.3 `new «ElementType»Array()`](#new-elementtypearray)'
 - en: 'Each Typed Array constructor has a name that follows the pattern `«ElementType»Array`,
     where `«ElementType»` is one of the element types listed in [Table 35.1](#tbl:typed-array-element-types).
     That means there are 12 constructors for Typed Arrays:'
+  id: totrans-392
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个类型化数组构造函数都有一个名称，遵循 `«ElementType»Array` 的模式，其中 `«ElementType»` 是 [表35.1](#tbl:typed-array-element-types)
+    中列出的元素类型之一。这意味着有12个类型化数组构造函数：
 - en: '`Int8Array`, `Uint8Array`, `Uint8ClampedArray`'
+  id: totrans-393
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Int8Array`, `Uint8Array`, `Uint8ClampedArray`'
 - en: '`Int16Array`, `Uint16Array`'
+  id: totrans-394
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Int16Array`, `Uint16Array`'
 - en: '`Int32Array`, `Uint32Array`'
+  id: totrans-395
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Int32Array`, `Uint32Array`'
 - en: '`BigInt64Array`, `BigUint64Array`'
+  id: totrans-396
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt64Array`, `BigUint64Array`'
 - en: '`Float16Array`, `Float32Array`, `Float64Array`'
+  id: totrans-397
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Float16Array`, `Float32Array`, `Float64Array`'
 - en: 'Each constructor has several *overloaded* versions – it behaves differently
     depending on how many arguments it receives and what their types are:'
+  id: totrans-398
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个构造函数都有几个 *重载* 版本 – 它的行为取决于它接收到的参数数量和它们的类型：
 - en: '`new «ElementType»Array(length=0)`'
+  id: totrans-399
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new «ElementType»Array(length=0)`'
 - en: 'Creates a new `«ElementType»Array` with the given `length` and the appropriate
     buffer. The buffer’s size in bytes is:'
+  id: totrans-400
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个新的 `«ElementType»Array`，具有给定的 `length` 和适当的缓冲区。缓冲区的大小（以字节为单位）：
 - en: '[PRE60]'
+  id: totrans-401
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: '`new «ElementType»Array(source: TypedArray)`'
+  id: totrans-402
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new «ElementType»Array(source: TypedArray)`'
 - en: Creates a new instance of `«ElementType»Array` whose elements have the same
     values as the elements of `source`, but coerced to `ElementType`.
+  id: totrans-403
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个新的 `«ElementType»Array` 实例，其元素与 `source` 的元素具有相同的值，但被强制转换为 `ElementType`。
 - en: '`new «ElementType»Array(source: Iterable<number>)`'
+  id: totrans-404
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new «ElementType»Array(source: Iterable<number>)`'
 - en: '`BigInt64Array`, `BigUint64Array`: `bigint` instead of `number`'
+  id: totrans-405
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt64Array`, `BigUint64Array`: 使用 `bigint` 而不是 `number`'
 - en: Creates a new instance of `«ElementType»Array` whose elements have the same
     values as the items of `source`, but coerced to `ElementType`. For more information
     on iterables, see [“Synchronous iteration ^(ES6)” (§32)](ch_sync-iteration.html#ch_sync-iteration).
+  id: totrans-406
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建一个新的 `«ElementType»Array` 实例，其元素与 `source` 的项具有相同的值，但被强制转换为 `ElementType`。有关迭代器的更多信息，请参阅[“同步迭代
+    (ES6)” (§32)](ch_sync-iteration.html#ch_sync-iteration)。
 - en: '`new «ElementType»Array(source: ArrayLike<number>)`'
+  id: totrans-407
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new «ElementType»Array(source: ArrayLike<number>)`'
 - en: '`BigInt64Array`, `BigUint64Array`: `bigint` instead of `number`'
+  id: totrans-408
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt64Array`, `BigUint64Array`: 使用 `bigint` 而不是 `number`'
 - en: Creates a new instance of `«ElementType»Array` whose elements have the same
     values as the elements of `source`, but coerced to `ElementType`. For more information
     on Array-like objects, see [“Array-like objects” (§34.5)](ch_arrays.html#array-like-objects).
+  id: totrans-409
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 创建一个新的 `«ElementType»Array` 实例，其元素与 `source` 的元素具有相同的值，但被强制转换为 `ElementType`。有关类似数组的更多信息，请参阅[“类似数组的对象”
+    (§34.5)](ch_arrays.html#array-like-objects)。
 - en: '`new «ElementType»Array(buffer: ArrayBuffer, byteOffset=0, length=0)`'
+  id: totrans-410
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new «ElementType»Array(buffer: ArrayBuffer, byteOffset=0, length=0)`'
 - en: Creates a new `«ElementType»Array` whose buffer is `buffer`. It starts accessing
     the buffer at the given `byteOffset` and will have the given `length`. Note that
     `length` counts elements of the Typed Array (with 1–8 bytes each), not bytes.
+  id: totrans-411
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个新的 `«ElementType»Array`，其缓冲区为 `buffer`。它从给定的 `byteOffset` 开始访问缓冲区，并将具有给定的
+    `length`。注意，`length` 计算的是类型化数组（每个元素1-8字节）的元素数量，而不是字节数。
 - en: '[35.10.4 `«ElementType»Array.*`](#elementtypearray)'
+  id: totrans-412
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.10.4 `«ElementType»Array.*`](#elementtypearray)'
 - en: '`«ElementType»Array.BYTES_PER_ELEMENT: number`'
+  id: totrans-413
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`«ElementType»Array.BYTES_PER_ELEMENT: number`'
 - en: 'Counts how many bytes are needed to store a single element:'
+  id: totrans-414
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 计算存储单个元素所需的字节数：
 - en: '[PRE61]'
+  id: totrans-415
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: '[35.10.5 `«ElementType»Array.prototype.*`](#elementtypearrayprototype)'
+  id: totrans-416
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.10.5 `«ElementType»Array.prototype.*`](#elementtypearrayprototype)'
 - en: '`«ElementType»Array.prototype.BYTES_PER_ELEMENT: number`'
+  id: totrans-417
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`«ElementType»Array.prototype.BYTES_PER_ELEMENT: number`'
 - en: The same as `«ElementType»Array.BYTES_PER_ELEMENT`.
+  id: totrans-418
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 与 `«ElementType»Array.BYTES_PER_ELEMENT` 相同。
 - en: '[35.11 Quick reference: DataViews](#quick-reference-dataviews)'
+  id: totrans-419
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.11 快速参考：DataViews](#quick-reference-dataviews)'
 - en: '[35.11.1 `new DataView()`](#new-dataview)'
+  id: totrans-420
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.11.1 `new DataView()`](#new-dataview)'
 - en: '`new DataView(arrayBuffer, byteOffset?, byteLength?)` ES6'
+  id: totrans-421
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`new DataView(arrayBuffer, byteOffset?, byteLength?)` ES6'
 - en: Creates a new DataView whose data is stored in the ArrayBuffer `buffer`. By
     default, the new DataView can access all of `buffer`. The last two parameters
     allow us to change that.
+  id: totrans-422
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 创建一个新的 `DataView`，其数据存储在 `buffer` 的 ArrayBuffer 中。默认情况下，新的 `DataView` 可以访问 `buffer`
+    的全部内容。最后两个参数允许我们更改这一点。
 - en: '[35.11.2 `DataView.prototype.*`](#dataviewprototype)'
+  id: totrans-423
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.11.2 `DataView.prototype.*`](#dataviewprototype)'
 - en: 'In the remainder of this section, `«ElementType»` refers to either:'
+  id: totrans-424
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节的剩余部分，`«ElementType»` 指的是以下两种类型之一：
 - en: '`Int8`, `Uint8`'
+  id: totrans-425
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Int8`, `Uint8`'
 - en: '`Int16`, `Uint16`'
+  id: totrans-426
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Int16`, `Uint16`'
 - en: '`Int32`, `Uint32`'
+  id: totrans-427
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Int32`, `Uint32`'
 - en: '`BigInt64`, `BigUint64`'
+  id: totrans-428
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt64`, `BigUint64`'
 - en: '`Float16`, `Float32`, `Float64`'
+  id: totrans-429
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Float16`, `Float32`, `Float64`'
 - en: 'These are the properties of `DataView.prototype`:'
+  id: totrans-430
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是 `DataView.prototype` 的属性：
 - en: '`get DataView.prototype.buffer` ES6'
+  id: totrans-431
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get DataView.prototype.buffer` ES6'
 - en: Returns the ArrayBuffer of this DataView.
+  id: totrans-432
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回此 DataView 的 ArrayBuffer。
 - en: '`get DataView.prototype.byteLength` ES6'
+  id: totrans-433
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get DataView.prototype.byteLength` ES6'
 - en: Returns how many bytes can be accessed by this DataView.
+  id: totrans-434
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回此 DataView 可以访问的字节数。
 - en: '`get DataView.prototype.byteOffset` ES6'
+  id: totrans-435
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`get DataView.prototype.byteOffset` ES6'
 - en: Returns at which offset this DataView starts accessing the bytes in its buffer.
+  id: totrans-436
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回此 DataView 从其缓冲区开始访问字节的偏移量。
 - en: '`DataView.prototype.get«ElementType»(byteOffset, littleEndian=false)` ES6'
+  id: totrans-437
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`DataView.prototype.get«ElementType»(byteOffset, littleEndian=false)` ES6'
 - en: 'Returns:'
+  id: totrans-438
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 返回：
 - en: '`BigInt64`, `BigUint64`: `bigint`'
+  id: totrans-439
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt64`, `BigUint64`: `bigint`'
 - en: 'All other element types: `number`'
+  id: totrans-440
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有其他元素类型：`number`
 - en: Reads a value from the buffer of this DataView.
+  id: totrans-441
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 从此 DataView 的缓冲区中读取一个值。
 - en: '`DataView.prototype.set«ElementType»(byteOffset, value, littleEndian=false)`
     ES6'
+  id: totrans-442
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`DataView.prototype.set«ElementType»(byteOffset, value, littleEndian=false)`
+    ES6'
 - en: 'Type of `value`:'
+  id: totrans-443
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: '`value` 的类型：'
 - en: '`BigInt64`, `BigUint64`: `bigint`'
+  id: totrans-444
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`BigInt64`, `BigUint64`: `bigint`'
 - en: 'All other element types: `number`'
+  id: totrans-445
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有其他元素类型：`number`
 - en: Writes `value` to the buffer of this DataView.
+  id: totrans-446
   prefs:
   - PREF_IND
   type: TYPE_NORMAL
+  zh: 将 `value` 写入此 DataView 的缓冲区。

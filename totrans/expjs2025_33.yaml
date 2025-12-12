@@ -1,154 +1,235 @@
 - en: '28 Evaluating code dynamically: eval(), new Function() (advanced)'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 28 动态评估代码：eval()，new Function()（高级）
 - en: 原文：[https://exploringjs.com/js/book/ch_dynamic-code-evaluation.html](https://exploringjs.com/js/book/ch_dynamic-code-evaluation.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_dynamic-code-evaluation.html](https://exploringjs.com/js/book/ch_dynamic-code-evaluation.html)
 - en: '[28.1 `eval()`](#eval)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[28.1 `eval()`](#eval)'
 - en: '[28.2 `new Function()`](#new-function)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[28.2 `new Function()`](#new-function)'
 - en: '[28.3 Recommendations](#recommendations)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[28.3 推荐事项](#recommendations)'
 - en: 'In this chapter, we’ll look at two ways of evaluating code dynamically: `eval()`
     and `new Function()`.'
+  id: totrans-5
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将探讨两种动态评估代码的方式：`eval()` 和 `new Function()`。
 - en: '[28.1 `eval()`](#eval)'
+  id: totrans-6
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[28.1 `eval()`](#eval)'
 - en: 'Given a string `str` with JavaScript code, `eval(str)` evaluates that code
     and returns the result:'
+  id: totrans-7
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定一个包含JavaScript代码的字符串 `str`，`eval(str)` 评估该代码并返回结果：
 - en: '[PRE0]'
+  id: totrans-8
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'There are two ways of invoking `eval()`:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 调用 `eval()` 有两种方式：
 - en: '*Directly*, via a function call. Then the code in its argument is evaluated
     inside the current scope.'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*直接地*，通过函数调用。然后，其参数中的代码在当前作用域内被评估。'
 - en: '*Indirectly*, not via a function call. Then it evaluates its code in global
     scope.'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*间接地*，不是通过函数调用。然后它在全局作用域中评估其代码。'
 - en: '“Not via a function call” means “anything that looks different than `eval(···)`”:'
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: “不是通过函数调用”意味着“任何看起来与 `eval(···)` 不同的东西”：
 - en: '`eval.call(undefined, ''···'')` (uses [method `.call()` of functions](ch_callables.html#Function.prototype.call))'
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`eval.call(undefined, ''···'')`（使用[函数的 `.call()` 方法](ch_callables.html#Function.prototype.call)）'
 - en: '`eval?.(''···'')` (uses [optional chaining](ch_objects.html#optional-chaining))'
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`eval?.(''···'')`（使用[可选链](ch_objects.html#optional-chaining)）'
 - en: '`(0, eval)(''···'')` (uses [the comma operator](ch_operators.html#comma-operator))'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`(0, eval)(''···'')`（使用[逗号操作符](ch_operators.html#comma-operator)）'
 - en: '`globalThis.eval(''···'')`'
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`globalThis.eval(''···'')`'
 - en: '`const e = eval; e(''···'')`'
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`const e = eval; e(''···'')`'
 - en: Etc.
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: 'The following code illustrates the difference:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码说明了这种差异：
 - en: '[PRE1]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Evaluating code in global context is safer because the code has access to fewer
     internals.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在全局上下文中评估代码更安全，因为代码可以访问的内部信息更少。
 - en: '[28.2 `new Function()`](#new-function)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[28.2 `new Function()`](#new-function)'
 - en: '`new Function()` creates a function object and is invoked as follows:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '`new Function()` 创建一个函数对象，并如下调用：'
 - en: '[PRE2]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: The previous statement is equivalent to the next statement. Note that `«param_1»`,
     etc., are not inside string literals, anymore.
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 前一个语句等同于下一个语句。注意，`«param_1」`等，不再位于字符串字面量内部。
 - en: '[PRE3]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'In the next example, we create the same function twice, first via `new Function()`,
     then via a function expression:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，我们两次创建相同的函数，首先是通过 `new Function()`，然后是通过函数表达式：
 - en: '[PRE4]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '![Icon “warning”](../Images/5aa4bf88dc66ecb2bac6be4022a1fed4.png) **`new Function()`
     creates non-strict mode functions**'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“警告”](../Images/5aa4bf88dc66ecb2bac6be4022a1fed4.png) **`new Function()`
+    创建非严格模式函数**'
 - en: By default, functions created via `new Function()` are [sloppy](ch_syntax.html#strict-mode).
     If we want the function body to be in strict mode, we have to [switch it on manually](ch_syntax.html#switching-on-strict-mode).
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，通过 `new Function()` 创建的函数是[宽松的](ch_syntax.html#strict-mode)。如果我们想使函数体处于严格模式，我们必须[手动开启它](ch_syntax.html#switching-on-strict-mode)。
 - en: '[28.3 Recommendations](#recommendations)'
+  id: totrans-31
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[28.3 推荐事项](#recommendations)'
 - en: 'Avoid dynamic evaluation of code as much as you can:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽可能避免代码的动态评估：
 - en: It’s a security risk because it may enable an attacker to execute arbitrary
     code with the privileges of your code.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这是一个安全风险，因为它可能允许攻击者以您的代码的权限执行任意代码。
 - en: It may be switched off – for example, in browsers, via [a Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP).
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它可能被关闭——例如，在浏览器中，通过[内容安全策略](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)。
 - en: Very often, JavaScript is dynamic enough so that you don’t need `eval()` or
     similar. In the following example, what we are doing with `eval()` (line A) can
     be achieved just as well without it (line B).
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 很频繁地，JavaScript足够动态，以至于您不需要 `eval()` 或类似的东西。在以下示例中，我们使用 `eval()`（行A）所做的事情，也可以在不使用它的情况下（行B）实现。
 - en: '[PRE5]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'If you have to dynamically evaluate code:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果您必须动态评估代码：
 - en: 'Prefer `new Function()` over `eval()`: it always executes its code in global
     context and a function provides a clean interface to the evaluated code.'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 相比 `eval()`，更倾向于使用 `new Function()`：它始终在全局上下文中执行其代码，并且函数提供了一个干净的接口来访问评估后的代码。
 - en: 'Prefer indirect `eval` over direct `eval`: evaluating code in global context
     is safer.'
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 相比直接 `eval()`，更倾向于间接 `eval`：在全局上下文中评估代码更安全。
