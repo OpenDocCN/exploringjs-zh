@@ -1,1138 +1,1740 @@
 - en: 37 Computing with tuple types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 37 使用元组类型进行计算
 - en: 原文：[https://exploringjs.com/ts/book/ch_computing-with-tuple-types.html](https://exploringjs.com/ts/book/ch_computing-with-tuple-types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_computing-with-tuple-types.html](https://exploringjs.com/ts/book/ch_computing-with-tuple-types.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (Ad, 请勿拦截。)
 - en: '[37.1 The syntax of tuple types](#the-syntax-of-tuple-types)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.1 元组类型的语法](#the-syntax-of-tuple-types)'
 - en: '[37.1.1 Basic syntax](#basic-syntax)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.1.1 基本语法](#basic-syntax)'
 - en: '[37.1.2 Variadic tuple elements](#variadic-tuple-elements)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.1.2 可变元组元素](#variadic-tuple-elements)'
 - en: '[37.1.3 Labeled tuple elements](#labeled-tuple-elements)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.1.3 带标签的元组元素](#labeled-tuple-elements)'
 - en: '[37.2 Types for tuples](#types-for-tuples)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.2 元组类型](#types-for-tuples)'
 - en: '[37.2.1 Tuples and `--noUncheckedIndexedAccess`](#tuples-and-nouncheckedindexedaccess)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.2.1 元组与 `--noUncheckedIndexedAccess`](#tuples-and-nouncheckedindexedaccess)'
 - en: '[37.2.2 Forcing Array literals to be inferred as tuples](#forcing-array-literals-to-be-inferred-as-tuples)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.2.2 强制数组字面量被推断为元组](#forcing-array-literals-to-be-inferred-as-tuples)'
 - en: '[37.2.3 Using `readonly` to accept const tuples](#using-readonly-to-accept-const-tuples)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.2.3 使用 `readonly` 接受 const 元组](#using-readonly-to-accept-const-tuples)'
 - en: '[37.2.4 Enforcing a fixed Array length](#enforcing-a-fixed-array-length)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.2.4 强制固定数组长度](#enforcing-a-fixed-array-length)'
 - en: '[37.3 The keys of tuple types](#keyof-tuple-type)'
+  id: totrans-12
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.3 元组类型的键](#keyof-tuple-type)'
 - en: '[37.3.1 Extracting the index keys (strings) of a tuple](#TupleIndexKeys)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.3.1 提取元组的索引键（字符串）](#TupleIndexKeys)'
 - en: '[37.3.2 Extracting the indices (numbers) of a tuple](#TupleIndices)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.3.2 提取元组的索引（数字）](#TupleIndices)'
 - en: '[37.4 Mapping tuples via mapped types](#mapped-types-over-tuples)'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.4 通过映射类型映射元组](#mapped-types-over-tuples)'
 - en: '[37.4.1 How a mapped type handles the keys of a tuple type](#how-a-mapped-type-handles-the-keys-of-a-tuple-type)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.4.1 映射类型如何处理元组类型的键](#how-a-mapped-type-handles-the-keys-of-a-tuple-type)'
 - en: '[37.4.2 Mapping preserves the labels of tuple elements](#mapping-preserves-the-labels-of-tuple-elements)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.4.2 映射保留元组元素的标签](#mapping-preserves-the-labels-of-tuple-elements)'
 - en: '[37.4.3 Tuples and mapped types with key remapping (`as`)](#tuples-and-mapped-types-with-key-remapping-as)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.4.3 元组和具有键重映射的映射类型 (`as`)](#tuples-and-mapped-types-with-key-remapping-as)'
 - en: '[37.4.4 Example: typing `Promise.all()`](#typing-Promise.all)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.4.4 示例：为 `Promise.all()` 进行类型定义](#typing-Promise.all)'
 - en: '[37.5 Extracting union types from tuples](#extracting-union-types-from-tuples)'
+  id: totrans-20
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.5 从元组中提取联合类型](#extracting-union-types-from-tuples)'
 - en: '[37.5.1 Applying the indexed access operator `T[K]` to a tuple](#from-tuple-to-union)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.5.1 将索引访问运算符 `T[K]` 应用到元组上](#from-tuple-to-union)'
 - en: '[37.5.2 Extracting a union from a tuple of tuples](#from-tuple-of-tuples-to-union)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.5.2 从元组元组中提取联合类型](#from-tuple-of-tuples-to-union)'
 - en: '[37.5.3 Extracting a union from a tuple of objects](#from-tuple-of-objects-to-union)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.5.3 从对象元组中提取联合类型](#from-tuple-of-objects-to-union)'
 - en: '[37.6 Computing with tuple types](#computing-with-tuple-types-1)'
+  id: totrans-24
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.6 使用元组类型进行计算](#computing-with-tuple-types-1)'
 - en: '[37.6.1 Extracting parts of tuples](#extracting-parts-of-tuples)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.6.1 提取元组的部分](#extracting-parts-of-tuples)'
 - en: '[37.6.2 Using a tuple of pairs as a lookup table](#tuple-lookup-table)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.6.2 使用元组对作为查找表](#tuple-lookup-table)'
 - en: '[37.6.3 Concatenating tuples](#concatenating-tuples)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.6.3 连接元组](#concatenating-tuples)'
 - en: '[37.6.4 Recursion over tuples](#recursion-over-tuples)'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.6.4 对元组进行递归](#recursion-over-tuples)'
 - en: '[37.7 Real-world examples](#real-world-examples)'
+  id: totrans-29
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.7 实际世界示例](#real-world-examples)'
 - en: '[37.7.1 Partial application that preserves parameter names](#applyPartial)'
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.7.1 保持参数名称的偏应用](#applyPartial)'
 - en: '[37.7.2 Typing a function `zip()`](#typing-zip)'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.7.2 为 `zip()` 函数进行类型定义](#typing-zip)'
 - en: '[37.7.3 Typing a function `zipObj()`](#typing-a-function-zipobj)'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.7.3 为 `zipObj()` 函数进行类型定义](#typing-a-function-zipobj)'
 - en: '[37.7.4 `util.promisify()`: converting a callback-based function to a Promise-based
     one](#util-promisify-converting-a-callback-based-function-to-a-promise-based-one)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.7.4 `util.promisify()`：将基于回调的函数转换为基于 Promise 的函数](#util-promisify-converting-a-callback-based-function-to-a-promise-based-one)'
 - en: '[37.8 Limitations of computing with tuples](#limitations-of-computing-with-tuples)'
+  id: totrans-34
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.8 使用元组进行计算的限制](#limitations-of-computing-with-tuples)'
 - en: '[37.9 Sources of this chapter](#sources-of-this-chapter-6)'
+  id: totrans-35
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[37.9 本章来源](#sources-of-this-chapter-6)'
 - en: 'JavaScript’s Arrays are so flexible that TypeScript provides two different
     kinds of types for handling them:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript 的数组非常灵活，TypeScript 提供了两种不同的类型来处理它们：
 - en: 'Array types for arbitrary-length sequences of values that all have the same
     type – e.g.: `Array<string>`'
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 用于任意长度值序列的数组类型，其中所有值都具有相同的类型 – 例如：`Array<string>`
 - en: 'Tuple types for fixed-length sequences of values where each one may have a
     different type – e.g.: `[number, string, boolean]`'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 用于值类型固定长度序列的元组类型，其中每个值可能具有不同的类型 – 例如：`[number, string, boolean]`
 - en: In this chapter, we look at the latter – especially how to compute with tuples
     at the type level.
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨后者——特别是如何在类型级别上使用元组进行计算。
 - en: '[37.1 The syntax of tuple types](#the-syntax-of-tuple-types)'
+  id: totrans-40
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.1 元组类型的语法](#the-syntax-of-tuple-types)'
 - en: '[37.1.1 Basic syntax](#basic-syntax)'
+  id: totrans-41
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.1.1 基本语法](#basic-syntax)'
 - en: 'Tuple types have this syntax:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 元组类型具有以下语法：
 - en: '[PRE0]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: First, zero or more required elements.
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 首先，零个或多个必需元素。
 - en: Then, zero or more optional elements.
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后，零个或多个可选元素。
 - en: At the end, optionally, a single rest element.
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 最后，可选地，一个单独的剩余元素。
 - en: 'Examples:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 例子：
 - en: '[PRE1]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '**There is one additional rule:** required elements can appear after a rest
     element – but only if there is no optional element before them:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: '**还有一条额外的规则：必需元素可以出现在剩余元素之后——但前提是它们之前没有可选元素**：'
 - en: '[PRE2]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[37.1.1.1 Optional elements can only be omitted at the end](#optional-elements-can-only-be-omitted-at-the-end)'
+  id: totrans-51
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.1.1.1 可选元素只能省略在末尾](#optional-elements-can-only-be-omitted-at-the-end)'
 - en: '[PRE3]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'If the compiler option [`exactOptionalPropertyTypes`](ch_tsconfig-json.html#exactOptionalPropertyTypes)
     is active, we can’t even do the following:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果编译器选项 `exactOptionalPropertyTypes`（ch_tsconfig-json.html#exactOptionalPropertyTypes）处于活动状态，我们甚至不能做以下操作：
 - en: '[PRE4]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Note that this is similar to how JavaScript handles parameters and destructuring
     – e.g.:'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，这与 JavaScript 处理参数和解构的方式相似——例如：
 - en: '[PRE5]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'If we want to enable omitting elements in the middle, we can use a union:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想启用中间省略元素，我们可以使用一个联合：
 - en: '[PRE6]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: If there is a second parameter, it is assigned to `y` and does not become an
     element of `z`.
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果有第二个参数，它将被分配给 `y` 并不会成为 `z` 的一个元素。
 - en: '[37.1.2 Variadic tuple elements](#variadic-tuple-elements)'
+  id: totrans-60
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.1.2 可变元组元素](#variadic-tuple-elements)'
 - en: '*Variadic* means “has variable (not fixed) arity”. The arity of a tuple is
     its length.'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: '*可变*意味着“具有可变（不是固定）的元数”。元组的元数是其长度。'
 - en: '*Variadic elements* (or *spread elements*) enable spreading into tuples at
     the type level:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: '*可变元素*（或*扩展元素*）在类型级别上允许扩展到元组：'
 - en: '[PRE7]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Compare that to spreading in JavaScript:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 将其与 JavaScript 中的扩展进行比较：
 - en: '[PRE8]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'The type that is spread is usually a type variable and must be assignable to
     `readonly any[]` – i.e., it must be an Array or a tuple. It can have any length
     – hence the term “variadic”. The pull request [“Variadic tuple types”](https://github.com/microsoft/TypeScript/pull/39094)
     describes spreading like this:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 扩展的类型通常是类型变量，并且必须可分配给 `readonly any[]` ——即，它必须是一个数组或一个元组。它可以具有任何长度——因此术语“可变”。它通常是一个类型变量，必须可分配给
+    `readonly any[]` ——即，它必须是一个数组或一个元组。它可以具有任何长度——因此术语“可变”。它通常是一个类型变量，必须可分配给 `readonly
+    any[]` ——即，它必须是一个数组或一个元组。它可以具有任何长度——因此术语“可变”：
 - en: Intuitively, a variadic element `...T` is a placeholder that is replaced with
     one or more elements through generic type instantiation.
+  id: totrans-67
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 直观地讲，可变元素 `...T` 是一个占位符，它通过泛型类型实例化被替换为一个或多个元素。
 - en: '[37.1.2.1 Normalization of instantiated generic tuple types](#normalization-of-instantiated-generic-tuple-types)'
+  id: totrans-68
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.1.2.1 实例化泛型元组的规范化](#normalization-of-instantiated-generic-tuple-types)'
 - en: 'The result of spreading is adjusted so that it always fits the shape described
     at the beginning of this section. To explore how that works, we’ll use the utility
     types `Spread1` and `Spread2`:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 扩展的结果被调整，以便始终符合本节开头描述的形状。为了探索它是如何工作的，我们将使用实用类型 `Spread1` 和 `Spread2`：
 - en: '[PRE9]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Note that we can only spread a type `T` if it is constrained via `extends`
     to an Array type:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，我们只能扩展一个类型 `T`，如果它通过 `extends` 限制为一个数组类型：
 - en: '[PRE10]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[37.1.3 Labeled tuple elements](#labeled-tuple-elements)'
+  id: totrans-73
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.1.3 带标签的元组元素](#labeled-tuple-elements)'
 - en: 'We can also specify labels for tuple elements:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以为元组元素指定标签：
 - en: '[PRE11]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'If one element is labeled, all elements must be labeled. For optional elements,
     the syntax changes with labels – the question mark (`?`) is added to the label,
     not the type (TypeScript will tell you during editing if you do it wrong):'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果有一个元素被标记，则所有元素都必须被标记。对于可选元素，语法会随着标签而改变——问号（`?`）添加到标签中，而不是类型（TypeScript 在编辑时会告诉你是否出错）：
 - en: '[PRE12]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'What do labels do? Not much: They help with autocompletion and are preserved
     by some type operations but have no other effect in the type system:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 标签有什么作用？不多：它们有助于自动完成，并且在某些类型操作中被保留，但在类型系统中没有其他作用：
 - en: We can’t derive anything from them (e.g. to derive an options object from normal
     parameters).
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们无法从它们中推导出任何东西（例如，从普通参数推导出选项对象）。
 - en: They don’t affect type compatibility etc.
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们不影响类型兼容性等。
 - en: 'Therefore: If names matter, you should use an object type.'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此：如果名称很重要，你应该使用对象类型。
 - en: '[37.1.3.1 Extracted function parameters are labeled](#extracted-function-parameters-are-labeled)'
+  id: totrans-82
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.1.3.1 提取的函数参数是带标签的](#extracted-function-parameters-are-labeled)'
 - en: 'If we extract function parameters, we get labeled tuple elements:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们提取函数参数，我们得到带标签的元组元素：
 - en: '[PRE13]'
+  id: totrans-84
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Note that there is no way to check what the actual tuple element labels are
     – these checks succeed too:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，没有方法可以检查实际的元组元素标签——这些检查也会成功：
 - en: '[PRE14]'
+  id: totrans-86
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[37.1.3.2 Use case: overloading](#overloading)'
+  id: totrans-87
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.1.3.2 使用场景：重载](#overloading)'
 - en: 'TypeScript uses labels as function parameters if a rest parameter has a tuple
     type:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个剩余参数具有元组类型，TypeScript 会使用标签作为函数参数：
 - en: '[PRE15]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'Thanks to labels, tuples become better as an alternative to overloading because
     autocompletion can show parameter names:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 多亏了标签，元组成为了一个更好的重载替代方案，因为自动完成可以显示参数名称：
 - en: '[PRE16]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '[PRE17]'
+  id: totrans-92
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: The caveat is that the tuples can’t influence the return type.
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 但有一个限制，即元组不能影响返回类型。
 - en: '[37.1.3.3 Use case: preserving argument names when transforming functions](#use-case-preserving-argument-names-when-transforming-functions)'
+  id: totrans-94
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.1.3.3 使用场景：在转换函数时保留参数名称](#use-case-preserving-argument-names-when-transforming-functions)'
 - en: How that works is demonstrated when we handle partial application [later in
     this chapter](#applyPartial).
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们处理部分应用时（[later in this chapter](#applyPartial)），将展示它是如何工作的。
 - en: '[37.2 Types for tuples](#types-for-tuples)'
+  id: totrans-96
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.2 数组类型的类型](#types-for-tuples)'
 - en: '[37.2.1 Tuples and `--noUncheckedIndexedAccess`](#tuples-and-nouncheckedindexedaccess)'
+  id: totrans-97
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.2.1 元组和 `--noUncheckedIndexedAccess`](#tuples-and-nouncheckedindexedaccess)'
 - en: If we switch on the `tsconfig.json` option [`noUncheckedIndexedAccess`](ch_tsconfig-json.html#noUncheckedIndexedAccess)
     then TypeScript is more honest about what it knows about an indexable type.
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们切换到 `tsconfig.json` 选项 `noUncheckedIndexedAccess`（[ch_tsconfig-json.html#noUncheckedIndexedAccess]），那么
+    TypeScript 会更诚实地表达它对一个可索引类型的了解。
 - en: 'With an Array, TypeScript never knows at compile time at which indices there
     are elements – which is why `undefined` is always a possible result with indexed
     reading:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用数组时，TypeScript 在编译时永远不知道哪些索引位置有元素——这就是为什么索引读取总是可能返回 `undefined` 的原因：
 - en: '[PRE18]'
+  id: totrans-100
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'With a tuple, TypeScript knows the whole shape and can provide better types
     for indexed reading:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用元组时，TypeScript 知道整个形状，并且可以为索引读取提供更好的类型：
 - en: '[PRE19]'
+  id: totrans-102
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '[37.2.2 Forcing Array literals to be inferred as tuples](#forcing-array-literals-to-be-inferred-as-tuples)'
+  id: totrans-103
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.2.2 强制将数组字面量推断为元组](#forcing-array-literals-to-be-inferred-as-tuples)'
 - en: 'By default, a JavaScript Array literal has an Array type:'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，JavaScript 数组字面量具有数组类型：
 - en: '[PRE20]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'The most common way of changing that is via an `as const` annotation:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 改变这一点最常见的方式是通过 `as const` 注解：
 - en: '[PRE21]'
+  id: totrans-107
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'But we can also use `satisfies`:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 但我们也可以使用 `satisfies`：
 - en: '[PRE22]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'Note that `as const` also narrows the element types to `''a''` and `1`. With
     `satisfies`, they are `string` and `number` – unless we use `as const` for the
     elements:'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`as const` 还将元素类型缩小到 `'a'` 和 `1`。使用 `satisfies` 时，它们是 `string` 和 `number`
+    – 除非我们为元素使用 `as const`：
 - en: '[PRE23]'
+  id: totrans-111
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'If we omit the tuple element before the rest element (at the end), we are back
     to an Array type:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在剩余元素之前省略元组元素（在末尾），我们就会回到数组类型：
 - en: '[PRE24]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'There is one other type we can use for tuples:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以为元组使用另一种类型：
 - en: '[PRE25]'
+  id: totrans-115
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '[37.2.3 Using `readonly` to accept const tuples](#using-readonly-to-accept-const-tuples)'
+  id: totrans-116
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.2.3 使用 `readonly` 接受 const 元组](#using-readonly-to-accept-const-tuples)'
 - en: 'If a type `T` is constrained to a normal array type then it doesn’t match the
     type of an `as const` literal:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果类型 `T` 被约束为普通数组类型，那么它不匹配 `as const` 字面量的类型：
 - en: '[PRE26]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'We can change that by switching to a `ReadonlyArray`:'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过切换到 `ReadonlyArray` 来改变这一点：
 - en: '[PRE27]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'The following two notations are equivalent:'
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下两种表示法是等价的：
 - en: '[PRE28]'
+  id: totrans-122
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: In this chapter, I don’t always make array types readonly because it adds visual
     clutter.
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我并不总是将数组类型设置为只读，因为这会增加视觉上的杂乱。
 - en: '[37.2.4 Enforcing a fixed Array length](#enforcing-a-fixed-array-length)'
+  id: totrans-124
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.2.4 强制固定数组长度](#enforcing-a-fixed-array-length)'
 - en: 'We can use the following trick to enforce a fixed length for Array literals:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用以下技巧来强制数组字面量的固定长度：
 - en: '[PRE29]'
+  id: totrans-126
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'The caveat is that this technique does not work if the `strs` come from a variable
     whose type is an Array:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 但有一个限制，即如果 `strs` 来自一个类型为数组的变量，则此技术不起作用：
 - en: '[PRE30]'
+  id: totrans-128
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'In contrast, a tuple works:'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，一个元组可以这样工作：
 - en: '[PRE31]'
+  id: totrans-130
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: '[37.3 The keys of tuple types](#keyof-tuple-type)'
+  id: totrans-131
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.3 元组类型的键](#keyof-tuple-type)'
 - en: 'The keys of an Array type look like this (note the `Includes` in the first
     line):'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组的键看起来是这样的（注意第一行中的 `Includes`）：
 - en: '[PRE32]'
+  id: totrans-133
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: We can see keys for Array indices (`number`), `.length` and Array methods.
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以看到数组索引的键（`number`）、`.length` 和数组方法。
 - en: 'The keys of a tuple type are similar, but, in addition to the broad type `number`
     for indices, they also have one stringified number for each index:'
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 元组的键类似，但除了索引的广泛类型 `number` 之外，它们还为每个索引都有一个字符串化的数字：
 - en: '[PRE33]'
+  id: totrans-136
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'Why are string literal types used and not number literal types? The latter
     disappear in a union with `number`:'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么使用字符串字面量类型而不是数字字面量类型？后者在与 `number` 的联合中会消失：
 - en: '[PRE34]'
+  id: totrans-138
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'Note that the ECMAScript specification also uses string keys for Array elements
     ([more information](https://exploringjs.com/js/book/ch_arrays.html#arrays-are-actually-dictionaries)):'
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，ECMAScript 规范也使用字符串键来表示数组元素（[更多信息](https://exploringjs.com/js/book/ch_arrays.html#arrays-are-actually-dictionaries)）：
 - en: '[PRE35]'
+  id: totrans-140
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '[37.3.1 Extracting the index keys (strings) of a tuple](#TupleIndexKeys)'
+  id: totrans-141
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.3.1 提取元组的索引键（字符串）](#TupleIndexKeys)'
 - en: 'This utility type returns all string keys of a tuple `T` that are indices:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 此实用类型返回元组 `T` 的所有字符串键，这些键是索引：
 - en: '[PRE36]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '[PRE37]'
+  id: totrans-144
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: We use `&` to create the intersection type between the keys of `T` and the template
     literal type `` `${number}` `` – which is the type of all strings that are stringified
     numbers (see [“Interpolating primitive types into template literals” (§38.2.5)](ch_template-literal-types.html#interpolating-primitive-types-into-template-literals)).
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用 `&` 来创建 `T` 的键和模板字面量类型 `` `${number}` `` 之间的交集类型——这是所有被转换为字符串的数字字符串的类型（参见“将原始类型插入模板字面量”（§38.2.5））。
 - en: '[37.3.2 Extracting the indices (numbers) of a tuple](#TupleIndices)'
+  id: totrans-146
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.3.2 提取元组的索引（数字）](#TupleIndices)'
 - en: 'Getting a tuple’s numeric indices (numbers, not stringified numbers) is more
     work:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 获取元组的数字索引（数字，而不是字符串化的数字）需要更多的工作：
 - en: '[PRE38]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: '[PRE39]'
+  id: totrans-149
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '`TupleIndices` uses the following helper type, which extracts string literal
     types with numbers and converts them to numbers.'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: '`TupleIndices` 使用以下辅助类型，它提取带有数字的字符串字面量类型并将它们转换为数字。'
 - en: '[PRE40]'
+  id: totrans-151
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: '[PRE41]'
+  id: totrans-152
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: In line A, `StrToNum` uses a template literal type plus `infer` to parse a number
     inside a string literal type. If there is no number, it returns `never`. Since
     the conditional type in line A is distributive, we can use it to filter a union
     type (as shown at the end).
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行 A 中，`StrToNum` 使用模板字面量类型加上 `infer` 来解析字符串字面量类型内的数字。如果没有数字，它返回 `never`。由于行
+    A 中的条件类型是分配的，我们可以用它来过滤联合类型（如末尾所示）。
 - en: '[37.4 Mapping tuples via mapped types](#mapped-types-over-tuples)'
+  id: totrans-154
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.4 通过映射类型映射元组](#mapped-types-over-tuples)'
 - en: 'A mapped type has the following syntax:'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 映射类型具有以下语法：
 - en: '[PRE42]'
+  id: totrans-156
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: '[37.4.1 How a mapped type handles the keys of a tuple type](#how-a-mapped-type-handles-the-keys-of-a-tuple-type)'
+  id: totrans-157
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.4.1 映射类型如何处理元组类型的键](#how-a-mapped-type-handles-the-keys-of-a-tuple-type)'
 - en: 'Recall that `keyof`, applied to a tuple, produces [a variety of values](#keyof-tuple-type):
     method names, stringified indices, etc.'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 回想一下，将 `keyof` 应用到元组上会产生[各种值](#keyof-tuple-type)：方法名称、字符串化的索引等。
 - en: 'In its basic form, a mapped type helps us with tuples in two ways:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 在其基本形式中，映射类型以两种方式帮助我们处理元组：
 - en: First, it filters the keys and only loops over string index keys (`'0'`, `'1'`,
     etc.).
+  id: totrans-160
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 首先，它过滤键，并且只遍历字符串索引键（`'0'`、`'1'`等）。
 - en: Second, it returns a tuple (not an object literal type).
+  id: totrans-161
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 其次，它返回一个元组（而不是对象字面量类型）。
 - en: 'The following example demonstrates both phenomena. `KeyToKey<T>` returns a
     tuple whose elements are the string index keys of the tuple `T`:'
+  id: totrans-162
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例演示了这两种现象。`KeyToKey<T>` 返回一个元组，其元素是元组 `T` 的字符串索引键：
 - en: '[PRE43]'
+  id: totrans-163
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: '[37.4.2 Mapping preserves the labels of tuple elements](#mapping-preserves-the-labels-of-tuple-elements)'
+  id: totrans-164
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.4.2 映射保留元组元素的标签](#mapping-preserves-the-labels-of-tuple-elements)'
 - en: 'Mapping preserves the labels of tuple elements:'
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 映射保留元组元素的标签：
 - en: '[PRE44]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: '[37.4.3 Tuples and mapped types with key remapping (`as`)](#tuples-and-mapped-types-with-key-remapping-as)'
+  id: totrans-167
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.4.3 元组和带有键重映射（`as`）的映射类型](#tuples-and-mapped-types-with-key-remapping-as)'
 - en: 'If we use key remapping (`as`) in a mapped type over a tuple then the result
     won’t be a tuple anymore and all keys of a tuple will be considered (vs. only
     its indices):'
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在映射类型上使用键重映射（`as`），则结果将不再是元组，并且将考虑元组的所有键（而不是仅其索引）：
 - en: '[PRE45]'
+  id: totrans-169
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'If we want to stick with tuple indices, we have to filter the result of `keyof`.
     To do that, we can use the utility types `TupleIndexKeys` that we have defined
     previously:'
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想坚持使用元组索引，我们必须过滤 `keyof` 的结果。为此，我们可以使用之前定义的实用类型 `TupleIndexKeys`：
 - en: '[PRE46]'
+  id: totrans-171
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: 'Note that `TupleIndices` returns string literal types – which explains the
     property values. If we prefer number literal types, we can use the previously
     defined utility type `TupleIndices`:'
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`TupleIndices` 返回字符串字面量类型——这解释了属性值。如果我们更喜欢数字字面量类型，我们可以使用之前定义的实用类型 `TupleIndices`：
 - en: '[PRE47]'
+  id: totrans-173
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: '[37.4.4 Example: typing `Promise.all()`](#typing-Promise.all)'
+  id: totrans-174
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.4.4 示例：类型化 `Promise.all()`](#typing-Promise.all)'
 - en: 'This is what the type for `Promise.all()` looks like (I edited [the actual
     code](https://github.com/microsoft/TypeScript/blob/main/src/lib/es2015.promise.d.ts)
     slightly):'
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是 `Promise.all()` 的类型看起来像什么（我稍微编辑了[实际代码](https://github.com/microsoft/TypeScript/blob/main/src/lib/es2015.promise.d.ts)）：
 - en: 'We will use the following helper type which unwraps the Promises in a tuple:'
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将使用以下辅助类型，它解包元组中的Promise：
 - en: '[PRE48]'
+  id: totrans-177
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: 'Notes:'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意事项：
 - en: The `-readonly` in line A removes that modifier from each tuple element and
     therefore from the whole tuple.
+  id: totrans-179
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 线A中的`-readonly`移除了每个元组元素以及整个元组的该修饰符。
 - en: The built-in utility type `Awaited` (used in line A) works like `await` and
     (roughly) unwraps Promises.
+  id: totrans-180
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 线A中使用的内置实用类型`Awaited`（用于行A）像`await`一样工作，并且（大致上）解包Promise。
 - en: 'With that helper type, our version of `Promise.all()` is easy to type:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用这个辅助类型，我们的`Promise.all()`版本很容易进行类型化：
 - en: '[PRE49]'
+  id: totrans-182
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: 'The constraint after `extends` in line A achieves two things:'
+  id: totrans-183
   prefs: []
   type: TYPE_NORMAL
+  zh: 线A中`extends`后面的约束实现了两个目的：
 - en: '`readonly` means that read-only `values` are also accepted, not just mutable
     `values`.'
+  id: totrans-184
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`readonly`表示除了可变`values`之外，也接受只读`values`。'
 - en: '`unknown[] | []` means that Array literals are interpreted as tuples.'
+  id: totrans-185
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`unknown[] | []` 表示数组字面量被解释为元组。'
 - en: '[37.5 Extracting union types from tuples](#extracting-union-types-from-tuples)'
+  id: totrans-186
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.5 从元组中提取联合类型](#extracting-union-types-from-tuples)'
 - en: '[37.5.1 Applying the indexed access operator `T[K]` to a tuple](#from-tuple-to-union)'
+  id: totrans-187
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.5.1 将索引访问运算符`T[K]`应用于元组](#from-tuple-to-union)'
 - en: 'If we apply [the indexed access operator `T[K]`](ch_computing-with-types-overview.html#indexed-access-types)
     to a tuple, we get the tuple elements as a union:'
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将[索引访问运算符`T[K]`](ch_computing-with-types-overview.html#indexed-access-types)应用于元组，我们将得到元组元素作为联合类型：
 - en: '[PRE50]'
+  id: totrans-189
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: '[37.5.2 Extracting a union from a tuple of tuples](#from-tuple-of-tuples-to-union)'
+  id: totrans-190
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.5.2 从元组元组中提取联合类型](#from-tuple-of-tuples-to-union)'
 - en: Sometimes, it makes sense to encode data as a collection of tuples – e.g. when
     we want to look up a tuple by any of its elements and performance is not as important.
     In contrast, Maps only support lookup by key well.
+  id: totrans-191
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，将数据编码为元组的集合是有意义的——例如，当我们想要通过其任何元素查找元组，而性能不是那么重要时。相比之下，Map只支持通过键进行查找。
 - en: 'For Maps, it’s easy to compute the keys and the values – which we can use to
     constrain values when looking up data. Can we do the same for a tuple of tuples?
     We can, if we use the indexed access operator `T[K]` twice:'
+  id: totrans-192
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于Map，计算键和值很容易——我们可以使用这些值来约束查找数据时的值。我们能否对元组元组做同样的事情？我们可以，如果我们使用索引访问运算符`T[K]`两次：
 - en: '[PRE51]'
+  id: totrans-193
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: '[37.5.3 Extracting a union from a tuple of objects](#from-tuple-of-objects-to-union)'
+  id: totrans-194
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.5.3 从对象元组中提取联合类型](#from-tuple-of-objects-to-union)'
 - en: 'The same approach works for a tuple of objects:'
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: 同样的方法也适用于对象元组：
 - en: '[PRE52]'
+  id: totrans-196
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: '[37.6 Computing with tuple types](#computing-with-tuple-types-1)'
+  id: totrans-197
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.6 计算元组类型](#computing-with-tuple-types-1)'
 - en: In this section, we’ll explore computing with tuple types via small examples.
+  id: totrans-198
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在本节中，我们将通过一些小例子来探索使用元组类型的计算。
 - en: In the next section, we’ll look at real-world use cases for this kind of computation.
+  id: totrans-199
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在下一节中，我们将探讨这类计算的实际情况。
 - en: '[37.6.1 Extracting parts of tuples](#extracting-parts-of-tuples)'
+  id: totrans-200
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.6.1 提取元组的部分](#extracting-parts-of-tuples)'
 - en: To extract parts of tuples, we use `infer`.
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 要提取元组的部分，我们使用`infer`。
 - en: '[37.6.1.1 Extracting the first element of a tuple](#extracting-the-first-element-of-a-tuple)'
+  id: totrans-202
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.6.1.1 提取元组的第一个元素](#extracting-the-first-element-of-a-tuple)'
 - en: We infer the first element and ignore all other elements by using `unknown`
     as a wildcard type that matches anything.
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们通过使用通配符类型`unknown`作为匹配任何内容的占位符来推断第一个元素，并忽略所有其他元素。
 - en: '[PRE53]'
+  id: totrans-204
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: '[37.6.1.2 Extracting the last element of a tuple](#extracting-the-last-element-of-a-tuple)'
+  id: totrans-205
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.6.1.2 提取元组的最后一个元素](#extracting-the-last-element-of-a-tuple)'
 - en: 'The approach we used to extract the first element (in the previous example)
     also works for extracting the last element:'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们用来提取第一个元素（在先前的例子中）的方法也适用于提取最后一个元素：
 - en: '[PRE54]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: '[37.6.1.3 Extracting the *rest* of a tuple (elements after the first one)](#extracting-the-rest-of-a-tuple-elements-after-the-first-one)'
+  id: totrans-208
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.6.1.3 提取元组的*其余部分*（第一个元素之后的元素）](#extracting-the-rest-of-a-tuple-elements-after-the-first-one)'
 - en: 'To extract the *rest* of a tuple (the elements after the first one), we make
     use the wildcard type `unknown` for the first element and infer what is spread
     after it:'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 要提取元组的*其余部分*（第一个元素之后的元素），我们使用通配符类型`unknown`来表示第一个元素，并推断出它之后的内容：
 - en: '[PRE55]'
+  id: totrans-210
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: '[37.6.2 Using a tuple of pairs as a lookup table](#tuple-lookup-table)'
+  id: totrans-211
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.6.2 使用成对元组作为查找表](#tuple-lookup-table)'
 - en: 'For many purposes, object literal types are very convenient as lookup tables:
     At the type level, lookup only works if keys are strings, numbers or symbols.
     Additionally, TypeScript doesn’t distinguish between strings and numbers. That
     mirrors how JavaScript works and prevents us from distinguishing between the number
     `1` and the string `''1''`:'
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于许多用途，对象字面量类型作为查找表非常方便：在类型级别，查找仅在键是字符串、数字或符号时才有效。此外，TypeScript 不区分字符串和数字。这反映了
+    JavaScript 的工作方式，并防止我们区分数字 `1` 和字符串 `'1'`：
 - en: '[PRE56]'
+  id: totrans-213
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: 'As an alternative, we can use a tuple of pairs (tuples with two elements) as
     a lookup table:'
+  id: totrans-214
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为替代方案，我们可以使用对（包含两个元素的元组）作为查找表：
 - en: '[PRE57]'
+  id: totrans-215
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: 'These are the types that implement the lookup functionality:'
+  id: totrans-216
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些类型实现了查找功能：
 - en: '[PRE58]'
+  id: totrans-217
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: 'How does that work? Step 1: Go from a tuple of pairs to a union of pairs via
     [an indexed access type (`T[K]`)](ch_computing-with-types-overview.html#indexed-access-types).'
+  id: totrans-218
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是如何工作的？步骤1：将元组的对转换为对（通过[索引访问类型 (`T[K]`)](ch_computing-with-types-overview.html#indexed-access-types)）。
 - en: '[PRE59]'
+  id: totrans-219
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: 'Step 2: Apply `LookupOne` to each of the pairs. That happens automatically
     if we apply that generic type to the union because its conditional type is [distributive](ch_conditional-types.html#distributivity-of-conditional-types):'
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: 第2步：将 `LookupOne` 应用到每一对上。如果我们将这个泛型类型应用到联合上，这会自动发生，因为它的条件类型是[分配的](ch_conditional-types.html#distributivity-of-conditional-types)：
 - en: '[PRE60]'
+  id: totrans-221
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: 'Step 3: Since [`never` is the empty set](ch_never.html#never-is-the-empty-set),
     we get the final result `''string''` after the intermediate result of the distributed
     application of `LookupOne` is evaluated:'
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: 第3步：由于 `never` 是空集，所以在评估 `LookupOne` 分配应用的中间结果后，我们得到最终结果 `'string'`：
 - en: '[PRE61]'
+  id: totrans-223
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: '[37.6.3 Concatenating tuples](#concatenating-tuples)'
+  id: totrans-224
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.6.3 元组的连接](#concatenating-tuples)'
 - en: 'To concatenate two tuples `T1` and `T2`, we spread them both:'
+  id: totrans-225
   prefs: []
   type: TYPE_NORMAL
+  zh: 要连接两个元组 `T1` 和 `T2`，我们需要将它们都展开：
 - en: '[PRE62]'
+  id: totrans-226
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE62]'
 - en: '[37.6.4 Recursion over tuples](#recursion-over-tuples)'
+  id: totrans-227
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.6.4 元组的递归](#recursion-over-tuples)'
 - en: 'To explore recursion over tuples, let’s implement wrapping tuple elements with
     recursion (where we previously used a mapped type):'
+  id: totrans-228
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了探索元组的递归，让我们通过递归包装元组元素来实现（我们之前使用的是映射类型）：
 - en: Recursing over tuples in TypeScript
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 中的元组递归
 - en: '[PRE63]'
+  id: totrans-230
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE63]'
 - en: 'We use a technique that is inspired by how functional programming languages
     recurse over lists:'
+  id: totrans-231
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用一种受函数式编程语言如何递归列表启发的技术：
 - en: 'Line A: We check whether we can split `Tup` into the first element `First`
     and the remaining elements `Rest`.'
+  id: totrans-232
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行A：我们检查是否可以将 `Tup` 分割为第一个元素 `First` 和剩余元素 `Rest`。
 - en: 'Line B: If yes then `Tup` has at least one element. We return a tuple whose
     first element is the wrapped `First` and whose remaining elements are computed
     by a self-recursive call.'
+  id: totrans-233
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行B：如果是的话，`Tup` 至少有一个元素。我们返回一个元组，其第一个元素是包装的 `First`，其余元素通过自我递归调用计算得出。
 - en: 'Line C: If no then `Tup` is empty. We return an empty tuple.'
+  id: totrans-234
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行C：如果没有，则 `Tup` 为空。我们返回一个空元组。
 - en: In functional programming, `First` is often called `Head` and `Rest` is often
     called `Tail`.
+  id: totrans-235
   prefs: []
   type: TYPE_NORMAL
+  zh: 在函数式编程中，`First` 通常被称为 `Head`，而 `Rest` 通常被称为 `Tail`。
 - en: '[37.6.4.1 Flattening a tuple of tuples](#flattening-a-tuple-of-tuples)'
+  id: totrans-236
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.6.4.1 展平元组的元组](#flattening-a-tuple-of-tuples)'
 - en: 'Let’s use recursion to flatten a tuple of tuples:'
+  id: totrans-237
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用递归将元组的元组展平：
 - en: '[PRE64]'
+  id: totrans-238
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE64]'
 - en: In this case, the inferred types `Tup` and `Rest` are more complex – which is
     why TypeScript complains if we don’t use `extends` (line A, line B) to constrain
     them.
+  id: totrans-239
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这种情况下，推断出的类型 `Tup` 和 `Rest` 更复杂——这就是为什么 TypeScript 如果我们不使用 `extends`（行A，行B）来约束它们会报错。
 - en: '[37.6.4.2 Filtering a tuple](#filtering-tuples)'
+  id: totrans-240
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.6.4.2 过滤元组](#filtering-tuples)'
 - en: 'The following code uses recursion to filter out empty strings in a tuple:'
+  id: totrans-241
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码使用递归从元组中过滤掉空字符串：
 - en: '[PRE65]'
+  id: totrans-242
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE65]'
 - en: 'Note that we have to use recursion for filtering. There are two reasons why
     using a mapped type and key remapping via `as` won’t work:'
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，我们必须使用递归进行过滤。使用映射类型和通过 `as` 进行键重映射不会工作有两个原因：
 - en: Due to `as`, such a type constructs an object type, not a tuple type.
+  id: totrans-244
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由于 `as`，这种类型构建的是一个对象类型，而不是元组类型。
 - en: Mapping preserves the indices, so removing properties leaves gaps.
+  id: totrans-245
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 映射保留索引，因此删除属性会留下空隙。
 - en: '[PRE66]'
+  id: totrans-246
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE66]'
 - en: '[37.6.4.3 Creating a tuple with a given length](#utility-type-Repeat)'
+  id: totrans-247
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.6.4.3 创建具有给定长度的元组](#utility-type-Repeat)'
 - en: 'If we want to create a tuple that has a given length `Len`, we are faced with
     a challenge: How do we know when to stop? We can’t decrement `Len`, we can only
     check if it is equal to a given value (line A):'
+  id: totrans-248
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要创建一个具有给定长度 `Len` 的元组，我们会面临一个挑战：我们如何知道何时停止？我们不能递减 `Len`，我们只能检查它是否等于一个给定的值（行A）：
 - en: '[PRE67]'
+  id: totrans-249
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE67]'
 - en: 'How does this code work? We use another functional programming technique and
     introduce an internal *accumulator* parameter `Acc`:'
+  id: totrans-250
   prefs: []
   type: TYPE_NORMAL
+  zh: 这段代码是如何工作的？我们使用另一种函数式编程技术，并引入一个内部累加器参数 `Acc`：
 - en: While recursion is still ongoing, we assemble the eventual result in `Acc` (line
     C).
+  id: totrans-251
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当递归仍在进行时，我们在 `Acc`（行C）中组装最终结果。
 - en: One the length of `Acc` is equal to `Len` (line A), we are done and can return
     `Acc` (line B).
+  id: totrans-252
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当 `Acc` 的长度等于 `Len`（行A）时，我们完成并可以返回 `Acc`（行B）。
 - en: '[37.6.4.4 Computing a range of numbers](#computing-a-range-of-numbers)'
+  id: totrans-253
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.6.4.4 计算数字范围](#computing-a-range-of-numbers)'
 - en: 'We can use the same technique to compute a range of numbers. Only this time,
     we append the current length of the accumulator to the accumulator:'
+  id: totrans-254
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用相同的技巧来计算一系列数字。但这次，我们将累加器的当前长度追加到累加器中：
 - en: '[PRE68]'
+  id: totrans-255
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE68]'
 - en: '[37.6.4.5 Dropping initial elements](#dropping-initial-elements)'
+  id: totrans-256
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[37.6.4.5 丢弃初始元素](#dropping-initial-elements)'
 - en: 'This is one way of implementing a utility type that removes the first `Num`
     elements of a `Tuple`:'
+  id: totrans-257
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是实现一个实用类型的一种方法，该类型可以移除 `Tuple` 的前 `Num` 个元素：
 - en: '[PRE69]'
+  id: totrans-258
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE69]'
 - en: This time, we use the accumulator variable `Counter` to count up – until Counter['length']
     is equal to `Num`.
+  id: totrans-259
   prefs: []
   type: TYPE_NORMAL
+  zh: 这次，我们使用累加器变量 `Counter` 来计数，直到 `Counter['length']` 等于 `Num`。
 - en: 'We can also use inference ([idea](https://mastodon.social/@hcschuetz/113906317654567023)
     by Heribert Schütz):'
+  id: totrans-260
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以使用推理（[由Heribert Schütz提出](https://mastodon.social/@hcschuetz/113906317654567023)）：
 - en: '[PRE70]'
+  id: totrans-261
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE70]'
 - en: We use [the utility type `Repeat`](#utility-type-Repeat) to compute a tuple
     where each element is the wildcard type `unknown` that matches any type. Then
     we match `Tuple` against a tuple pattern that begins with those elements. The
     remaining elements are the result we are looking for and we extract it via `infer`.
+  id: totrans-262
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用 [实用类型 `Repeat`](#utility-type-Repeat) 来计算一个元组，其中每个元素都是匹配任何类型的通配符类型 `unknown`。然后我们将
+    `Tuple` 与以这些元素开始的元组模式进行匹配。剩余的元素是我们正在寻找的结果，我们通过 `infer` 提取它。
 - en: '[37.7 Real-world examples](#real-world-examples)'
+  id: totrans-263
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.7 现实世界的例子](#real-world-examples)'
 - en: '[37.7.1 Partial application that preserves parameter names](#applyPartial)'
+  id: totrans-264
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.7.1 保留参数名称的偏应用](#applyPartial)'
 - en: 'Let’s implement the function `applyPartial(func, args)` for partially applying
     a function `func`. It works similarly to the function method `.bind()`:'
+  id: totrans-265
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们实现函数 `applyPartial(func, args)` 以部分应用函数 `func`。它的工作方式与函数方法 `.bind()` 类似：
 - en: '[PRE71]'
+  id: totrans-266
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE71]'
 - en: 'We return a partially applied `func`. To compute the type for the parameter
     `remainingArgs`, we remove the `InitialArgs` from the arguments of `Func` – via
     the following utility type:'
+  id: totrans-267
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们返回一个部分应用的 `func`。为了计算参数 `remainingArgs` 的类型，我们从 `Func` 的参数中移除 `InitialArgs`
+    – 通过以下实用类型：
 - en: '[PRE72]'
+  id: totrans-268
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE72]'
 - en: '[37.7.2 Typing a function `zip()`](#typing-zip)'
+  id: totrans-269
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.7.2 输入函数 `zip()`](#typing-zip)'
 - en: 'Consider a `zip()` function that converts a tuple of iterables to an iterable
     of tuples ([source code of an implementation](https://github.com/rauschma/iterable/blob/main/ts/src/sync.ts)):'
+  id: totrans-270
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑一个将可迭代元组转换为元组可迭代对象的 `zip()` 函数（[实现源代码](https://github.com/rauschma/iterable/blob/main/ts/src/sync.ts)）：
 - en: '[PRE73]'
+  id: totrans-271
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE73]'
 - en: 'The following utility type `Zip` computes a return type for it:'
+  id: totrans-272
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下实用类型 `Zip` 计算其返回类型：
 - en: '[PRE74]'
+  id: totrans-273
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE74]'
 - en: '[37.7.3 Typing a function `zipObj()`](#typing-a-function-zipobj)'
+  id: totrans-274
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.7.3 输入函数 `zipObj()`](#typing-a-function-zipobj)'
 - en: 'Function `zipObj()` is similar to `zip()`: It converts an object of iterables
     to an iterable of objects ([source code of an implementation](https://github.com/rauschma/iterable/blob/main/ts/src/sync.ts)):'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数 `zipObj()` 与 `zip()` 类似：它将可迭代对象转换为对象可迭代对象（[实现源代码](https://github.com/rauschma/iterable/blob/main/ts/src/sync.ts)）：
 - en: '[PRE75]'
+  id: totrans-276
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE75]'
 - en: 'The following utility type `ZipObj` computes a return type for it:'
+  id: totrans-277
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下实用类型 `ZipObj` 计算其返回类型：
 - en: '[PRE76]'
+  id: totrans-278
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE76]'
 - en: '[37.7.4 `util.promisify()`: converting a callback-based function to a Promise-based
     one](#util-promisify-converting-a-callback-based-function-to-a-promise-based-one)'
+  id: totrans-279
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[37.7.4 `util.promisify()`：将基于回调的函数转换为基于Promise的函数](#util-promisify-converting-a-callback-based-function-to-a-promise-based-one)'
 - en: 'The Node.js function [`util.promisify(cb)`](https://nodejs.org/api/util.html#utilpromisifyoriginal)
     converts a function that returns its result via a callback to a function that
     returns it via a Promise. [Its official type](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node/util.d.ts)
     is long:'
+  id: totrans-280
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js 函数 `util.promisify(cb)`（[官方文档](https://nodejs.org/api/util.html#utilpromisifyoriginal)）将返回其结果通过回调的函数转换为返回其结果通过Promise的函数。其官方类型定义很长：
 - en: '[PRE77]'
+  id: totrans-281
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE77]'
 - en: 'Let’s try to simplify it:'
+  id: totrans-282
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们尝试简化它：
 - en: '[PRE78]'
+  id: totrans-283
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE78]'
 - en: 'The previous code uses the following utility type:'
+  id: totrans-284
   prefs: []
   type: TYPE_NORMAL
+  zh: 之前的代码使用了以下实用类型：
 - en: '[PRE79]'
+  id: totrans-285
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE79]'
 - en: '[37.8 Limitations of computing with tuples](#limitations-of-computing-with-tuples)'
+  id: totrans-286
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.8 使用元组进行计算的局限性](#limitations-of-computing-with-tuples)'
 - en: 'There are constraints we can’t express via TypeScript’s type system. The following
     code is one example:'
+  id: totrans-287
   prefs: []
   type: TYPE_NORMAL
+  zh: 有一些约束我们无法通过 TypeScript 的类型系统来表示。以下代码是一个例子：
 - en: '[PRE80]'
+  id: totrans-288
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE80]'
 - en: 'We’d like to express:'
+  id: totrans-289
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们想表达：
 - en: Function `many()` receives an Array of objects.
+  id: totrans-290
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 函数 `many()` 接收一个对象数组。
 - en: The types of the two properties should be the same.
+  id: totrans-291
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 两个属性的类型应该是相同的。
 - en: We can’t loop and introduce one variable per loop iteration. Therefore, we list
     the most common cases manually.
+  id: totrans-292
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不能循环并每次循环迭代引入一个变量。因此，我们手动列出最常见的案例。
 - en: '[37.9 Sources of this chapter](#sources-of-this-chapter-6)'
+  id: totrans-293
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[37.9 源于本章的内容](#sources-of-this-chapter-6)'
 - en: Pull request [“Variadic tuple types”](https://github.com/microsoft/TypeScript/pull/39094)
     by Anders Hejlsberg
+  id: totrans-294
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由安德斯·海尔斯伯格提出的拉取请求[“可变元组类型”](https://github.com/microsoft/TypeScript/pull/39094)
 - en: Section [“Variadic Tuple Types”](https://devblogs.microsoft.com/typescript/announcing-typescript-4-0/#variadic-tuple-types)
     in the TypeScript 4.0 blog post
+  id: totrans-295
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 4.0 博客文章中的[“可变元组类型”](https://devblogs.microsoft.com/typescript/announcing-typescript-4-0/#variadic-tuple-types)部分
 - en: Section [“Labeled Tuple Elements”](https://devblogs.microsoft.com/typescript/announcing-typescript-4-0/#labeled-tuple-elements)
     in the TypeScript 4.0 blog post
+  id: totrans-296
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 4.0 博客文章中的[“标签化元组元素”](https://devblogs.microsoft.com/typescript/announcing-typescript-4-0/#labeled-tuple-elements)部分

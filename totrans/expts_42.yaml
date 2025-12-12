@@ -1,492 +1,750 @@
 - en: '34 Conditional types (C ? T : F)'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '34 条件类型 (C ? T : F)'
 - en: 原文：[https://exploringjs.com/ts/book/ch_conditional-types.html](https://exploringjs.com/ts/book/ch_conditional-types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_conditional-types.html](https://exploringjs.com/ts/book/ch_conditional-types.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (广告，请勿屏蔽。)
 - en: '[34.1 Syntax and first examples](#syntax-and-first-examples)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.1 语法和第一个例子](#syntax-and-first-examples)'
 - en: '[34.1.1 Chaining conditional types](#chaining-conditional-types)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.1.1 条件类型的链式调用](#chaining-conditional-types)'
 - en: '[34.1.2 Nesting conditional types](#nesting-conditional-types)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.1.2 条件类型的嵌套](#nesting-conditional-types)'
 - en: '[34.1.3 Example: only wrapping types that have the property `.length`](#example-only-wrapping-types-that-have-the-property-length)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.1.3 示例：仅包装具有 `.length` 属性的类型](#example-only-wrapping-types-that-have-the-property-length)'
 - en: '[34.2 Conditional types are distributive over union types](#distributivity-of-conditional-types)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.2 条件类型在联合类型上的分配律](#distributivity-of-conditional-types)'
 - en: '[34.2.1 Only the left-hand side of `extends` is distributed](#only-the-left-hand-side-of-extends-is-distributed)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.2.1 只有 `extends` 的左侧被分配](#only-the-left-hand-side-of-extends-is-distributed)'
 - en: '[34.2.2 Only type variables trigger distribution](#only-type-variables-trigger-distribution)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.2.2 只有类型变量触发分配](#only-type-variables-trigger-distribution)'
 - en: '[34.2.3 Preventing distributivity](#preventing-distributivity)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.2.3 防止分配律](#preventing-distributivity)'
 - en: '[34.2.4 Technique: always applying](#unconditional-mapping)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.2.4 技术：始终应用](#unconditional-mapping)'
 - en: '[34.3 Filtering union types by conditionally returning `never`](#filtering-union-types)'
+  id: totrans-12
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.3 通过条件返回 `never` 过滤联合类型](#filtering-union-types)'
 - en: '[34.3.1 The built-in utility type `Exclude<T, U>`](#the-built-in-utility-type-exclude-t-u)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.3.1 内置实用类型 `Exclude<T, U>`](#the-built-in-utility-type-exclude-t-u)'
 - en: '[34.3.2 The built-in utility type `Extract<T, U>`](#the-built-in-utility-type-extract-t-u)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.3.2 内置实用类型 `Extract<T, U>`](#the-built-in-utility-type-extract-t-u)'
 - en: '[34.4 Extracting parts of composite types via `infer` in conditional types](#extracting-parts-of-composite-types-via-infer-in-conditional-types)'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.4 通过条件类型中的 `infer` 提取复合类型的部分](#extracting-parts-of-composite-types-via-infer-in-conditional-types)'
 - en: '[34.5 Writing conditions for conditional types](#writing-conditions-for-conditional-types)'
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.5 为条件类型编写条件](#writing-conditions-for-conditional-types)'
 - en: '[34.5.1 Is one type assignable to another one?](#checking-assignability)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.5.1 检查一个类型是否可以赋值给另一个类型？](#checking-assignability)'
 - en: '[34.5.2 Checking if a generic type returns a particular value](#checking-if-a-generic-type-returns-a-particular-value)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.5.2 检查泛型类型是否返回特定值](#checking-if-a-generic-type-returns-a-particular-value)'
 - en: '[34.5.3 Checking if two types are equal](#checking-if-two-types-are-equal)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.5.3 检查两个类型是否相等](#checking-if-two-types-are-equal)'
 - en: '[34.5.4 Logical Or](#logical-or)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.5.4 逻辑或](#logical-or)'
 - en: '[34.5.5 Logical And](#logical-and)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.5.5 逻辑与](#logical-and)'
 - en: '[34.6 Deferred conditional types](#deferred-conditional-types)'
+  id: totrans-22
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.6 延迟条件类型](#deferred-conditional-types)'
 - en: '[34.7 Sources of this chapter](#sources-of-this-chapter-4)'
+  id: totrans-23
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[34.7 本章来源](#sources-of-this-chapter-4)'
 - en: 'A conditional type in TypeScript is an if-then-else expression: Its result
     is either one of two branches – which one depends on a condition. That is especially
     useful in generic types. Conditional types are also an essential tool for working
     with union types because they let us “loop” over them. Read on if you want to
     know how all of that works.'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 中的条件类型是一个 if-then-else 表达式：它的结果要么是两个分支之一——具体是哪一个取决于条件。这在泛型类型中特别有用。条件类型也是处理联合类型的一个基本工具，因为它们允许我们“遍历”它们。如果你想知道这一切是如何工作的，请继续阅读。
 - en: '[34.1 Syntax and first examples](#syntax-and-first-examples)'
+  id: totrans-25
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[34.1 语法和第一个例子](#syntax-and-first-examples)'
 - en: 'A *conditional type* has the following syntax:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个 *条件类型* 有以下语法：
 - en: '[PRE0]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'A conditional type has three parts:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 条件类型有三个部分：
 - en: If `Sub` is assignable to `Super`… (condition)
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `Sub` 可以赋值给 `Super`…（条件）
 - en: …then the result of this type expression is `TrueBranch`.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: …然后这个类型表达式的结果是 `TrueBranch`。
 - en: Otherwise, the result is `FalseBranch`.
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，结果是 `FalseBranch`。
 - en: 'I like to format longer conditional types like this:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 我喜欢这样格式化较长的条件类型：
 - en: '[PRE1]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'This is a first example of using conditional types:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是使用条件类型的第一个例子：
 - en: '[PRE2]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[34.1.1 Chaining conditional types](#chaining-conditional-types)'
+  id: totrans-36
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.1.1 条件类型的链式调用](#chaining-conditional-types)'
 - en: 'Similarly to JavaScript’s ternary operator, we can also chain TypeScript’s
     conditional type operator:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 类似于 JavaScript 的三元运算符，我们也可以链式调用 TypeScript 的条件类型运算符：
 - en: '[PRE3]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[34.1.2 Nesting conditional types](#nesting-conditional-types)'
+  id: totrans-39
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.1.2 条件类型的嵌套](#nesting-conditional-types)'
 - en: In the previous example, the true branch was always short and the false branch
     contained the next (nested) conditional type. That’s why each conditional type
     has the same indentation.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 在上一个示例中，真分支总是很短，而假分支包含下一个（嵌套）条件类型。这就是为什么每个条件类型都有相同的缩进。
 - en: 'However, if a nested conditional type appears in a true branch, then indentation
     helps humans read the code – e.g.:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，如果嵌套条件类型出现在真分支中，那么缩进有助于人类阅读代码 – 例如：
 - en: '[PRE4]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: For more information on this code, see the [“Filtering a tuple” (§37.6.4.2)](ch_computing-with-tuple-types.html#filtering-tuples)
     – from which this example was taken.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于此代码的更多信息，请参阅“过滤元组”（§37.6.4.2） – 此示例由此而来。
 - en: '[34.1.3 Example: only wrapping types that have the property `.length`](#example-only-wrapping-types-that-have-the-property-length)'
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.1.3 示例：仅包装具有属性 `.length` 的类型](#example-only-wrapping-types-that-have-the-property-length)'
 - en: 'In the following example, `Wrap<>` only wraps types in Promises if they have
     the property `.length` whose values are numbers:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，`Wrap<>` 仅在具有 `.length` 属性且其值为数字的 Promises 中包装类型：
 - en: '[PRE5]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[34.2 Conditional types are distributive over union types](#distributivity-of-conditional-types)'
+  id: totrans-47
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[34.2 条件类型在联合类型上是分配的](#distributivity-of-conditional-types)'
 - en: 'Conditional types are [*distributive*](https://en.wikipedia.org/wiki/Distributive_property)
     over union types: Applying a conditional type `C` to a union type `U` is the same
     as the union of applying `C` to each element of `U`. This is an example:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 条件类型在联合类型上是[*分配的*](https://en.wikipedia.org/wiki/Distributive_property)：将条件类型
+    `C` 应用到联合类型 `U` 与将 `C` 应用到 `U` 的每个元素的联合相同。这是一个例子：
 - en: '[PRE6]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Distributivity enables us to “loop” over the elements of the union type in
     line A: `WrapLen<T>` is applied to each element and only wraps values that have
     a property `.length` whose value is a number.'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 分配律使我们能够在行 A 中“循环”遍历联合类型的元素：`WrapLen<T>` 被应用于每个元素，并且仅包装具有 `.length` 属性且其值为数字的值。
 - en: 'For comparison, this is what happens with non-union types:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了比较，这是非联合类型发生的情况：
 - en: '[PRE7]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '[34.2.1 Only the left-hand side of `extends` is distributed](#only-the-left-hand-side-of-extends-is-distributed)'
+  id: totrans-53
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.2.1 只有 `extends` 的左侧是分配的](#only-the-left-hand-side-of-extends-is-distributed)'
 - en: 'We have already seen that conditional types are distributed over the left-hand
     side of `extends`:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经看到条件类型是分配在 `extends` 的左侧的：
 - en: '[PRE8]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'What about the right-hand side, though? There, no distribution occurs:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 那么右侧呢？在那里没有发生分配：
 - en: '[PRE9]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[34.2.2 Only type variables trigger distribution](#only-type-variables-trigger-distribution)'
+  id: totrans-58
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.2.2 只有类型变量触发分配](#only-type-variables-trigger-distribution)'
 - en: 'If we directly mention a union type in the condition of a conditional type
     then no distribution happens:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在条件类型的条件中直接提及联合类型，则不会发生分配：
 - en: '[PRE10]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Compare that with using the type variable `T`:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 将其与使用类型变量 `T` 进行比较：
 - en: '[PRE11]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[34.2.3 Preventing distributivity](#preventing-distributivity)'
+  id: totrans-63
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.2.3 防止分配](#preventing-distributivity)'
 - en: 'Consider the following generic type:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下泛型类型：
 - en: '[PRE12]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'In line A, we can see that `IsString` is distributive – which makes sense since
     we have used a conditional type to define it. But that is not what we want in
     this case: We’d like `IsString` to tell us that the complete type `string|number`
     is *not* assignable to `string`. This is how we can prevent distributivity:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行 A 中，我们可以看到 `IsString` 是分配的 – 这是有意义的，因为我们已经使用条件类型来定义它。但这种情况并不是我们想要的：我们希望 `IsString`
+    告诉我们完整的类型 `string|number` *不是* 可分配给 `string`。这就是我们如何防止分配的方法：
 - en: '[PRE13]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: A conditional type is only distributive if the left-hand side of `extends` is
     a bare type variable. By wrapping both the left-hand side and the right-hand side
     of `extends`, the intended check still happens but there is no distribution.
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 条件类型仅在 `extends` 的左侧是一个裸类型变量时才是分配的。通过包装 `extends` 的左右两侧，预期的检查仍然发生，但没有分配。
 - en: '[34.2.4 Technique: always applying](#unconditional-mapping)'
+  id: totrans-69
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.2.4 技巧：始终应用](#unconditional-mapping)'
 - en: 'Conditional types are an important tool for working with union types because
     they enable us to loop over them. Sometimes, we simply want to unconditionally
     map each union element to a new type. Then we can use the following technique:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 条件类型是处理联合类型的重要工具，因为它们使我们能够遍历它们。有时，我们只想无条件地将每个联合元素映射到新类型。然后我们可以使用以下技巧：
 - en: '[PRE14]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: Note how type `boolean` really is just the union `false | true`.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意类型 `boolean` 实际上只是联合 `false | true`。
 - en: The following (seemingly simpler) approach does *not* work – `T` needs to be
     part of the condition. Otherwise, the conditional type is not distributive.
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下（看似更简单）的方法**不**适用——`T`需要成为条件的一部分。否则，条件类型不是分配的。
 - en: '[PRE15]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '[34.3 Filtering union types by conditionally returning `never`](#filtering-union-types)'
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[34.3   通过条件返回`never`来过滤联合类型](#filtering-union-types)'
 - en: 'Interpreted as a set, type `never` is empty. Therefore, if it appears in a
     union type, it is ignored:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 将类型解释为集合，类型`never`是空的。因此，如果它出现在联合类型中，它将被忽略：
 - en: '[PRE16]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'That means we can use `never` to ignore components of a union type:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 这意味着我们可以使用`never`来忽略联合类型的组件：
 - en: '[PRE17]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'This is what happens if we swap the type expressions of the true branch and
     the false branch:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们交换真分支和假分支的类型表达式，就会发生这种情况：
 - en: '[PRE18]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '[34.3.1 The built-in utility type `Exclude<T, U>`](#the-built-in-utility-type-exclude-t-u)'
+  id: totrans-82
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.3.1   内置实用类型`Exclude<T, U>`](#the-built-in-utility-type-exclude-t-u)'
 - en: 'Excluding types from a union is such a common operation that TypeScript provides
     the built-in utility type `Exclude<T, U>`:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 从联合类型中排除类型是一个如此常见的操作，以至于TypeScript提供了内置实用类型`Exclude<T, U>`：
 - en: '[PRE19]'
+  id: totrans-84
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: Interpreted as a set operation, `Exclude<T, U>` is `T − U`.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 将`Exclude<T, U>`解释为集合操作，它是`T − U`。
 - en: To see an interesting use case for `Exclude`, check out [“Extracting a subtype
     of a discriminated union” (§19.2.3)](ch_unions-object-types.html#extracting-subtype-of-discriminated-union).
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 要查看`Exclude`的有趣用例，请参阅[“提取区分联合的子类型”（§19.2.3）](ch_unions-object-types.html#extracting-subtype-of-discriminated-union)。
 - en: '[34.3.2 The built-in utility type `Extract<T, U>`](#the-built-in-utility-type-extract-t-u)'
+  id: totrans-87
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.3.2   内置实用类型`Extract<T, U>`](#the-built-in-utility-type-extract-t-u)'
 - en: 'The inverse of `Exclude<T, U>` is `Extract<T, U>` (which is also built into
     TypeScript):'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Exclude<T, U>`的逆是`Extract<T, U>`（这也是TypeScript内置的）：'
 - en: '[PRE20]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: Interpreted as a set operation, `Extract<T, U>` is `T ∩ U`.
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 将`Extract<T, U>`解释为集合操作，它是`T ∩ U`。
 - en: '[34.4 Extracting parts of composite types via `infer` in conditional types](#extracting-parts-of-composite-types-via-infer-in-conditional-types)'
+  id: totrans-91
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[34.4   在条件类型中通过`infer`提取复合类型的部分](#extracting-parts-of-composite-types-via-infer-in-conditional-types)'
 - en: '`infer` lets us extract parts of compound types and can only be used inside
     the `extends` clause of a conditional type:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: '`infer`让我们提取复合类型的部分，并且只能在条件类型的`extends`子句中使用：'
 - en: '[PRE21]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: For more information, see [“Extracting parts of compound types via `infer`”
     (§35)](ch_infer-keyword.html#ch_infer-keyword).
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息，请参阅[“通过`infer`提取复合类型的部分”（§35）](ch_infer-keyword.html#ch_infer-keyword)。
 - en: '[34.5 Writing conditions for conditional types](#writing-conditions-for-conditional-types)'
+  id: totrans-95
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[34.5   为条件类型编写条件](#writing-conditions-for-conditional-types)'
 - en: '[34.5.1 Is one type assignable to another one?](#checking-assignability)'
+  id: totrans-96
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.5.1   一个类型是否可赋值给另一个类型？](#checking-assignability)'
 - en: 'We can use a conditional type to implement an assignability check:'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用条件类型来实现一个可赋值性检查：
 - en: '[PRE22]'
+  id: totrans-98
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: Why is this correct? Recall that, in the condition of a conditional type, `A
     extends B` checks if `A` is assignable to `B`.
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么这是正确的？回想一下，在条件类型的条件中，`A extends B`检查`A`是否可赋值给`B`。
 - en: '[34.5.2 Checking if a generic type returns a particular value](#checking-if-a-generic-type-returns-a-particular-value)'
+  id: totrans-100
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.5.2   检查泛型类型是否返回特定值](#checking-if-a-generic-type-returns-a-particular-value)'
 - en: 'In the following code, we check if `Str` is equal to `Uppercase<Str>`:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下代码中，我们检查`Str`是否等于`Uppercase<Str>`：
 - en: '[PRE23]'
+  id: totrans-102
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: We don’t really check equality, we only check if `Str` is assignable to `Uppercase<Str>`
     – via `extends`.
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们实际上并没有检查相等性，我们只是检查`Str`是否可赋值给`Uppercase<Str>`——通过`extends`。
 - en: 'There is one thing to watch out for – `never` is assignable to all types:'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 有一个需要注意的事项——`never`可赋值给所有类型：
 - en: '[PRE24]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: For more information on `Uppercase`, see [“Utility types for string manipulation”
     (§38.3)](ch_template-literal-types.html#utility-types-for-strings).
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多关于`Uppercase`的信息，请参阅[“字符串操作的实用类型”（§38.3）](ch_template-literal-types.html#utility-types-for-strings)。
 - en: '[34.5.3 Checking if two types are equal](#checking-if-two-types-are-equal)'
+  id: totrans-107
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.5.3   检查两个类型是否相等](#checking-if-two-types-are-equal)'
 - en: 'In the next example, we use the generic utility type `Equal` from [`asserttt`](ch_book-notation.html#notation-generic-type-Assert)
     to check if two types are equal (line A):'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，我们使用来自[`asserttt`](ch_book-notation.html#notation-generic-type-Assert)的泛型实用类型`Equal`来检查两个类型是否相等（行A）：
 - en: '[PRE25]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: Note that we check if the result of `Equal<A, B>` is assignable to `true`.
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，我们检查`Equal<A, B>`的结果是否可赋值给`true`。
 - en: '[34.5.4 Logical Or](#logical-or)'
+  id: totrans-111
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.5.4   逻辑或](#logical-or)'
 - en: 'To check if `X || Y`, we check:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 要检查`X || Y`，我们检查：
 - en: '[PRE26]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'Example:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 示例：
 - en: '[PRE27]'
+  id: totrans-115
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: '[34.5.5 Logical And](#logical-and)'
+  id: totrans-116
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[34.5.5   逻辑与](#logical-and)'
 - en: 'To check if `X && Y`, we can use a trick and check `[X, Y]` via `extends` –
     e.g.:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 要检查`X && Y`，我们可以使用一个技巧，并通过`extends`检查`[X, Y]`——例如：
 - en: '[PRE28]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: For more information on this code, see [“Ensuring the `any` is only equal to
     itself” (§39.3.3)](ch_testing-types.html#TEqual).
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于这段代码的更多信息，请参阅[“确保`any`只等于自身”（§39.3.3）](ch_testing-types.html#TEqual)。
 - en: '[34.6 Deferred conditional types](#deferred-conditional-types)'
+  id: totrans-120
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[34.6 延迟的条件类型](#deferred-conditional-types)'
 - en: 'To conclude, let’s look at an interesting phenomenon: Normally, the result
     of a conditional type is either its true branch or its false branch. However,
     if its condition contains one or more type variables that don’t have a value yet
     then it is *deferred* and not turned into a simpler value – e.g.:'
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: 总结一下，让我们看看一个有趣的现象：通常，条件类型的结果是它的真分支或假分支。然而，如果它的条件包含一个或多个尚未有值的类型变量，那么它就是*延迟的*，并不会转换成一个更简单的值——例如：
 - en: '[PRE29]'
+  id: totrans-122
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: In line A, we can see that `Result` is neither `string` nor `number`, but a
     deferred conditional type.
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行A中，我们可以看到`Result`既不是`string`也不是`number`，而是一个延迟的条件类型。
 - en: '[34.7 Sources of this chapter](#sources-of-this-chapter-4)'
+  id: totrans-124
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[34.7 本章节的来源](#sources-of-this-chapter-4)'
 - en: Chapter [“Conditional Types”](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html)
     in the TypeScript Handbook
+  id: totrans-125
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 手册中的[“条件类型”](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html)章节
 - en: Section [“Conditional Types”](https://www.typescriptlang.org/docs/handbook/advanced-types.html#conditional-types)
     in the TypeScript Handbook (version 1)
+  id: totrans-126
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 手册（版本1）中的[“条件类型”](https://www.typescriptlang.org/docs/handbook/advanced-types.html#conditional-types)章节
 - en: Describes deferred conditional types.
+  id: totrans-127
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 描述了延迟的条件类型。

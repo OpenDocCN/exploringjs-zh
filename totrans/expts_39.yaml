@@ -1,420 +1,624 @@
 - en: 32 Validating external data
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 32 验证外部数据
 - en: 原文：[https://exploringjs.com/ts/book/ch_validating-external-data.html](https://exploringjs.com/ts/book/ch_validating-external-data.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_validating-external-data.html](https://exploringjs.com/ts/book/ch_validating-external-data.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (广告，请勿屏蔽。)
 - en: '[32.1 JSON schema](#json-schema)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.1 JSON 模式](#json-schema)'
 - en: '[32.1.1 An example JSON schema](#an-example-json-schema)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.1.1 一个 JSON 模式示例](#an-example-json-schema)'
 - en: '[32.2 Approaches for data validation in TypeScript](#approaches-for-data-validation-in-typescript)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.2 TypeScript 中数据验证的方案](#approaches-for-data-validation-in-typescript)'
 - en: '[32.2.1 Approaches not using JSON schema](#approaches-not-using-json-schema)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.2.1 不使用 JSON 模式的方案](#approaches-not-using-json-schema)'
 - en: '[32.2.2 Approaches using JSON schema](#approaches-using-json-schema)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.2.2 使用 JSON 模式的方案](#approaches-using-json-schema)'
 - en: '[32.2.3 Picking a library](#picking-a-library)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.2.3 选择库](#picking-a-library)'
 - en: '[32.3 Example: validating data via the library *Zod*](#example-validating-data-via-the-library-zod)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3 示例：通过库 *Zod* 验证数据](#example-validating-data-via-the-library-zod)'
 - en: '[32.3.1 Defining a “schema” via Zod’s builder API](#defining-a-schema-via-zod-s-builder-api)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.1 通过 Zod 的构建器 API 定义“模式”](#defining-a-schema-via-zod-s-builder-api)'
 - en: '[32.3.2 Validating data](#validating-data)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.2 验证数据](#validating-data)'
 - en: '[32.3.3 Tip: Use `z.interface()` and property keys with question marks for
     optional properties (Zod 4)](#zod-optional-properties)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.3 小贴士：使用 `z.interface()` 和带问号的属性键来指定可选属性（Zod 4）](#zod-optional-properties)'
 - en: '[32.3.4 External vs. internal representation of data](#external-vs-internal-representation-of-data)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.3.4 数据的外部表示与内部表示](#external-vs-internal-representation-of-data)'
 - en: '[32.4 Conclusion: various thoughts about data validation libraries](#conclusion-various-thoughts-about-data-validation-libraries)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[32.4 结论：关于数据验证库的各种思考](#conclusion-various-thoughts-about-data-validation-libraries)'
 - en: '*Data validation* means ensuring that data has the desired structure and content.'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '*数据验证*意味着确保数据具有所需的结构和内容。'
 - en: 'With TypeScript, validation becomes relevant when we receive external data
     such as:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用 TypeScript，当我们接收到外部数据时，验证变得相关：
 - en: Data parsed from JSON files
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从 JSON 文件解析的数据
 - en: Data received from web services
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 来自 Web 服务的接收数据
 - en: In these cases, we expect the data to fit static types we have, but we can’t
     be sure. Contrast that with data we create ourselves, where TypeScript continuously
     checks that everything is correct.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这些情况下，我们期望数据符合我们拥有的静态类型，但我们不能确定。这与我们创建的数据形成对比，TypeScript 会持续检查一切是否正确。
 - en: This chapter explains how to validate external data in TypeScript.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章解释了如何在 TypeScript 中验证外部数据。
 - en: '[32.1 JSON schema](#json-schema)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.1 JSON 模式](#json-schema)'
 - en: Before we can explore approaches for data validation in TypeScript, we need
     to take a look at *JSON schema* because several of the approaches are based on
     it.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们探索 TypeScript 中数据验证的方案之前，我们需要看一下*JSON 模式*，因为其中一些方案基于它。
 - en: The idea behind [JSON schema](https://json-schema.org) is to express the *schema*
     (structure and content, think static type) of JSON data in JSON. That is, metadata
     is expressed in the same format as data.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: JSON 模式的理念是将 JSON 数据的*模式*（结构和内容，类似于静态类型）用 JSON 表达。也就是说，元数据以与数据相同的格式表达。
 - en: 'The use cases for JSON schema are:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: JSON 模式的用例包括：
 - en: 'Validating JSON data: If we have a schema definition for data, we can use tools
     to check that the data is correct. One issue with data can also be fixed automatically:
     We can specify default values that can be used to add properties that are missing.'
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 验证 JSON 数据：如果我们有数据模式定义，我们可以使用工具来检查数据是否正确。数据的一个问题也可以自动修复：我们可以指定默认值，用于添加缺失的属性。
 - en: 'Documenting JSON data formats: On one hand, the core schema definitions can
     be considered documentation. But JSON schema additionally supports descriptions,
     deprecation notes, comments, examples, and more. These mechanisms are called *annotations*.
     They are not used for validation, but for documentation.'
+  id: totrans-26
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 记录 JSON 数据格式：一方面，核心模式定义可以被视为文档。但 JSON 模式还支持描述、弃用说明、注释、示例等。这些机制被称为*注解*。它们不用于验证，而是用于文档。
 - en: 'IDE support for editing data: For example, Visual Studio Code supports JSON
     schema. If there is a schema for a JSON file, we gain several editing features:
     auto-completion, highlighting of errors, etc. Notably, VS Code’s support for `package.json`
     files is completely based on a JSON schema.'
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: IDE 对数据编辑的支持：例如，Visual Studio Code 支持 JSON 模式。如果 JSON 文件有模式，我们将获得几个编辑功能：自动完成、错误突出显示等。值得注意的是，VS
+    Code 对 `package.json` 文件的支持完全基于 JSON 模式。
 - en: '[32.1.1 An example JSON schema](#an-example-json-schema)'
+  id: totrans-28
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.1.1 一个 JSON 模式示例](#an-example-json-schema)'
 - en: 'This example is taken from [the `json-schema.org` website](https://json-schema.org/learn/miscellaneous-examples.html#describing-geographical-coordinates):'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 此示例取自 [json-schema.org 网站](https://json-schema.org/learn/miscellaneous-examples.html#describing-geographical-coordinates)：
 - en: '[PRE0]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The following JSON data is valid w.r.t. this schema:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下 JSON 数据符合此模式：
 - en: '[PRE1]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[32.2 Approaches for data validation in TypeScript](#approaches-for-data-validation-in-typescript)'
+  id: totrans-33
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.2 TypeScript 中数据验证的方案](#approaches-for-data-validation-in-typescript)'
 - en: This section provides a brief overview of various approaches for validating
     data in TypeScript. For each approach, I list one or more libraries that support
     the approach. W.r.t. libraries, I don’t intend to be comprehensive because things
     change quickly in this space.
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 本节简要概述了在 TypeScript 中验证数据的各种方法。对于每种方法，我列出了一个或多个支持该方法的库。关于库，我不打算全面介绍，因为在这个领域变化很快。
 - en: '[32.2.1 Approaches not using JSON schema](#approaches-not-using-json-schema)'
+  id: totrans-35
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.2.1 不使用 JSON 模式的方案](#approaches-not-using-json-schema)'
 - en: 'One approach for validation is to create a schema object by invoking builder
     methods and functions. Such an object enables us to:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 验证的一种方法是通过调用构建器方法和函数创建一个模式对象。这样的对象使我们能够：
 - en: Check data at runtime.
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在运行时检查数据。
 - en: Give data that passes the check the appropriate type at compile time.
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在编译时为通过检查的数据提供适当的类型。
 - en: There are many libraries that work like this. Next, we’ll look at a few examples.
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 有许多库以这种方式工作。接下来，我们将看看几个例子。
 - en: '[32.2.1.1 Zod](#zod)'
+  id: totrans-40
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.2.1.1 Zod](#zod)'
 - en: '[Zod](https://github.com/vriad/zod) (demonstrated in more depth later in this
     chapter) uses builder methods and is very popular.'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Zod](https://github.com/vriad/zod)（在本章后面将更深入地演示）使用构建器方法，并且非常受欢迎。'
 - en: '[PRE2]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[32.2.1.2 Valibot](#valibot)'
+  id: totrans-43
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.2.1.2 Valibot](#valibot)'
 - en: '[Valibot](https://github.com/fabian-hiller/valibot) is similar to Zod but uses
     functions, which helps with excluding unused code from bundles.'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Valibot](https://github.com/fabian-hiller/valibot) 与 Zod 类似，但使用函数，这有助于从包中排除未使用的代码。'
 - en: '[PRE3]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[32.2.1.3 ArkType](#arktype)'
+  id: totrans-46
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.2.1.3 ArkType](#arktype)'
 - en: '[ArkType](https://github.com/arktypeio/arktype) has a distinct way of specifying
     types: Instead of function or method invocations, it often uses string literal
     types (parsed via template literal types at compile time).'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '[ArkType](https://github.com/arktypeio/arktype) 有一种独特的指定类型的方式：它通常使用字符串字面量类型（在编译时通过模板字面量类型解析），而不是函数或方法调用。'
 - en: '[PRE4]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[32.2.1.4 Standard Schema: standard for validation APIs](#standard-schema-standard-for-validation-apis)'
+  id: totrans-49
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[32.2.1.4 标准模式：验证 API 的标准](#standard-schema-standard-for-validation-apis)'
 - en: “[Standard Schema](https://standardschema.dev) is a common interface designed
     to be implemented by JavaScript and TypeScript schema libraries.” Inspired by
     Zod, supported by many libraries.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: “[标准模式](https://standardschema.dev)是一个旨在由 JavaScript 和 TypeScript 模式库实现的通用接口。”受
+    Zod 启发，由许多库支持。
 - en: '[32.2.2 Approaches using JSON schema](#approaches-using-json-schema)'
+  id: totrans-51
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.2.2 使用 JSON 模式的方案](#approaches-using-json-schema)'
 - en: 'Approach: Converting TypeScript types to JSON schema. Libraries:'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法：将 TypeScript 类型转换为 JSON 模式。库：
 - en: '[ts-json-schema-generator](https://github.com/vega/ts-json-schema-generator)'
+  id: totrans-53
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[ts-json-schema-generator](https://github.com/vega/ts-json-schema-generator)'
 - en: '[typescript-json-schema](https://github.com/YousefED/typescript-json-schema)'
+  id: totrans-54
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[typescript-json-schema](https://github.com/YousefED/typescript-json-schema)'
 - en: 'Approach: Converting a JSON schema to TypeScript types. Libraries:'
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法：将 JSON 模式转换为 TypeScript 类型。库：
 - en: '[quicktype](https://github.com/quicktype/quicktype)'
+  id: totrans-56
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[quicktype](https://github.com/quicktype/quicktype)'
 - en: '[json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript)'
+  id: totrans-57
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript)'
 - en: 'Approach: A builder API creates both TypeScript types and JSON schemas. Library:'
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法：构建器 API 创建 TypeScript 类型和 JSON 模式。库：
 - en: '[TypeBox](https://github.com/sinclairzx81/typebox) (it also validates untyped
     data in TypeScript code)'
+  id: totrans-59
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[TypeBox](https://github.com/sinclairzx81/typebox)（它还验证 TypeScript 代码中的无类型数据）'
 - en: 'Approach: Validating JSON data via JSON schemas. This functionality is also
     useful for the other approaches. npm package:'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 方法：通过 JSON 模式验证 JSON 数据。此功能对其他方法也很有用。npm 包：
 - en: '[Ajv JSON schema validator](https://github.com/ajv-validator/ajv)'
+  id: totrans-61
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Ajv JSON 模式验证器](https://github.com/ajv-validator/ajv)'
 - en: '[32.2.3 Picking a library](#picking-a-library)'
+  id: totrans-62
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.2.3 选择库](#picking-a-library)'
 - en: 'Which approach and therefore library to use, depends on what we need:'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用哪种方法和相应的库取决于我们的需求：
 - en: If we are starting with TypeScript types and want to ensure that data (coming
     from configuration files, etc.) fits those types, then builder APIs that support
     static types are a good choice.
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们从 TypeScript 类型开始，并希望确保数据（来自配置文件等）符合这些类型，那么支持静态类型的构建器 API 是一个好的选择。
 - en: If our starting point is a JSON schema, then we should consider one of the libraries
     that support JSON schemas.
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们的起点是 JSON 模式，那么我们应该考虑支持 JSON 模式的库之一。
 - en: '[32.3 Example: validating data via the library *Zod*](#example-validating-data-via-the-library-zod)'
+  id: totrans-66
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.3 示例：通过库 *Zod* 验证数据](#example-validating-data-via-the-library-zod)'
 - en: '[32.3.1 Defining a “schema” via Zod’s builder API](#defining-a-schema-via-zod-s-builder-api)'
+  id: totrans-67
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.1 通过 Zod 的构建器 API 定义“模式”](#defining-a-schema-via-zod-s-builder-api)'
 - en: 'Zod has a builder API that produces both types and validation functions. That
     API is used as follows:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: Zod 有一个构建器 API，它生成类型和验证函数。该 API 的使用方法如下：
 - en: '[PRE5]'
+  id: totrans-69
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Note: `z.interface()` and the property keys with question marks are Zod 4 features.
     A subsection below explains why they are used here.'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：`z.interface()` 和带有问号的属性键是 Zod 4 的特性。下面的小节解释了为什么在这里使用它们。
 - en: For larger schemas, it can make sense to break things up into multiple `const`
     declarations.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于较大的模式，将事物分解为多个 `const` 声明是有意义的。
 - en: 'Zod can produce a static type from `FileEntryInputSchema`, but I decided to
     (redundantly!) manually maintain the static type `FileEntryInput`:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: Zod 可以从 `FileEntryInputSchema` 生成静态类型，但我决定（冗余地！）手动维护静态类型 `FileEntryInput`：
 - en: '[PRE6]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Why the redundancy?
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么会有冗余？
 - en: It’s easier to read.
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它更容易阅读。
 - en: It helps with migrating to a different validation library or approach, should
     I ever have to.
+  id: totrans-76
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我需要迁移到不同的验证库或方法，这有助于迁移。
 - en: 'We can use a static check to ensure that `FileEntryInputSchema` and `FileEntryInput`
     are in sync:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用静态检查来确保 `FileEntryInputSchema` 和 `FileEntryInput` 保持同步：
 - en: '[PRE7]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: The generic type `z.infer` derives a type from a Zod schema.
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 泛型类型 `z.infer` 从 Zod 模式推导出类型。
 - en: '[32.3.2 Validating data](#validating-data)'
+  id: totrans-80
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.2 验证数据](#validating-data)'
 - en: 'The schema method `.parse()` checks if a value has the correct structure:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 模式方法 `.parse()` 检查一个值是否具有正确的结构：
 - en: '[PRE8]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[32.3.3 Tip: Use `z.interface()` and property keys with question marks for
     optional properties (Zod 4)](#zod-optional-properties)'
+  id: totrans-83
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.3 小贴士：使用 `z.interface()` 和带有问号的属性键来定义可选属性（Zod 4）](#zod-optional-properties)'
 - en: 'They are a Zod 4 features. Without them, optional properties have the wrong
     types:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 它们是 Zod 4 的特性。没有它们，可选属性将具有错误的类型：
 - en: '[PRE9]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '`.optional()` does not do exactly what we want: In addition to making the property
     optional, it also adds `undefined` to its type (line A and line B).'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.optional()` 并不完全符合我们的需求：除了使属性可选外，它还将 `undefined` 添加到其类型中（行 A 和行 B）。'
 - en: '[32.3.4 External vs. internal representation of data](#external-vs-internal-representation-of-data)'
+  id: totrans-87
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[32.3.4 数据的外部表示与内部表示](#external-vs-internal-representation-of-data)'
 - en: When working with external data, it’s often useful to distinguish two types.
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 当处理外部数据时，区分两种类型通常很有用。
 - en: 'On one hand, there is the type that describes the input data. Its structure
     is optimized for being easy to author:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 一方面，有描述输入数据的类型。其结构优化以便于编写：
 - en: '[PRE10]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'On the other hand, there is the type that is used in the program. Its structure
     is optimized for being easy to use in code:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，有在程序中使用的类型。其结构优化以便于在代码中使用：
 - en: '[PRE11]'
+  id: totrans-92
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: After we have used Zod to ensure that the input data conforms to `FileEntryInput`,
     we can use a conversion function that converts the data to a value of type `FileEntry`.
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们使用 Zod 确保输入数据符合 `FileEntryInput` 之后，我们可以使用一个转换函数，将数据转换为 `FileEntry` 类型的值。
 - en: '[32.4 Conclusion: various thoughts about data validation libraries](#conclusion-various-thoughts-about-data-validation-libraries)'
+  id: totrans-94
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[32.4 结论：关于数据验证库的各种思考](#conclusion-various-thoughts-about-data-validation-libraries)'
 - en: 'I see two options for improving data validation libraries in the long run:'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 我看到两种长期改进数据验证库的方法：
 - en: 'Built-in support for runtime type representations in TypeScript: That would
     help validation libraries – at least with simpler use cases. For advanced use
     cases, it may be possible to leverage decorators.'
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 中内置对运行时类型表示的支持：这将有助于验证库——至少对于简单的用例。对于高级用例，可能可以利用装饰器。
 - en: Built-in support for compiling types to validation code. This could look similar
     to macros as supported, e.g., by Rust.
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 内置支持将类型编译为验证代码。这可能与 Rust 支持的宏类似。
 - en: 'For libraries that have builder APIs, I’d find tools useful that compile TypeScript
     types to builder API invocations (online and via a shell command). This would
     help in two ways:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于具有构建器 API 的库，我会发现将 TypeScript 类型编译为构建器 API 调用的工具很有用（在线和通过 shell 命令）。这将以两种方式帮助：
 - en: The tools could be used to explore how the APIs work.
+  id: totrans-99
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这些工具可以用来探索 API 的工作方式。
 - en: We’d have the option of producing API code via the tools.
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以选择通过工具生成 API 代码。

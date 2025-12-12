@@ -1,736 +1,1130 @@
 - en: '36 Mapped types {[K in U]: X}'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: '36   映射类型 {[K in U]: X}'
 - en: 原文：[https://exploringjs.com/ts/book/ch_mapped-types.html](https://exploringjs.com/ts/book/ch_mapped-types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_mapped-types.html](https://exploringjs.com/ts/book/ch_mapped-types.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[36.1 Basic mapped types](#basic-mapped-types)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.1 基本映射类型](#basic-mapped-types)'
 - en: '[36.1.1 Example: finite set of keys](#example-finite-set-of-keys)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.1.1 示例：有限键集](#example-finite-set-of-keys)'
 - en: '[36.1.2 Index signature vs. mapped type](#index-signature-vs-mapped-type)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.1.2 索引签名与映射类型](#index-signature-vs-mapped-type)'
 - en: '[36.1.3 Transforming an object type via a mapped type](#transforming-an-object-type-via-a-mapped-type)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.1.3 通过映射类型转换对象类型](#transforming-an-object-type-via-a-mapped-type)'
 - en: '[36.1.4 Mapping preserves the kind of type (tuple, array, object, etc.)](#mapping-preserves-the-kind-of-type-tuple-array-object-etc)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.1.4 映射保留类型的种类（元组、数组、对象等）](#mapping-preserves-the-kind-of-type-tuple-array-object-etc)'
 - en: '[36.1.5 Example: making an interface asynchronous](#example-making-an-interface-asynchronous)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.1.5 示例：使接口异步](#example-making-an-interface-asynchronous)'
 - en: '[36.1.6 Example: adding keys to an enum object](#example-adding-keys-to-an-enum-object)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.1.6 示例：向枚举对象添加键](#example-adding-keys-to-an-enum-object)'
 - en: '[36.2 Changing property keys via key remapping (`as`)](#key-remapping)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.2 通过键重映射（`as`）更改属性键](#key-remapping)'
 - en: '[36.2.1 If we use key remapping, the result is always an object literal type](#if-we-use-key-remapping-the-result-is-always-an-object-literal-type)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.2.1 如果我们使用键重映射，结果总是一个对象字面量类型](#if-we-use-key-remapping-the-result-is-always-an-object-literal-type)'
 - en: '[36.3 Filtering properties](#filtering-properties)'
+  id: totrans-12
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.3 过滤属性](#filtering-properties)'
 - en: '[36.3.1 Filtering properties via key remapping (`as`)](#filtering-properties-via-key-remapping-as)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.3.1 通过键重映射（`as`）过滤属性](#filtering-properties-via-key-remapping-as)'
 - en: '[36.3.2 Filtering properties by filtering key unions](#filtering-properties-by-filtering-key-unions)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.3.2 通过过滤键联合过滤属性](#filtering-properties-by-filtering-key-unions)'
 - en: '[36.3.3 Built-in utility type for keeping properties: `Pick<T, KeysToKeep>`](#built-in-utility-type-for-keeping-properties-pick-t-keystokeep)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.3.3 用于保留属性的内置实用类型：`Pick<T, KeysToKeep>`](#built-in-utility-type-for-keeping-properties-pick-t-keystokeep)'
 - en: '[36.3.4 Built-in utility type for filtering out properties: `Omit<T, KeysToFilterOut>`](#built-in-utility-type-for-filtering-out-properties-omit-t-keys-to-fil-ter-out)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.3.4 用于过滤属性的内建实用类型：`Omit<T, KeysToFilterOut>`](#built-in-utility-type-for-filtering-out-properties-omit-t-keys-to-fil-ter-out)'
 - en: '[36.4 Adding and removing modifiers via mapped types](#changing-modifiers-via-mapped-types)'
+  id: totrans-17
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.4 通过映射类型添加和移除修饰符](#changing-modifiers-via-mapped-types)'
 - en: '[36.4.1 Example: adding the optional modifier (`?`)](#example-adding-the-optional-modifier)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.4.1 示例：添加可选修饰符（`?`）](#example-adding-the-optional-modifier)'
 - en: '[36.4.2 Example: removing the optional modifier (`?`)](#example-removing-the-optional-modifier)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.4.2 示例：移除可选修饰符（`?`）](#example-removing-the-optional-modifier)'
 - en: '[36.4.3 Example: adding the `readonly` modifier](#example-adding-the-readonly-modifier)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.4.3 示例：添加 `readonly` 修饰符](#example-adding-the-readonly-modifier)'
 - en: '[36.4.4 Example: removing the `readonly` modifier](#example-removing-the-readonly-modifier)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.4.4 示例：移除 `readonly` 修饰符](#example-removing-the-readonly-modifier)'
 - en: '[36.5 Detecting the property modifiers `readonly` and `?` (optional)](#detecting-the-property-modifiers-readonly-and-optional)'
+  id: totrans-22
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.5 检测属性修饰符 `readonly` 和 `?`（可选）](#detecting-the-property-modifiers-readonly-and-optional)'
 - en: '[36.5.1 Detecting if a property is read-only](#detecting-if-a-property-is-read-only)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.5.1 检测属性是否为只读的](#detecting-if-a-property-is-read-only)'
 - en: '[36.5.2 Detecting if a property is optional](#detecting-if-a-property-is-optional)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.5.2 检测属性是否为可选的](#detecting-if-a-property-is-optional)'
 - en: '[36.6 `Record` is a mapped type](#utility-type-record)'
+  id: totrans-25
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.6 `Record` 是一个映射类型](#utility-type-record)'
 - en: '[36.7 Source of this chapter](#source-of-this-chapter)'
+  id: totrans-26
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[36.7 本章来源](#source-of-this-chapter)'
 - en: The most common way of using a mapped type is to produce a new version of an
     input type (usually an object type or a tuple type) by looping over its keys.
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用映射类型最常见的方式是通过遍历其键来生成输入类型（通常是对象类型或元组类型）的新版本。
 - en: '[36.1 Basic mapped types](#basic-mapped-types)'
+  id: totrans-28
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[36.1 基本映射类型](#basic-mapped-types)'
 - en: 'A basic mapped type looks like this (the name `Key` is just an example; we
     can use any identifier):'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个基本的映射类型看起来像这样（名称 `Key` 只是一个示例；我们可以使用任何标识符）：
 - en: '[PRE0]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'A mapped type creates an object type. It loops over the elements of `«KeySet»`
     and creates one property per iteration:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 映射类型创建一个对象类型。它遍历 `«KeySet»` 的元素，并为每次迭代创建一个属性：
 - en: '`Key` is the current element of `«KeySet»`. It determines the property key.
     (There are ways to use a different key or to skip a property. We’ll explore those
     later.)'
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Key` 是 `«KeySet»` 的当前元素。它决定了属性键。（有方法可以使用不同的键或跳过属性。我们将在稍后探讨这些方法。）'
 - en: The expression after the colon determines the property value and can use `Key`.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 冒号后面的表达式确定属性值，并可以使用 `Key`。
 - en: '[36.1.1 Example: finite set of keys](#example-finite-set-of-keys)'
+  id: totrans-34
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.1.1 示例：有限键集合](#example-finite-set-of-keys)'
 - en: 'The following mapped type loops over a finite set of keys:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下映射类型遍历一组有限的键：
 - en: '[PRE1]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[36.1.2 Index signature vs. mapped type](#index-signature-vs-mapped-type)'
+  id: totrans-37
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.1.2 索引签名与映射类型](#index-signature-vs-mapped-type)'
 - en: To understand how an index signature is different from a mapped type, let’s
     first review what an index signature is.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 要了解索引签名与映射类型的不同，让我们首先回顾一下索引签名的定义。
 - en: '[36.1.2.1 An index signature represents a potentially infinite set of properties](#an-index-signature-represents-a-potentially-infinite-set-of-properties)'
+  id: totrans-39
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[36.1.2.1 索引签名表示一个可能无限多的属性集合](#an-index-signature-represents-a-potentially-infinite-set-of-properties)'
 - en: 'This is an example of an index signature:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个索引签名的例子：
 - en: '[PRE2]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'An index signature represents a potentially infinite set of properties. In
     this case:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 索引签名表示一个可能无限多的属性集合。在这种情况下：
 - en: The *binding identifier* `key` is ignored and can be any identifier. It distinguishes
     an index signature from [a property with a computed key](ch_typing-objects.html#computed-property-keys).
+  id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*绑定标识符* `key` 被忽略，可以是任何标识符。它区分了索引签名与 [具有计算键的属性](ch_typing-objects.html#computed-property-keys)。'
 - en: 'Each property has a `string` key. The property type must be infinite – e.g.:
     `string`, `number`, `symbol`, a template string literal with an infinite primitive
     type (such as `` `${bigint}` ``)'
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个属性都有一个 `string` 类型的键。属性类型必须是无限的 – 例如：`string`、`number`、`symbol`、一个具有无限原始类型的模板字符串字面量（例如
+    `` `${bigint}` ``）
 - en: Each property has a value of type `number`.
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个属性都有一个 `number` 类型的值。
 - en: 'In other words: `StrToNum` is the type of objects, used as dictionaries from
     strings to numbers – e.g.:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说：`StrToNum` 是一种对象类型，用作从字符串到数字的字典 – 例如：
 - en: '[PRE3]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'More information: [“Index signatures: objects as dictionaries” (§18.7)](ch_typing-objects.html#index-signatures).'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[“索引签名：对象作为字典”（§18.7）](ch_typing-objects.html#index-signatures)。
 - en: '[36.1.2.2 A mapped type is a type-level function](#a-mapped-type-is-a-type-level-function)'
+  id: totrans-49
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[36.1.2.2 映射类型是一个类型级别的函数](#a-mapped-type-is-a-type-level-function)'
 - en: 'In contrast, a mapped type is a type-level function. It maps property keys
     to an object literal type:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 相比之下，映射类型是一个类型级别的函数。它将属性键映射到对象字面量类型：
 - en: '[PRE4]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Note an important difference:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意一个重要的区别：
 - en: '`[K in string]`: `K` is a type variable that can be used after the colon.'
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`[K in string]`：`K` 是一个可以在冒号之后使用的类型变量。'
 - en: '`[x: string]`: `x` doesn’t provide any functionality (it only serves as a syntactic
     marker), but it is similar to a normal variable.'
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`[x: string]`：`x` 不提供任何功能（它只作为语法标记），但它类似于一个正常变量。'
 - en: '[36.1.3 Transforming an object type via a mapped type](#transforming-an-object-type-via-a-mapped-type)'
+  id: totrans-55
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.1.3 通过映射类型转换对象类型](#transforming-an-object-type-via-a-mapped-type)'
 - en: 'The most common use case for a mapped type is transforming an object type:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 映射类型最常见的用例是转换对象类型：
 - en: '[PRE5]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: In line A, we used `keyof Obj` to compute the keys of `Obj` and iterate over
     them. We used the [indexed access type](ch_computing-with-types-overview.html#indexed-access-types)
     `Obj[K]` and the generic type `Array` to define the property values.
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行 A 中，我们使用了 `keyof Obj` 来计算 `Obj` 的键并遍历它们。我们使用了 [索引访问类型](ch_computing-with-types-overview.html#indexed-access-types)
+    `Obj[K]` 和泛型类型 `Array` 来定义属性值。
 - en: '[36.1.4 Mapping preserves the kind of type (tuple, array, object, etc.)](#mapping-preserves-the-kind-of-type-tuple-array-object-etc)'
+  id: totrans-59
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.1.4 映射保留类型种类（元组、数组、对象等）](#mapping-preserves-the-kind-of-type-tuple-array-object-etc)'
 - en: 'The input of a mapped type (tuple, array, object, etc.) determines what the
     output looks like:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 映射类型的输入（元组、数组、对象等）决定了输出看起来像什么：
 - en: '[PRE6]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[36.1.5 Example: making an interface asynchronous](#example-making-an-interface-asynchronous)'
+  id: totrans-62
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.1.5 示例：将接口转换为异步](#example-making-an-interface-asynchronous)'
 - en: 'The generic type `Asyncify<Intf>` converts the synchronous interface `Intf`
     into an asynchronous interface:'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 泛型类型 `Asyncify<Intf>` 将同步接口 `Intf` 转换为异步接口：
 - en: '[PRE7]'
+  id: totrans-64
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'This is the definition of `Asyncify`:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `Asyncify` 的定义：
 - en: '[PRE8]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: We use a mapped type to iterate over the properties of `Intf` (line A).
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们使用映射类型来遍历 `Intf` 的属性（行 A）。
 - en: Per property with key `K` we check if the property value `Intf[K]` is a function
     or method (line B).
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于具有键 `K` 的每个属性，我们检查属性值 `Intf[K]` 是否是函数或方法（行 B）。
 - en: If yes then we use [the `infer` keyword](ch_infer-keyword.html#ch_infer-keyword)
     to extract the arguments into the type variable `A` and the return type into the
     type variable `R`. We use those variables to create a new property value where
     the return type `R` is wrapped in a Promise (line C).
+  id: totrans-69
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果是，我们使用 [`infer` 关键字](ch_infer-keyword.html#ch_infer-keyword) 从类型变量 `A` 中提取参数，并将返回类型提取到类型变量
+    `R` 中。我们使用这些变量创建一个新的属性值，其中返回类型 `R` 被包裹在一个 Promise 中（行 C）。
 - en: If no, then the property value is not changed (line D).
+  id: totrans-70
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果没有，则属性值不会改变（行 D）。
 - en: '[36.1.6 Example: adding keys to an enum object](#example-adding-keys-to-an-enum-object)'
+  id: totrans-71
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.1.6 示例：向枚举对象添加键](#example-adding-keys-to-an-enum-object)'
 - en: 'Consider the following enum object:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下枚举对象：
 - en: '[PRE9]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'We’d like to avoid having to redundantly mention `.key`. This is what adding
     them via a function `addKey()` would look like:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们希望避免重复提及 `.key`。这是通过添加一个名为 `addKey()` 的函数来添加它们的示例：
 - en: '[PRE10]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'It’s very useful that `addKeys()` does not lose type information: The computed
     type of `tokenDefs` correctly records where property `.description` exists and
     where it doesn’t: TypeScript lets us use `tokenDefs.number.description` (which
     exists) but not `tokenDefs.identifier.description` (which does not exist).'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: '`addKeys()` 不丢失类型信息非常有用：`tokenDefs` 的计算类型正确记录了属性 `.description` 存在的位置和不存在的位置：TypeScript
+    允许我们使用 `tokenDefs.number.description`（存在）但不能使用 `tokenDefs.identifier.description`（不存在）。'
 - en: 'This is an implementation of `addKeys()`:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `addKeys()` 的一个实现：
 - en: '[PRE11]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'In line A, we use `&` to create an intersection type that has both the properties
     of `T[K]` and `{key: string}`.'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: '在行 A 中，我们使用 `&` 创建一个交集类型，它具有 `T[K]` 和 `{key: string}` 的属性。'
 - en: '[36.2 Changing property keys via key remapping (`as`)](#key-remapping)'
+  id: totrans-80
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[36.2 通过键重映射更改属性键（`as`）](#key-remapping)'
 - en: 'In the key part of a mapped type we can use `as` to change the property key
     of the current property:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 在映射类型的键部分，我们可以使用 `as` 来更改当前属性的属性键：
 - en: '[PRE12]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'In the following example, we use `as` to add an underscore before each property
     name:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，我们使用 `as` 在每个属性名前添加一个下划线：
 - en: '[PRE13]'
+  id: totrans-84
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: In line A, the template literal type `` `_${K}` `` does not work if `K` is a
     symbol. That’s why we intersect `keyof Obj` with `string` and only loop over the
     keys of `Obj` that are strings.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行 A 中，如果 `K` 是一个符号，则模板字面量类型 `` `_${K}` `` 不会工作。这就是为什么我们将 `keyof Obj` 与 `string`
+    交集，并且只遍历 `Obj` 中是字符串的键。
 - en: '[36.2.1 If we use key remapping, the result is always an object literal type](#if-we-use-key-remapping-the-result-is-always-an-object-literal-type)'
+  id: totrans-86
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.2.1 如果我们使用键重映射，结果始终是一个对象字面量类型](#if-we-use-key-remapping-the-result-is-always-an-object-literal-type)'
 - en: 'We have previously seen that applying a simple mapped type to a tuple produces
     a tuple. That changes if we do key remapping. Then the result is always an object
     literal type – e.g.:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们之前看到，将简单的映射类型应用于元组会产生一个元组。如果我们进行键重映射，这就会改变。然后结果始终是一个对象字面量类型 - 例如：
 - en: '[PRE14]'
+  id: totrans-88
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: This result reflects the actual keys of tuples. Simple map types implicitly
     filter those keys. For more information, see [“Mapping tuples via mapped types”
     (§37.4)](ch_computing-with-tuple-types.html#mapped-types-over-tuples).
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个结果反映了元组的实际键。简单的映射类型隐式地过滤了这些键。更多信息，请参阅[“通过映射类型映射元组”（§37.4）](ch_computing-with-tuple-types.html#mapped-types-over-tuples)。
 - en: '[36.3 Filtering properties](#filtering-properties)'
+  id: totrans-90
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[36.3 过滤属性](#filtering-properties)'
 - en: So far, we have only changed property keys or values of object types. In this
     section, we look at filtering properties.
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们只改变了对象类型的属性键或值。在本节中，我们来看一下过滤属性。
 - en: '[36.3.1 Filtering properties via key remapping (`as`)](#filtering-properties-via-key-remapping-as)'
+  id: totrans-92
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.3.1 通过键重映射过滤属性（`as`）](#filtering-properties-via-key-remapping-as)'
 - en: 'The easiest way to filter is via `as`: If we use `never` as a property key
     then the property is omitted from the result.'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 过滤的最简单方法是使用 `as`：如果我们使用 `never` 作为属性键，则该属性将从结果中省略。
 - en: 'In the following example, we remove all properties whose values are not strings:'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，我们移除了所有值不是字符串的属性：
 - en: '[PRE15]'
+  id: totrans-95
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '[36.3.2 Filtering properties by filtering key unions](#filtering-properties-by-filtering-key-unions)'
+  id: totrans-96
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.3.2 通过过滤键联合过滤属性](#filtering-properties-by-filtering-key-unions)'
 - en: Before TypeScript had key remapping via via `as`, we had to filter the union
     with property keys before iterating over it with a mapped type.
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 TypeScript 通过 `as` 进行键重映射之前，我们必须在迭代之前过滤具有属性键的联合。
 - en: 'Let’s redo the previous example without `as`: We want to only keep properties
     of the following type `Obj` whose values are strings.'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们重新做之前的例子，但不使用 `as`：我们只想保留类型为 `Obj` 且值为字符串的属性。
 - en: '[PRE16]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'The following generic helper type collects the keys of all properties whose
     values are strings:'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下泛型辅助类型收集所有属性值的键，其值是字符串：
 - en: '[PRE17]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'We compute the result in two steps:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们分两步计算结果：
 - en: 'Line A: First, we create an object where each property key `K` is mapped to:'
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 A：首先，我们创建一个对象，其中每个属性键 `K` 映射到：
 - en: '`K` – if the property value `T[K]` is a string'
+  id: totrans-104
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`K` – 如果属性值 `T[K]` 是一个字符串'
 - en: '`never` – otherwise'
+  id: totrans-105
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`never` – 否则'
 - en: 'Line B: Then we extract all property values of the object we just created.
     The type `never` disappears when we do that.'
+  id: totrans-106
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 B：然后我们提取我们刚刚创建的对象的所有属性值。当我们这样做时，类型 `never` 消失了。
 - en: 'With `KeysOfStrProps`, it’s now easy to implement `KeepStrProps` without `as`:'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用 `KeysOfStrProps`，现在很容易实现 `KeepStrProps` 而不需要 `as`：
 - en: '[PRE18]'
+  id: totrans-108
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '[36.3.3 Built-in utility type for keeping properties: `Pick<T, KeysToKeep>`](#built-in-utility-type-for-keeping-properties-pick-t-keystokeep)'
+  id: totrans-109
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.3.3 用于保留属性的内置实用类型：`Pick<T, KeysToKeep>`](#built-in-utility-type-for-keeping-properties-pick-t-keystokeep)'
 - en: 'The following [built-in utility type](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)
     lets us create a new object by specifying which properties of an existing object
     type we want to keep:'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下 [内置实用类型](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)
+    允许我们通过指定要保留的现有对象类型的属性来创建一个新的对象：
 - en: '[PRE19]'
+  id: totrans-111
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: We keep a subset of the properties of `T` by iterating over a subset `K` of
     its property keys (`keyof T`).
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们通过迭代 `T` 的属性键的子集 `K` (`keyof T`) 来保留 `T` 的属性子集。
 - en: '`Pick` is used as follows:'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Pick` 的用法如下：'
 - en: '[PRE20]'
+  id: totrans-114
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '[36.3.3.1 Typing a function via `Pick<>`](#typing-a-function-via-pick)'
+  id: totrans-115
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[36.3.3.1 通过 `Pick<>` 类型化函数](#typing-a-function-via-pick)'
 - en: 'We can implement property picking at the JavaScript level (as provided by [the
     Underscore library](https://underscorejs.org/#pick)). Then the utility type `Pick<>`
     helps us with the return type:'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以在 JavaScript 级别实现属性选择（如 [Underscore 库](https://underscorejs.org/#pick) 所提供的）。然后实用类型
+    `Pick<>` 帮助我们确定返回类型：
 - en: '[PRE21]'
+  id: totrans-117
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '[36.3.3.2 Example: removing the constraint of parameter `K` of `Pick<T, K>`](#PickFreely)'
+  id: totrans-118
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[36.3.3.2 示例：移除 `Pick<T, K>` 参数 `K` 的约束](#PickFreely)'
 - en: 'As we have seen, the parameter `K` of `Pick<T, K>` is constrained to keys of
     `T`. That prevents some useful applications – e.g.:'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 正如我们所见，`Pick<T, K>` 的参数 `K` 被限制为 `T` 的键。这阻止了一些有用的应用 – 例如：
 - en: '[PRE22]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: '`` `${number}` `` is the type of all stringified numbers (see [“Interpolating
     primitive types into template literals” (§38.2.5)](ch_template-literal-types.html#interpolating-primitive-types-into-template-literals)).
     We’d like to extract all properties whose keys are elements of that type. Alas
     we can’t use `Pick` to do so. This is a version of `Pick` whose parameter `K`
     is not constrained:'
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: '`` `${number}` `` 是所有字符串化数字的类型（参见“将原始类型插入到模板字面量中”（§38.2.5））。我们希望提取所有键是该类型元素的属性。唉，我们无法使用
+    `Pick` 来实现这一点。这是一个参数 `K` 没有约束的 `Pick` 版本：'
 - en: '[PRE23]'
+  id: totrans-122
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: Note that the operation `T[P]` only works if `P` is a key of `T`. Therefore,
     the set after `in` must be a subset of `keyof T`. That’s why we used `K & keyof
     T` and not `K`.
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，操作 `T[P]` 仅在 `P` 是 `T` 的键时才有效。因此，`in` 后的集合必须是 `keyof T` 的子集。这就是为什么我们使用 `K
+    & keyof T` 而不是 `K` 的原因。
 - en: 'With `PickFreely`, we can extract the properties:'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用 `PickFreely`，我们可以提取属性：
 - en: '[PRE24]'
+  id: totrans-125
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '[36.3.4 Built-in utility type for filtering out properties: `Omit<T, KeysToFilterOut>`](#built-in-utility-type-for-filtering-out-properties-omit-t-keys-to-fil-ter-out)'
+  id: totrans-126
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.3.4 用于过滤属性的内置实用类型：`Omit<T, KeysToFilterOut>`](#built-in-utility-type-for-filtering-out-properties-omit-t-keys-to-fil-ter-out)'
 - en: 'The following [built-in utility type](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)
     lets us create a new object type by specifying which properties of an existing
     object type we want to omit:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下 [内置实用类型](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)
+    允许我们通过指定要省略的现有对象类型的属性来创建一个新的对象类型：
 - en: '[PRE25]'
+  id: totrans-128
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Explanations:'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 说明：
 - en: '`K extends keyof any` means `K` must be a subset of all possible property keys:'
+  id: totrans-130
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`K extends keyof any` 表示 `K` 必须是所有可能的属性键的子集：'
 - en: '[PRE26]'
+  id: totrans-131
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '`Exclude<keyof T, K>>` means: take the keys of `T` and remove all “values”
     mentioned in `K`.'
+  id: totrans-132
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Exclude<keyof T, K>>` 表示：从 `T` 的键中移除 `K` 中提到的所有“值”。'
 - en: '`Omit<>` is used as follows:'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Omit<>` 的用法如下：'
 - en: '[PRE27]'
+  id: totrans-134
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: '[36.4 Adding and removing modifiers via mapped types](#changing-modifiers-via-mapped-types)'
+  id: totrans-135
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[36.4 通过映射类型添加和删除修饰符](#changing-modifiers-via-mapped-types)'
 - en: 'In TypeScript, properties can have to kinds of *modifiers*:'
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 TypeScript 中，属性可以有几种 *修饰符*：
 - en: 'A property can be optional: modifier `?`'
+  id: totrans-137
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 属性可以是可选的：修饰符 `?`
 - en: 'A property can be read-only: modifier `readonly`'
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 属性可以是只读的：修饰符 `readonly`
 - en: We can add or remove these modifiers via mapped types.
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过映射类型添加或删除这些修饰符。
 - en: '[36.4.1 Example: adding the optional modifier (`?`)](#example-adding-the-optional-modifier)'
+  id: totrans-140
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.4.1示例：添加可选修饰符（`?`）](#example-adding-the-optional-modifier)'
 - en: '[PRE28]'
+  id: totrans-141
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'The notation `+?` means: make the current property optional. We can omit the
     `+` but I find it easier to understand what’s going on if it’s there.'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 符号 `+?` 表示：将当前属性设置为可选。我们可以省略 `+`，但我发现如果保留它，理解起来会更简单。
 - en: The built-in utility type [`Partial<T>`](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)
     is equivalent to our generic type `AddOptional` above.
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 内置工具类型 `Partial<T>`（[https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)）与我们上面的泛型类型
+    `AddOptional` 等价。
 - en: '[36.4.2 Example: removing the optional modifier (`?`)](#example-removing-the-optional-modifier)'
+  id: totrans-144
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.4.2示例：移除可选修饰符（`?`）](#example-removing-the-optional-modifier)'
 - en: '[PRE29]'
+  id: totrans-145
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'The notation `-?` means: make the current property required (non-optional).'
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: 符号 `-?` 表示：将当前属性设置为必需（非可选）。
 - en: The built-in utility type [`Required<T>`](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)
     is equivalent to our generic type `RemoveOptional` above.
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 内置工具类型 `Required<T>`（[https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)）与我们上面的泛型类型
+    `RemoveOptional` 等价。
 - en: '[36.4.3 Example: adding the `readonly` modifier](#example-adding-the-readonly-modifier)'
+  id: totrans-148
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.4.3示例：添加 `readonly` 修饰符](#example-adding-the-readonly-modifier)'
 - en: '[PRE30]'
+  id: totrans-149
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'The notation `+readonly` means: make the current property read-only. We can
     omit the `+` but I find it easier to understand what’s going on if it’s there.'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 符号 `+readonly` 表示：将当前属性设置为只读。我们可以省略 `+`，但我发现如果保留它，理解起来会更简单。
 - en: The built-in utility type [`Readonly<T>`](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)
     is equivalent to our generic type `AddReadonly` above.
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: 内置工具类型 `Readonly<T>`（[https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts](https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts)）与我们上面的泛型类型
+    `AddReadonly` 等价。
 - en: '[36.4.4 Example: removing the `readonly` modifier](#example-removing-the-readonly-modifier)'
+  id: totrans-152
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.4.4示例：移除 `readonly` 修饰符](#example-removing-the-readonly-modifier)'
 - en: '[PRE31]'
+  id: totrans-153
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'The notation `-readonly` means: make the current property mutable (non-read-only).'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 符号 `-readonly` 表示：将当前属性设置为可变（非只读）。
 - en: There is no built-in utility type that removes `readonly` modifiers.
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有内置的工具类型可以移除 `readonly` 修饰符。
 - en: '[36.5 Detecting the property modifiers `readonly` and `?` (optional)](#detecting-the-property-modifiers-readonly-and-optional)'
+  id: totrans-156
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[36.5检测属性修饰符 `readonly` 和 `?`（可选）](#detecting-the-property-modifiers-readonly-and-optional)'
 - en: '[36.5.1 Detecting if a property is read-only](#detecting-if-a-property-is-read-only)'
+  id: totrans-157
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.5.1检测属性是否为只读](#detecting-if-a-property-is-read-only)'
 - en: 'This is what using a utility type `IsReadonly` would look like:'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是使用工具类型 `IsReadonly` 的样子：
 - en: '[PRE32]'
+  id: totrans-159
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'Alas, implementing `IsReadonly` is complicated: `readonly` currently does not
     affect assignability and cannot be detected via `extends`:'
+  id: totrans-160
   prefs: []
   type: TYPE_NORMAL
+  zh: 悲剧的是，实现 `IsReadonly` 是复杂的：`readonly` 目前不会影响可赋性，并且不能通过 `extends` 来检测：
 - en: '[PRE33]'
+  id: totrans-161
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: The brackets around `T1` and `T2` are needed to [prevent distributivity](ch_conditional-types.html#preventing-distributivity).
+  id: totrans-162
   prefs: []
   type: TYPE_NORMAL
+  zh: '`T1` 和 `T2` 两边的括号是为了[防止分配律](ch_conditional-types.html#preventing-distributivity)。'
 - en: 'That means that we need a stricter equality check:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 这意味着我们需要进行更严格的相等性检查：
 - en: '[PRE34]'
+  id: totrans-164
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: The helper type `StrictEqual` is a hack but currently the best technique for
     strictly comparing types. How it works is explained in [“How to check if two types
     are equal?” (§39.3)](ch_testing-types.html#checking-type-equality).
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 辅助类型 `StrictEqual` 是一种技巧，但目前是严格比较类型的最佳技术。其工作原理在[“如何检查两个类型是否相等？”（§39.3）](ch_testing-types.html#checking-type-equality)中解释。
 - en: 'Now we can implement `IsReadonly` (based on [code](https://github.com/microsoft/TypeScript/issues/31581)
     by GitHub user `inad9300`):'
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在我们可以实现 `IsReadonly`（基于 GitHub 用户 `inad9300` 的[代码](https://github.com/microsoft/TypeScript/issues/31581)）：
 - en: '[PRE35]'
+  id: totrans-167
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: 'We compare two objects:'
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们比较两个对象：
 - en: An object that only contains property `K` of `T` (line A)
+  id: totrans-169
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只包含 `T` 的属性 `K` 的对象（行 A）
 - en: The same object, with all properties made `readonly` (line B)
+  id: totrans-170
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 同一个对象，将所有属性设置为 `readonly`（行 B）
 - en: If the two objects are equal, then making property `K` `readonly` didn’t change
     anything – which means that it is already `readonly`.
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果两个对象相等，那么将属性 `K` 设置为 `readonly` 并没有改变任何事情——这意味着它已经是 `readonly` 的。
 - en: 'Related GitHub issue: [“Allow identifying readonly properties in mapped types”](https://github.com/microsoft/TypeScript/issues/31581)'
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: 相关 GitHub 问题：[“允许在映射类型中识别只读属性”](https://github.com/microsoft/TypeScript/issues/31581)
 - en: '[36.5.2 Detecting if a property is optional](#detecting-if-a-property-is-optional)'
+  id: totrans-173
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[36.5.2检测属性是否为可选](#detecting-if-a-property-is-optional)'
 - en: 'This is what it looks like to use a helper type `IsOptional` that detects if
     a property is optional:'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是使用辅助类型 `IsOptional` 来检测属性是否可选的样子：
 - en: '[PRE36]'
+  id: totrans-175
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '`IsOptional` is easier to implement than `IsReadonly` because optional properties
     are easier to detect:'
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
+  zh: '`IsOptional` 比起 `IsReadonly` 更容易实现，因为可选属性更容易检测：'
 - en: '[PRE37]'
+  id: totrans-177
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'How does that work? Let’s look at the results produced by `Pick`:'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 它是如何工作的？让我们看看 `Pick` 产生的结果：
 - en: '[PRE38]'
+  id: totrans-179
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: Only the latter object is assignable to the empty object `{}`.
+  id: totrans-180
   prefs: []
   type: TYPE_NORMAL
+  zh: 只有后者对象可以赋值给空对象 `{}`。
 - en: '[36.6 `Record` is a mapped type](#utility-type-record)'
+  id: totrans-181
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[36.6 `Record` 是一个映射类型](#utility-type-record)'
 - en: 'The built-in utility type `Record` is simply an alias for a mapped type:'
+  id: totrans-182
   prefs: []
   type: TYPE_NORMAL
+  zh: 内置的实用类型 `Record` 简单地是一个映射类型的别名：
 - en: '[PRE39]'
+  id: totrans-183
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: 'Once again, `keyof any` means “valid property key”:'
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次强调，`keyof any` 表示“有效的属性键”：
 - en: '[PRE40]'
+  id: totrans-185
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'These are results produced by `Record`:'
+  id: totrans-186
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是由 `Record` 产生的结果：
 - en: '[PRE41]'
+  id: totrans-187
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: '[36.7 Source of this chapter](#source-of-this-chapter)'
+  id: totrans-188
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[36.7 本章来源](#source-of-this-chapter)'
 - en: Chapter [“Mapped Types”](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html)
     in the official TypeScript handbook.
+  id: totrans-189
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 官方 TypeScript 手册中的 [“映射类型”](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html)
+    章节内容。

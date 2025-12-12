@@ -1,1190 +1,1815 @@
 - en: '33 Overview: computing with types'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 33 概述：使用类型进行计算
 - en: 原文：[https://exploringjs.com/ts/book/ch_computing-with-types-overview.html](https://exploringjs.com/ts/book/ch_computing-with-types-overview.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_computing-with-types-overview.html](https://exploringjs.com/ts/book/ch_computing-with-types-overview.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (Ad, please don’t block.)
 - en: '[33.1 Computation in TypeScript: program level vs. type level](#computation-in-typescript-program-level-vs-type-level)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.1 TypeScript 中的计算：程序级与类型级](#computation-in-typescript-program-level-vs-type-level)'
 - en: '[33.2 “Values” we can compute with at the type level](#values-we-can-compute-with-at-the-type-level)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.2 在类型级别上我们可以计算的类型“值”](#values-we-can-compute-with-at-the-type-level)'
 - en: '[33.2.1 Primitive types](#primitive-types)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.2.1 原始类型](#primitive-types)'
 - en: '[33.2.2 Literal types](#literal-types)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.2.2 字面量类型](#literal-types)'
 - en: '[33.2.3 Non-generic object types](#non-generic-object-types)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.2.3 非泛型对象类型](#non-generic-object-types)'
 - en: '[33.2.4 Compound types](#compound-types-1)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.2.4 复合类型](#compound-types-1)'
 - en: '[33.2.5 Unions of literal types as sets of values](#unions-of-literal-types-as-sets-of-values)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.2.5 字面量类型的联合作为值集合](#unions-of-literal-types-as-sets-of-values)'
 - en: '[33.3 Generic types are type-level functions](#generic-types)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.3 泛型类型是类型级函数](#generic-types)'
 - en: '[33.3.1 Terminology: generic type, parameterized type, concrete type](#terminology-generic-type-parameterized-type-concrete-type)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.3.1 术语：泛型类型、参数化类型、具体类型](#terminology-generic-type-parameterized-type-concrete-type)'
 - en: '[33.3.2 Optional type parameters](#optional-type-parameters)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.3.2 可选类型参数](#optional-type-parameters)'
 - en: '[33.3.3 Constraining type parameters](#constraining-type-parameters)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.3.3 约束类型参数](#constraining-type-parameters)'
 - en: '[33.4 The `typeof` type operator: referring to the program level from the type
     level](#the-typeof-type-operator-referring-to-the-program-level-from-the-type-level)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.4 `typeof` 类型运算符：从类型级别引用程序级](#the-typeof-type-operator-referring-to-the-program-level-from-the-type-level)'
 - en: '[33.4.1 Program-level `typeof` vs. type-level `typeof`](#program-level-typeof-vs-type-level-typeof)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.4.1 程序级 `typeof` 与类型级 `typeof`](#program-level-typeof-vs-type-level-typeof)'
 - en: '[33.4.2 Syntax of `typeof`](#syntax-of-typeof)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.4.2 `typeof` 的语法](#syntax-of-typeof)'
 - en: '[33.5 The `keyof` type operator](#keyof-operator)'
+  id: totrans-17
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.5 `keyof` 类型运算符](#keyof-operator)'
 - en: '[33.5.1 Number keys: JavaScript vs. TypeScript](#number-keys-javascript-vs-typescript)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.5.1 数字键：JavaScript 与 TypeScript](#number-keys-javascript-vs-typescript)'
 - en: '[33.5.2 `keyof` and index signatures](#keyof-and-index-signatures)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.5.2 `keyof` 和索引签名](#keyof-and-index-signatures)'
 - en: '[33.5.3 `keyof` of an Array](#keyof-array)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.5.3 数组的 `keyof`](#keyof-array)'
 - en: '[33.5.4 `keyof` of a tuple](#keyof-tuple)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.5.4 元组的 `keyof`](#keyof-tuple)'
 - en: '[33.5.5 `keyof` of intersection types and union types](#keyof-of-intersection-types-and-union-types)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.5.5 交集类型和联合类型的 `keyof`](#keyof-of-intersection-types-and-union-types)'
 - en: '[33.6 Indexed access types `T[K]`](#indexed-access-types)'
+  id: totrans-23
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.6 索引访问类型 `T[K]`](#indexed-access-types)'
 - en: '[33.6.1 `T[K]`: `K` must be a subset of the keys of `T`](#indexed-access-type-index)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.6.1 `T[K]`: `K` 必须是 `T` 的键的子集](#indexed-access-type-index)'
 - en: '[33.6.2 Indexed access of a tuple](#indexed-access-of-a-tuple)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.6.2 元组的索引访问](#indexed-access-of-a-tuple)'
 - en: '[33.6.3 Example: implementing `ValueOf`](#ValueOf)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.6.3 示例：实现 `ValueOf`](#ValueOf)'
 - en: '[33.6.4 Example: getting a property value](#example-getting-a-property-value)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.6.4 示例：获取属性值](#example-getting-a-property-value)'
 - en: '[33.6.5 Example: lookup table and indexed access](#example-lookup-table-and-indexed-access)'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.6.5 示例：查找表和索引访问](#example-lookup-table-and-indexed-access)'
 - en: '[33.6.6 Indexed access and lookup table in `lib.dom.d.ts`](#indexed-access-and-lookup-table-in-lib-dom-d-ts)'
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.6.6 `lib.dom.d.ts` 中的索引访问和查找表](#indexed-access-and-lookup-table-in-lib-dom-d-ts)'
 - en: '[33.7 Conditional types (`C ? T : F`)](#conditional-types-c-t-f)'
+  id: totrans-30
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.7 条件类型 (`C ? T : F`)](#conditional-types-c-t-f)'
 - en: '[33.7.1 Extracting parts of compound types via `infer`](#extracting-parts-of-compound-types-via-infer)'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.7.1 通过 `infer` 提取复合类型的部分](#extracting-parts-of-compound-types-via-infer)'
 - en: '[33.8 Defining local type variables](#local-type-variables)'
+  id: totrans-32
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.8 定义局部类型变量](#local-type-variables)'
 - en: '[33.8.1 Example](#example)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.8.1 示例](#example)'
 - en: '[33.9 Mapped types `{[K in U]: X}`](#mapped-types-k-in-u-x)'
+  id: totrans-34
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.9 映射类型 `{[K in U]: X}`](#mapped-types-k-in-u-x)'
 - en: '[33.10 Template literal types: processing strings](#template-literal-types-processing-strings)'
+  id: totrans-35
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.10 模板字面量类型：字符串处理](#template-literal-types-processing-strings)'
 - en: '[33.11 Computing with union types](#computing-with-union-types)'
+  id: totrans-36
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.11 使用联合类型进行计算](#computing-with-union-types)'
 - en: '[33.11.1 Intersection and union](#intersection-and-union)'
+  id: totrans-37
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.11.1 交集与联合](#intersection-and-union)'
 - en: '[33.11.2 Distributivity over union types](#distributivity)'
+  id: totrans-38
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.11.2 对联合类型的分配律](#distributivity)'
 - en: '[33.11.3 Template literal types are distributive](#distributivity-of-template-literal-types)'
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.11.3 模板字面量类型的分配律](#distributivity-of-template-literal-types)'
 - en: '[33.11.4 Indexed access types `T[K]` are distributive](#distributivity-of-indexed-access-types)'
+  id: totrans-40
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.11.4 索引访问类型 `T[K]` 是分配性的](#distributivity-of-indexed-access-types)'
 - en: '[33.11.5 Conditional types are distributive](#conditional-types-are-distributive)'
+  id: totrans-41
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.11.5 条件类型是分配性的](#conditional-types-are-distributive)'
 - en: '[33.12 Computing with object types](#computing-with-object-types)'
+  id: totrans-42
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.12 使用对象类型进行计算](#computing-with-object-types)'
 - en: '[33.13 Computing with tuple types](#computing-with-tuple-types)'
+  id: totrans-43
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.13 使用元组类型进行计算](#computing-with-tuple-types)'
 - en: '[33.14 Computed return types of functions often don’t match returned values](#computed-return-types-dont-match)'
+  id: totrans-44
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.14 函数的返回类型通常与返回值不匹配](#computed-return-types-dont-match)'
 - en: '[33.15 Conclusion](#computing-with-types-conclusion)'
+  id: totrans-45
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[33.15 结论](#computing-with-types-conclusion)'
 - en: In this chapter, we explore how we can compute with types at compile time in
     TypeScript.
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨在 TypeScript 中如何在编译时使用类型进行计算。
 - en: '![Icon “question”](../Images/471cce0defd950c2994152f322a88405.png) **Is computing
     with types useful in practice?**'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“问题”](../Images/471cce0defd950c2994152f322a88405.png) **在实践中使用类型计算有用吗？**'
 - en: We first have to learn the foundations and some of the examples may seem a bit
     abstract. But those foundations help with solving practical problems – some of
     which are listed in [the conclusion](#computing-with-types-conclusion).
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们首先必须学习基础知识，而且一些例子可能看起来有点抽象。但那些基础知识有助于解决实际问题——其中一些在 [结论](#computing-with-types-conclusion)
+    中列出。
 - en: If you are *using* libraries, you can often get by without computing with types.
     If, however, you are *writing* libraries, it tends to come in handy.
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你正在 *使用* 库，你通常可以不使用类型计算而过得去。然而，如果你正在 *编写* 库，类型计算往往很有用。
 - en: '[33.1 Computation in TypeScript: program level vs. type level](#computation-in-typescript-program-level-vs-type-level)'
+  id: totrans-50
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.1 TypeScript 中的计算：程序级别与类型级别](#computation-in-typescript-program-level-vs-type-level)'
 - en: 'TypeScript code has two levels of computation:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 代码有两个计算级别：
 - en: 'Program level: At runtime, we can compute via values and functions.'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 程序级别：在运行时，我们可以通过值和函数进行计算。
 - en: 'Type level: At compile time, we can compute via concrete types and generic
     types.'
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型级别：在编译时，我们可以通过具体类型和泛型类型进行计算。
 - en: '|  | Program level | Type level |'
+  id: totrans-54
   prefs: []
   type: TYPE_TB
+  zh: '|  | 程序级别 | 类型级别 |'
 - en: '| --- | --- | --- |'
+  id: totrans-55
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- | --- |'
 - en: '| Programming language | JavaScript | TypeScript excluding JS |'
+  id: totrans-56
   prefs: []
   type: TYPE_TB
+  zh: '| 编程语言 | JavaScript | TypeScript（不包括 JS） |'
 - en: '| Operands | values | concrete types |'
+  id: totrans-57
   prefs: []
   type: TYPE_TB
+  zh: '| 操作数 | 值 | 具体类型 |'
 - en: '| Operations | functions | generic types |'
+  id: totrans-58
   prefs: []
   type: TYPE_TB
+  zh: '| 操作 | 函数 | 泛型类型 |'
 - en: '| Invoking an operation | calling a function | instantiating a generic type
     |'
+  id: totrans-59
   prefs: []
   type: TYPE_TB
+  zh: '| 操作调用 | 调用一个函数 | 实例化一个泛型类型 |'
 - en: '| Computation happens | at runtime | at compile time |'
+  id: totrans-60
   prefs: []
   type: TYPE_TB
+  zh: '| 计算发生 | 运行时 | 编译时 |'
 - en: 'This is an example of computing at the type level:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是在类型级别上进行计算的一个例子：
 - en: '[PRE0]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`Uppercase` is a generic type. Its argument, in angular brackets, is the string
     literal type `''hello''`. The result of instantiating the generic type is the
     string literal type `''HELLO''`.'
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Uppercase` 是一个泛型类型。它的参数，用尖括号括起来，是字符串字面量类型 `''hello''`。泛型类型的实例化结果是字符串字面量类型
+    `''HELLO''`。'
 - en: 'The analogous computation at the program level looks like this:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 程序级别的类似计算看起来是这样的：
 - en: '[PRE1]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: In the next subsection, we examine the “values” we can use at the type level.
     Then we’ll define our own type-level “functions”.
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一小节中，我们将检查在类型级别上可以使用的“值”。然后我们将定义我们自己的类型级别“函数”。
 - en: '[33.2 “Values” we can compute with at the type level](#values-we-can-compute-with-at-the-type-level)'
+  id: totrans-67
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.2 “在类型级别上我们可以计算”的“值”](#values-we-can-compute-with-at-the-type-level)'
 - en: At the type level we can compute with the following “values”.
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 在类型级别上，我们可以使用以下“值”进行计算。
 - en: '[33.2.1 Primitive types](#primitive-types)'
+  id: totrans-69
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.2.1 原始类型](#primitive-types)'
 - en: 'These are the primitive types:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是原始类型：
 - en: '`undefined`'
+  id: totrans-71
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`undefined`'
 - en: '`null`'
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`null`'
 - en: '`boolean`'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`boolean`'
 - en: '`number`'
+  id: totrans-74
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`number`'
 - en: '`bigint`'
+  id: totrans-75
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`bigint`'
 - en: '`string`'
+  id: totrans-76
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`string`'
 - en: '`symbol`'
+  id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`symbol`'
 - en: 'Even though two of them look like JavaScript values, we are operating at the
     type level:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管其中两个看起来像 JavaScript 值，但我们仍然在类型级别上操作：
 - en: '`undefined` is a type whose only value is `undefined`.'
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`undefined` 是一个只有 `undefined` 值的类型。'
 - en: '`null` is a type whose only value is `null`.'
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`null` 是一个只有 `null` 值的类型。'
 - en: '[33.2.2 Literal types](#literal-types)'
+  id: totrans-81
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.2.2 字面量类型](#literal-types)'
 - en: 'These are examples of literal types:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是字面量类型的例子：
 - en: '[PRE2]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'We are still operating at the type level:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们仍然在类型级别上操作：
 - en: '`true` is a type whose only value is `true`. It is a subset of `boolean`.'
+  id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`true` 是一个只有 `true` 值的类型。它是 `boolean` 的子集。'
 - en: '`12.34` is a type whose only value is `12.34`. It is a subset of `number`.'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`12.34` 是一个只有 `12.34` 值的类型。它是 `number` 的子集。'
 - en: Etc.
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: '[33.2.3 Non-generic object types](#non-generic-object-types)'
+  id: totrans-88
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.2.3 非泛型对象类型](#non-generic-object-types)'
 - en: 'These are examples of non-generic object types:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是非泛型对象类型的示例：
 - en: '`RegExp`'
+  id: totrans-90
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`RegExp`'
 - en: '`Date`'
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Date`'
 - en: '`Uint8Array`'
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Uint8Array`'
 - en: '[33.2.4 Compound types](#compound-types-1)'
+  id: totrans-93
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.2.4 复合类型](#compound-types-1)'
 - en: 'We can also compose types to produce new types – e.g.:'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以组合类型来生成新的类型——例如：
 - en: '[PRE3]'
+  id: totrans-95
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[33.2.5 Unions of literal types as sets of values](#unions-of-literal-types-as-sets-of-values)'
+  id: totrans-96
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.2.5 字面量类型的联合作为值集](#unions-of-literal-types-as-sets-of-values)'
 - en: 'When computing with types, unions of literal types are often used to represent
     sets of values – e.g.:'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 在类型计算中，字面量类型的联合通常用于表示值集——例如：
 - en: '[PRE4]'
+  id: totrans-98
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[The `keyof` operator](#keyof-operator) returns the keys of an object type.
     And it uses a union of string literal types to do so.'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`keyof` 操作符](#keyof-operator) 返回对象类型的键。它通过字符串字面量类型的联合来实现这一点。'
 - en: '[33.3 Generic types are type-level functions](#generic-types)'
+  id: totrans-100
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.3 泛型类型是类型级别的函数](#generic-types)'
 - en: 'The following example is type-level code (that runs at compile time):'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例是类型级别的代码（在编译时执行）：
 - en: '[PRE5]'
+  id: totrans-102
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: In line A, we define the *generic type* `Pair` that has one *type parameter*
     called `T`.
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行 A 中，我们定义了具有一个名为 `T` 的 *类型参数* 的 *泛型类型* `Pair`。
 - en: In line B, we define type `Result` to be the instantiation of `Pair` with the
     string literal type `'abc'`.
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行 B 中，我们定义类型 `Result` 为 `Pair` 的实例化，其类型为字符串字面量类型 `'abc'`。
 - en: Note that the body of `Pair` contains type variables (`T`, twice). When we instantiate
     it, those variables are replaced with concrete types.
+  id: totrans-105
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 注意，`Pair` 的主体包含类型变量（`T`，两次）。当我们实例化它时，这些变量会被具体的类型所替换。
 - en: 'The following example is similar program-level code (that runs at runtime):'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例类似于程序级别的代码（在运行时执行）：
 - en: '[PRE6]'
+  id: totrans-107
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[33.3.1 Terminology: generic type, parameterized type, concrete type](#terminology-generic-type-parameterized-type-concrete-type)'
+  id: totrans-108
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.3.1 术语：泛型类型、参数化类型、具体类型](#terminology-generic-type-parameterized-type-concrete-type)'
 - en: 'I like [Angelika Langer’s definitions](http://www.angelikalanger.com/GenericsFAQ/FAQSections/ParameterizedTypes.html#FAQ001):'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 我喜欢 [Angelika Langer 的定义](http://www.angelikalanger.com/GenericsFAQ/FAQSections/ParameterizedTypes.html#FAQ001)：
 - en: A *generic type* is a type with formal type parameters.
+  id: totrans-110
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*泛型类型* 是具有形式类型参数的类型。'
 - en: A *parameterized type* is an instantiation of a generic type with actual type
     arguments.
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '*参数化类型* 是泛型类型的实例化，它使用实际的类型参数。'
 - en: 'For example:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE7]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '`Pair` is a generic type. `Pair<3>` is a parameterized type – an instantiation
     of `Pair`. We say that `Pair<3>` *constructs* (“returns”) the type `[3, 3]`.'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Pair` 是一个泛型类型。`Pair<3>` 是一个参数化类型——`Pair` 的一个实例。我们说 `Pair<3>` *构造*（“返回”）类型
+    `[3, 3]`。'
 - en: 'A *concrete type* is a specific (potentially compound) type that can be used
     in a type annotation:'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: '*具体类型* 是一个特定的（可能是复合的）类型，可以在类型注解中使用：'
 - en: '[PRE8]'
+  id: totrans-116
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[33.3.2 Optional type parameters](#optional-type-parameters)'
+  id: totrans-117
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.3.2 可选类型参数](#optional-type-parameters)'
 - en: 'We can make a type parameter optional by specifying a default value via an
     equals sign (`=`):'
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过指定默认值来使类型参数可选，默认值通过等号（`=`）指定：
 - en: '[PRE9]'
+  id: totrans-119
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[33.3.3 Constraining type parameters](#constraining-type-parameters)'
+  id: totrans-120
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.3.3 约束类型参数](#constraining-type-parameters)'
 - en: 'If a type parameter definition is just the variable, it accepts any type but
     we can also constrain which types it accepts – via the keyword `extends`:'
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果类型参数定义仅仅是变量，它接受任何类型，但我们也可以通过关键字 `extends` 来约束它接受的类型：
 - en: '[PRE10]'
+  id: totrans-122
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '`T extends C` means that:'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: '`T extends C` 的意思是：'
 - en: '`T` must be assignable to `C`.'
+  id: totrans-124
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`T` 必须可以赋值给 `C`。'
 - en: '`T` must be a subset of `C`.'
+  id: totrans-125
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`T` 必须是 `C` 的子集。'
 - en: '`extends` in a parameter definition of a generic type is similar to the colon
     (`:`) in a parameter definition of a function:'
+  id: totrans-126
   prefs: []
   type: TYPE_NORMAL
+  zh: 在泛型类型的参数定义中，`extends` 与函数参数定义中的冒号（`:`）类似：
 - en: '[PRE11]'
+  id: totrans-127
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'We an also combine `extends` with a parameter default value:'
+  id: totrans-128
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以将 `extends` 与参数默认值结合使用：
 - en: '[PRE12]'
+  id: totrans-129
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '[33.4 The `typeof` type operator: referring to the program level from the type
     level](#the-typeof-type-operator-referring-to-the-program-level-from-the-type-level)'
+  id: totrans-130
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.4 `typeof` 类型操作符：从类型级别引用程序级别](#the-typeof-type-operator-referring-to-the-program-level-from-the-type-level)'
 - en: '(Non-type) variables and type expressions exist at two different levels:'
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: （非类型）变量和类型表达式存在于两个不同的级别：
 - en: Variables exist at the program level.
+  id: totrans-132
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 变量存在于程序级别。
 - en: Type expressions exist at the type level.
+  id: totrans-133
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型表达式存在于类型级别。
 - en: 'Therefore, we can’t directly mention a variable inside a type expression. However,
     the type-level `typeof` operator enables us to refer to the type of a variable
     inside a type expression:'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我们无法直接在类型表达式中提及变量。然而，类型级别的 `typeof` 操作符使我们能够在类型表达式中引用变量的类型：
 - en: '[PRE13]'
+  id: totrans-135
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '[33.4.1 Program-level `typeof` vs. type-level `typeof`](#program-level-typeof-vs-type-level-typeof)'
+  id: totrans-136
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.4.1 程序级别的 `typeof` 与类型级别的 `typeof`](#program-level-typeof-vs-type-level-typeof)'
 - en: 'JavaScript also has a `typeof` operator – one that operates at the program
     level. For a given value, it returns the name of its type as a string:'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript也有一个`typeof`运算符——它在程序级别上操作。对于给定的值，它返回其类型的名称作为字符串：
 - en: '[PRE14]'
+  id: totrans-138
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'The results of type-level `typeof` are usually much more complex than the results
     of program-level `typeof`:'
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型级别的`typeof`的结果通常比程序级别的`typeof`的结果更复杂：
 - en: '[PRE15]'
+  id: totrans-140
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '[33.4.2 Syntax of `typeof`](#syntax-of-typeof)'
+  id: totrans-141
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.4.2 `typeof`的语法](#syntax-of-typeof)'
 - en: 'The operand must be an an identifier which can optionally be followed by member
     accesses (dot operator or square brackets operator). Example:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 操作数必须是一个标识符，该标识符可以可选地后跟成员访问（点操作符或方括号操作符）。例如：
 - en: '[PRE16]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Any other operand produces a syntax error:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 任何其他操作数都会产生语法错误：
 - en: '[PRE17]'
+  id: totrans-145
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[33.5 The `keyof` type operator](#keyof-operator)'
+  id: totrans-146
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.5 `keyof`类型运算符](#keyof-operator)'
 - en: 'The type operator `keyof` lists the property keys of an object type:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型运算符`keyof`列出了对象类型的属性键：
 - en: '[PRE18]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'The property keys of an empty object type are the empty set `never`:'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 空对象类型的属性键是空集`never`：
 - en: '[PRE19]'
+  id: totrans-150
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '[33.5.1 Number keys: JavaScript vs. TypeScript](#number-keys-javascript-vs-typescript)'
+  id: totrans-151
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.5.1 数字键：JavaScript与TypeScript](#number-keys-javascript-vs-typescript)'
 - en: '[33.5.1.1 Number keys in JavaScript](#number-keys-in-javascript)'
+  id: totrans-152
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[33.5.1.1 JavaScript中的数字键](#number-keys-in-javascript)'
 - en: 'JavaScript treats all number keys (whether quoted or not) as strings:'
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript将所有数字键（无论是否加引号）都视为字符串：
 - en: '[PRE20]'
+  id: totrans-154
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'Similarly, Array elements are properties whose keys are stringified numbers:'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 类似地，数组元素是属性，其键是字符串化的数字：
 - en: '[PRE21]'
+  id: totrans-156
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: For information on what Array elements are in JavaScript, see [“Exploring JavaScript”](https://exploringjs.com/js/book/ch_arrays.html#arrays-are-actually-dictionaries).
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于JavaScript中数组元素的信息，请参阅[“探索JavaScript”](https://exploringjs.com/js/book/ch_arrays.html#arrays-are-actually-dictionaries)。
 - en: '[33.5.1.2 Number keys in TypeScript](#number-keys-in-typescript)'
+  id: totrans-158
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[33.5.1.2 TypeScript中的数字键](#number-keys-in-typescript)'
 - en: 'In object literal types, unquoted number keys are number literal types and
     quoted number keys are string literal types:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 在对象字面量类型中，未加引号的数字键是数字字面量类型，加引号的数字键是字符串字面量类型：
 - en: '[PRE22]'
+  id: totrans-160
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'TypeScript also makes that distinction if types are derived from JavaScript
     values:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果类型是从JavaScript值派生的，TypeScript也会做出这种区分：
 - en: '[PRE23]'
+  id: totrans-162
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'The indices of an Array type are numbers (note the `Includes` in the first
     line):'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组类型的索引是数字（注意第一行中的`Includes`）：
 - en: '[PRE24]'
+  id: totrans-164
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '[33.5.2 `keyof` and index signatures](#keyof-and-index-signatures)'
+  id: totrans-165
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.5.2 `keyof`和索引签名](#keyof-and-index-signatures)'
 - en: 'The key of a number index signature is `number`:'
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: 数字索引签名键的类型是`number`：
 - en: '[PRE25]'
+  id: totrans-167
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'The key of a string index signature is `string | number` because in JavaScript,
     number keys are a subset of string keys (as explained the previous subsection):'
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 字符串索引签名键的类型是`string | number`，因为在JavaScript中，数字键是字符串键的子集（如前一小节所述）：
 - en: '[PRE26]'
+  id: totrans-169
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[33.5.3 `keyof` of an Array](#keyof-array)'
+  id: totrans-170
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.5.3 数组的`keyof`](#keyof-array)'
 - en: 'The keys of an Array type include a variety of types (note the `Includes` in
     the first line):'
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组类型的键包括多种类型（注意第一行中的`Includes`）：
 - en: '[PRE27]'
+  id: totrans-172
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'The keys consist of:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 键包括：
 - en: The type `number` for Array indices
+  id: totrans-174
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组索引的类型为`number`
 - en: The name of the special instance property `.length`
+  id: totrans-175
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 特殊实例属性`.length`的名称
 - en: 'The names of all `Array` methods: `''push'' | ''join'' | ···`'
+  id: totrans-176
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 所有`Array`方法的名称：`'push' | 'join' | ···`
 - en: '[33.5.4 `keyof` of a tuple](#keyof-tuple)'
+  id: totrans-177
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.5.4 元组的`keyof`](#keyof-tuple)'
 - en: 'Since tuples are mostly Arrays, their keys look similar (note the `Includes`
     in the first line):'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于元组主要是数组，它们的键看起来很相似（注意第一行中的`Includes`）：
 - en: '[PRE28]'
+  id: totrans-179
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: As with Arrays, there are `number`, `'length'` and the names of methods. Additionally,
     there is a stringified index for each element.
+  id: totrans-180
   prefs: []
   type: TYPE_NORMAL
+  zh: 与数组类似，有`number`、`'length'`和方法名称。此外，每个元素都有一个字符串化的索引。
 - en: For more information on this topic, including how to extract tuple indices,
     see [“The keys of tuple types” (§37.3)](ch_computing-with-tuple-types.html#keyof-tuple-type).
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关此主题的更多信息，包括如何提取元组索引，请参阅[“元组类型的键”（§37.3）](ch_computing-with-tuple-types.html#keyof-tuple-type)。
 - en: '[33.5.5 `keyof` of intersection types and union types](#keyof-of-intersection-types-and-union-types)'
+  id: totrans-182
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.5.5 交集类型和联合类型的`keyof`](#keyof-of-intersection-types-and-union-types)'
 - en: 'This is how `keyof` handles intersection types and union types:'
+  id: totrans-183
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是`keyof`如何处理交集类型和联合类型：
 - en: '[PRE29]'
+  id: totrans-184
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'This makes sense if we remember that:'
+  id: totrans-185
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们记住这一点，这就有意义了：
 - en: An object of type `A & B` has the properties of *both* type `A` and type `B`.
+  id: totrans-186
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型`A & B`的对象具有类型`A`和类型`B`的属性。
 - en: An object of type `A | B` has either the properties of type `A` or the properties
     of type `B`. That is, only properties that both types have in common are always
     there.
+  id: totrans-187
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型`A | B`的对象要么具有类型`A`的属性，要么具有类型`B`的属性。也就是说，只有两种类型都有的属性始终存在。
 - en: '[33.6 Indexed access types `T[K]`](#indexed-access-types)'
+  id: totrans-188
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.6 索引访问类型 `T[K]`](#indexed-access-types)'
 - en: The indexed access operator `T[K]` returns the types of all properties of `T`
     whose keys are assignable to type `K`. `T[K]` is also called a *lookup type*.
+  id: totrans-189
   prefs: []
   type: TYPE_NORMAL
+  zh: 索引访问操作符 `T[K]` 返回所有键可赋值给类型 `K` 的 `T` 的属性类型。`T[K]` 也被称为 *查找类型*。
 - en: 'These are examples of the operator being used:'
+  id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是使用该操作符的例子：
 - en: '[PRE30]'
+  id: totrans-191
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[33.6.1 `T[K]`: `K` must be a subset of the keys of `T`](#indexed-access-type-index)'
+  id: totrans-192
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.6.1 `T[K]`：`K` 必须是 `T` 的键的子集](#indexed-access-type-index)'
 - en: 'The type in brackets must be assignable to the type of all property keys (as
     computed by `keyof`). That’s why `Obj[string]` and `Obj[number]` are not allowed
     here:'
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: 括号中的类型必须可赋值给所有属性键的类型（由 `keyof` 计算得出）。这就是为什么不允许在这里使用 `Obj[string]` 和 `Obj[number]`：
 - en: '[PRE31]'
+  id: totrans-194
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'However, we can use `string` and `number` as index types if the indexed type
     has an index signature (line A):'
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，如果索引类型有一个索引签名（行 A），我们可以使用 `string` 和 `number` 作为索引类型：
 - en: '[PRE32]'
+  id: totrans-196
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: '`keyof Obj` (line B) includes the type `number` because number keys are a subset
     of string keys in JavaScript (and therefore in TypeScript).'
+  id: totrans-197
   prefs: []
   type: TYPE_NORMAL
+  zh: '`keyof Obj`（行 B）包括类型 `number`，因为数字键是字符串键的子集（在 JavaScript 中，因此也在 TypeScript
+    中）。'
 - en: '[33.6.2 Indexed access of a tuple](#indexed-access-of-a-tuple)'
+  id: totrans-198
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.6.2 元组的索引访问](#indexed-access-of-a-tuple)'
 - en: 'Tuple types also support indexed access:'
+  id: totrans-199
   prefs: []
   type: TYPE_NORMAL
+  zh: 元组类型也支持索引访问：
 - en: '[PRE33]'
+  id: totrans-200
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: We can use `number` as an index because the `keyof` of a tuple includes the
     type `number` ([more information](#keyof-tuple)).
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以用 `number` 作为索引，因为元组的 `keyof` 包含了类型 `number` ([更多信息](#keyof-tuple))。
 - en: '[33.6.3 Example: implementing `ValueOf`](#ValueOf)'
+  id: totrans-202
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.6.3 示例：实现 `ValueOf`](#ValueOf)'
 - en: 'TypeScript has a `keyof` operator but no `valueof` operator. However, we can
     implement that operator ourselves:'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 有一个 `keyof` 操作符但没有 `valueof` 操作符。然而，我们可以自己实现这个操作符：
 - en: '[PRE34]'
+  id: totrans-204
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '[33.6.4 Example: getting a property value](#example-getting-a-property-value)'
+  id: totrans-205
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.6.4 示例：获取属性值](#example-getting-a-property-value)'
 - en: 'The following function retrieves the value of the property of `obj` whose key
     is `key`:'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数检索 `obj` 的属性值，其键为 `key`：
 - en: '[PRE35]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: 'It’s interesting that, in addition to correctly computing the type of `result`,
     TypeScript also warns us if we get the key wrong:'
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 很有趣的是，除了正确计算 `result` 的类型外，TypeScript 还会警告我们如果键错误：
 - en: '[PRE36]'
+  id: totrans-209
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '[33.6.5 Example: lookup table and indexed access](#example-lookup-table-and-indexed-access)'
+  id: totrans-210
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.6.5 示例：查找表和索引访问](#example-lookup-table-and-indexed-access)'
 - en: 'Thanks to the indexed access operator, we can easily map from one kind of type
     to another:'
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 多亏了索引访问操作符，我们可以轻松地将一种类型映射到另一种类型：
 - en: '[PRE37]'
+  id: totrans-212
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: Alas, object literal types only work as lookup tables if the key type is a subset
     of `string`, `number` or `symbol`. For other types, we need to [work with tuples](ch_computing-with-tuple-types.html#tuple-lookup-table).
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
+  zh: 殊可惜，如果键类型是 `string`、`number` 或 `symbol` 的子集，对象字面量类型仅作为查找表工作。对于其他类型，我们需要[使用元组](ch_computing-with-tuple-types.html#tuple-lookup-table)来工作。
 - en: '[33.6.6 Indexed access and lookup table in `lib.dom.d.ts`](#indexed-access-and-lookup-table-in-lib-dom-d-ts)'
+  id: totrans-214
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.6.6 `lib.dom.d.ts` 中的索引访问和查找表](#indexed-access-and-lookup-table-in-lib-dom-d-ts)'
 - en: 'The built-in type definitions for the DOM ([`lib.dom.d.ts`](https://github.com/microsoft/TypeScript/blob/main/src/lib/dom.generated.d.ts))
     use indexed access and a lookup table `GlobalEventHandlersEventMap`:'
+  id: totrans-215
   prefs: []
   type: TYPE_NORMAL
+  zh: DOM 的内置类型定义（[`lib.dom.d.ts`](https://github.com/microsoft/TypeScript/blob/main/src/lib/dom.generated.d.ts)）使用索引访问和查找表
+    `GlobalEventHandlersEventMap`：
 - en: '[PRE38]'
+  id: totrans-216
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: '[33.7 Conditional types (`C ? T : F`)](#conditional-types-c-t-f)'
+  id: totrans-217
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.7 条件类型 (`C ? T : F`)](#conditional-types-c-t-f)'
 - en: 'A *conditional type* has the following syntax:'
+  id: totrans-218
   prefs: []
   type: TYPE_NORMAL
+  zh: '*条件类型* 有以下语法：'
 - en: '[PRE39]'
+  id: totrans-219
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: 'If `Sub` is assignable to `Super`, the result of the conditional type is `TrueBranch`.
     Otherwise, it is `FalseBranch`. This is an example:'
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 `Sub` 可以赋值给 `Super`，则条件类型的结果是 `TrueBranch`。否则，它是 `FalseBranch`。这是一个例子：
 - en: '[PRE40]'
+  id: totrans-221
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'For more information see [“Conditional types (`C ? T : F`)” (§34)](ch_conditional-types.html#ch_conditional-types).'
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: '更多信息请参阅“条件类型 (`C ? T : F`)”（§34）[“Conditional types (`C ? T : F`)” (§34)](ch_conditional-types.html#ch_conditional-types)。'
 - en: '[33.7.1 Extracting parts of compound types via `infer`](#extracting-parts-of-compound-types-via-infer)'
+  id: totrans-223
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.7.1 通过 `infer` 提取复合类型的部分](#extracting-parts-of-compound-types-via-infer)'
 - en: 'The `infer` keyword can only be used in the condition of a conditional type
     and extracts parts of compound types into type variables – e.g., the following
     generic type extracts what’s inside the angle brackets of `Array<>`:'
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: '`infer` 关键字只能用于条件类型的条件中，并将复合类型的部分提取到类型变量中 - 例如，以下泛型类型提取了 `Array<>` 角括号内的内容：'
 - en: '[PRE41]'
+  id: totrans-225
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: '`infer` has a lot in common with [destructuring](https://exploringjs.com/js/book/ch_destructuring.html#ch_destructuring)
     in JavaScript.'
+  id: totrans-226
   prefs: []
   type: TYPE_NORMAL
+  zh: '`infer` 与 JavaScript 中的 [解构](https://exploringjs.com/js/book/ch_destructuring.html#ch_destructuring)
+    有很多共同之处。'
 - en: For more information, see [“Extracting parts of compound types via `infer`”
     (§35)](ch_infer-keyword.html#ch_infer-keyword).
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息，请参阅“通过 `infer` 提取复合类型的部分”（§35）[“Extracting parts of compound types via
+    `infer`” (§35)](ch_infer-keyword.html#ch_infer-keyword)。
 - en: '[33.8 Defining local type variables](#local-type-variables)'
+  id: totrans-228
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.8 定义局部类型变量](#local-type-variables)'
 - en: 'Normal programming languages let us define local variables to help with managing
     various bits of data. Alas, the type level of TypeScript does not have this feature.
     If it had, it would look like this:'
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: 正常的编程语言允许我们定义局部变量来帮助管理各种数据。然而，TypeScript 的类型级别没有这个功能。如果有，它看起来会是这样：
 - en: '[PRE42]'
+  id: totrans-230
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: 'However, we can emulate it via `infer`:'
+  id: totrans-231
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，我们可以通过 `infer` 来模拟它：
 - en: '[PRE43]'
+  id: totrans-232
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'We can also define multiple variables at the same time:'
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以同时定义多个变量：
 - en: '[PRE44]'
+  id: totrans-234
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: '[33.8.1 Example](#example)'
+  id: totrans-235
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.8.1 示例](#example)'
 - en: 'This is an example where this technique is useful:'
+  id: totrans-236
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个这种技术有用的例子：
 - en: '[PRE45]'
+  id: totrans-237
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'In the “body” of a generic type, we can also use a different technique – a
     helper parameter with a default value (`W` in the following code):'
+  id: totrans-238
   prefs: []
   type: TYPE_NORMAL
+  zh: 在泛型类型的“主体”中，我们还可以使用不同的技术——一个具有默认值的辅助参数（以下代码中的 `W`）：
 - en: '[PRE46]'
+  id: totrans-239
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: '[33.9 Mapped types `{[K in U]: X}`](#mapped-types-k-in-u-x)'
+  id: totrans-240
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.9 映射类型 `{[K in U]: X}`](#mapped-types-k-in-u-x)'
 - en: 'Roughly, a mapped type creates a new version of an input type `T` (usually
     an object type or a tuple type) by looping over its keys:'
+  id: totrans-241
   prefs: []
   type: TYPE_NORMAL
+  zh: 大致来说，映射类型通过遍历其键来创建输入类型 `T`（通常是对象类型或元组类型）的新版本：
 - en: '[PRE47]'
+  id: totrans-242
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: '`«PropValue»` is a type expression that often uses `K` in some way. This is
     an example:'
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: '`«PropValue»` 是一个类型表达式，它通常以某种方式使用 `K`。这是一个例子：'
 - en: '[PRE48]'
+  id: totrans-244
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: '[33.10 Template literal types: processing strings](#template-literal-types-processing-strings)'
+  id: totrans-245
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.10 模板字面量类型：字符串处理](#template-literal-types-processing-strings)'
 - en: 'Template literal types have the same syntax as JavaScript template literals.
     Two important use cases for them are:'
+  id: totrans-246
   prefs: []
   type: TYPE_NORMAL
+  zh: 模板字面量类型与 JavaScript 模板字面量的语法相同。它们有两个重要的用例：
 - en: 'First, concatenating string literal types (the template literal is in line
     A, delimited by backticks):'
+  id: totrans-247
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，连接字符串字面量类型（模板字面量位于行 A，由反引号分隔）：
 - en: '[PRE49]'
+  id: totrans-248
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: 'Second, extracting parts of string literal types:'
+  id: totrans-249
   prefs: []
   type: TYPE_NORMAL
+  zh: 第二，提取字符串字面量类型的一部分：
 - en: '[PRE50]'
+  id: totrans-250
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: 'In line A, we extract part of `AsyncMethodName` into the type variable `MN`,
     via the `infer` operator. That operator works similarly destructuring in JavaScript.
     It must be used inside a conditional type (`Cond ? True : False`).'
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: '在行 A 中，我们通过 `infer` 操作符将 `AsyncMethodName` 的一部分提取到类型变量 `MN` 中。该操作符在 JavaScript
+    中的解构操作中工作方式类似。它必须在一个条件类型（`Cond ? True : False`）内部使用。'
 - en: Both concatenating and extracting string literal types are useful in many situations,
     e.g. they enable us to transform the names of object properties.
+  id: totrans-252
   prefs: []
   type: TYPE_NORMAL
+  zh: 连接和提取字符串字面量类型在许多情况下都很有用，例如，它们使我们能够转换对象属性的名称。
 - en: '[33.11 Computing with union types](#computing-with-union-types)'
+  id: totrans-253
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.11 使用联合类型进行计算](#computing-with-union-types)'
 - en: In this section, we explore how to compute with union types.
+  id: totrans-254
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们探讨如何使用联合类型进行计算。
 - en: '[33.11.1 Intersection and union](#intersection-and-union)'
+  id: totrans-255
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.11.1 交集和联合](#intersection-and-union)'
 - en: 'We can intersect union types via `&`:'
+  id: totrans-256
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过 `&` 来交集联合类型：
 - en: '[PRE51]'
+  id: totrans-257
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: 'And, as expected, we can also compute unions via `|`:'
+  id: totrans-258
   prefs: []
   type: TYPE_NORMAL
+  zh: 并且，正如预期的那样，我们也可以通过 `|` 计算联合：
 - en: '[PRE52]'
+  id: totrans-259
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: '[33.11.2 Distributivity over union types](#distributivity)'
+  id: totrans-260
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.11.2 联合类型的分配律](#distributivity)'
 - en: 'One interesting phenomenon with union types is that some operations are *distributive*
     over them:'
+  id: totrans-261
   prefs: []
   type: TYPE_NORMAL
+  zh: 联合类型的一个有趣现象是，某些操作对它们是*分配律的*：
 - en: Applying the operation to a non-union type produces a single output type.
+  id: totrans-262
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将操作应用于非联合类型会产生一个单一的输出类型。
 - en: Applying the operation to a union type produces a union of output types – one
     for each element of the input union.
+  id: totrans-263
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将操作应用于联合类型会产生输出类型的联合——每个输入联合的元素对应一个。
 - en: '[33.11.3 Template literal types are distributive](#distributivity-of-template-literal-types)'
+  id: totrans-264
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.11.3 模板字面量类型是分配律的](#distributivity-of-template-literal-types)'
 - en: The next example demonstrates that applying the template literal type in line
     A to a union produces a union of string literal types.
+  id: totrans-265
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一个示例演示了将行 A 中的模板字面量类型应用于联合会产生字符串字面量类型的联合。
 - en: '[PRE53]'
+  id: totrans-266
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: '[33.11.4 Indexed access types `T[K]` are distributive](#distributivity-of-indexed-access-types)'
+  id: totrans-267
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.11.4 索引访问类型 `T[K]` 是分配律的](#distributivity-of-indexed-access-types)'
 - en: 'The next example applies an indexed access type to a union of object literal
     types:'
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一个例子将索引访问类型应用于对象字面量类型的联合：
 - en: '[PRE54]'
+  id: totrans-269
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: '[33.11.5 Conditional types are distributive](#conditional-types-are-distributive)'
+  id: totrans-270
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[33.11.5 条件类型是分配律的](#conditional-types-are-distributive)'
 - en: Because they are distributive, conditional types are the most important tool
     for working with union types. In this section, we explore a few examples. For
     more information, see [“Conditional types are distributive over union types” (§34.2)](ch_conditional-types.html#distributivity-of-conditional-types).
+  id: totrans-271
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为它们是分配的，条件类型是处理联合类型最重要的工具。在本节中，我们将探讨一些示例。更多信息请见[“条件类型在联合类型上是分配的”（§34.2）](ch_conditional-types.html#distributivity-of-conditional-types)。
 - en: '[33.11.5.1 Mapping a union type](#mapping-a-union-type)'
+  id: totrans-272
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[33.11.5.1 映射联合类型](#mapping-a-union-type)'
 - en: '[PRE55]'
+  id: totrans-273
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: '[33.11.5.2 Filtering a union type](#filtering-a-union-type)'
+  id: totrans-274
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[33.11.5.2 过滤联合类型](#filtering-a-union-type)'
 - en: '[PRE56]'
+  id: totrans-275
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: '[33.12 Computing with object types](#computing-with-object-types)'
+  id: totrans-276
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.12 使用对象类型进行计算](#computing-with-object-types)'
 - en: 'How to compute with object types is explained elsewhere:'
+  id: totrans-277
   prefs: []
   type: TYPE_NORMAL
+  zh: 如何使用对象类型进行计算在其他地方有解释：
 - en: We can transform and create object types via [mapped types](ch_mapped-types.html#ch_mapped-types).
+  id: totrans-278
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过[映射类型](ch_mapped-types.html#ch_mapped-types)来转换和创建对象类型。
 - en: '[Template literal types](ch_template-literal-types.html#ch_template-literal-types)
     help us with changing property names.'
+  id: totrans-279
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[模板字面量类型](ch_template-literal-types.html#ch_template-literal-types)帮助我们更改属性名。'
 - en: '[33.13 Computing with tuple types](#computing-with-tuple-types)'
+  id: totrans-280
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.13 使用元组类型进行计算](#computing-with-tuple-types)'
 - en: 'See [“Computing with tuple types” (§37)](ch_computing-with-tuple-types.html#ch_computing-with-tuple-types):'
+  id: totrans-281
   prefs: []
   type: TYPE_NORMAL
+  zh: 见[“使用元组类型进行计算”（§37）](ch_computing-with-tuple-types.html#ch_computing-with-tuple-types)：
 - en: We can map tuples via mapped types.
+  id: totrans-282
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以通过映射类型来映射元组。
 - en: For other operations, such as filtering, we often need recursion.
+  id: totrans-283
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于其他操作，例如过滤，我们通常需要递归。
 - en: '[33.14 Computed return types of functions often don’t match returned values](#computed-return-types-dont-match)'
+  id: totrans-284
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.14 函数的计算返回类型通常不匹配返回值](#computed-return-types-dont-match)'
 - en: 'One downside of computed return types of functions is that TypeScript often
     thinks that the type of the returned value doesn’t match the computed type. This
     is an example:'
+  id: totrans-285
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数计算返回类型的一个缺点是TypeScript通常认为返回值的类型与计算类型不匹配。这是一个例子：
 - en: '[PRE57]'
+  id: totrans-286
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: 'Sadly, the value returned in line B is not assignable to the return type specified
     in line A. There are several ways of fixing this error – all of them involve a
     type assertion (`as`). This is one solution – using `as any` in line B:'
+  id: totrans-287
   prefs: []
   type: TYPE_NORMAL
+  zh: 很遗憾，行B中返回的值不能赋值给行A中指定的返回类型。解决这个问题有几种方法——所有这些方法都涉及到类型断言（`as`）。这是一个解决方案——在行B中使用`as
+    any`：
 - en: '[PRE58]'
+  id: totrans-288
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: 'Options for getting the return type right:'
+  id: totrans-289
   prefs: []
   type: TYPE_NORMAL
+  zh: 获取正确返回类型的选项：
 - en: 'Explicitly defining a return type (as we have done in line A) plus a type assertion
     in line B:'
+  id: totrans-290
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 明确定义返回类型（如我们在行A中所做）加上行B中的类型断言：
 - en: '`as any` (our current solution)'
+  id: totrans-291
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`as any`（我们的当前解决方案）'
 - en: '`as unknown as PrependDollarSign<Obj>` (an alternative to what we have done).'
+  id: totrans-292
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`as unknown as PrependDollarSign<Obj>`（我们已采取的替代方案）。'
 - en: 'Does not work: `as unknown`'
+  id: totrans-293
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不起作用：`as unknown`
 - en: 'Inferring the return type (omitting it in line A) plus a type assertion in
     line B:'
+  id: totrans-294
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 推断返回类型（在行A中省略）加上行B中的类型断言：
 - en: '`as unknown as PrependDollarSign<Obj>`'
+  id: totrans-295
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`as unknown as PrependDollarSign<Obj>`'
 - en: 'I prefer the solution that is used above because inferred return types prevent
     some ways of generating `.d.ts` files: [“`isolatedDeclarations`: generating `.d.ts`
     files more efficiently” (§8.8.5)](ch_tsconfig-json.html#isolatedDeclarations)'
+  id: totrans-296
   prefs: []
   type: TYPE_NORMAL
+  zh: 我更喜欢上面使用的解决方案，因为推断的返回类型可以防止生成`.d.ts`文件的一些方式：[“`isolatedDeclarations`：更有效地生成`.d.ts`文件”（§8.8.5）](ch_tsconfig-json.html#isolatedDeclarations)
 - en: '[33.15 Conclusion](#computing-with-types-conclusion)'
+  id: totrans-297
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[33.15 结论](#computing-with-types-conclusion)'
 - en: 'Computing with types is fascinating:'
+  id: totrans-298
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用类型进行计算非常迷人：
 - en: We are writing programs at the type level.
+  id: totrans-299
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们正在类型级别编写程序。
 - en: 'It enables us to provide types for relatively complicated functionality, such
     as:'
+  id: totrans-300
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它使我们能够为相对复杂的功能提供类型，例如：
 - en: '[`Promise.all()`](ch_computing-with-tuple-types.html#typing-Promise.all)'
+  id: totrans-301
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`Promise.all()`](ch_computing-with-tuple-types.html#typing-Promise.all)'
 - en: '[`zip()`](ch_computing-with-tuple-types.html#typing-zip)'
+  id: totrans-302
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`zip()`](ch_computing-with-tuple-types.html#typing-zip)'
 - en: '[Property paths](ch_template-literal-types.html#example-property-paths)'
+  id: totrans-303
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[属性路径](ch_template-literal-types.html#example-property-paths)'
 - en: '[Converting hyphen case to camel case at the type level](ch_template-literal-types.html#example-from-hyphen-case-to-camel-case)'
+  id: totrans-304
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[在类型级别将短横线命名转换为驼峰命名](ch_template-literal-types.html#example-from-hyphen-case-to-camel-case)'
 - en: 'We effectively implement a solution twice (see previous section): Once at the
     program level and once at the type level.'
+  id: totrans-305
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们实际上在两个级别上实现了解决方案（参见上一节）：一次在程序级别，一次在类型级别。
 - en: 'Computed types do make code more complex. My general recommendation is: Keep
     your types as simple as possible and do type-level computations only if it’s absolutely
     necessary. In some cases, it may be possible to use simpler types by restructuring
     code and/or data.'
+  id: totrans-306
   prefs: []
   type: TYPE_NORMAL
+  zh: 计算类型确实会使代码更加复杂。我的总体建议是：尽可能保持类型简单，并且只有在绝对必要时才进行类型级别的计算。在某些情况下，通过重构代码和/或数据，可能可以使用更简单的类型。
 - en: On the other hand, there are projects where *writing* the types took cleverness,
     but *using* them is fun. One small example is [a prototype of a simple SQL API](https://github.com/rauschma/simple-sql)
     that I wrote.
+  id: totrans-307
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，有些项目中编写类型需要智慧，但使用它们却很有趣。一个小例子是我编写的一个简单的SQL API原型[链接](https://github.com/rauschma/simple-sql)。

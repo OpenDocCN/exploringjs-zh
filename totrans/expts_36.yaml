@@ -1,437 +1,669 @@
 - en: 29 The satisfies operator
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 29   满足操作符
 - en: 原文：[https://exploringjs.com/ts/book/ch_satisfies.html](https://exploringjs.com/ts/book/ch_satisfies.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_satisfies.html](https://exploringjs.com/ts/book/ch_satisfies.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (广告，请勿拦截。)
 - en: '[29.1 What is the `satisfies` operator?](#what-is-the-satisfies-operator)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1   什么是 `satisfies` 操作符？](#what-is-the-satisfies-operator)'
 - en: '[29.1.1 Syntax: no line terminator before `satisfies`](#syntax-no-line-terminator-before-satisfies)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1.1   语法：`satisfies` 前不允许有行终止符](#syntax-no-line-terminator-before-satisfies)'
 - en: '[29.1.2 A first example](#a-first-example)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1.2   一个示例](#a-first-example)'
 - en: '[29.1.3 Example: optional object properties](#example-optional-object-properties)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.1.3   示例：可选对象属性](#example-optional-object-properties)'
 - en: '[29.2 Type-checking object property values](#type-checking-object-property-values)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.2   检查对象属性值类型](#type-checking-object-property-values)'
 - en: '[29.2.1 Improvement: a type for property values](#improvement-a-type-for-property-values)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.2.1   改进：属性值的类型](#improvement-a-type-for-property-values)'
 - en: '[29.2.2 Improvement: checking property values via `satisfies`](#improvement-checking-property-values-via-satisfies)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.2.2   改进：通过 `satisfies` 检查属性值](#improvement-checking-property-values-via-satisfies)'
 - en: '[29.3 Type-checking object property keys](#type-checking-object-property-keys)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.3   检查对象属性键类型](#type-checking-object-property-keys)'
 - en: '[29.4 Constraining literal values](#constraining-literal-values)'
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.4   限制字面量值](#constraining-literal-values)'
 - en: '[29.4.1 Example: posting JSON via `fetch()`](#example-posting-json-via-fetch)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.4.1   示例：通过 `fetch()` 发送 JSON](#example-posting-json-via-fetch)'
 - en: '[29.4.2 Example: `export default`](#example-export-default)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.4.2   示例：`export default`](#example-export-default)'
 - en: '[29.5 `satisfies` isn’t always needed](#satisfies-isn-t-always-needed)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.5   `satisfies` 不总是必需的](#satisfies-isn-t-always-needed)'
 - en: '[29.5.1 Example: union of `string` and `number`](#example-union-of-string-and-number)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.5.1   示例：`string` 和 `number` 的联合](#example-union-of-string-and-number)'
 - en: '[29.5.2 Example: discriminated union](#example-discriminated-union)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.5.2   示例：区分联合](#example-discriminated-union)'
 - en: '[29.6 `satisfies` can change inferred types](#satisfies-can-change-inferred-types)'
+  id: totrans-17
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6   `satisfies` 可以改变推断类型](#satisfies-can-change-inferred-types)'
 - en: '[29.6.1 From type to literal type](#from-type-to-literal-type)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6.1   从类型到字面量类型](#from-type-to-literal-type)'
 - en: '[29.6.2 From Array to tuple](#from-array-to-tuple)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6.2   从数组到元组](#from-array-to-tuple)'
 - en: '[29.6.3 `satisfies` does not change explicit types](#satisfies-does-not-change-explicit-types)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.6.3   `satisfies` 不会改变显式类型](#satisfies-does-not-change-explicit-types)'
 - en: '[29.7 Type-level satisfaction check](#type-level-satisfaction-check)'
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.7   类型级别满足检查](#type-level-satisfaction-check)'
 - en: '[29.8 Further reading](#further-reading-9)'
+  id: totrans-22
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[29.8   进一步阅读](#further-reading-9)'
 - en: The `satisfies` operator lets us check the type of a value (mostly) without
     influencing it. In this chapter, we examine how exactly it works and where it’s
     useful.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: '`satisfies` 操作符让我们可以在不影响它的情况下（主要是）检查值的类型。在本章中，我们将探讨它如何精确工作以及它在哪里有用。'
 - en: '[29.1 What is the `satisfies` operator?](#what-is-the-satisfies-operator)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.1   什么是 `satisfies` 操作符？](#what-is-the-satisfies-operator)'
 - en: 'The `satisfies` operator enforces at compile time that a given `value` is assignable
     to a given `Type`:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '`satisfies` 操作符在编译时强制给定 `value` 可分配给给定的 `Type`：'
 - en: '[PRE0]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: The result is still `value`. This operator has no effect at runtime.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果仍然是 `value`。此操作符在运行时没有效果。
 - en: The type of `value` is usually unchanged. There are a few exceptions, though,
     which we’ll look at later.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`value` 的类型通常不会改变。尽管如此，也有一些例外，我们将在稍后讨论。'
 - en: '[29.1.1 Syntax: no line terminator before `satisfies`](#syntax-no-line-terminator-before-satisfies)'
+  id: totrans-29
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.1.1   语法：`satisfies` 前不允许有行终止符](#syntax-no-line-terminator-before-satisfies)'
 - en: 'This is not allowed:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是不允许的：
 - en: '[PRE1]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Parentheses can help:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 括号可以有所帮助：
 - en: '[PRE2]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[29.1.2 A first example](#a-first-example)'
+  id: totrans-34
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.1.2   一个示例](#a-first-example)'
 - en: 'Let’s examine how various annotations affect the type of an object literal.
     We start without any annotations:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们检查各种注解如何影响对象字面量的类型。我们从没有任何注解的情况开始：
 - en: '[PRE3]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'TypeScript generalizes the types of `.x` and `.y` to `number`. That changes
     if we use the `as const` annotation:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 将 `.x` 和 `.y` 的类型泛化为 `number`。如果我们使用 `as const` 注解，这会发生变化：
 - en: '[PRE4]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Now both properties are read-only and have narrow types. What happens if we
     want to check that the shape of our point is correct, via a new type `Point`?
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在两个属性都是只读的，并且具有狭窄的类型。如果我们想通过一个新的类型 `Point` 检查我们点的形状是否正确，会发生什么？
 - en: '[PRE5]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '`point3` once again has a broader type. TypeScript infers the type name `Point`,
     which is an alias for the type that `point1` had. We declared that variable without
     any type-level annotations.'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '`point3` 再次具有更广泛的类型。TypeScript 推断类型名称 `Point`，它是 `point1` 所具有类型的别名。我们声明该变量时没有添加任何类型级别的注解。'
 - en: '`satisfies` lets us check that our point has the correct shape without discarding
     the narrow type that `as const` gives us:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: '`satisfies` 允许我们检查我们的点具有正确的形状，同时不丢弃 `as const` 给我们的狭窄类型：'
 - en: '[PRE6]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'How is `satisfies` different from `as`? On one hand, `as` generally changes
     the type of its left-hand side. On the other hand, it doesn’t type-check as thoroughly
     as `satisfies`:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '`satisfies` 与 `as` 有何不同？一方面，`as` 通常会改变其左侧的类型。另一方面，它不像 `satisfies` 那样彻底地进行类型检查：'
 - en: '[PRE7]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'In contrast, `satisfies` warns us if we omit property `.y`:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 相比之下，如果省略属性 `.y`，`satisfies` 会警告我们：
 - en: '[PRE8]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Why do we want the type of a point to be narrow? Actually, often we are perfectly
     fine with broader types. But there are use cases that require them to be narrow.
     We’ll look at those next.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么我们想要点的类型是狭窄的？实际上，我们通常对更广泛的类型感到非常满意。但是，有一些用例需要它们是狭窄的。我们将在下一节中查看这些用例。
 - en: '[29.1.3 Example: optional object properties](#example-optional-object-properties)'
+  id: totrans-49
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.1.3 示例：可选对象属性](#example-optional-object-properties)'
 - en: 'The following code demonstrates that `partialPoint1` having the broader type
     `PartialPoint` makes it less pleasant to work with:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了 `partialPoint1` 具有更广泛的类型 `PartialPoint` 使得它不太容易使用：
 - en: '[PRE9]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'This is what happens if we use `satisfies`:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们使用 `satisfies` 时会发生的情况：
 - en: '[PRE10]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[29.2 Type-checking object property values](#type-checking-object-property-values)'
+  id: totrans-54
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.2 类型检查对象属性值](#type-checking-object-property-values)'
 - en: 'The following object implements an enum for text styles:'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下对象实现了一个用于文本样式的枚举：
 - en: '[PRE11]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: On one hand, it’s neat that we can derive a type `TextStyleKeys` with property
     keys.
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一方面，我们可以从属性键推导出类型 `TextStyleKeys`，这是很整洁的。
 - en: On the other hand, we forgot property `TextStyle.Italics.latex` and TypeScript
     didn’t warn us.
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 另一方面，我们忘记了属性 `TextStyle.Italics.latex`，TypeScript 没有警告我们。
 - en: '[29.2.1 Improvement: a type for property values](#improvement-a-type-for-property-values)'
+  id: totrans-59
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.2.1 改进：属性值的类型](#improvement-a-type-for-property-values)'
 - en: 'Let’s use the following type to check property values:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用以下类型来检查属性值：
 - en: '[PRE12]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Our first attempt looks like this:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们第一次尝试看起来是这样的：
 - en: '[PRE13]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Upside: We get a warning that a property is missing.'
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：我们得到一个警告，表明属性缺失。
 - en: 'Downside: We can’t extract the property keys anymore – `TextStyleKeys` is now
     `string`.'
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：我们不能再提取属性键了——`TextStyleKeys` 现在是 `string` 类型。
 - en: '[29.2.2 Improvement: checking property values via `satisfies`](#improvement-checking-property-values-via-satisfies)'
+  id: totrans-66
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.2.2 改进：通过 `satisfies` 检查属性值](#improvement-checking-property-values-via-satisfies)'
 - en: 'Once again, `satisfies` can help us:'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次，`satisfies` 可以帮助我们：
 - en: '[PRE14]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: Now we get a warning for the missing property and a useful type `TextStyleKeys`.
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，我们得到一个关于缺失属性的警告和一个有用的类型 `TextStyleKeys`。
 - en: '[29.3 Type-checking object property keys](#type-checking-object-property-keys)'
+  id: totrans-70
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.3 类型检查对象属性键](#type-checking-object-property-keys)'
 - en: In the previous example, we checked the shapes of property values. Sometimes
     we are additionally dealing with a limited set of property keys and would like
     to check those – to avoid typos etc.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 在前面的示例中，我们检查了属性值的形状。有时我们还要处理有限的一组属性键，并希望检查这些键——以避免拼写错误等。
 - en: 'The following example is inspired by [the pull request for `satisfies`](https://github.com/microsoft/TypeScript/issues/47920)
     and uses the type `ColorName` to check property keys and the type `Color` to check
     property values. We get an error because they key `''blue''` is missing:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例受 [对 `satisfies` 的 pull request](https://github.com/microsoft/TypeScript/issues/47920)
+    的启发，并使用类型 `ColorName` 来检查属性键，使用类型 `Color` 来检查属性值。我们得到一个错误，因为缺少键 `'blue'`：
 - en: '[PRE15]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'What if we don’t want to use all of the keys but still get checks for typos?
     That can be achieved by making the record for the object partial (line A):'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们不想使用所有键，但仍想检查拼写错误，可以通过使对象的记录部分化（行 A）来实现：
 - en: '[PRE16]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'We can also extract the property keys:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以提取属性键：
 - en: '[PRE17]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[29.4 Constraining literal values](#constraining-literal-values)'
+  id: totrans-78
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.4 限制字面量值](#constraining-literal-values)'
 - en: 'Consider the following function call:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下函数调用：
 - en: '[PRE18]'
+  id: totrans-80
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'The parameter of `JSON.stringify()` has the type `any`. How can we ensure on
     our end that the object we pass to it has the right shape (no typos in the property
     keys etc.)? One option is to create a variable for the object:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: '`JSON.stringify()` 函数的参数类型为 `any`。我们如何确保传递给它的对象具有正确的形状（属性键没有拼写错误等）？一个选项是创建一个对象变量：'
 - en: '[PRE19]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'Another option is to use `satisfies`:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个选项是使用 `satisfies`：
 - en: '[PRE20]'
+  id: totrans-84
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: The following subsections demonstrate this technique for several use cases.
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下小节展示了这种技术在几个用例中的应用。
 - en: '[29.4.1 Example: posting JSON via `fetch()`](#example-posting-json-via-fetch)'
+  id: totrans-86
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.4.1 示例：通过 `fetch()` 发送 JSON](#example-posting-json-via-fetch)'
 - en: 'The following code was inspired by [an article by Matt Pocock](https://www.totaltypescript.com/how-to-use-satisfies-operator#strongly-typed-post-request-with-satisfies):
     We are using `fetch()` to post data to an API.'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码受到了 [Matt Pocock 的文章](https://www.totaltypescript.com/how-to-use-satisfies-operator#strongly-typed-post-request-with-satisfies)
+    的启发：我们正在使用 `fetch()` 向 API 发送数据。
 - en: '[PRE21]'
+  id: totrans-88
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '[29.4.2 Example: `export default`](#example-export-default)'
+  id: totrans-89
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.4.2 示例：`export default`](#example-export-default)'
 - en: 'Inline named exports can have type annotations:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 内联命名导出可以有类型注解：
 - en: '[PRE22]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'With a default export, there is no way to add one but we can use `satisfies`:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用默认导出时，没有方法可以添加一个，但我们可以使用 `satisfies`：
 - en: '[PRE23]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: '[29.5 `satisfies` isn’t always needed](#satisfies-isn-t-always-needed)'
+  id: totrans-94
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.5 `satisfies` 不总是必需的](#satisfies-isn-t-always-needed)'
 - en: In this section, we look at code where it seems like we would need `satisfies`,
     but TypeScript already correctly narrows the code.
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们查看那些似乎需要 `satisfies` 的代码，但 TypeScript 已经正确缩小了代码。
 - en: '[29.5.1 Example: union of `string` and `number`](#example-union-of-string-and-number)'
+  id: totrans-96
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.5.1 示例：`string` 和 `number` 的联合](#example-union-of-string-and-number)'
 - en: 'In the following code, we don’t need to use `satisfies` for `str1` and `str2`
     – they are already narrowed to `string`:'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下代码中，我们不需要对 `str1` 和 `str2` 使用 `satisfies` – 它们已经被缩小到 `string`：
 - en: '[PRE24]'
+  id: totrans-98
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '[29.5.2 Example: discriminated union](#example-discriminated-union)'
+  id: totrans-99
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.5.2 示例：区分联合](#example-discriminated-union)'
 - en: 'In the next example, `linkToIntro` is also narrowed to one element of the discriminated
     union `LinkHref`:'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 在下一个示例中，`linkToIntro` 也被缩小到区分联合 `LinkHref` 的一个元素：
 - en: '[PRE25]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '[29.6 `satisfies` can change inferred types](#satisfies-can-change-inferred-types)'
+  id: totrans-102
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.6 `satisfies` 可以改变推断类型](#satisfies-can-change-inferred-types)'
 - en: While `satisfies` usually does not change the inferred type of a value, there
     are exceptions.
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 虽然 `satisfies` 通常不会改变值的推断类型，但也有一些例外。
 - en: '[29.6.1 From type to literal type](#from-type-to-literal-type)'
+  id: totrans-104
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.6.1 从类型到字面量类型](#from-type-to-literal-type)'
 - en: '[PRE26]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[29.6.2 From Array to tuple](#from-array-to-tuple)'
+  id: totrans-106
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.6.2 从数组到元组](#from-array-to-tuple)'
 - en: '[PRE27]'
+  id: totrans-107
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: '[29.6.3 `satisfies` does not change explicit types](#satisfies-does-not-change-explicit-types)'
+  id: totrans-108
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[29.6.3 `satisfies` 不会改变显式类型](#satisfies-does-not-change-explicit-types)'
 - en: '[PRE28]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: '[29.7 Type-level satisfaction check](#type-level-satisfaction-check)'
+  id: totrans-110
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.7 类型级别的满足性检查](#type-level-satisfaction-check)'
 - en: 'TypeScript does have an operation at the type level that is similar to `satisfies`,
     but we can implement it ourselves:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 确实有一个在类型级别上类似于 `satisfies` 的操作，但我们可以自己实现它：
 - en: '[PRE29]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: '[29.8 Further reading](#further-reading-9)'
+  id: totrans-113
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[29.8 进一步阅读](#further-reading-9)'
 - en: Pull request [“`satisfies` operator to ensure an expression matches some type”](https://github.com/microsoft/TypeScript/issues/47920)
+  id: totrans-114
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 提交请求 [“`satisfies` 操作符以确保表达式匹配某些类型”](https://github.com/microsoft/TypeScript/issues/47920)

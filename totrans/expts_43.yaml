@@ -1,255 +1,394 @@
 - en: 35 Extracting parts of compound types via infer
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 35 通过 `infer` 提取复合类型的部分
 - en: 原文：[https://exploringjs.com/ts/book/ch_infer-keyword.html](https://exploringjs.com/ts/book/ch_infer-keyword.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_infer-keyword.html](https://exploringjs.com/ts/book/ch_infer-keyword.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿屏蔽。）
 - en: '[35.1 `infer`: extracting types inside the `extends` clause of a conditional
     type](#infer-extracting-types-inside-the-extends-clause-of-a-conditional-type)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.1 `infer`：提取条件类型 `extends` 子句中的类型](#infer-extracting-types-inside-the-extends-clause-of-a-conditional-type)'
 - en: '[35.1.1 Example: extracting property keys and values via `Record`](#example-extracting-property-keys-and-values-via-record)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.1.1 示例：通过 `Record` 提取属性键和值](#example-extracting-property-keys-and-values-via-record)'
 - en: '[35.2 Constraining `infer` via `extends`](#constraining-infer-via-extends)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.2 通过 `extends` 约束 `infer`](#constraining-infer-via-extends)'
 - en: '[35.3 Built-in utility types that use `infer`](#built-in-utility-types-that-use-infer)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.3 使用 `infer` 的内置实用类型](#built-in-utility-types-that-use-infer)'
 - en: '[35.3.1 Extracting parts of function types via `infer`](#extracting-parts-of-function-types)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.3.1 通过 `infer` 提取函数类型的部分](#extracting-parts-of-function-types)'
 - en: '[35.3.2 Extracting parts of class types via `infer`](#extracting-parts-of-class-types-via-infer)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.3.2 通过 `infer` 提取类类型的部分](#extracting-parts-of-class-types-via-infer)'
 - en: '[35.4 Example: synchronous version of an asynchronous interface](#example-synchronous-version-of-an-asynchronous-interface)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.4 示例：异步接口的同步版本](#example-synchronous-version-of-an-asynchronous-interface)'
 - en: '[35.5 Using `infer` to define local type variables](#using-infer-to-define-local-type-variables)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.5 使用 `infer` 定义局部类型变量](#using-infer-to-define-local-type-variables)'
 - en: '[35.6 Sources of this chapter](#sources-of-this-chapter-5)'
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[35.6 本章来源](#sources-of-this-chapter-5)'
 - en: In this chapter, we explore how we can extract parts of compound types via the
     `infer` keyword.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨如何通过 `infer` 关键字提取复合类型的部分。
 - en: It helps if you are loosely familiar with [conditional types](ch_conditional-types.html#ch_conditional-types).
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你对 [条件类型](ch_conditional-types.html#ch_conditional-types) 有一定的了解会有帮助。
 - en: '[35.1 `infer`: extracting types inside the `extends` clause of a conditional
     type](#infer-extracting-types-inside-the-extends-clause-of-a-conditional-type)'
+  id: totrans-14
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.1 `infer`：提取条件类型 `extends` 子句中的类型](#infer-extracting-types-inside-the-extends-clause-of-a-conditional-type)'
 - en: '`infer` is used inside the constraint part of a conditional type:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: '`infer` 在条件类型的约束部分中使用：'
 - en: '[PRE0]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'A constraint can be a type pattern – e.g.:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 约束可以是一个类型模式 - 例如：
 - en: '[PRE1]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'At any location where we can mention an existing type variable (such as `T`
     or `R` in the previous examples), we can also introduce a new type variable `X`
     via `infer X`. Let’s look at an example: The following generic type `ElemType<Arr>`
     extracts the element type of an Array type:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在任何可以提及现有类型变量的位置（例如前例中的 `T` 或 `R`），我们也可以通过 `infer X` 引入一个新的类型变量 `X`。让我们看一个例子：以下泛型类型
+    `ElemType<Arr>` 提取了数组类型的元素类型：
 - en: '[PRE2]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`infer` has a lot in common with [destructuring](https://exploringjs.com/js/book/ch_destructuring.html#ch_destructuring)
     in JavaScript.'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '`infer` 与 JavaScript 中的 [解构](https://exploringjs.com/js/book/ch_destructuring.html#ch_destructuring)
+    有很多相似之处。'
 - en: '[35.1.1 Example: extracting property keys and values via `Record`](#example-extracting-property-keys-and-values-via-record)'
+  id: totrans-22
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.1.1 示例：通过 `Record` 提取属性键和值](#example-extracting-property-keys-and-values-via-record)'
 - en: 'The utility type `Record` lets us implement the `keyof` operator ourselves:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 实用类型 `Record` 允许我们自行实现 `keyof` 操作符：
 - en: '[PRE3]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'We can also implement a utility type `PropValues` that extracts property values:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以实现一个实用类型 `PropValues` 来提取属性值：
 - en: '[PRE4]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[35.2 Constraining `infer` via `extends`](#constraining-infer-via-extends)'
+  id: totrans-27
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.2 通过 `extends` 约束 `infer`](#constraining-infer-via-extends)'
 - en: 'In some cases, we need to help `infer` by using `extends` to constrain what
     can be inferred – e.g. (based on [an idea by Heribert Schütz](https://mastodon.social/@hcschuetz/114127961269403080)):'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 在某些情况下，我们需要通过使用 `extends` 来约束可以推断的内容以帮助 `infer` - 例如（基于 [Heribert Schütz 的想法](https://mastodon.social/@hcschuetz/114127961269403080)）：
 - en: '[PRE5]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Notes:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意事项：
 - en: This code does not work without the two `extends` in line A and line B.
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这段代码在没有行 A 和行 B 中的两个 `extends` 的情况下无法工作。
 - en: Line C shows us the exact result produced by `EnumFromTuple`.
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 C 显示了 `EnumFromTuple` 生成的确切结果。
 - en: Line D shows us that the result is assignable from and to a simple object literal
     type.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 D 显示结果可以赋值给一个简单的对象字面量类型。
 - en: '[35.3 Built-in utility types that use `infer`](#built-in-utility-types-that-use-infer)'
+  id: totrans-34
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.3 使用 `infer` 的内置实用类型](#built-in-utility-types-that-use-infer)'
 - en: TypeScript has several built-in [utility types](https://www.typescriptlang.org/docs/handbook/utility-types.html).
     In this section, we look at those that use `infer`.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 有几个内置的 [实用类型](https://www.typescriptlang.org/docs/handbook/utility-types.html)。在本节中，我们查看那些使用
+    `infer` 的类型。
 - en: '[35.3.1 Extracting parts of function types via `infer`](#extracting-parts-of-function-types)'
+  id: totrans-36
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.3.1 通过 `infer` 提取函数类型的一部分](#extracting-parts-of-function-types)'
 - en: '[PRE6]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Both of these utility types are straightforward: We put `infer` where we want
     to extract a type. Let’s use both types:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 这两个实用类型都很简单：我们在想要提取类型的地方使用 `infer`。让我们使用这两种类型：
 - en: '[PRE7]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '[35.3.2 Extracting parts of class types via `infer`](#extracting-parts-of-class-types-via-infer)'
+  id: totrans-40
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[35.3.2 通过 `infer` 提取类类型的一部分](#extracting-parts-of-class-types-via-infer)'
 - en: 'The following non-built-in utility type for classes demonstrate how [*construct
     signatures*](ch_classes-as-values.html#construct-signatures) work:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下非内置的类实用类型展示了 [**构造签名**](ch_classes-as-values.html#construct-signatures) 的工作原理：
 - en: '[PRE8]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: This type includes all classes whose instances have the type `T`. The keyword
     `abstract` means that it includes both abstract and concrete classes. Without
     that keyword, it would only include classes that are instantiable.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 此类型包括所有实例类型为 `T` 的类。关键字 `abstract` 表示它包括抽象类和具体类。如果没有这个关键字，它只会包括可实例化的类。
 - en: 'Construct signatures enable us to extract parts of classes:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 构造签名使我们能够提取类的一部分：
 - en: '[PRE9]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'To demonstrate these utility types, let’s define a class we can apply them
     to:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了演示这些实用类型，让我们定义一个我们可以应用它们的类：
 - en: '[PRE10]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Note that the class `Point` defines two things:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，类 `Point` 定义了两件事：
 - en: 'A type: the type `Point` for instances of the class.'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个类型：类的实例的 `Point` 类型。
 - en: 'A value: a factory for objects whose type is `Point`. That value has the type
     `Class<Point>`.'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个值：一个用于创建类型为 `Point` 的对象的工厂。该值具有 `Class<Point>` 类型。
 - en: '[PRE11]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[35.4 Example: synchronous version of an asynchronous interface](#example-synchronous-version-of-an-asynchronous-interface)'
+  id: totrans-52
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.4 示例：异步接口的同步版本](#example-synchronous-version-of-an-asynchronous-interface)'
 - en: 'The following example is a little more complex: It converts all asynchronous
     methods in an object type to synchronous methods:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例稍微复杂一些：它将对象类型中的所有异步方法转换为同步方法：
 - en: '[PRE12]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Condition: Is the current property value `Intf[K]` a function? (Line A)'
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 条件：当前的属性值 `Intf[K]` 是一个函数吗？（行 A）
 - en: 'If yes: The new property value is a function with the same parameters `A` but
     an unwrapped return type `R`. (Line B)'
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果是：新的属性值是一个具有相同参数 `A` 但未包装的返回类型 `R` 的函数。（行 B）
 - en: 'If no: The new property value is the same as the old property value. (Line
     C)'
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果不是：新的属性值与旧的属性值相同。（行 C）
 - en: 'Let’s apply `Syncify` to an interface `AsyncService` with Promise-based methods:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们将 `Syncify` 应用到一个基于 Promise 的方法接口 `AsyncService` 上：
 - en: '[PRE13]'
+  id: totrans-59
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '[35.5 Using `infer` to define local type variables](#using-infer-to-define-local-type-variables)'
+  id: totrans-60
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.5 使用 `infer` 定义局部类型变量](#using-infer-to-define-local-type-variables)'
 - en: 'We can use `infer` to define local type variables such as `W` below:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用 `infer` 定义如 `W` 以下的局部类型变量：
 - en: '[PRE14]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: For more information, see [“Defining local type variables” (§33.8)](ch_computing-with-types-overview.html#local-type-variables).
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息，请参阅 [“定义局部类型变量” (§33.8)](ch_computing-with-types-overview.html#local-type-variables)。
 - en: '[35.6 Sources of this chapter](#sources-of-this-chapter-5)'
+  id: totrans-64
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[35.6 本章来源](#sources-of-this-chapter-5)'
 - en: Section [“Inferring within conditional types”](https://devblogs.microsoft.com/typescript/announcing-typescript-2-8-2/#inferring-within-conditional-types)
     in the blog post announcing TypeScript 2.8.
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 2.8 宣布博客中 [“在条件类型内进行推断”](https://devblogs.microsoft.com/typescript/announcing-typescript-2-8-2/#inferring-within-conditional-types)
+    的部分。
 - en: Section [“Inferring Within Conditional Types”](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#inferring-within-conditional-types)
     in the official TypeScript Handbook.
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 官方 TypeScript 手册中的 [“在条件类型内进行推断”](https://www.typescriptlang.org/docs/handbook/2/conditional-types.html#inferring-within-conditional-types)
+    部分。

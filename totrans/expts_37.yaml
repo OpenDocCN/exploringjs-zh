@@ -1,828 +1,1277 @@
 - en: 30 Type guards and narrowing
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 30 类型守卫和窄化
 - en: 原文：[https://exploringjs.com/ts/book/ch_type-guards.html](https://exploringjs.com/ts/book/ch_type-guards.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_type-guards.html](https://exploringjs.com/ts/book/ch_type-guards.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[30.1 Type guards and narrowing](#type-guards-and-narrowing-1)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.1 类型守卫和窄化](#type-guards-and-narrowing-1)'
 - en: '[30.1.1 Example: a type guard with `===`](#example-a-type-guard-with)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.1.1 示例：使用 `===` 的类型守卫](#example-a-type-guard-with)'
 - en: '[30.1.2 Example: a type guard with `typeof`](#example-a-type-guard-with-typeof)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.1.2 示例：使用 `typeof` 的类型守卫](#example-a-type-guard-with-typeof)'
 - en: '[30.2 When do we need to narrow types?](#when-do-we-need-to-narrow-types)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.2 我们何时需要窄化类型？](#when-do-we-need-to-narrow-types)'
 - en: '[30.2.1 The type `unknown` is usually too general](#the-type-unknown-is-usually-too-general)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.2.1 类型 `unknown` 通常过于通用](#the-type-unknown-is-usually-too-general)'
 - en: '[30.3 Where can we use type guards?](#where-can-we-use-type-guards)'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.3 我们在哪里可以使用类型守卫？](#where-can-we-use-type-guards)'
 - en: '[30.3.1 Type guards can also affect parts of expressions](#type-guards-can-also-affect-parts-of-expressions)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.3.1 类型守卫也可以影响表达式的部分](#type-guards-can-also-affect-parts-of-expressions)'
 - en: '[30.4 What kinds of type guards are built-in?](#what-kinds-of-type-guards-are-built-in)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.4 内置的类型守卫有哪些类型？](#what-kinds-of-type-guards-are-built-in)'
 - en: '[30.4.1 `typeof`, `instanceof`, `Array.isArray`](#typeof-instanceof-array-isarray)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.4.1 `typeof`、`instanceof`、`Array.isArray`](#typeof-instanceof-array-isarray)'
 - en: '[30.4.2 Strict equality (`===`) and strict inequality(`!==`)](#strict-equality-and-strict-inequality)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.4.2 严格相等（`===`）和严格不等（`!==`）](#strict-equality-and-strict-inequality)'
 - en: '[30.4.3 Truthiness checks](#truthiness-checks)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.4.3 真值检查](#truthiness-checks)'
 - en: '[30.4.4 Checking for distinct properties via the operator `in`](#checking-for-distinct-properties-via-the-operator-in)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.4.4 通过操作符 `in` 检查不同属性](#checking-for-distinct-properties-via-the-operator-in)'
 - en: '[30.4.5 Checking the value of a shared property (discriminated unions)](#checking-the-value-of-a-shared-property-discriminated-unions)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.4.5 检查共享属性值（区分联合）](#checking-the-value-of-a-shared-property-discriminated-unions)'
 - en: '[30.5 Narrowing via assignment](#narrowing-via-assignment)'
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.5 通过赋值进行窄化](#narrowing-via-assignment)'
 - en: '[30.5.1 Narrowing storage locations with explicit types](#narrowing-storage-locations-with-explicit-types)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.5.1 使用显式类型窄化存储位置](#narrowing-storage-locations-with-explicit-types)'
 - en: '[30.5.2 Narrowing variables without explicit types](#narrowing-variables-without-explicit-types)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.5.2 没有显式类型的变量窄化](#narrowing-variables-without-explicit-types)'
 - en: '[30.6 For which storage locations can we use type-narrowing?](#for-which-storage-locations-can-we-use-type-narrowing)'
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.6 我们可以在哪些存储位置使用类型窄化？](#for-which-storage-locations-can-we-use-type-narrowing)'
 - en: '[30.6.1 Narrowing the types of dotted names](#narrowing-the-types-of-dotted-names)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.6.1 窄化点符号名称的类型](#narrowing-the-types-of-dotted-names)'
 - en: '[30.6.2 Narrowing Array element types](#narrowing-array-element-types)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.6.2 窄化数组元素类型](#narrowing-array-element-types)'
 - en: '[30.7 User-defined type guard functions](#user-defined-type-guard-functions)'
+  id: totrans-22
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.7 用户定义的类型守卫函数](#user-defined-type-guard-functions)'
 - en: '[30.7.1 Example: `isNonNullable()`](#example-isnonnullable)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.7.1 示例：`isNonNullable()`](#example-isnonnullable)'
 - en: '[30.7.2 Example: helping `.every()` with a user-defined type guard](#example-helping-every-with-a-user-defined-type-guard)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.7.2 示例：使用用户定义的类型守卫帮助 `.every()`](#example-helping-every-with-a-user-defined-type-guard)'
 - en: '[30.7.3 `this`-based type guards](#this-based-type-guards)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.7.3 基于 `this` 的类型守卫](#this-based-type-guards)'
 - en: '[30.7.4 Inferred type predicates](#inferred-type-predicates)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.7.4 推断类型谓词](#inferred-type-predicates)'
 - en: '[30.7.5 Advanced example: user-defined type guard `isTypeOf()`](#advanced-example-user-defined-type-guard-istypeof)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[30.7.5 高级示例：用户定义的类型守卫 `isTypeOf()`](#advanced-example-user-defined-type-guard-istypeof)'
 - en: 'Sometimes a value `nameOpt` has a type that is not specific enough – e.g.,
     the type `null | string`. Before we can do anything with `nameOpt`, we have to
     check whether it is `null` or a string:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时一个值 `nameOpt` 的类型不够具体——例如，类型 `null | string`。在我们对 `nameOpt` 做任何事情之前，我们必须检查它是否为
+    `null` 或字符串：
 - en: The condition of such a check is called a *type guard*.
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这样的检查条件称为 *类型守卫*。
 - en: As a result of the check, the type becomes more specific (smaller) and is either
     `null` or `string`. That process is called *narrowing*.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 检查的结果使得类型变得更加具体（更小），变为 `null` 或 `string`。这个过程称为 *窄化*。
 - en: In this chapter, we explore type guards and narrowing.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨类型守卫和窄化。
 - en: '[30.1 Type guards and narrowing](#type-guards-and-narrowing-1)'
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[30.1 类型守卫和窄化](#type-guards-and-narrowing-1)'
 - en: '[30.1.1 Example: a type guard with `===`](#example-a-type-guard-with)'
+  id: totrans-33
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.1.1 示例：使用 `===` 的类型守卫](#example-a-type-guard-with)'
 - en: 'This is a first example:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个第一个例子：
 - en: '[PRE0]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'The initial type of `nameOpt`, `null | string` is too general:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '`nameOpt` 的初始类型 `null | string` 过于通用：'
 - en: Before we can work with it, we need to *narrow* it – make it more specific.
+  id: totrans-37
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在我们能够处理它之前，我们需要对其进行**缩小**——使其更加具体。
 - en: 'We achieve that via the `if` statement in line A. Its condition is called a
     *type guard*: an expression with a boolean result that examines the type of `nameOpt`.'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们通过行 A 的 `if` 语句实现这一点。其条件被称为**类型守卫**：一个具有布尔结果的表达式，用于检查 `nameOpt` 的类型。
 - en: 'In line B, we can see that the `if` statement with the type guard did indeed
     narrow the type of `nameOpt` inside the if-branch: At its start, it is `null`.
     We can also see that in the else-branch, the type of `nameOpt` is `string`.'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行 B，我们可以看到，带有类型守卫的 `if` 语句确实缩小了 if-分支内 `nameOpt` 的类型：在其开始时，它是 `null`。我们还可以看到，在
+    else-分支中，`nameOpt` 的类型是 `string`。
 - en: The assignment in line C also changes the type of `nameOpt`. It doesn’t narrow
     its previous type, it narrows its original type.
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 行 C 的赋值也改变了 `nameOpt` 的类型。它并没有缩小其先前的类型，而是缩小了其原始类型。
 - en: '**Control flow analysis.** After both branches of `if` (in line D), the type
     of `nameOpt` is `string` because that’s what its type is at the end of both branches.
     So TypeScript traces what happens in both branches and adjusts the type accordingly.
     This kind of tracing is called *control flow analysis*.'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '**控制流分析**。在 `if` 语句的两个分支（行 D）之后，`nameOpt` 的类型是 `string`，因为这是两个分支结束时它的类型。所以
+    TypeScript 会追踪两个分支中发生的事情，并相应地调整类型。这种追踪被称为**控制流分析**。'
 - en: '**The effect of a type guard is static and dynamic.** It’s interesting that
     a type guard is always tied to a value that exists at runtime. Its has an effect
     at the type level and at the JavaScript level.'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: '**类型守卫的效果是静态和动态的**。有趣的是，类型守卫始终与运行时存在的值相关联。它在类型级别和 JavaScript 级别都有影响。'
 - en: '**Narrowing produces subsets of types.** In this chapter, we interpret types
     as sets of values, as explained in [“What is a type in TypeScript? Two perspectives”
     (§13)](ch_what-is-a-type.html#ch_what-is-a-type). Narrowing makes a type smaller:
     We go from a set of values to a proper subset.'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: '**缩小产生类型的子集**。在本章中，我们将类型解释为值的集合，如“什么是 TypeScript 中的类型？（两种视角” [§13](ch_what-is-a-type.html#ch_what-is-a-type)
+    中所述。缩小使类型变小：我们从一组值到一个适当的子集。'
 - en: '[30.1.2 Example: a type guard with `typeof`](#example-a-type-guard-with-typeof)'
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.1.2 示例：使用 `typeof` 的类型守卫](#example-a-type-guard-with-typeof)'
 - en: 'In the following example, we use `typeof` in a type guard:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，我们在类型守卫中使用 `typeof`：
 - en: '[PRE1]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'In this example, there are two type guards: one in line A and one in line B.'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 在此示例中，有两个类型守卫：一个在行 A，一个在行 B。
 - en: '[30.2 When do we need to narrow types?](#when-do-we-need-to-narrow-types)'
+  id: totrans-48
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[30.2 何时需要缩小类型？](#when-do-we-need-to-narrow-types)'
 - en: 'These are examples of types being too general:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是类型过于通用的例子：
 - en: 'Nullable types:'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可空类型：
 - en: '[PRE2]'
+  id: totrans-51
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[Discriminated unions](ch_unions-object-types.html#discriminated-unions):'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[区分联合](ch_unions-object-types.html#discriminated-unions):'
 - en: '[PRE3]'
+  id: totrans-53
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Types of optional parameters:'
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 可选参数的类型：
 - en: '[PRE4]'
+  id: totrans-55
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Note that these types are all union types!
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，这些类型都是联合类型！
 - en: '[30.2.1 The type `unknown` is usually too general](#the-type-unknown-is-usually-too-general)'
+  id: totrans-57
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.2.1 类型 `unknown` 通常过于通用](#the-type-unknown-is-usually-too-general)'
 - en: 'If a value has [the type `unknown`](ch_any-unknown.html#ch_any-unknown), we
     can do almost nothing with it and have to narrow its type first (line A):'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个值具有 [类型 `unknown`](ch_any-unknown.html#ch_any-unknown)，我们几乎无法对其进行操作，必须首先缩小其类型（行
+    A）：
 - en: '[PRE5]'
+  id: totrans-59
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'In other words: The type `unknown` is too general and we must narrow it. In
     a way, `unknown` is also a union type – the union of all types.'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说：类型 `unknown` 太过于通用，我们必须对其进行缩小。从某种意义上讲，`unknown` 也是一种联合类型——所有类型的联合。
 - en: '[30.3 Where can we use type guards?](#where-can-we-use-type-guards)'
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[30.3 在哪里可以使用类型守卫？](#where-can-we-use-type-guards)'
 - en: 'In `if` statements:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `if` 语句中：
 - en: '[PRE6]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'In conditional expressions:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 在条件表达式中：
 - en: '[PRE7]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'In `switch` statements:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `switch` 语句中：
 - en: '[PRE8]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[30.3.1 Type guards can also affect parts of expressions](#type-guards-can-also-affect-parts-of-expressions)'
+  id: totrans-68
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.3.1 类型守卫也可以影响表达式的部分](#type-guards-can-also-affect-parts-of-expressions)'
 - en: 'If the left-hand side of the logical And operator (`&&`) is a type guard then
     it affects its right-hand side (which may contain more uses of `&&`):'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果逻辑与运算符 (`&&`) 的左侧是一个类型守卫，那么它会影响其右侧（可能包含更多 `&&` 的使用）：
 - en: '[PRE9]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: The `&&` operator stops evaluating if its left-hand side is falsy. Therefore,
     if we reach the right-hand side, we can be sure that `value !== null` is true
     – which is why we can access `value.length`.
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: '`&&` 操作符在其左侧为假值时停止评估。因此，如果我们到达右侧，我们可以确信 `value !== null` 是真的——这就是为什么我们可以访问
+    `value.length`。'
 - en: 'With the logical Or operator (`||`), we get a related effect:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用逻辑或运算符 (`||`)，我们得到一个相关效果：
 - en: '[PRE10]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: The `||` operator stops evaluating if its left-hand side is truthy. Therefore,
     if we reach the right-hand side, we can be sure that `value === null` is false
     – which is why we can access `value.length`.
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: '`||` 操作符在其左侧为真值时停止评估。因此，如果我们到达了右侧，我们可以确定 `value === null` 是假的——这就是为什么我们可以访问
+    `value.length`。'
 - en: '[30.4 What kinds of type guards are built-in?](#what-kinds-of-type-guards-are-built-in)'
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[30.4 内置的类型守卫有哪些？](#what-kinds-of-type-guards-are-built-in)'
 - en: In this section we explore TypeScript’s built-in type guards (expressions that
     evaluate to `true` or `false`).
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们探讨 TypeScript 的内置类型守卫（评估为 `true` 或 `false` 的表达式）。
 - en: '[30.4.1 `typeof`, `instanceof`, `Array.isArray`](#typeof-instanceof-array-isarray)'
+  id: totrans-77
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.4.1 `typeof`、`instanceof`、`Array.isArray`](#typeof-instanceof-array-isarray)'
 - en: 'These are three common built-in type guards:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是三种常见的内置类型守卫：
 - en: '[PRE11]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[30.4.2 Strict equality (`===`) and strict inequality(`!==`)](#strict-equality-and-strict-inequality)'
+  id: totrans-80
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.4.2 严格相等 (`===`) 和严格不等 (`!==`)](#strict-equality-and-strict-inequality)'
 - en: 'Strict equality can be used in a type guard:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 严格相等可以在类型守卫中使用：
 - en: '[PRE12]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'If an element of a union type is a singleton type (with a single value) then
     we can use `===` and `!==` to narrow:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果联合类型的一个元素是单例类型（具有单个值），则我们可以使用 `===` 和 `!==` 进行缩小：
 - en: '[PRE13]'
+  id: totrans-84
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '`null` is a singleton type whose only member is the value `null`.'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: '`null` 是一个单例类型，其唯一成员是值 `null`。'
 - en: '[30.4.3 Truthiness checks](#truthiness-checks)'
+  id: totrans-86
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.4.3 真值检查](#truthiness-checks)'
 - en: '[30.4.3.1 Truthiness checks via `if`](#truthiness-checks-via-if)'
+  id: totrans-87
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.4.3.1 通过 `if` 进行真值检查](#truthiness-checks-via-if)'
 - en: 'Truthiness checks are related to equality checks. They also act as type guards:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 真值检查与相等检查相关。它们也充当类型守卫：
 - en: '[PRE14]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'At first glance, we may think that all strings go to the if-branch while all
     nulls go to the else-branch. Alas, that’s not the case:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 初看，我们可能会认为所有字符串都进入 if 分支，而所有 null 都进入 else 分支。然而，情况并非如此：
 - en: 'Then-branch: `value` is neither `null` nor the empty string.'
+  id: totrans-91
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Then 分支：`value` 既不是 `null` 也不是空字符串。
 - en: 'Else-branch: `value` is either `null` or the empty string. That explains the
     type in line A.'
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Else 分支：`value` 要么是 `null`，要么是空字符串。这解释了行 A 中的类型。
 - en: '[30.4.3.2 Recommendation: avoid truthiness checks](#recommendation-avoid-truthiness-checks)'
+  id: totrans-93
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.4.3.2 建议：避免真值检查](#recommendation-avoid-truthiness-checks)'
 - en: Truthiness is problematic, because it rejects non-nullish values such as empty
     strings, zero, etc. And TypeScript has no types to express “non-empty string”,
     “non-zero number”, etc.
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 真值检查有问题，因为它拒绝了非空值，如空字符串、零等。TypeScript 没有类型来表示“非空字符串”、“非零数字”等。
 - en: 'That’s why I recommend to avoid it – code that uses it is more difficult to
     understand. Instead, we can use `===` and `!==` for more explicit checks. With
     an explicit check, the previous example becomes less confusing:'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，我建议避免使用它——使用它的代码更难理解。相反，我们可以使用 `===` 和 `!==` 进行更明确的检查。使用明确的检查，前面的例子就不再那么令人困惑了：
 - en: '[PRE15]'
+  id: totrans-96
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '[30.4.3.3 Truthiness checks via logical And (`&&`) and logical Or (`||`)](#truthiness-checks-via-logical-and-and-logical-or)'
+  id: totrans-97
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.4.3.3 通过逻辑与 (`&&`) 和逻辑或 (`||`) 进行真值检查](#truthiness-checks-via-logical-and-and-logical-or)'
 - en: 'The operators logical And (`&&`) and logical Or (`||`) can also perform truthiness
     checks:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 逻辑与 (`&&`) 和逻辑或 (`||`) 操作符也可以执行真值检查：
 - en: '[PRE16]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '[30.4.3.4 `Boolean()` cannot be used as a type guard](#boolean-cannot-be-used-as-a-type-guard)'
+  id: totrans-100
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.4.3.4 `Boolean()` 不能用作类型守卫](#boolean-cannot-be-used-as-a-type-guard)'
 - en: 'The function `Boolean()` cannot be used as a type guard:'
+  id: totrans-101
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Boolean()` 函数不能用作类型守卫：'
 - en: '[PRE17]'
+  id: totrans-102
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'Alas, there is no narrowing: In line A, the type of `value` is not `string`.'
+  id: totrans-103
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，没有缩小：在行 A 中，`value` 的类型不是 `string`。
 - en: In principle, `Boolean()` could be turned into a type guard function, but that
     would would have [several downsides](https://github.com/microsoft/TypeScript/issues/50387#issuecomment-2037968462).
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 从原则上讲，`Boolean()` 可以被转换成一个类型守卫函数，但这会有几个缺点[several downsides](https://github.com/microsoft/TypeScript/issues/50387#issuecomment-2037968462)。
 - en: 'As an alternative to `Boolean()`, we can use the prefix operator logical Negation
     (`!`) twice. That does narrow:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为 `Boolean()` 的替代，我们可以使用前缀操作符逻辑否定 (`!`) 两次。这确实会缩小范围：
 - en: '[PRE18]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: However, both `Boolean()` and `!!` are truthiness checks and therefore best
     avoided.
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，`Boolean()` 和 `!!` 都是真值检查，因此最好避免使用。
 - en: '[30.4.4 Checking for distinct properties via the operator `in`](#checking-for-distinct-properties-via-the-operator-in)'
+  id: totrans-108
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.4.4 通过操作符 `in` 检查不同的属性](#checking-for-distinct-properties-via-the-operator-in)'
 - en: 'The `in` operator can be used in type guards – to check for distinct properties:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: '`in` 操作符可以在类型守卫中使用——用于检查不同的属性：'
 - en: '[PRE19]'
+  id: totrans-110
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'Note that the following check would not have worked:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意以下检查将不会工作：
 - en: '[PRE20]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: The problem in this case is that, without narrowing, we can’t access property
     `.first` of a value whose type is `FirstOrSecond`.
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这个案例中，问题在于，如果没有缩小范围，我们无法访问类型为 `FirstOrSecond` 的值的 `.first` 属性。
 - en: '[30.4.4.1 The operator `in` also narrows to single properties](#the-operator-in-also-narrows-to-single-properties)'
+  id: totrans-114
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.4.4.1 运算符 `in` 也会缩小到单个属性](#the-operator-in-also-narrows-to-single-properties)'
 - en: 'We can also use `in` to narrow to a single property:'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以使用 `in` 来缩小到单个属性：
 - en: '[PRE21]'
+  id: totrans-116
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: This kind of narrowing only works if the left-hand side of the `in` operator
     is a string literal (and not, e.g., a variable).
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种缩小仅在 `in` 操作符的左侧是字符串字面量（而不是，例如，一个变量）时才有效。
 - en: '[30.4.5 Checking the value of a shared property (discriminated unions)](#checking-the-value-of-a-shared-property-discriminated-unions)'
+  id: totrans-118
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.4.5 检查共享属性（区分联合）的值](#checking-the-value-of-a-shared-property-discriminated-unions)'
 - en: In a [discriminated union](ch_unions-object-types.html#discriminated-unions),
     the components of a union type have (at least) one property in common whose value
     is different for each component. Such a property is called a *discriminant*.
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 [区分联合](ch_unions-object-types.html#discriminated-unions) 中，联合类型的组件具有（至少）一个共同的属性，其值对于每个组件都不同。这种属性称为
+    *区分符*。
 - en: 'Checking the value of a discriminant is a type guard:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 检查区分符的值是一个类型守卫：
 - en: '[PRE22]'
+  id: totrans-121
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'In the previous example, `.kind` is a discriminant: Each component of the union
     type `Attendee` has this property, with a unique value.'
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 在前面的例子中，`.kind` 是一个区分符：联合类型 `Attendee` 的每个组件都具有这个属性，并且具有唯一的值。
 - en: 'An `if` statement and equality checks work similarly to a `switch` statement:'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: '`if` 语句和等式检查与 `switch` 语句的工作方式类似：'
 - en: '[PRE23]'
+  id: totrans-124
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: '[30.5 Narrowing via assignment](#narrowing-via-assignment)'
+  id: totrans-125
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[30.5 通过赋值进行缩小](#narrowing-via-assignment)'
 - en: '[30.5.1 Narrowing storage locations with explicit types](#narrowing-storage-locations-with-explicit-types)'
+  id: totrans-126
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.5.1 使用显式类型缩小存储位置](#narrowing-storage-locations-with-explicit-types)'
 - en: 'Assignment narrows the type of a storage location (such as a variable). If
     a variable `x` has an explicit type, we can assign any value of that type to it
     – which narrows its type:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 赋值缩小存储位置（如变量）的类型。如果一个变量 `x` 有显式类型，我们可以将其分配任何该类型的值——这会缩小其类型：
 - en: '[PRE24]'
+  id: totrans-128
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: After we assign a string, the type of `x` is narrowed to `string`. After we
     assign `null`, the type of `x` is narrowed to `null`. At the end, we can see that
     we must stay within the confines of the type `null | string` – otherwise, we get
     an error.
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们分配一个字符串后，`x` 的类型缩小到 `string`。在分配 `null` 后，`x` 的类型缩小到 `null`。最后，我们可以看到我们必须保持在
+    `null | string` 类型范围内——否则，我们会得到一个错误。
 - en: Note that, with type guards, we always narrow the current type, whereas with
     assignments, we narrow the original type.
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，使用类型守卫时，我们总是缩小当前类型，而使用赋值时，我们缩小原始类型。
 - en: '[30.5.2 Narrowing variables without explicit types](#narrowing-variables-without-explicit-types)'
+  id: totrans-131
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.5.2 没有显式类型的缩小变量](#narrowing-variables-without-explicit-types)'
 - en: 'If [the compiler option `noImplicitAny`](ch_any-unknown.html#noImplicitAny)
     is active (which it is if `strict` is active) then each storage location must
     have a type – either an inferred type or an explicitly defined type. The only
     exception are variables defined via `let` (`var` works similarly):'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 [编译器选项 `noImplicitAny`](ch_any-unknown.html#noImplicitAny) 是激活的（如果 `strict`
+    是激活的，则它是激活的），那么每个存储位置都必须有一个类型——要么是推断类型，要么是显式定义的类型。唯一的例外是通过 `let`（`var` 的工作方式类似）定义的变量：
 - en: '[PRE25]'
+  id: totrans-133
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '`x` initially has the implicit type `any`. In line A, we observe its type,
     which is why its type is narrowed to `undefined`. There are no restrictions with
     regard to what we can assign. Each time, the type is narrowed accordingly. There
     are no restrictions because we always narrow the original type of `x`: [the top
     type `any`](ch_any-unknown.html#ch_any-unknown).'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: '`x` 初始具有隐式类型 `any`。在行 A 中，我们观察到其类型，这就是为什么它的类型缩小到 `undefined`。我们没有限制可以分配的内容。每次，类型都会相应地缩小。没有限制，因为我们总是缩小
+    `x` 的原始类型：[顶级类型 `any`](ch_any-unknown.html#ch_any-unknown)。'
 - en: 'If we initialize a `let` variable with a value then it does not have the implicit
     type `any`:'
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们用一个值初始化一个 `let` 变量，那么它没有隐式类型 `any`：
 - en: '[PRE26]'
+  id: totrans-136
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[30.6 For which storage locations can we use type-narrowing?](#for-which-storage-locations-can-we-use-type-narrowing)'
+  id: totrans-137
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[30.6 我们可以在哪些存储位置使用类型缩小？](#for-which-storage-locations-can-we-use-type-narrowing)'
 - en: '[30.6.1 Narrowing the types of dotted names](#narrowing-the-types-of-dotted-names)'
+  id: totrans-138
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.6.1 缩小点符号名称的类型](#narrowing-the-types-of-dotted-names)'
 - en: 'We can narrow the types of properties (even of nested ones that we access via
     chains of property names):'
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以缩小属性的类型（甚至是通过属性名称链访问的嵌套属性）：
 - en: '[PRE27]'
+  id: totrans-140
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'Let’s take a look at several locations in the previous code:'
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看前面代码中的几个位置：
 - en: 'Line A: We narrowed the type of `arg.prop` via a type guard.'
+  id: totrans-142
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 A：我们通过类型守卫缩小了 `arg.prop` 的类型。
 - en: 'Line B: Callbacks may be executed much later (think of asynchronous code),
     which is why TypeScript undoes narrowing inside callbacks.'
+  id: totrans-143
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 B：回调可能执行得晚得多（想想异步代码），这就是为什么 TypeScript 在回调内部取消缩小。
 - en: 'Line C: The preceding assignment also undid narrowing.'
+  id: totrans-144
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 C：前面的赋值也取消了缩小。
 - en: '[30.6.2 Narrowing Array element types](#narrowing-array-element-types)'
+  id: totrans-145
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.6.2 缩小数组元素类型](#narrowing-array-element-types)'
 - en: '[30.6.2.1 The Array method `.every()` narrows](#the-array-method-every-narrows)'
+  id: totrans-146
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.6.2.1 数组方法 `.every()` 缩小](#the-array-method-every-narrows)'
 - en: 'We can use method `.every()` to narrow the type of Array elements:'
+  id: totrans-147
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用方法 `.every()` 来缩小数组元素的类型：
 - en: '[PRE28]'
+  id: totrans-148
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: Interestingly, TypeScript does not allow us to push the value `null` to `mixedValues`
     (line A) after we have narrowed its type to `Array<number>`.
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，TypeScript 不允许我们在将类型缩小到 `Array<number>` 之后将值 `null` 推送到 `mixedValues`（行
+    A）。
 - en: '[30.6.2.2 The Array method `.filter()` produces Arrays with narrower types](#the-array-method-filter-produces-arrays-with-narrower-types)'
+  id: totrans-150
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.6.2.2 数组方法 `.filter()` 产生具有更窄类型的数组](#the-array-method-filter-produces-arrays-with-narrower-types)'
 - en: '`.filter()` produces Arrays that have narrower types (i.e., it doesn’t actually
     narrow existing types):'
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.filter()` 产生具有更窄类型的数组（即，它实际上并没有缩小现有类型）：'
 - en: '[PRE29]'
+  id: totrans-152
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: '[30.7 User-defined type guard functions](#user-defined-type-guard-functions)'
+  id: totrans-153
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[30.7 用户定义的类型守卫函数](#user-defined-type-guard-functions)'
 - en: 'TypeScript lets us define our own type guard functions – for example:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 允许我们定义自己的类型守卫函数——例如：
 - en: '[PRE30]'
+  id: totrans-155
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'The return type `value is Function` is a *type predicate*. It is part of the
     type signature of `isFunction()`:'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回类型 `value is Function` 是一个 *类型谓词*。它是 `isFunction()` 类型签名的一部分：
 - en: '[PRE31]'
+  id: totrans-157
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'A user-defined type guard function must always return booleans. If `isFunction(x)`
     returns `true`, TypeScript narrows the type of the actual argument `x` to `Function`:'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 用户定义的类型守卫函数必须始终返回布尔值。如果 `isFunction(x)` 返回 `true`，TypeScript 将实际参数 `x` 的类型缩小到
+    `Function`：
 - en: '[PRE32]'
+  id: totrans-159
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'Note that TypeScript doesn’t care how we compute the result of a user-defined
     type guard function. That gives us a lot of freedom w.r.t. the checks we use.
     For example, we could have implemented `isFunction()` as follows:'
+  id: totrans-160
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，TypeScript 不关心我们如何计算用户定义的类型守卫函数的结果。这给了我们在检查方面很大的自由度。例如，我们可以将 `isFunction()`
+    实现如下：
 - en: '[PRE33]'
+  id: totrans-161
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: Note that we have to use the type `any` for the parameter `value` because the
     type `unknown` does not let us make the function call in line A.
+  id: totrans-162
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，我们必须为参数 `value` 使用类型 `any`，因为类型 `unknown` 不允许我们在行 A 进行函数调用。
 - en: '![Icon “details”](../Images/837806d7ec89826c3784b2e685feb762.png) **Terminology:
     “type guard function” vs. “type guard”**'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“详情”](../Images/837806d7ec89826c3784b2e685feb762.png) **术语：“类型守卫函数”与“类型守卫”**'
 - en: Custom type guard functions are often called custom type guards – even though
     they are only invoked in type guard expressions (and not type guards themselves).
+  id: totrans-164
   prefs: []
   type: TYPE_NORMAL
+  zh: 自定义类型守卫函数通常被称为自定义类型守卫——即使它们仅在类型守卫表达式中被调用（而不是类型守卫本身）。
 - en: '[30.7.1 Example: `isNonNullable()`](#example-isnonnullable)'
+  id: totrans-165
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.7.1 例子：`isNonNullable()`](#example-isnonnullable)'
 - en: '[The utility type `NonNullable<T>`](ch_intersections-object-types.html#NonNullable)
     removes `undefined` and `null` from union types `T`. In the next example, we use
     it to define a custom type guard:'
+  id: totrans-166
   prefs: []
   type: TYPE_NORMAL
+  zh: '[实用类型 `NonNullable<T>`](ch_intersections-object-types.html#NonNullable) 从联合类型
+    `T` 中移除 `undefined` 和 `null`。在下一个例子中，我们使用它来定义一个自定义类型守卫：'
 - en: '[PRE34]'
+  id: totrans-167
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '[30.7.2 Example: helping `.every()` with a user-defined type guard](#example-helping-every-with-a-user-defined-type-guard)'
+  id: totrans-168
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.7.2 例子：使用用户定义的类型守卫帮助 `.every()`](#example-helping-every-with-a-user-defined-type-guard)'
 - en: 'Let’s look at an example where a type guard with `.every()` doesn’t work properly.
     We’ll use the following utility type, which is explained in [“A generic type for
     constructors: `Class<T>`” (§23.3)](ch_classes-as-values.html#generic-type-class).'
+  id: totrans-169
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看一个使用 `.every()` 的类型守卫不正常工作的例子。我们将使用以下实用类型，该类型在[“用于构造函数的泛型类型：`Class<T>`”（§23.3）](ch_classes-as-values.html#generic-type-class)中有所解释。
 - en: '[PRE35]'
+  id: totrans-170
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: 'After the type guard in line A, we’d expect the type of `arr` to be `Array<T>`.
     Alas, that’s not the case:'
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行 A 的类型守卫之后，我们本应期望 `arr` 的类型为 `Array<T>`。然而，情况并非如此：
 - en: '[PRE36]'
+  id: totrans-172
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'We can fix this issue by turning the check in line A into the user-defined
     type guard `isInstanceOf()`:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过将行 A 的检查转换为用户定义的类型守卫 `isInstanceOf()` 来修复这个问题：
 - en: '[PRE37]'
+  id: totrans-174
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: '[30.7.3 `this`-based type guards](#this-based-type-guards)'
+  id: totrans-175
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.7.3 基于 `this` 的类型守卫](#this-based-type-guards)'
 - en: In locations where we can use the type `this`, we can implement type guards
     that use that type (line A and line B)
+  id: totrans-176
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们可以使用 `this` 类型的位置，我们可以实现使用该类型的类型守卫（行 A 和行 B）
 - en: '[PRE38]'
+  id: totrans-177
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 'The type guards `.isCircle()` and `.isRectangle()` enable us to go from the
     type of the abstract superclass `Shape` to one of its subclasses – e.g.:'
+  id: totrans-178
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型守卫 `.isCircle()` 和 `.isRectangle()` 使我们能够从抽象超类 `Shape` 的类型转到其子类之一 - 例如：
 - en: '[PRE39]'
+  id: totrans-179
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '[30.7.3.1 Example: narrowing the type of a property](#example-narrowing-the-type-of-a-property)'
+  id: totrans-180
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.7.3.1 示例：缩小属性的类型](#example-narrowing-the-type-of-a-property)'
 - en: 'In the following code, we use a `this`-based type guard to narrow the type
     of a property:'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下代码中，我们使用基于 `this` 的类型守卫来缩小属性的类型：
 - en: '[PRE40]'
+  id: totrans-182
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'If the type guard `.hasValue()` returns `true`, we can be sure that `.value`
     is not `null`. Therefore, we narrow its type accordingly. The `& this` is not
     really needed in this case but it ensures that the method still works if we add
     more properties: It means that we keep all of `this` but intersect it with a type
     where `.value` has a narrower type.'
+  id: totrans-183
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果类型守卫 `.hasValue()` 返回 `true`，我们可以确信 `.value` 不是 `null`。因此，我们可以相应地缩小其类型。`&
+    this` 在这种情况下实际上并不需要，但它确保了如果我们添加更多属性，该方法仍然有效：这意味着我们保留了所有的 `this`，但将其与 `.value`
+    具有更窄类型的类型相交。
 - en: '[30.7.4 Inferred type predicates](#inferred-type-predicates)'
+  id: totrans-184
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.7.4 推断出的类型谓词](#inferred-type-predicates)'
 - en: 'In some cases, TypeScript can infer a type predicate – e.g.:'
+  id: totrans-185
   prefs: []
   type: TYPE_NORMAL
+  zh: 在某些情况下，TypeScript 可以推断类型谓词 - 例如：
 - en: '[PRE41]'
+  id: totrans-186
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: This is why the Array methods `.every()` and `.filter()` can narrow Arrays with
     a callback that is not a type guard.
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是为什么数组方法 `.every()` 和 `.filter()` 可以通过不是类型守卫的回调函数缩小数组。
 - en: 'A type predicate can only be inferred if:'
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 只有在以下情况下才能推断出类型谓词：
 - en: No return type is explicitly specified.
+  id: totrans-189
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 没有显式指定返回类型。
 - en: The function has a single return statement and no implicit returns.
+  id: totrans-190
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 函数只有一个返回语句，没有隐式返回。
 - en: The function does not mutate its parameter.
+  id: totrans-191
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 函数不会修改其参数。
 - en: The function returns a type guard expression.
+  id: totrans-192
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 函数返回一个类型守卫表达式。
 - en: 'No type predicate is inferred for truthiness checks:'
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于真值检查，没有推断出类型谓词：
 - en: '[PRE42]'
+  id: totrans-194
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: '[30.7.5 Advanced example: user-defined type guard `isTypeOf()`](#advanced-example-user-defined-type-guard-istypeof)'
+  id: totrans-195
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[30.7.5 高级示例：用户定义的类型守卫 `isTypeOf()`](#advanced-example-user-defined-type-guard-istypeof)'
 - en: 'Let’s turn the JavaScript operator `typeof` into the user-defined type guard
     `isTypeOf()` – while fixing the following `typeof` bug (`null` should produce
     the result `''null''`):'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们将 JavaScript 操作符 `typeof` 转换为用户定义的类型守卫 `isTypeOf()` - 同时修复以下 `typeof` 错误（`null`
+    应该产生结果 `'null'`）：
 - en: '[PRE43]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'This is what using `isTypeOf()` looks like:'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是使用 `isTypeOf()` 的样子：
 - en: '[PRE44]'
+  id: totrans-199
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: '[30.7.5.1 Implementing `isTypeOf()` via conditional types](#implementing-istypeof-via-conditional-types)'
+  id: totrans-200
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.7.5.1 通过条件类型实现 `isTypeOf()`](#implementing-istypeof-via-conditional-types)'
 - en: 'This is a first attempt to implement `typeof` in TypeScript:'
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是首次尝试在 TypeScript 中实现 `typeof`：
 - en: '[PRE45]'
+  id: totrans-202
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: The [generic type](ch_computing-with-types-overview.html#generic-types) `TypeStringToType`
     uses [conditional types](ch_conditional-types.html#ch_conditional-types) to translate
     from string literal types such as `'number'` to types such as `number`.
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 泛型类型 `TypeStringToType` 使用 [条件类型](ch_conditional-types.html#ch_conditional-types)
+    将字符串字面量类型（如 `'number'`）转换为类型（如 `number`）。
 - en: '[30.7.5.2 Implementing `isTypeOf()` via a type lookup table](#implementing-istypeof-via-a-type-lookup-table)'
+  id: totrans-204
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.7.5.2 通过类型查找表实现 `isTypeOf()`](#implementing-istypeof-via-a-type-lookup-table)'
 - en: 'The following solution is similar to the previous one, but this time, we don’t
     use conditional types to translate from string literal types to types; we use
     an object literal type as a lookup table:'
+  id: totrans-205
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下解决方案与上一个类似，但这次，我们不使用条件类型将字符串字面量类型转换为类型；我们使用对象字面量类型作为查找表：
 - en: '[PRE46]'
+  id: totrans-206
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: 'The lookup table provides us with a nice benefit: We can restrict the type
     of `typeString` to the keys of `TypeofLookupTable` – which means that we get a
     compiler error if we make a typo:'
+  id: totrans-207
   prefs: []
   type: TYPE_NORMAL
+  zh: 查找表为我们提供了一个很好的好处：我们可以将 `typeString` 的类型限制为 `TypeofLookupTable` 的键 - 这意味着如果我们输入了拼写错误，我们会得到编译器错误：
 - en: '[PRE47]'
+  id: totrans-208
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: (This approach is inspired by code by [Ran Lottem](https://dev.to/krumpet/generic-type-guard-in-typescript-258l).)
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: （这种方法受到 [Ran Lottem](https://dev.to/krumpet/generic-type-guard-in-typescript-258l)
+    的代码的启发。）
 - en: '[30.7.5.3 Implementing `isTypeOf()` via function overloading](#implementing-istypeof-via-function-overloading)'
+  id: totrans-210
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[30.7.5.3 通过函数重载实现 `isTypeOf()`](#implementing-istypeof-via-function-overloading)'
 - en: 'Another option is to use [function overloading](ch_typing-functions.html#overloading-function-declarations):'
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个选项是使用 [函数重载](ch_typing-functions.html#overloading-function-declarations)：
 - en: '[PRE48]'
+  id: totrans-212
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: (This approach is an idea by [Nick Fisher](https://twitter.com/spadgos/status/1266839605883666432).)
+  id: totrans-213
   prefs: []
   type: TYPE_NORMAL
+  zh: （这种方法是 [Nick Fisher](https://twitter.com/spadgos/status/1266839605883666432)
+    的想法。）

@@ -1,371 +1,569 @@
 - en: 31 Assertion functions
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 31 断言函数
 - en: 原文：[https://exploringjs.com/ts/book/ch_assertion-functions.html](https://exploringjs.com/ts/book/ch_assertion-functions.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_assertion-functions.html](https://exploringjs.com/ts/book/ch_assertion-functions.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[31.1 Assertion functions in Node.js](#assertion-functions-in-node-js)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.1 Node.js中的断言函数](#assertion-functions-in-node-js)'
 - en: '[31.1.1 `assert(cond)` for asserting conditions](#assert-cond-for-asserting-conditions)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.1.1 用于断言条件的`assert(cond)`](#assert-cond-for-asserting-conditions)'
 - en: '[31.1.2 `assert.equal(value1, value2)` for asserting equality](#assert-equal-value1-value2-for-asserting-equality)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.1.2 用于断言相等的`assert.equal(value1, value2)`](#assert-equal-value1-value2-for-asserting-equality)'
 - en: '[31.2 TypeScript’s support for assertion functions](#typescript-s-support-for-assertion-functions)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.2 TypeScript对断言函数的支持](#typescript-s-support-for-assertion-functions)'
 - en: '[31.3 Asserting a boolean condition: `asserts «cond»`](#asserting-a-boolean-condition-asserts-cond)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.3 断言布尔条件：`asserts «cond»`](#asserting-a-boolean-condition-asserts-cond)'
 - en: '[31.3.1 Asserting type guards](#asserting-type-guards)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.3.1 断言类型守卫](#asserting-type-guards)'
 - en: '[31.4 Asserting the type of an argument: `asserts «arg» is «type»`](#asserting-the-type-of-an-argument-asserts-arg-is-type)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.4 断言参数类型：`asserts «arg» is «type»`](#asserting-the-type-of-an-argument-asserts-arg-is-type)'
 - en: '[31.4.0.1 Example assertion function: `assert.equal()`](#example-assertion-function-assert-equal)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.4.0.1 示例断言函数：`assert.equal()`](#example-assertion-function-assert-equal)'
 - en: '[31.5 Alternatives to assertion functions](#alternatives-to-assertion-functions)'
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.5 断言函数的替代方案](#alternatives-to-assertion-functions)'
 - en: '[31.5.1 Technique: forced conversion](#technique-forced-conversion)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.5.1 技巧：强制转换](#technique-forced-conversion)'
 - en: '[31.5.2 Technique: throwing an exception](#technique-throwing-an-exception)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.5.2 技巧：抛出异常](#technique-throwing-an-exception)'
 - en: '[31.6 Quick reference: assertion functions](#quick-reference-assertion-functions)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.6 快速参考：断言函数](#quick-reference-assertion-functions)'
 - en: '[31.6.1 Assertion signature: `asserts «cond»`](#assertion-signature-asserts-cond)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.6.1 断言签名：`asserts «cond»`](#assertion-signature-asserts-cond)'
 - en: '[31.6.2 Assertion signature: `asserts «arg» is «type»`](#assertion-signature-asserts-arg-is-type)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[31.6.2 断言签名：`asserts «arg» is «type»`](#assertion-signature-asserts-arg-is-type)'
 - en: 'In programming, an assertion function is a function that checks if a condition
     is true at a particular point in a program and throws an exception if it isn’t.
     In this chapter, we explore:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 在编程中，断言函数是一个在程序中的特定点检查条件是否为真的函数，如果不为真则抛出异常。在本章中，我们将探讨：
 - en: How assertion functions are used in JavaScript.
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 断言函数在JavaScript中的使用方式。
 - en: How TypeScript supports them at the type level.
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript在类型级别上如何支持它们。
 - en: '[31.1 Assertion functions in Node.js](#assertion-functions-in-node-js)'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[31.1 Node.js中的断言函数](#assertion-functions-in-node-js)'
 - en: Node.js has a whole module, `'node:assert/strict'` with assertion functions.
     You can check out [its documentation](https://nodejs.org/api/assert.html) online.
     Let’s look at two important examples.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js有一个完整的模块，`'node:assert/strict'`，其中包含断言函数。您可以在网上查看[其文档](https://nodejs.org/api/assert.html)。让我们看看两个重要的例子。
 - en: '[31.1.1 `assert(cond)` for asserting conditions](#assert-cond-for-asserting-conditions)'
+  id: totrans-22
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[31.1.1 用于断言条件的`assert(cond)`](#assert-cond-for-asserting-conditions)'
 - en: 'Function `assert()` lets us assert conditions. I see it as a comment that is
     written in code and therefore verifiable – e.g.:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数`assert()`让我们可以断言条件。我认为它就像是在代码中写下的注释，因此是可验证的——例如：
 - en: '[PRE0]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '`ext` having to start with a dot could be a comment. Instead, we chose to write
     it as an assertion (line A). If the condition is false, `assert()` throws an exception.
     In other words: `assert(cond)` means “`cond` must be true”.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ext`必须以点开头可能是一个注释。相反，我们选择将其编写为断言（行A）。如果条件为假，`assert()`会抛出异常。换句话说：`assert(cond)`意味着“`cond`必须为真”。'
 - en: '[31.1.2 `assert.equal(value1, value2)` for asserting equality](#assert-equal-value1-value2-for-asserting-equality)'
+  id: totrans-26
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[31.1.2 用于断言相等的`assert.equal(value1, value2)`](#assert-equal-value1-value2-for-asserting-equality)'
 - en: 'The assertion function `assert.equal()` is mainly used for testing:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 断言函数`assert.equal()`主要用于测试：
 - en: '[PRE1]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: If the two arguments of `assert.equal()` are not equal, it throws an exception.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果`assert.equal()`的两个参数不相等，它会抛出一个异常。
 - en: '[31.2 TypeScript’s support for assertion functions](#typescript-s-support-for-assertion-functions)'
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[31.2 TypeScript对断言函数的支持](#typescript-s-support-for-assertion-functions)'
 - en: TypeScript provides special support for assertion functions. There are two kinds
     of *assertion signatures* we can specify as the return types of `void` functions.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript为断言函数提供了特殊支持。我们可以指定两种类型的*断言签名*作为`void`函数的返回类型。
 - en: 'First, we can assert a boolean condition (think `assert()`):'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们可以断言一个布尔条件（想想`assert()`）：
 - en: '[PRE2]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'Second, we can assert the type of an argument:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，我们可以断言参数的类型：
 - en: '[PRE3]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Next, we’ll examine how calling an assertion function affects the type level.
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 接下来，我们将探讨调用断言函数如何影响类型级别。
 - en: '[31.3 Asserting a boolean condition: `asserts «cond»`](#asserting-a-boolean-condition-asserts-cond)'
+  id: totrans-37
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[31.3 断言布尔条件：`asserts «cond»`](#asserting-a-boolean-condition-asserts-cond)'
 - en: 'This is a re-implementation of Node’s `assert()` function so that we can also
     use it in browsers. It asserts a boolean `condition`:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个 Node 的 `assert()` 函数的重新实现，这样我们也可以在浏览器中使用它。它断言一个布尔 `condition`：
 - en: '[PRE4]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'The assertion signature in line A makes `assertTrue` an assertion function.
     We’ll explore the type-level consequences of that in the next subsection. The
     following design decisions were made:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 行 A 中的断言签名使 `assertTrue` 成为一个断言函数。我们将在下一小节中探讨其类型级别的后果。以下设计决策被采纳：
 - en: The type of `condition` is `boolean` and not `unknown` because that forces us
     to avoid truthiness checks.
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`condition` 的类型是 `boolean` 而不是 `unknown`，因为这迫使我们避免进行真值检查。'
 - en: In line B, we also could have used a custom subclass of `Error`, e.g. one called
     `AssertionError`.
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行 B 中，我们也可以使用自定义的 `Error` 子类，例如名为 `AssertionError` 的一个。
 - en: '[31.3.1 Asserting type guards](#asserting-type-guards)'
+  id: totrans-43
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[31.3.1 断言类型守卫](#asserting-type-guards)'
 - en: 'Using a [*type guard*](ch_type-guards.html#ch_type-guards) (a boolean expression
     exploring the types of values) in a condition narrows types:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 在条件中使用 [*类型守卫*](ch_type-guards.html#ch_type-guards)（探索值类型的布尔表达式）可以缩小类型：
 - en: '[PRE5]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Asserting a type guard has a similar effect:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 断言类型守卫有类似的效果：
 - en: '[PRE6]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'Let’s look at an example:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看一个例子：
 - en: '[PRE7]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '`value instanceof Set` is a type guard and because we asserted it in line A,
     we narrowed the type of `value` to `Set<any>`.'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: '`value instanceof Set` 是一个类型守卫，因为我们已在行 A 中断言了它，所以将 `value` 的类型缩小到 `Set<any>`。'
 - en: '[31.4 Asserting the type of an argument: `asserts «arg» is «type»`](#asserting-the-type-of-an-argument-asserts-arg-is-type)'
+  id: totrans-51
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[31.4 断言参数类型：`asserts «arg» is «type»`](#asserting-the-type-of-an-argument-asserts-arg-is-type)'
 - en: 'The following assertion function narrows the type of its parameter `value`:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下断言函数缩小其参数 `value` 的类型：
 - en: '[PRE8]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Let’s use `assertIsNumber()`:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用 `assertIsNumber()`：
 - en: '[PRE9]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: The assertion in line A narrows the type of `value` from `unknown` to `number`.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 行 A 中的断言将 `value` 的类型从 `unknown` 缩小到 `number`。
 - en: 'Note that `assertIsNumber()` really narrows:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`assertIsNumber()` 确实缩小了：
 - en: '[PRE10]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: We narrowed the original type of `str`, `string` to the narrower type `string
     & number` – which is the same as [the bottom type `never`](ch_never.html#ch_never).
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们将 `str` 的原始类型 `string` 缩小到更窄的类型 `string & number` - 这与 [底部类型 `never`](ch_never.html#ch_never)
+    相同。
 - en: '[31.4.0.1 Example assertion function: `assert.equal()`](#example-assertion-function-assert-equal)'
+  id: totrans-60
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[31.4.0.1 示例断言函数：`assert.equal()`](#example-assertion-function-assert-equal)'
 - en: 'This is a simplified version of Node’s `assert.equal()` function that has the
     same types:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个简化版的 Node 的 `assert.equal()` 函数，具有相同的类型：
 - en: '[PRE11]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: If it terminates, the type of `actual` is narrowed to the type `T`. That’s rarely
     useful, but I found it interesting that the function does that.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果它终止，则 `actual` 的类型缩小到类型 `T`。这很少有用，但我发现这个函数这样做很有趣。
 - en: '[31.4.0.2 Example assertion function: `assertNonNullable()`](#example-assertion-function-assertnonnullable)'
+  id: totrans-64
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[31.4.0.2 示例断言函数：`assertNonNullable()`](#example-assertion-function-assertnonnullable)'
 - en: 'The following assertion function asserts that its parameter `value` is not
     nullable:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下断言函数断言其参数 `value` 不是可空的：
 - en: '[PRE12]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'We use [the utility type `NonNullable<T>`](ch_intersections-object-types.html#NonNullable)
     to remove `undefined` and `null` from `T` – e.g.:'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用 [实用类型 `NonNullable<T>`](ch_intersections-object-types.html#NonNullable)
+    从 `T` 中移除 `undefined` 和 `null` - 例如：
 - en: '[PRE13]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '[31.4.0.3 Example assertion function: adding a property to an object](#example-assertion-function-adding-a-property-to-an-object)'
+  id: totrans-69
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[31.4.0.3 示例断言函数：向对象添加属性](#example-assertion-function-adding-a-property-to-an-object)'
 - en: 'The following assertion function adds a property to an object and updates its
     type accordingly:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下断言函数向对象添加一个属性并相应地更新其类型：
 - en: '[PRE14]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: An intersection type `S & T` (such as the one in line A) has the properties
     of both type `S` and type `T`.
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 交集类型 `S & T`（如行 A 中的类型）具有类型 `S` 和类型 `T` 的属性。
 - en: '[31.5 Alternatives to assertion functions](#alternatives-to-assertion-functions)'
+  id: totrans-73
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[31.5 断言函数的替代方案](#alternatives-to-assertion-functions)'
 - en: '[31.5.1 Technique: forced conversion](#technique-forced-conversion)'
+  id: totrans-74
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[31.5.1 技巧：强制转换](#technique-forced-conversion)'
 - en: 'An assertion function narrows the type of an existing value. A forced conversion
     function returns an existing value with a new type – for example:'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 断言函数缩小了现有值的类型。强制转换函数返回具有新类型的现有值 - 例如：
 - en: '[PRE15]'
+  id: totrans-76
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'The corresponding assertion function looks as follows:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 相应的断言函数如下所示：
 - en: '[PRE16]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Forced conversion is a versatile technique with uses beyond those of assertion
     functions. For example, we can convert:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 强制转换是一种多才多艺的技术，其用途不仅限于断言函数。例如，我们可以转换：
 - en: From an input format (think JSON schema) that is easy to write
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从易于书写的输入格式（例如 JSON 架构）。
 - en: Into an output format that is easy to work with in code.
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 转换为易于在代码中处理的输出格式。
 - en: For more information, see [“External vs. internal representation of data” (§32.3.4)](ch_validating-external-data.html#external-vs-internal-representation-of-data).
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息，请参阅[“数据的外部表示与内部表示” (§32.3.4)](ch_validating-external-data.html#external-vs-internal-representation-of-data)。
 - en: '[31.5.2 Technique: throwing an exception](#technique-throwing-an-exception)'
+  id: totrans-83
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[31.5.2 技巧：抛出异常](#technique-throwing-an-exception)'
 - en: 'Consider the following code:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下代码：
 - en: '[PRE17]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'Instead of the `if` statement that starts in line A, we also could have used
     an assertion function:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了从行A开始的`if`语句外，我们还可以使用断言函数：
 - en: '[PRE18]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: Throwing an exception is a quick alternative if we don’t want to write such
     a function. Similarly to calling an assertion function, this technique also updates
     the static type.
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们不希望编写这样的函数，抛出异常是一个快速的选择。类似于调用断言函数，这种技术也会更新静态类型。
 - en: '[31.6 Quick reference: assertion functions](#quick-reference-assertion-functions)'
+  id: totrans-89
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[31.6 快速参考：断言函数](#quick-reference-assertion-functions)'
 - en: '[31.6.1 Assertion signature: `asserts «cond»`](#assertion-signature-asserts-cond)'
+  id: totrans-90
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[31.6.1 断言签名：`asserts «cond»`](#assertion-signature-asserts-cond)'
 - en: '[PRE19]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'Assertion signature: `asserts condition`'
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 断言签名：`asserts condition`
 - en: 'Result: `void` or exception'
+  id: totrans-93
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果：`void` 或异常
 - en: '[31.6.2 Assertion signature: `asserts «arg» is «type»`](#assertion-signature-asserts-arg-is-type)'
+  id: totrans-94
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[31.6.2 断言签名：`asserts «arg» is «type»`](#assertion-signature-asserts-arg-is-type)'
 - en: '[PRE20]'
+  id: totrans-95
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'Assertion signature: `asserts value is string`'
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 断言签名：`asserts value is string`
 - en: 'Result: `void` or exception'
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 结果：`void` 或异常

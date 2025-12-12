@@ -1,897 +1,1353 @@
 - en: '38 Template literal types (`${U}`): creating and transforming string literal
     types'
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 38 模板字面量类型 (`${U}`)：创建和转换字符串字面量类型
 - en: 原文：[https://exploringjs.com/ts/book/ch_template-literal-types.html](https://exploringjs.com/ts/book/ch_template-literal-types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_template-literal-types.html](https://exploringjs.com/ts/book/ch_template-literal-types.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (请勿屏蔽广告。)
 - en: '[38.1 The structure of this chapter](#the-structure-of-this-chapter)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.1 本章结构](#the-structure-of-this-chapter)'
 - en: '[38.2 Syntax and basic ways of using template literal types](#syntax-and-basic-ways-of-using-template-literal-types)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.2 模板字面量类型的语法和基本使用方法](#syntax-and-basic-ways-of-using-template-literal-types)'
 - en: '[38.2.1 The syntax](#the-syntax)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.2.1 语法](#the-syntax)'
 - en: '[38.2.2 Concatenation is distributive](#concatenation-is-distributive)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.2.2 连接操作是分配的](#concatenation-is-distributive)'
 - en: '[38.2.3 Extracting substrings via `infer`](#extracting-substrings-via-infer)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.2.3 通过 `infer` 提取子字符串](#extracting-substrings-via-infer)'
 - en: '[38.2.4 Parsing substrings via `infer` plus `extends`](#parsing-substrings-via-infer-plus-extends)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.2.4 通过 `infer` 和 `extends` 解析子字符串](#parsing-substrings-via-infer-plus-extends)'
 - en: '[38.2.5 Interpolating primitive types into template literals](#interpolating-primitive-types-into-template-literals)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.2.5 将原始类型插入到模板字面量中](#interpolating-primitive-types-into-template-literals)'
 - en: '[38.3 Utility types for string manipulation](#utility-types-for-strings)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.3 字符串操作实用类型](#utility-types-for-strings)'
 - en: '[38.3.1 Example: `isUppercase`](#example-isuppercase)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.3.1 示例：`isUppercase`](#example-isuppercase)'
 - en: '[38.3.2 Example: `ToString`](#example-tostring)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.3.2 示例：`ToString`](#example-tostring)'
 - en: '[38.3.3 Example: trimming string literal types](#example-trimming-string-literal-types)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.3.3 示例：修剪字符串字面量类型](#example-trimming-string-literal-types)'
 - en: '[38.4 Working with tuples](#working-with-tuples)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.4 使用元组](#working-with-tuples)'
 - en: '[38.4.1 Joining a tuple of strings](#joining-a-tuple-of-strings)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.4.1 连接字符串元组](#joining-a-tuple-of-strings)'
 - en: '[38.4.2 Splitting a string](#Split)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.4.2 拆分字符串](#Split)'
 - en: '[38.4.3 Example: defining a string literal union type via a string literal
     type](#example-defining-a-string-literal-union-type-via-a-string-literal-type)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.4.3 示例：通过字符串字面量类型定义字符串字面量联合类型](#example-defining-a-string-literal-union-type-via-a-string-literal-type)'
 - en: '[38.4.4 Splitting a string into code units](#splitting-a-string-into-code-units)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.4.4 将字符串拆分为代码单元](#splitting-a-string-into-code-units)'
 - en: '[38.5 Working with objects](#working-with-objects)'
+  id: totrans-19
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.5 使用对象](#working-with-objects)'
 - en: '[38.5.1 Example: adding prefixes to property names](#example-adding-prefixes-to-property-names)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.5.1 示例：向属性名添加前缀](#example-adding-prefixes-to-property-names)'
 - en: '[38.6 Practical examples](#practical-examples)'
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.6 实际示例](#practical-examples)'
 - en: '[38.6.1 Example: styling output to a terminal](#example-styling-output-to-a-terminal)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.6.1 示例：将输出样式化到终端](#example-styling-output-to-a-terminal)'
 - en: '[38.6.2 Example: property paths](#example-property-paths)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.6.2 示例：属性路径](#example-property-paths)'
 - en: '[38.6.3 Example: changing property name prefixes](#example-changing-property-name-prefixes)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.6.3 示例：更改属性名前缀](#example-changing-property-name-prefixes)'
 - en: '[38.6.4 Example: converting camel case to hyphen case](#example-converting-camel-case-to-hyphen-case)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.6.4 示例：将驼峰式转换为连字符式](#example-converting-camel-case-to-hyphen-case)'
 - en: '[38.6.5 Example: converting hyphen case to camel case](#example-from-hyphen-case-to-camel-case)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.6.5 示例：将连字符式转换为驼峰式](#example-from-hyphen-case-to-camel-case)'
 - en: '[38.7 Neat things people are doing with template literal types](#neat-things-people-are-doing-with-template-literal-types)'
+  id: totrans-27
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.7 使用模板字面量类型做一些有趣的事情](#neat-things-people-are-doing-with-template-literal-types)'
 - en: '[38.7.1 Node.js: type for UUIDs](#node-js-type-for-uuids)'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.7.1 Node.js：UUID 类型](#node-js-type-for-uuids)'
 - en: '[38.7.2 Parsing CLI arguments (Stefan Baumgartner)](#parsing-cli-arguments-stefan-baumgartner)'
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.7.2 解析 CLI 参数（Stefan Baumgartner）](#parsing-cli-arguments-stefan-baumgartner)'
 - en: '[38.7.3 Smart result type of `document.querySelector()` (Mike Ryan)](#smart-result-type-of-document-queryselector-mike-ryan)'
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.7.3 `document.querySelector()` 的智能结果类型（Mike Ryan）](#smart-result-type-of-document-queryselector-mike-ryan)'
 - en: '[38.7.4 Typing routes in Angular (Mike Ryan)](#typing-routes-in-angular-mike-ryan)'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.7.4 在 Angular 中设置路由（Mike Ryan）](#typing-routes-in-angular-mike-ryan)'
 - en: '[38.7.5 Express route extractor (Dan Vanderkam)](#express-route-extractor-dan-vanderkam)'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.7.5 表达路由提取器（Dan Vanderkam）](#express-route-extractor-dan-vanderkam)'
 - en: '[38.7.6 Tailwind color variations (Tomek Sułkowski)](#tailwind-color-variations-tomek-su-C5-82kowski)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.7.6 Tailwind 颜色变化（Tomek Sułkowski）](#tailwind-color-variations-tomek-su-C5-82kowski)'
 - en: '[38.7.7 Arktype: defining types](#arktype-defining-types)'
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.7.7 Arktype：定义类型](#arktype-defining-types)'
 - en: '[38.8 Conclusion and caveats](#conclusion-and-caveats)'
+  id: totrans-35
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.8 结论和注意事项](#conclusion-and-caveats)'
 - en: '[38.9 Further reading](#further-reading-10)'
+  id: totrans-36
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.9 进一步阅读](#further-reading-10)'
 - en: '[38.10 Sources of this chapter](#sources-of-this-chapter-7)'
+  id: totrans-37
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[38.10 本章来源](#sources-of-this-chapter-7)'
 - en: 'In this chapter, we take a closer look at template literal types in TypeScript:
     While their syntax is similar to JavaScript’s template literals, they operate
     at the type level. Their use cases include:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将更深入地了解TypeScript中的模板字面量类型：虽然它们的语法类似于JavaScript的模板字面量，但它们在类型级别上操作。它们的使用案例包括：
 - en: Static syntax checking for string literals
+  id: totrans-39
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串字面量的静态语法检查
 - en: Transforming the casing of property names (e.g. from hyphen case to camel case)
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 转换属性名称的大小写（例如，从连字符大小写到驼峰大小写）
 - en: Concisely specifying large string literal union types
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 简洁地指定大型字符串字面量联合类型
 - en: '[38.1 The structure of this chapter](#the-structure-of-this-chapter)'
+  id: totrans-42
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.1 本章的结构](#the-structure-of-this-chapter)'
 - en: 'First, we’ll learn how template literal types work via small toy examples.
     We’ll write type-level code that looks similar to JavaScript code. These are the
     topics we’ll cover:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们将通过小型玩具示例学习模板字面量类型的工作原理。我们将编写类似于JavaScript代码的类型级别代码。以下是我们将涵盖的主题：
 - en: Syntax and basic ways of using template literal types
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模板字面量类型的语法和基本用法
 - en: Utility types for string manipulation
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串操作实用类型
 - en: Working with tuples
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与元组一起工作
 - en: Working with objects
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与对象一起工作
 - en: After that, we’ll look at practical examples and neat things that people have
     done with template literal types.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 之后，我们将看看人们使用模板字面量类型所做的实际例子和巧妙的事情。
 - en: '[38.2 Syntax and basic ways of using template literal types](#syntax-and-basic-ways-of-using-template-literal-types)'
+  id: totrans-49
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.2 模板字面量类型的语法和基本用法](#syntax-and-basic-ways-of-using-template-literal-types)'
 - en: '[38.2.1 The syntax](#the-syntax)'
+  id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.2.1 语法](#the-syntax)'
 - en: 'The syntax of template literal types is inspired by JavaScript’s template literals.
     They also let us concatenate values, optionally interspersed with static string
     fragments:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 模板字面量类型的语法受到JavaScript模板字面量的启发。它们还允许我们连接值，可选地穿插静态字符串片段：
 - en: '[PRE0]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Explanations:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 说明：
 - en: In line (A), we define the generic type `Song`. It is similar to a function
     in JavaScript but operates at the type level. The `extends` keyword is used to
     specify the types that `Num` and `Bev` must be assignable to.
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行（A）中，我们定义了泛型类型`Song`。它类似于JavaScript中的函数，但在类型级别上操作。使用`extends`关键字来指定`Num`和`Bev`必须可以赋值的类型。
 - en: 'In line (B), we apply `Song` to two arguments: a number literal type and a
     string literal type.'
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行（B）中，我们将`Song`应用于两个参数：一个数字字面量类型和一个字符串字面量类型。
 - en: '[38.2.2 Concatenation is distributive](#concatenation-is-distributive)'
+  id: totrans-56
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.2.2 连接是分配的](#concatenation-is-distributive)'
 - en: 'If we insert a string literal union type into a template literal type, the
     latter is applied to each member of the former:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将字符串字面量联合类型插入到模板字面量类型中，后者将应用于前者中的每个成员：
 - en: '[PRE1]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'If we insert more than one string literal union type, then we get the cartesian
     product (all possible combinations are used):'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们插入多个字符串字面量联合类型，那么我们将得到笛卡尔积（使用所有可能的组合）：
 - en: '[PRE2]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: That enables us to concisely specify large unions. We’ll see a practical example
     later on.
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 这使我们能够简洁地指定大型联合。我们稍后会看到一个实际例子。
 - en: '[Anders Hejlsberg warns](https://github.com/microsoft/TypeScript/pull/40336):
     “Beware that the cross product distribution of union types can quickly escalate
     into very large and costly types. Also note that union types are limited to less
     than 100,000 constituents, and the following will cause an error:”'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Anders Hejlsberg警告](https://github.com/microsoft/TypeScript/pull/40336): “小心联合类型的交叉积分布会迅速升级为非常大且昂贵的类型。还请注意，联合类型限制在少于100,000个组成部分，以下将导致错误：”'
 - en: '[PRE3]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The above union type has exactly 100,000 elements. This is another example
     that exceeds the limit:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 上面的联合类型恰好有100,000个元素。这是另一个超过限制的例子：
 - en: '[PRE4]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[38.2.3 Extracting substrings via `infer`](#extracting-substrings-via-infer)'
+  id: totrans-66
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.2.3 通过`infer`提取子字符串](#extracting-substrings-via-infer)'
 - en: 'If we use the `infer` operator inside a template literal, we can extract parts
     of strings:'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在模板字面量内部使用`infer`运算符，我们可以提取字符串的一部分：
 - en: '[PRE5]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[38.2.4 Parsing substrings via `infer` plus `extends`](#parsing-substrings-via-infer-plus-extends)'
+  id: totrans-69
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.2.4 通过`infer`加`extends`解析子字符串](#parsing-substrings-via-infer-plus-extends)'
 - en: 'By default an `infer` inside a template literal extracts a string:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，模板字面量内的`infer`提取一个字符串：
 - en: '[PRE6]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'If we constrain `infer` via `extends` to a type then TypeScript parses values
     of that type – e.g.:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们通过`extends`将`infer`约束到类型，TypeScript将解析该类型的值——例如：
 - en: '[PRE7]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Parsing numbers only works for integers:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 仅对整数进行解析数字：
 - en: '[PRE8]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: For an example that uses `StrToNum`, see [“Extracting the indices (numbers)
     of a tuple” (§37.3.2)](ch_computing-with-tuple-types.html#TupleIndices).
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 有关使用`StrToNum`的示例，请参阅“提取元组的索引（数字）”（§37.3.2）（ch_computing-with-tuple-types.html#TupleIndices）。
 - en: '[38.2.5 Interpolating primitive types into template literals](#interpolating-primitive-types-into-template-literals)'
+  id: totrans-77
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.2.5 将原始类型插值到模板字面量中](#interpolating-primitive-types-into-template-literals)'
 - en: 'So far, we have inserted literal types and union types into template literals,
     but we can also insert some primitive types. That lets us construct subsets of
     `string`:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 到目前为止，我们已经将字面量类型和联合类型插入到模板字面量中，但我们也可以插入一些原始类型。这使我们能够构造 `string` 的子集：
 - en: '[PRE9]'
+  id: totrans-79
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'These are the supported types:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是受支持的类型：
 - en: '[PRE10]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: Note that `undefined` is the type with the single value `undefined`. `null`
     is similar.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`undefined` 是具有单个值 `undefined` 的类型。`null` 类似。
 - en: '[38.2.5.1 Example: keeping only strings with numbers](#example-keeping-only-strings-with-numbers)'
+  id: totrans-83
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[38.2.5.1 示例: 仅保留包含数字的字符串](#example-keeping-only-strings-with-numbers)'
 - en: 'An interpolated type `number` can be used to “filter” a union of string literal
     types:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 可以使用插值类型 `number` 来“过滤”字符串字面量类型的联合：
 - en: '[PRE11]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'We use the intersection type in line A to extract those elements of `Properties`
     that are stringified numbers. Examples that use this trick:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在行 A 中使用交集类型来提取 `Properties` 中那些被转换为字符串的元素。使用此技巧的示例：
 - en: '[“Example: removing the constraint of parameter `K` of `Pick<T, K>`” (§36.3.3.2)](ch_mapped-types.html#PickFreely)'
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“移除 `Pick<T, K>` 参数 `K` 的约束”（§36.3.3.2）](ch_mapped-types.html#PickFreely)'
 - en: '[“Extracting the index keys (strings) of a tuple” (§37.3.1)](ch_computing-with-tuple-types.html#TupleIndexKeys)'
+  id: totrans-88
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“提取元组的索引键（字符串）”（§37.3.1）](ch_computing-with-tuple-types.html#TupleIndexKeys)'
 - en: '[38.2.5.2 Example: excluding strings that start with “a”](#example-excluding-strings-that-start-with-a)'
+  id: totrans-89
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[38.2.5.2 示例: 排除以“a”开头的字符串](#example-excluding-strings-that-start-with-a)'
 - en: 'The template literal type `` `a${string}` `` matches all string literal types
     that start with the character “a”. Therefore, we can use it to exclude those types:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 模板字面量类型 `` `a${string}` `` 匹配所有以字符“a”开头的字符串字面量类型。因此，我们可以用它来排除这些类型：
 - en: '[PRE12]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '[38.3 Utility types for string manipulation](#utility-types-for-strings)'
+  id: totrans-92
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.3 字符串操作实用类型](#utility-types-for-strings)'
 - en: 'TypeScript has four built-in string manipulation types ([documentation](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#intrinsic-string-manipulation-types)):'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 有四个内置的字符串操作类型（[文档](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#intrinsic-string-manipulation-types)）：
 - en: '`Uppercase<StringLiteralType>`'
+  id: totrans-94
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Uppercase<StringLiteralType>`'
 - en: '[PRE13]'
+  id: totrans-95
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '`Lowercase<StringLiteralType>`'
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Lowercase<StringLiteralType>`'
 - en: '[PRE14]'
+  id: totrans-97
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '`Capitalize<StringLiteralType>`'
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Capitalize<StringLiteralType>`'
 - en: '[PRE15]'
+  id: totrans-99
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '`Uncapitalize<StringLiteralType>`'
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Uncapitalize<StringLiteralType>`'
 - en: '[PRE16]'
+  id: totrans-101
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'TypeScript (as of version 5.7) uses the following JavaScript methods to make
     the changes – which are not locale aware ([source](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#intrinsic-string-manipulation-types)
     – see “technical details” at the end):'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript（截至版本 5.7）使用以下 JavaScript 方法来执行更改——这些方法不是区域感知的（[来源](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html#intrinsic-string-manipulation-types)
+    – 请参阅末尾的“技术细节”）：
 - en: '[PRE17]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[38.3.1 Example: `isUppercase`](#example-isuppercase)'
+  id: totrans-104
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.3.1 示例: `isUppercase`](#example-isuppercase)'
 - en: 'We can use `Uppercase` to define a generic type `IsUppercase`:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用 `Uppercase` 来定义一个泛型类型 `IsUppercase`：
 - en: '[PRE18]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '[38.3.2 Example: `ToString`](#example-tostring)'
+  id: totrans-107
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.3.2 示例: `ToString`](#example-tostring)'
 - en: '`ToString` uses normal template literal type interpolation to convert primitive
     literal types to string literal types:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ToString` 使用正常的模板字面量类型插值将原始字面量类型转换为字符串字面量类型：'
 - en: '[PRE19]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '[38.3.3 Example: trimming string literal types](#example-trimming-string-literal-types)'
+  id: totrans-110
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.3.3 示例: 去除字符串字面量类型的空格](#example-trimming-string-literal-types)'
 - en: 'To trim a string literal type, we recursively remove all spaces from its start
     and its end:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 要去除字符串字面量类型的空格，我们递归地从其开始和结束处移除所有空格：
 - en: '[PRE20]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '[PRE21]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: Note the self-recursive invocations in line A and line B.
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意行 A 和行 B 中的自递归调用。
 - en: 'Acknowledgement: This example was inspired by [code by Mike Ryan](https://x.com/MikeRyanDev/status/1308472279010025477).'
+  id: totrans-115
   prefs: []
   type: TYPE_NORMAL
+  zh: 致谢：此示例受到了 [Mike Ryan 的代码](https://x.com/MikeRyanDev/status/1308472279010025477)的启发。
 - en: '[38.4 Working with tuples](#working-with-tuples)'
+  id: totrans-116
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.4 处理元组](#working-with-tuples)'
 - en: '[38.4.1 Joining a tuple of strings](#joining-a-tuple-of-strings)'
+  id: totrans-117
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.4.1 连接字符串元组](#joining-a-tuple-of-strings)'
 - en: '[PRE22]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: Once again, we are programming at a type level in a functional style.
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次强调，我们正在以函数式风格在类型级别上进行编程。
 - en: 'In the second line, we take the tuple `Strs` apart (think destructuring):'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 在第二行，我们将元组 `Strs` 分解（考虑解构）：
 - en: '`First` is the first element (a string).'
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`First` 是第一个元素（一个字符串）。'
 - en: '`Rest` is the remaining elements (a tuple).'
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Rest` 是剩余的元素（一个元组）。'
 - en: 'Next:'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一步：
 - en: If the tuple `Rest` is empty, the result is simply `First`.
+  id: totrans-124
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果元组 `Rest` 为空，则结果简单地为 `First`。
 - en: Otherwise, we concatenate `First` with the separator `Sep` and the joined `Rest`.
+  id: totrans-125
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 否则，我们将 `First` 与分隔符 `Sep` 和连接的 `Rest` 连接起来。
 - en: '[38.4.2 Splitting a string](#Split)'
+  id: totrans-126
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.4.2 分割字符串](#Split)'
 - en: '[PRE23]'
+  id: totrans-127
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: '[PRE24]'
+  id: totrans-128
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: We use `infer` inside a template literal to determine the prefix `First` before
     a separator `Sep` and then recursively invoke `Split` (line A).
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在模板字面量中使用 `infer` 来确定分隔符 `Sep` 前的 `First` 前缀，然后递归调用 `Split`（行 A）。
 - en: If no separator is found, the result is a tuple with the whole `Str` (line B).
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果没有找到分隔符，则结果是一个包含整个 `Str` 的元组（行 B）。
 - en: '[38.4.3 Example: defining a string literal union type via a string literal
     type](#example-defining-a-string-literal-union-type-via-a-string-literal-type)'
+  id: totrans-131
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.4.3 示例：通过字符串字面量类型定义字符串字面量联合类型](#example-defining-a-string-literal-union-type-via-a-string-literal-type)'
 - en: 'We can use the previously defined `Split` and `Trim` to convert a string literal
     type to a string literal union type:'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用之前定义的 `Split` 和 `Trim` 将字符串字面量类型转换为字符串字面量联合类型：
 - en: '[PRE25]'
+  id: totrans-133
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '`TupleToUnion` treats the tuple `Tup` as a map from numbers (indices) to values:
     `Tup[number]` means “give me all the values” (the range of `Tup`).'
+  id: totrans-134
   prefs: []
   type: TYPE_NORMAL
+  zh: '`TupleToUnion` 将元组 `Tup` 视为一个从数字（索引）到值的映射：`Tup[number]` 表示“给我所有值”（`Tup` 的范围）。'
 - en: Note how the application of `Trim` is distributed and applied to each member
     of the union.
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意 `Trim` 的应用是如何分布并应用于联合的每个成员的。
 - en: '[38.4.4 Splitting a string into code units](#splitting-a-string-into-code-units)'
+  id: totrans-136
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.4.4 分割字符串为代码单元](#splitting-a-string-into-code-units)'
 - en: 'If we infer without a fixed separator, then the `First` inferred string is
     always a single code unit (a “JavaScript character”, not a Unicode code point
     which comprises one or two code units):'
+  id: totrans-137
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们不使用固定的分隔符进行推断，那么推断出的第一个字符串始终是一个单个代码单元（一个“JavaScript字符”，而不是由一个或两个代码单元组成的Unicode码点）：
 - en: '[PRE26]'
+  id: totrans-138
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[38.5 Working with objects](#working-with-objects)'
+  id: totrans-139
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.5 与对象一起工作](#working-with-objects)'
 - en: '[38.5.1 Example: adding prefixes to property names](#example-adding-prefixes-to-property-names)'
+  id: totrans-140
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.5.1 示例：向属性名添加前缀](#example-adding-prefixes-to-property-names)'
 - en: 'Below, we are using a mapped type to convert an object type `Obj` to a new
     object type, where each property key starts with a dollar sign (`$`):'
+  id: totrans-141
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面，我们使用映射类型将对象类型 `Obj` 转换为新的对象类型，其中每个属性键以美元符号 (`$`) 开头：
 - en: '[PRE27]'
+  id: totrans-142
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'How does this code work? We assemble an output object like this:'
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: 这段代码是如何工作的？我们组装一个输出对象，如下所示：
 - en: 'The result of `PrependDollarSign` is computed by a loop. In each iteration,
     the loop variable `Key` is assigned to one element of a union of string literal
     types. These are three ways of describing that union:'
+  id: totrans-144
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`PrependDollarSign` 的结果通过循环计算。在每次迭代中，循环变量 `Key` 被分配给字符串字面量类型联合中的一个元素。这里有三种描述该联合的方式：'
 - en: '`keyof Obj & string`'
+  id: totrans-145
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`keyof Obj & string`'
 - en: the intersection of the keys of `Obj` and all strings
+  id: totrans-146
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Obj` 的键与所有字符串的交集'
 - en: the string keys of `Obj`
+  id: totrans-147
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Obj` 的字符串键'
 - en: 'Each loop iteration contributes one property to the output object:'
+  id: totrans-148
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每次循环迭代向输出对象贡献一个属性：
 - en: 'The key of that property is specified via `as`: `` `$${Key}` ``'
+  id: totrans-149
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 该属性键通过 `as` 指定：`` `$${Key}` ``
 - en: 'The value of that property comes ofter the colon: `Obj[Key]`'
+  id: totrans-150
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 该属性的值位于冒号之后：`Obj[Key]`
 - en: '[38.6 Practical examples](#practical-examples)'
+  id: totrans-151
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.6 实际示例](#practical-examples)'
 - en: '[38.6.1 Example: styling output to a terminal](#example-styling-output-to-a-terminal)'
+  id: totrans-152
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.6.1 示例：将输出样式化到终端](#example-styling-output-to-a-terminal)'
 - en: 'In Node.js, we can use [`util.styleText()`](https://nodejs.org/api/util.html#utilstyletextformat-text-options)
     to log styled text to the console:'
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 Node.js 中，我们可以使用 [util.styleText()](https://nodejs.org/api/util.html#utilstyletextformat-text-options)
+    将格式化文本输出到控制台：
 - en: '[PRE28]'
+  id: totrans-154
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'To get a list of all possible style values, evaluate this expression in the
     Node.js REPL:'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 要获取所有可能的样式值列表，请在 Node.js REPL 中评估此表达式：
 - en: '[PRE29]'
+  id: totrans-156
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'Below, we define a function `styleText()` that uses a single string to specify
     multiple styles and statically checks that that string has the proper format:'
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: 下面，我们定义一个 `styleText()` 函数，该函数使用单个字符串来指定多个样式，并静态检查该字符串是否具有正确的格式：
 - en: '[PRE30]'
+  id: totrans-158
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[38.6.2 Example: property paths](#example-property-paths)'
+  id: totrans-159
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.6.2 示例：属性路径](#example-property-paths)'
 - en: 'The following example is based on code by [Anders Hejlsberg](https://github.com/microsoft/TypeScript/pull/40336):'
+  id: totrans-160
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下示例基于 [Anders Hejlsberg](https://github.com/microsoft/TypeScript/pull/40336)
+    的代码：
 - en: '[PRE31]'
+  id: totrans-161
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: '[38.6.3 Example: changing property name prefixes](#example-changing-property-name-prefixes)'
+  id: totrans-162
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.6.3 示例：更改属性名前缀](#example-changing-property-name-prefixes)'
 - en: 'This is a more complicated version of an earlier example:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个更复杂的早期示例的版本：
 - en: The type `JsonLd` describes [structured data](https://developers.google.com/search/docs/appearance/structured-data/article)
     in JSON-LD format.
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型 `JsonLd` 描述了 [JSON-LD 格式的结构化数据](https://developers.google.com/search/docs/appearance/structured-data/article)。
 - en: We use `PropKeysAtToUnderscore` to convert the type `JsonLd` into a type with
     keys that we don’t need to quote.
+  id: totrans-165
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们使用 `PropKeysAtToUnderscore` 将 `JsonLd` 类型转换为不需要引号的键的类型。
 - en: '[PRE32]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: Note that in line A, we only the change key if it is a string that starts with
     an at symbol. Other keys (including symbols) are not changed.
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，在行 A 中，我们只更改以 at 符号开头的字符串键。其他键（包括符号）不会被更改。
 - en: 'We could constrain the type of `Key` like this:'
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以像这样约束 `Key` 的类型：
 - en: '[PRE33]'
+  id: totrans-169
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: But then we couldn’t use `AtToUnderscore` for symbols and would have to filter
     values in some manner before passing them to this utility type.
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: 但然后我们无法使用 `AtToUnderscore` 对符号进行操作，必须在传递给这个实用类型之前以某种方式过滤值。
 - en: '[38.6.4 Example: converting camel case to hyphen case](#example-converting-camel-case-to-hyphen-case)'
+  id: totrans-171
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.6.4 示例：将驼峰形式转换为连字符形式](#example-converting-camel-case-to-hyphen-case)'
 - en: We can use template literal types to convert a string in camel case (JavaScript)
     to one in hyphen case (CSS).
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用模板字面量类型将驼峰形式的字符串（JavaScript）转换为连字符形式的字符串（CSS）。
 - en: 'Let’s first convert a string to a tuple of strings:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们先转换一个字符串为一个字符串元组的元组：
 - en: '[PRE34]'
+  id: totrans-174
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: 'To understand how this works, consider the roles of the parameters:'
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 要理解它是如何工作的，考虑参数的角色：
 - en: '`Str` is the actual parameter and the only parameter that doesn’t have a default
     value. `SplitCamelCase` uses recursion to iterate over the characters of `Str`.'
+  id: totrans-176
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Str` 是实际参数，也是唯一一个没有默认值的参数。`SplitCamelCase` 使用递归遍历 `Str` 的字符。'
 - en: '`Word`: While inside a word, we add characters to this parameter.'
+  id: totrans-177
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Word`: 当在单词内部时，我们将字符添加到这个参数中。'
 - en: '`Words`: Once a word is finished, it is added to this (initially empty) tuple.
     Once recursion is finished then `Words` contains the result of `SplitCamelCase`
     and is returned.'
+  id: totrans-178
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Words`: 一旦一个单词完成，它就会被添加到这个（最初为空的）元组中。一旦递归完成，`Words` 就包含了 `SplitCamelCase`
+    的结果，并返回。'
 - en: 'The rest of the work involves lower-casing and joining the tuple elements,
     with hyphens as separators:'
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 剩下的工作涉及将元组元素转换为小写并连接起来，以连字符作为分隔符：
 - en: '[PRE35]'
+  id: totrans-180
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '[38.6.5 Example: converting hyphen case to camel case](#example-from-hyphen-case-to-camel-case)'
+  id: totrans-181
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.6.5 示例：将连字符形式转换为驼峰形式](#example-from-hyphen-case-to-camel-case)'
 - en: Going the opposite way, from hyphen case to camel case, is easier because we
     have hyphens as separators. As a utility type, we use [`Split`](#Split) from earlier
     in this chapter.
+  id: totrans-182
   prefs: []
   type: TYPE_NORMAL
+  zh: 从连字符形式转换为驼峰形式是更容易的，因为我们有连字符作为分隔符。作为一个实用类型，我们使用本章早些时候提到的 `Split`。
 - en: '[PRE36]'
+  id: totrans-183
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '[38.7 Neat things people are doing with template literal types](#neat-things-people-are-doing-with-template-literal-types)'
+  id: totrans-184
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.7 人们使用模板字面量类型所做的事情的巧妙之处](#neat-things-people-are-doing-with-template-literal-types)'
 - en: In this section, I have collected interesting things I have seen people do with
     template literal types.
+  id: totrans-185
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我收集了一些人们使用模板字面量类型所做的事情。
 - en: '[38.7.1 Node.js: type for UUIDs](#node-js-type-for-uuids)'
+  id: totrans-186
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.7.1 Node.js：UUID 的类型](#node-js-type-for-uuids)'
 - en: '[`@types/node`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node/crypto.d.ts)
     uses the following type for UUIDs:'
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: '[`@types/node`](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/node/crypto.d.ts)
+    使用以下类型来表示 UUID：'
 - en: '[PRE37]'
+  id: totrans-188
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: '[38.7.2 Parsing CLI arguments (Stefan Baumgartner)](#parsing-cli-arguments-stefan-baumgartner)'
+  id: totrans-189
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.7.2 解析 CLI 参数（Stefan Baumgartner）](#parsing-cli-arguments-stefan-baumgartner)'
 - en: 'Given the following definitions for the parameters of a shell script (`num`
     is an arbitrary name for a string parameter – not a type):'
+  id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定以下关于 shell 脚本参数的定义（`num` 是一个字符串参数的任意名称——不是一个类型）：
 - en: '[PRE38]'
+  id: totrans-191
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 'This type can be statically derived for `opts`:'
+  id: totrans-192
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个类型可以静态地推导出 `opts`：
 - en: '[PRE39]'
+  id: totrans-193
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: 'More information: [“The TypeScript converging point”](https://fettblog.eu/slides/the-typescript-converging-point/)
     by Stefan Baumgartner'
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[“TypeScript 的收敛点”](https://fettblog.eu/slides/the-typescript-converging-point/)
+    by Stefan Baumgartner
 - en: '[38.7.3 Smart result type of `document.querySelector()` (Mike Ryan)](#smart-result-type-of-document-queryselector-mike-ryan)'
+  id: totrans-195
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.7.3 `document.querySelector()` 的智能结果类型（Mike Ryan）](#smart-result-type-of-document-queryselector-mike-ryan)'
 - en: 'By parsing the argument of `querySelector()` at compile time, we can derive
     nice types:'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过在编译时解析 `querySelector()` 的参数，我们可以推导出好的类型：
 - en: '[PRE40]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'More information: [tweet](https://x.com/MikeRyanDev/status/1308472279010025477)
     by Mike Ryan.'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[推文](https://x.com/MikeRyanDev/status/1308472279010025477) by Mike Ryan.
 - en: '[38.7.4 Typing routes in Angular (Mike Ryan)](#typing-routes-in-angular-mike-ryan)'
+  id: totrans-199
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.7.4 在 Angular 中输入路由（Mike Ryan）](#typing-routes-in-angular-mike-ryan)'
 - en: '[PRE41]'
+  id: totrans-200
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'More information: [tweet](https://x.com/MikeRyanDev/status/1308036861747752962)
     by Mike Ryan.'
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[推文](https://x.com/MikeRyanDev/status/1308036861747752962) by Mike Ryan.
 - en: '[38.7.5 Express route extractor (Dan Vanderkam)](#express-route-extractor-dan-vanderkam)'
+  id: totrans-202
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.7.5 Express 路由提取器（Dan Vanderkam）](#express-route-extractor-dan-vanderkam)'
 - en: 'The first argument of `handleGet()` determines the parameters of the callback:'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: '`handleGet()`的第一个参数决定了回调的参数：'
 - en: '[PRE42]'
+  id: totrans-204
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: 'More information: [tweet](https://x.com/danvdk/status/1301707026507198464)
     by Dan Vanderkam'
+  id: totrans-205
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[丹·范德坎姆的推文](https://x.com/danvdk/status/1301707026507198464)
 - en: '[38.7.6 Tailwind color variations (Tomek Sułkowski)](#tailwind-color-variations-tomek-su%C5%82kowski)'
+  id: totrans-206
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.7.6 Tailwind颜色变化（托梅克·苏尔科夫斯基）](#tailwind-color-variations-tomek-su%C5%82kowski)'
 - en: 'Thanks to template literals being distributive, we can define `TailwindColor`
     very concisely:'
+  id: totrans-207
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于模板字面量是分配性的，我们可以非常简洁地定义`TailwindColor`：
 - en: '[PRE43]'
+  id: totrans-208
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'More information: [tweet](https://x.com/sulco/status/1332337570563448834) by
     Tomek Sułkowski'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[托梅克·苏尔科夫斯基的推文](https://x.com/sulco/status/1332337570563448834)
 - en: '[38.7.7 Arktype: defining types](#arktype-defining-types)'
+  id: totrans-210
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[38.7.7 Arktype：定义类型](#arktype-defining-types)'
 - en: 'Where [the TypeScript library Zod](https://zod.dev) uses chained method calls
     to define types, the [ArkType library](https://github.com/arktypeio/arktype) uses
     (mostly) string literals that are parsed via template literal types. I prefer
     Zod’s approach, but it’s amazing how much ArkType does with string literals:'
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 在TypeScript库Zod[使用链式方法调用来定义类型](https://zod.dev)的地方，ArkType库[使用（主要是）通过模板字面量类型解析的字符串字面量](https://github.com/arktypeio/arktype)。我更喜欢Zod的方法，但ArkType使用字符串字面量所做的事情真是令人惊叹：
 - en: '[PRE44]'
+  id: totrans-212
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: '[38.8 Conclusion and caveats](#conclusion-and-caveats)'
+  id: totrans-213
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.8 结论和注意事项](#conclusion-and-caveats)'
 - en: 'It’s amazing what people are doing with template literal types: We now can
     statically check complex data in string literals or use them to derive types.
     However, doing so also comes with caveats:'
+  id: totrans-214
   prefs: []
   type: TYPE_NORMAL
+  zh: 人们使用模板字面量类型所做的事情真是令人惊叹：我们现在可以在字符串字面量中静态检查复杂的数据，或者使用它们来推导类型。然而，这样做也有一些注意事项：
 - en: The error messages are usually not very good.
+  id: totrans-215
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 错误信息通常不是很好。
 - en: Type-level code that uses template literals can be difficult to understand.
+  id: totrans-216
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用模板字面量的类型级代码可能难以理解。
 - en: Such code can slow down type checking – especially if it involves recursion.
+  id: totrans-217
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这样的代码可能会减慢类型检查的速度——尤其是如果它涉及到递归的话。
 - en: '[38.9 Further reading](#further-reading-10)'
+  id: totrans-218
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.9 进一步阅读](#further-reading-10)'
 - en: 'List of template literal types examples: [“Awesome Template Literal Types”](https://github.com/ghoullier/awesome-template-literal-types)'
+  id: totrans-219
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 模板字面量类型示例列表：[“令人惊叹的模板字面量类型”](https://github.com/ghoullier/awesome-template-literal-types)
 - en: '[38.10 Sources of this chapter](#sources-of-this-chapter-7)'
+  id: totrans-220
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[38.10 本章来源](#sources-of-this-chapter-7)'
 - en: Chapter [“Template Literal Types”](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)
     in the TypeScript Handbook
+  id: totrans-221
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript手册中的[“模板字面量类型”](https://www.typescriptlang.org/docs/handbook/2/template-literal-types.html)章节
 - en: Pull request [“Template literal types and mapped type `as` clauses”](https://github.com/microsoft/TypeScript/pull/40336)
     by Anders Hejlsberg
+  id: totrans-222
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 由安德斯·海尔斯伯格发起的拉取请求[“模板字面量类型和映射类型 `as` 子句”](https://github.com/microsoft/TypeScript/pull/40336)
 - en: Blog post [“Transform string literal type into camelCase in TypeScript”](https://blog.beraliv.dev/2022-07-14-camel-case)
     by Alexey Berezin
+  id: totrans-223
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 博客文章[“在TypeScript中将字符串字面量类型转换为camelCase”](https://blog.beraliv.dev/2022-07-14-camel-case)，作者：阿列克谢·贝列津
 - en: Blog post [“I didn’t know you could compose template literal types in TypeScript”](https://macarthur.me/posts/template-literal-types/)
     by Alex MacArthur
+  id: totrans-224
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 博客文章[“我不知道你可以在TypeScript中组合模板字面量类型”](https://macarthur.me/posts/template-literal-types/)，作者：亚历克斯·麦克阿瑟
