@@ -1,521 +1,786 @@
 - en: 26 Exception handling
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 26 异常处理
 - en: 原文：[https://exploringjs.com/js/book/ch_exception-handling.html](https://exploringjs.com/js/book/ch_exception-handling.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_exception-handling.html](https://exploringjs.com/js/book/ch_exception-handling.html)
 - en: '[26.1 Motivation: throwing and catching exceptions](#motivation-throwing-and-catching-exceptions)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.1 动机：抛出和捕获异常](#motivation-throwing-and-catching-exceptions)'
 - en: '[26.2 `throw`](#throw)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2 `throw`](#throw)'
 - en: '[26.2.1 What values should we throw?](#what-values-should-we-throw)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.1 我们应该抛出什么值？](#what-values-should-we-throw)'
 - en: '[26.3 The `try` statement](#try-statement)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.3 `try`语句](#try-statement)'
 - en: '[26.3.1 The `try` block](#the-try-block)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.3.1 `try`块](#the-try-block)'
 - en: '[26.3.2 The `catch` clause](#the-catch-clause)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.3.2 `catch`子句](#the-catch-clause)'
 - en: '[26.3.3 The `finally` clause](#the-finally-clause)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.3.3 `finally`子句](#the-finally-clause)'
 - en: '[26.4 The superclass of all built-in exception classes: `Error`](#class-Error)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4 所有内置异常类的超类：`Error`](#class-Error)'
 - en: '[26.4.1 `Error.prototype.name`](#errorprototypename)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.1 `Error.prototype.name`](#errorprototypename)'
 - en: '[26.4.2 Error instance property `.message`](#error.message)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.2 错误实例属性 `.message`](#error.message)'
 - en: '[26.4.3 Error instance property `.stack`](#error-stack)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.3 错误实例属性 `.stack`](#error-stack)'
 - en: '[26.5 Chaining errors: the instance property `.cause` ^(ES2022)](#error-cause)'
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.5 链式错误：实例属性 `.cause` (ES2022)](#error-cause)'
 - en: '[26.5.1 Why would we want to chain errors?](#why-would-we-want-to-chain-errors)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.5.1 我们为什么要链式错误？](#why-would-we-want-to-chain-errors)'
 - en: '[26.5.2 Should we store context data in `.cause`?](#should-we-store-context-data-in-cause)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.5.2 我们应该在`.cause`中存储上下文数据吗？](#should-we-store-context-data-in-cause)'
 - en: '[26.6 Subclasses of `Error`](#subclasses-of-error)'
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.6 `Error`的子类](#subclasses-of-error)'
 - en: '[26.6.1 The built-in subclasses of `Error`](#built-in-error-subclasses)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.6.1 `Error`的内置子类](#built-in-error-subclasses)'
 - en: '[26.6.2 Subclassing `Error`](#subclassing-error)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.6.2 子类化`Error`](#subclassing-error)'
 - en: This chapter covers how JavaScript handles exceptions.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章介绍了JavaScript如何处理异常。
 - en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **Why doesn’t
     JavaScript throw exceptions more often?**'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“详情”](../Images/38ba63de820aae6f94a019538ae0f222.png) **为什么JavaScript不经常抛出异常？**'
 - en: JavaScript didn’t support exceptions until ES3\. That explains why they are
     used sparingly by the language and its standard library.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript直到ES3才支持异常。这解释了为什么语言及其标准库很少使用它们。
 - en: '[26.1 Motivation: throwing and catching exceptions](#motivation-throwing-and-catching-exceptions)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.1 动机：抛出和捕获异常](#motivation-throwing-and-catching-exceptions)'
 - en: 'Consider the following code. It reads profiles stored in files into an Array
     with instances of class `Profile`:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下代码。它将存储在文件中的配置文件读取到包含`Profile`类实例的数组中：
 - en: '[PRE0]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Let’s examine what happens in line B: An error occurred, but the best place
     to handle the problem is not the current location, it’s line A. There, we can
     skip the current file and move on to the next one.'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们检查行B中发生了什么：发生了错误，但处理问题的最佳位置不是当前位置，而是在行A。在那里，我们可以跳过当前文件并继续下一个文件。
 - en: 'Therefore:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此：
 - en: In line B, we use a `throw` statement to indicate that there was a problem.
+  id: totrans-27
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行B中，我们使用`throw`语句来指示存在问题。
 - en: In line A, we use a `try-catch` statement to handle the problem.
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在行A中，我们使用`try-catch`语句来处理问题。
 - en: 'When we throw, the following constructs are active:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们抛出时，以下结构是活跃的：
 - en: '[PRE1]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: One by one, `throw` exits the nested constructs, until it encounters a `try`
     statement. Execution continues in the `catch` clause of that `try` statement.
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 逐个`throw`退出嵌套结构，直到遇到`try`语句。执行继续在该`try`语句的`catch`子句中。
 - en: '[26.2 `throw`](#throw)'
+  id: totrans-32
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.2 `throw`](#throw)'
 - en: 'This is the syntax of the `throw` statement:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是`throw`语句的语法：
 - en: '[PRE2]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[26.2.1 What values should we throw?](#what-values-should-we-throw)'
+  id: totrans-35
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.1 我们应该抛出什么值？](#what-values-should-we-throw)'
 - en: 'Any value can be thrown in JavaScript. However, it’s best to use instances
     of `Error` or a subclass because they support additional features such as stack
     traces and error chaining (see [“The superclass of all built-in exception classes:
     `Error`” (§26.4)](#class-Error)).'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript中，任何值都可以被抛出。然而，最好使用`Error`或其子类的实例，因为它们支持额外的功能，如堆栈跟踪和错误链（参见[“所有内置异常类的超类：`Error`”
+    (§26.4)](#class-Error)）。
 - en: 'That leaves us with the following options:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 这给我们留下了以下选择：
 - en: 'Using class `Error` directly. That is less limiting in JavaScript than in a
     more static language because we can add our own properties to instances:'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 直接使用`Error`类。在JavaScript中，这比在更静态的语言中限制更少，因为我们可以向实例添加自己的属性：
 - en: '[PRE3]'
+  id: totrans-39
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Using one of [the subclasses of `Error`](#built-in-error-subclasses) such as
     `TypeError` or `RangeError`.
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用[`Error`的子类之一](#built-in-error-subclasses)例如`TypeError`或`RangeError`。
 - en: 'Subclassing `Error` (more details are explained [later](#subclassing-error)):'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 继承`Error`（更多细节将在[后面](#subclassing-error)解释）：
 - en: '[PRE4]'
+  id: totrans-42
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[26.3 The `try` statement](#try-statement)'
+  id: totrans-43
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.3 `try`语句](#try-statement)'
 - en: 'The maximal version of the `try` statement looks as follows:'
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: '`try`语句的最大版本如下所示：'
 - en: '[PRE5]'
+  id: totrans-45
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'We can combine these clauses as follows:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以将这些子句组合如下：
 - en: '`try-catch`'
+  id: totrans-47
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`try-catch`'
 - en: '`try-finally`'
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`try-finally`'
 - en: '`try-catch-finally`'
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`try-catch-finally`'
 - en: '[26.3.1 The `try` block](#the-try-block)'
+  id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.3.1 `try`块](#the-try-block)'
 - en: The `try` block can be considered the body of the statement. This is where we
     execute the regular code.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: '`try`块可以被认为是语句的主体。这是我们执行常规代码的地方。'
 - en: '[26.3.2 The `catch` clause](#the-catch-clause)'
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.3.2 `catch`子句](#the-catch-clause)'
 - en: 'If an exception is thrown somewhere inside the `try` block (which may happen
     deeply nested inside the tree of function/method calls) then execution switches
     to the `catch` clause where the parameter refers to the exception. After that,
     execution normally continues after the `try` statement. That may change if:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果在`try`块内部（可能在函数/方法调用的树中深度嵌套）抛出异常，则执行切换到`catch`子句，其中参数引用异常。之后，执行通常在`try`语句之后继续。如果以下情况发生，这可能会改变：
 - en: There is a `return`, `break`, or `throw` inside the `catch` block.
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`catch`块内部有一个`return`、`break`或`throw`。
 - en: There is a `finally` clause (which is always executed before the `try` statement
     ends).
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有一个`finally`子句（它在`try`语句结束时总是执行）。
 - en: The following code demonstrates that the value that is thrown in line A is indeed
     caught in line B.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了在行A抛出的值确实在行B中被捕获。
 - en: '[PRE6]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[26.3.2.1 Omitting the `catch` binding ^(ES2019)](#omitting-catch-binding)'
+  id: totrans-58
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.3.2.1 省略`catch`绑定^(ES2019)](#omitting-catch-binding)'
 - en: 'We can omit the `catch` parameter if we are not interested in the value that
     was thrown:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们不关心抛出的值，我们可以省略`catch`参数：
 - en: '[PRE7]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: That may occasionally be useful. For example, Node.js has the API function [`assert.throws(func)`](https://nodejs.org/api/assert.html#assert_assert_throws_fn_error_message)
     that checks whether an error is thrown inside `func`. It could be implemented
     as follows.
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有时可能很有用。例如，Node.js 有一个 API 函数`assert.throws(func)`（[链接](https://nodejs.org/api/assert.html#assert_assert_throws_fn_error_message)），用于检查`func`内部是否抛出错误。它可以如下实现。
 - en: '[PRE8]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: However, a more complete implementation of this function would have a `catch`
     parameter and would, for example, check that its type is as expected.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，这个函数的更完整实现将有一个`catch`参数，并且例如，会检查其类型是否符合预期。
 - en: '[26.3.3 The `finally` clause](#the-finally-clause)'
+  id: totrans-64
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.3.3 `finally`子句](#the-finally-clause)'
 - en: The code inside the `finally` clause is always executed at the end of a `try`
     statement – no matter what happens in the `try` block or the `catch` clause.
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: '`finally`子句中的代码总是在`try`语句的末尾执行——无论`try`块或`catch`子句中发生什么。'
 - en: 'Let’s look at a common use case for `finally`: We have created a resource and
     want to always destroy it when we are done with it, no matter what happens while
     working with it. We would implement that as follows:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看`finally`的一个常见用例：我们创建了一个资源，并希望在完成使用后始终销毁它，无论在处理它时发生什么。我们会这样实现：
 - en: '[PRE9]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[26.3.3.1 `finally` is always executed](#finally-is-always-executed)'
+  id: totrans-68
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.3.3.1 `finally`总是执行](#finally-is-always-executed)'
 - en: 'The `finally` clause is always executed, even if an error is thrown (line A):'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使抛出错误（行A），`finally`子句也总是执行。
 - en: '[PRE10]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'And even if there is a `return` statement (line A):'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使有`return`语句（行A）：
 - en: '[PRE11]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Exception handling**'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：异常处理**'
 - en: '`exercises/exception-handling/call_function_test.mjs`'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/exception-handling/call_function_test.mjs`'
 - en: '[26.4 The superclass of all built-in exception classes: `Error`](#class-Error)'
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.4 所有内置异常类的超类：`Error`](#class-Error)'
 - en: 'This is what `Error`’s instance properties and constructor look like:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是`Error`的实例属性和构造函数的外观：
 - en: '[PRE12]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'The constructor has two parameters:'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 构造函数有两个参数：
 - en: '`message` specifies an error message.'
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`message`指定错误消息。'
 - en: '`options` was introduced in ECMAScript 2022\. It contains an object where one
     property is currently supported:'
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`options`是在 ECMAScript 2022 中引入的。它包含一个对象，其中目前支持一个属性：'
 - en: '`.cause` specifies which exception (if any) caused the current error.'
+  id: totrans-81
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.cause`指定了（如果有的话）导致当前错误的异常。'
 - en: The subsections after the next one explain the instance properties `.message`
     and `.stack` in more detail. The next section explains `.cause`.
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 下一个子节之后将更详细地解释实例属性`.message`和`.stack`。下一个部分将解释`.cause`。
 - en: '[26.4.1 `Error.prototype.name`](#errorprototypename)'
+  id: totrans-83
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.1 `Error.prototype.name`](#errorprototypename)'
 - en: 'Each built-in error class `E` has a property `E.prototype.name`:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 每个内置错误类 `E` 都有一个属性 `E.prototype.name`：
 - en: '[PRE13]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Therefore, there are two ways to get the name of the class of a built-in error
     object:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，有两种方式来获取内置错误对象的类名：
 - en: '[PRE14]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[26.4.2 Error instance property `.message`](#error.message)'
+  id: totrans-88
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.2 `Error` 实例属性 `.message`](#error.message)'
 - en: '`.message` contains just the error message:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: '`.message` 只包含错误消息：'
 - en: '[PRE15]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'If we omit the message then the empty string is used as a default value (inherited
     from `Error.prototype.message`):'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们省略了消息，则使用空字符串作为默认值（从 `Error.prototype.message` 继承）：
 - en: 'If we omit the message, it is the empty string:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们省略了消息，它将使用空字符串：
 - en: '[PRE16]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '[26.4.3 Error instance property `.stack`](#error-stack)'
+  id: totrans-94
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.3 `Error` 实例属性 `.stack`](#error-stack)'
 - en: The instance property `.stack` is not an ECMAScript feature, but is widely supported
     by JavaScript engines. It is usually a string, but its exact structure is not
     standardized and varies between engines.
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 实例属性 `.stack` 不是一个 ECMAScript 功能，但它被 JavaScript 引擎广泛支持。它通常是一个字符串，但它的确切结构没有标准化，并且在不同引擎之间有所不同。
 - en: 'This is what it looks like on the JavaScript engine V8:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是在 JavaScript 引擎 V8 中的样子：
 - en: '[PRE17]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'Output:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE18]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: The first line of this *stack trace* (a trace of the call stack) shows that
     the `Error` was created in line 2\. The last line shows that everything started
     in line 11.
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个 *堆栈跟踪*（调用栈的跟踪）的第一行显示 `Error` 是在行 2 处创建的。最后一行显示一切始于行 11。
 - en: '[26.5 Chaining errors: the instance property `.cause` ^(ES2022)](#error-cause)'
+  id: totrans-101
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.5 链式错误：实例属性 `.cause` (ES2022)](#error-cause)'
 - en: The instance property `.cause` is created via the options object in the second
     parameter of `new Error()`. It specifies which other error caused the current
     one.
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 实例属性 `.cause` 是通过 `new Error()` 的第二个参数中的选项对象创建的。它指定了哪个其他错误导致了当前错误。
 - en: '[PRE19]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '[26.5.1 Why would we want to chain errors?](#why-would-we-want-to-chain-errors)'
+  id: totrans-104
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.5.1 我们为什么想要链式错误？](#why-would-we-want-to-chain-errors)'
 - en: 'Sometimes, we catch errors that are thrown during a more deeply nested function
     call and would like to attach more information to it:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，我们会捕获在更深层次的函数调用中抛出的错误，并希望附加更多信息到它：
 - en: '[PRE20]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: The statements inside the `try` clause may throw all kinds of errors. At the
     locations where those errors are thrown, there is often no awareness of the file
     that caused them. That’s why we attach that information in line A.
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: '`try` 语句块内的语句可能会抛出各种错误。在那些错误被抛出的位置，通常没有意识到导致它们的文件。这就是为什么我们在行 A 处附加那个信息。'
 - en: 'If an error is shown on the console (e.g. because it was caught or logged)
     or if we use Node’s `util.inspect()` (line A), we can see the cause and its stack
     trace:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果错误在控制台（例如，因为它被捕获或记录）显示，或者如果我们使用 Node 的 `util.inspect()`（行 A），我们可以看到原因及其堆栈跟踪：
 - en: '[PRE21]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: Alas, we don’t see the cause if we convert an error to a string or look at its
     `.stack`.
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 殊可惜，如果我们将错误转换为字符串或查看其 `.stack`，就无法看到原因。
 - en: '[26.5.2 Should we store context data in `.cause`?](#should-we-store-context-data-in-cause)'
+  id: totrans-111
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.5.2 我们应该在 `.cause` 中存储上下文数据吗？](#should-we-store-context-data-in-cause)'
 - en: '`error.cause` is not just for instances of `Error`; any data we store in it
     is displayed properly:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: '`error.cause` 不仅适用于 `Error` 的实例；我们存储在其中的任何数据都会被正确显示：'
 - en: '[PRE22]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: Some people recommend using `.cause` to provide data as context for an error.
     What are the pros and cons of doing that?
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 有些人推荐使用 `.cause` 来提供错误的数据上下文。这样做有哪些优点和缺点？
 - en: 'Pro: The context data is displayed nicely alongside the error.'
+  id: totrans-115
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：上下文数据会与错误一起优雅地显示。
 - en: 'Cons:'
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：
 - en: '`.cause` only supports arbitrary data because in JavaScript, we can `throw`
     arbitrary data. Using it for non-thrown data means we are kind of misusing this
     mechanism.'
+  id: totrans-117
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.cause` 只支持任意数据，因为在 JavaScript 中，我们可以 `throw` 任意数据。将其用于非抛出数据意味着我们有点误用了这个机制。'
 - en: If we use `.cause` for context data, we can’t chain exceptions anymore.
+  id: totrans-118
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们使用 `.cause` 作为上下文数据，就无法再链式抛出异常了。
 - en: '[26.6 Subclasses of `Error`](#subclasses-of-error)'
+  id: totrans-119
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.6 `Error` 的子类](#subclasses-of-error)'
 - en: '[26.6.1 The built-in subclasses of `Error`](#built-in-error-subclasses)'
+  id: totrans-120
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.6.1 `Error` 的内置子类](#built-in-error-subclasses)'
 - en: '`Error` has the following subclasses – quoting [the ECMAScript specification](https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard):'
+  id: totrans-121
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Error` 有以下子类 – 引用 [ECMAScript 规范](https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard)：'
 - en: '[`AggregateError`](ch_promises.html#AggregateError) ^(ES2021) represents multiple
     errors at once. In the standard library, only `Promise.any()` uses it.'
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`AggregateError` (ES2021)](ch_promises.html#AggregateError) 表示同时发生的多个错误。在标准库中，只有
+    `Promise.any()` 使用它。'
 - en: '`RangeError` indicates a value that is not in the set or range of allowable
     values.'
+  id: totrans-123
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`RangeError` 表示一个不在允许值集合或范围内的值。'
 - en: '`ReferenceError` indicates that an invalid reference value has been detected.'
+  id: totrans-124
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`ReferenceError` 表示检测到无效的引用值。'
 - en: '`SyntaxError` indicates that a parsing error has occurred.'
+  id: totrans-125
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`SyntaxError` 表示发生了解析错误。'
 - en: '`TypeError` is used to indicate an unsuccessful operation when none of the
     other *NativeError* objects are an appropriate indication of the failure cause.'
+  id: totrans-126
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`TypeError` 用于指示当其他任何 *NativeError* 对象都不是适当的失败原因指示时，操作不成功。'
 - en: '`URIError` indicates that one of the global URI handling functions was used
     in a way that is incompatible with its definition.'
+  id: totrans-127
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`URIError` 表示在全局 URI 处理函数的使用方式与其定义不兼容。'
 - en: '[26.6.2 Subclassing `Error`](#subclassing-error)'
+  id: totrans-128
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.6.2 继承 `Error`](#subclassing-error)'
 - en: 'Since ECMAScript 2022, the `Error` constructor accepts two parameters (see
     previous subsection). Therefore, we have two choices when subclassing it: We can
     either omit the constructor in our subclass or we can invoke `super()` like this:'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 自从 ECMAScript 2022 以来，`Error` 构造函数接受两个参数（参见前一小节）。因此，在继承它时，我们有两种选择：我们可以在我们的子类中省略构造函数，或者我们可以像这样调用
+    `super()`：
 - en: '[PRE23]'
+  id: totrans-130
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
