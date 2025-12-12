@@ -1,0 +1,1123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>4 The basics of TypeScript</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>4 The basics of TypeScript</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_typescript-essentials.html">https://exploringjs.com/ts/book/ch_typescript-essentials.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#what-you-ll-learn">4.1 What you’ll learn</a>
+    </li>
+    <li>
+      <a href="#how-to-play-with-code-while-reading-this-chapter">4.2 How to play with code while reading this chapter</a>
+    </li>
+    <li>
+      <a href="#what-is-a-type">4.3 What is a type?</a>
+    </li>
+    <li>
+      <a href="#language-levels">4.4 TypeScript’s two language levels</a>
+      <ol>
+        <li>
+          <a href="#dynamic-types-vs-static-types">4.4.1 Dynamic types vs. static types</a>
+        </li>
+        <li>
+          <a href="#javascript-s-dynamic-types">4.4.2 JavaScript’s dynamic types</a>
+        </li>
+        <li>
+          <a href="#types-in-typescript">4.4.3 TypeScript’s static types</a>
+        </li>
+        <li>
+          <a href="#revisiting-the-two-language-levels">4.4.4 Revisiting the two language levels</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#primitive-literal-types">4.5 Primitive literal types</a>
+    </li>
+    <li>
+      <a href="#the-types-any-unknown-and-never">4.6 The types <code>any</code>, <code>unknown</code> and <code>never</code></a>
+      <ol>
+        <li>
+          <a href="#the-wildcard-type-any">4.6.1 The wildcard type <code>any</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#type-inference">4.7 Type inference</a>
+      <ol>
+        <li>
+          <a href="#the-rules-of-type-inference">4.7.1 The rules of type inference</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#type-aliases">4.8 Type aliases</a>
+    </li>
+    <li>
+      <a href="#compound-types">4.9 Compound types</a>
+    </li>
+    <li>
+      <a href="#typing-arrays">4.10 Typing Arrays</a>
+      <ol>
+        <li>
+          <a href="#array-types-t-and-array-t">4.10.1 Array types: <code>T[]</code> and <code>Array&lt;T&gt;</code></a>
+        </li>
+        <li>
+          <a href="#tuple-types-t0-t1">4.10.2 Tuple types: <code>[T0, T1, ···]</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#function-types">4.11 Function types</a>
+      <ol>
+        <li>
+          <a href="#inferring-function-types">4.11.1 Inferring function types</a>
+        </li>
+        <li>
+          <a href="#example-a-function-whose-parameter-is-a-function">4.11.2 Example: a function whose parameter is a function</a>
+        </li>
+        <li>
+          <a href="#inferring-the-return-types-of-functions">4.11.3 Inferring the return types of functions</a>
+        </li>
+        <li>
+          <a href="#the-special-return-type-void">4.11.4 The special return type <code>void</code></a>
+        </li>
+        <li>
+          <a href="#optional-parameters">4.11.5 Optional parameters</a>
+        </li>
+        <li>
+          <a href="#parameter-default-values">4.11.6 Parameter default values</a>
+        </li>
+        <li>
+          <a href="#rest-parameters">4.11.7 Rest parameters</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#typing-objects">4.12 Typing objects</a>
+      <ol>
+        <li>
+          <a href="#typing-fixed-layout-objects-via-object-literal-types">4.12.1 Typing fixed-layout objects via object literal types</a>
+        </li>
+        <li>
+          <a href="#interfaces-as-an-alternative-to-object-literal-types">4.12.2 Interfaces as an alternative to object literal types</a>
+        </li>
+        <li>
+          <a href="#typescript-s-structural-typing-vs-nominal-typing">4.12.3 TypeScript’s structural typing vs. nominal typing</a>
+        </li>
+        <li>
+          <a href="#optional-properties">4.12.4 Optional properties</a>
+        </li>
+        <li>
+          <a href="#methods">4.12.5 Methods</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#union-types">4.13 Union types</a>
+      <ol>
+        <li>
+          <a href="#adding-undefined-and-null-to-types">4.13.1 Adding <code>undefined</code> and <code>null</code> to types</a>
+        </li>
+        <li>
+          <a href="#unions-of-string-literal-types">4.13.2 Unions of string literal types</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#intersection-types">4.14 Intersection types</a>
+    </li>
+    <li>
+      <a href="#type-guards-and-narrowing">4.15 Type guards and narrowing</a>
+    </li>
+    <li>
+      <a href="#type-variables-and-generic-types">4.16 Type variables and generic types</a>
+      <ol>
+        <li>
+          <a href="#example-a-container-for-values">4.16.1 Example: a container for values</a>
+        </li>
+        <li>
+          <a href="#example-a-generic-class">4.16.2 Example: a generic class</a>
+        </li>
+        <li>
+          <a href="#example-maps">4.16.3 Example: Maps</a>
+        </li>
+        <li>
+          <a href="#functions-and-methods-with-type-parameters">4.16.4 Functions and methods with type parameters</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#conclusion-understanding-the-initial-example">4.17 Conclusion: understanding the initial example</a>
+    </li>
+    <li>
+      <a href="#next-steps">4.18 Next steps</a>
+      <ol>
+        <li>
+          <a href="#tip-use-strict-type-checking-whenever-you-can">4.18.1 Tip: Use <code>strict</code> type checking whenever you can</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p>This chapter explains the basics of TypeScript. After reading it, you should be able to write your first TypeScript code. My hope is that that shouldn’t take you longer than a day. <a href="https://dr-axel.de/#contact">I’d love to hear</a> how long it actually took you – my guess may be off.</p>
+<div class="boxout">
+  <p><img src="../Images/00b0d6029a045810b908b88d1a6733d2.png" height="24" class="boxout-icon" alt="Icon “reading”" data-original-src="https://exploringjs.com/ts/book/icon/reading.svg"/> <strong>Start reading here</strong></p>
+  <div class="boxout-vspace"/>
+  <p>You can start reading this book with this chapter: No prior knowledge is required other than JavaScript. Alternatively, if you first want to get a better understanding of how TypeScript fits into development workflows as a tool, you can check out <a href="ch_typescript-workflows.html#ch_typescript-workflows">“How TypeScript is used: workflows, tools, etc.” (§6)</a>.</p>
+</div>
+<h3 id="what-you-ll-learn"><a class="heading-id-link" href="#what-you-ll-learn">4.1 What you’ll learn</a></h3>
+<p>After reading this chapter, you should be able to understand the following TypeScript code (which we’ll get back to at the end):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Array</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-title function_">concat</span>(...<span class="hljs-attr">items</span>: <span class="hljs-title class_">Array</span>&lt;T[] | T&gt;): T[];</code>
+<code>  reduce&lt;U&gt;(</code>
+<code>    <span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">state: U, element: T, index: <span class="hljs-built_in">number</span></span>) =&gt;</span> U,</code>
+<code>    firstState?: U</code>
+<code>  ): U;</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>You may think that this is cryptic. And I agree with you! But (as I hope to prove) this syntax is relatively easy to learn. And once you understand it, it gives you immediate, precise and comprehensive summaries of how code behaves – without having to read long descriptions in English.</p>
+<h3 id="how-to-play-with-code-while-reading-this-chapter"><a class="heading-id-link" href="#how-to-play-with-code-while-reading-this-chapter">4.2 How to play with code while reading this chapter</a></h3>
+<p>This chapter is meant to be consumed passively: Everything you need to see is shown here, including explorations of what a piece of code does.</p>
+<p>However, you may still want to play with TypeScript code. The following chapter explains how to do that: <a href="ch_trying-out-typescript.html#ch_trying-out-typescript">“Trying out TypeScript without installing it” (§7)</a>.</p>
+<h3 id="what-is-a-type"><a class="heading-id-link" href="#what-is-a-type">4.3 What is a type?</a></h3>
+<p>In this chapter:</p>
+<ul>
+  <li>
+    A type is a set of values. For example, the type <code>boolean</code> is a set whose elements are <code>false</code> and <code>true</code>.
+  </li>
+  <li>
+    <code>S</code> being a subtype of <code>T</code> means that <code>S</code> is a subset of <code>T</code>.
+  </li>
+</ul>
+<h3 id="language-levels"><a class="heading-id-link" href="#language-levels">4.4 TypeScript’s two language levels</a></h3>
+<p>TypeScript is JavaScript plus syntax for adding static type information. Therefore, TypeScript has two <em>language levels</em> – two ways of using source code:</p>
+<ul>
+  <li>
+    The <em>program level</em> (JavaScript): At this level, using TypeScript source code means running it: We have to remove the type information and feed it to a JavaScript engine.
+  </li>
+  <li>
+    The <em>type level</em> (TypeScript): At this level, using TypeScript source code means type-checking it: We analyze the source code to make sure types are used consistently.
+  </li>
+</ul>
+<table class="framed">
+  <style>
+    th:nth-child(1), td:nth-child(1) {
+      text-align: left;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+    th:nth-child(3), td:nth-child(3) {
+      text-align: left;
+    }
+  </style>
+  <thead>
+    <tr>
+      <th/><th>Program level</th><th>Type level</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Programming language is</td><td>JavaScript</td><td>TypeScript</td>
+    </tr>
+    <tr>
+      <td>Source code is</td><td>executed</td><td>type-checked</td>
+    </tr>
+    <tr>
+      <td>Types are</td><td>dynamic</td><td>static</td>
+    </tr>
+    <tr>
+      <td>Types exist at</td><td>runtime</td><td>compile time</td>
+    </tr>
+  </tbody>
+</table>
+<h4 id="dynamic-types-vs-static-types"><a class="heading-id-link" href="#dynamic-types-vs-static-types">4.4.1 Dynamic types vs. static types</a></h4>
+<p>So far, we have only talked about TypeScript’s (static) types. But JavaScript also has types:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">typeof</span> <span class="hljs-literal">true</span></span></code>
+<code>'boolean'</code>
+</pre>
+<p>Its types are called <em>dynamic</em>. Why is that? We have to run code to see if they are used correctly – e.g.:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> value = <span class="hljs-literal">null</span>;</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> value.<span class="hljs-property">length</span>,</code>
+<code>  <span class="hljs-regexp">/^TypeError: Cannot read properties of null/</span></code>
+<code>);</code>
+</pre>
+<p>In contrast, TypeScript’s types are <em>static</em>: We check them by analyzing the syntax – without running the code. That happens during editing (for individual files) or when running the TypeScript compiler <code>tsc</code> (for the whole code base). In the following code, TypeScript detects the error via type checking (note that it doesn’t even need explicit type information in this case):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> value = <span class="hljs-literal">null</span>;</code>
+<code><span class="hljs-comment">// @ts-expect-error: 'value' is possibly 'null'.</span></code>
+<code>value.<span class="hljs-property">length</span>;</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/837806d7ec89826c3784b2e685feb762.png" height="24" class="boxout-icon" alt="Icon “details”" data-original-src="https://exploringjs.com/ts/book/icon/details.svg"/> <strong><code>@ts-expect-error</code> shows type checking errors</strong></p>
+  <div class="boxout-vspace"/>
+  <p>In this book, type checking errors are shown via <code>@ts-expect-error</code> directives (<a href="ch_book-notation.html#notation-ts-expect-error">more information</a>).</p>
+</div>
+<h4 id="javascript-s-dynamic-types"><a class="heading-id-link" href="#javascript-s-dynamic-types">4.4.2 JavaScript’s dynamic types</a></h4>
+<p>The JavaScript language (not TypeScript!) has only eight types. In the ECMAScript specification, they have names that start with capital letters. Here, I’m going with the values returned by <code>typeof</code> – e.g.:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">typeof</span> <span class="hljs-literal">undefined</span></span></code>
+<code>'undefined'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">typeof</span> <span class="hljs-number">123</span></span></code>
+<code>'number'</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">typeof</span> <span class="hljs-string">'abc'</span></span></code>
+<code>'string'</code>
+</pre>
+<p>JavaScript’s eight types are:</p>
+<ol>
+  <li>
+    <code>undefined</code>: the set with the only element <code>undefined</code>
+  </li>
+  <li>
+    <code>null</code>: the set with the only element <code>null</code>. Due to a historical bad decision, <code>typeof</code> returns <code>'object'</code> for the value <code>null</code> and not <code>'null'</code>.
+  </li>
+  <li>
+    <code>boolean</code>: the set with the two elements <code>false</code> and <code>true</code>
+  </li>
+  <li>
+    <code>number</code>: the set of all numbers
+  </li>
+  <li>
+    <code>bigint</code>: the set of all arbitrary-precision integers
+  </li>
+  <li>
+    <code>string</code>: the set of all strings
+  </li>
+  <li>
+    <code>symbol</code>: the set of all symbols
+  </li>
+  <li>
+    <code>object</code>: the set of all objects (which includes functions and Arrays)
+  </li>
+</ol>
+<p><code>typeof</code> additionally has a separate “type” for functions but that is not how ECMAScript sees things internally.</p>
+<p>All of these types are dynamic. They can also be used at the type level in TypeScript (see next section).</p>
+<h4 id="types-in-typescript"><a class="heading-id-link" href="#types-in-typescript">4.4.3 TypeScript’s static types</a></h4>
+<p>TypeScript brings an additional layer to JavaScript: <em>static types</em>. In source code, there are:</p>
+<ul>
+  <li>
+    Sources of data – e.g. values created via literals such as <code>128</code>, <code>true</code> or <code>['a', 'b']</code>
+  </li>
+  <li>
+    Sinks of data – e.g. storage locations such as variables, properties and parameters.
+    <ul>
+      <li>
+        Storage locations can also become data sources when we read from them.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Both have static types in TypeScript:</p>
+<ul>
+  <li>
+    The type of a data source describes what dynamic values it can be.
+  </li>
+  <li>
+    The type of a data sink describes what dynamic values can be written to it.
+  </li>
+</ul>
+<p>One way in which a storage location such as a variable can receive a static type is via a <em>type annotation</em> – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">count</span>: <span class="hljs-built_in">number</span>;</code>
+</pre>
+<p>The colon (<code>:</code>) plus the type <code>number</code> is the type annotation. It states that the static type of the variable <code>count</code> is <code>number</code>. The type annotation helps with type checking:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">count</span>: <span class="hljs-built_in">number</span>;</code>
+<code><span class="hljs-comment">// @ts-expect-error: Type 'string' is not assignable to type 'number'.</span></code>
+<code>count = <span class="hljs-string">'yes'</span>;</code>
+</pre>
+<p>What does the error message mean? The (implicit) static type <code>string</code> of the data source <code>'yes'</code> is incompatible with the (explicitly specified) static type <code>number</code> of the data sink <code>count</code>.</p>
+<h5 id="a-function-with-type-annotations"><a class="heading-id-link" href="#a-function-with-type-annotations">4.4.3.1 A function with type annotations</a></h5>
+<p>The next example shows a function with type annotations:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">toString</span>(<span class="hljs-params">num: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">String</span>(num);</code>
+<code>}</code>
+</pre>
+<p>There are two type annotations:</p>
+<ul>
+  <li>
+    The parameter <code>num</code> has the type <code>number</code>.
+  </li>
+  <li>
+    The return type of the function is <code>string</code>.
+  </li>
+</ul>
+<h4 id="revisiting-the-two-language-levels"><a class="heading-id-link" href="#revisiting-the-two-language-levels">4.4.4 Revisiting the two language levels</a></h4>
+<p>Let’s briefly revisit the two language levels. It’s interesting to see how they show up in TypeScript’s syntax:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">noValue</span>: <span class="hljs-literal">undefined</span> = <span class="hljs-literal">undefined</span>;</code>
+</pre>
+<ul>
+  <li>
+    <p>At the dynamic level, we use JavaScript to declare a variable <code>noValue</code> and initialize it with the value <code>undefined</code>.</p>
+  </li>
+  <li>
+    <p>At the static level, we use TypeScript to specify that variable <code>noValue</code> has the static type <code>undefined</code>.</p>
+  </li>
+</ul>
+<p>The same syntax, <code>undefined</code>, is used at the JavaScript level and at the type level and means different things – depending on where it is used.</p>
+<h3 id="primitive-literal-types"><a class="heading-id-link" href="#primitive-literal-types">4.5 Primitive literal types</a></h3>
+<p>Several primitive types have so-called <em>literal types</em>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">thousand</span>: <span class="hljs-number">1000</span> = <span class="hljs-number">1000</span>;</code>
+</pre>
+<p>The <code>1000</code> after the colon is a type, a <em>number literal type</em>: It is a set whose only element is the value <code>1000</code> and it is a subtype of <code>number</code>.</p>
+<p>On one hand, any value we assign to <code>thousand</code> must be <code>1000</code>:</p>
+<pre class="language-ts">
+<code>thousand = <span class="hljs-number">1000</span>; <span class="hljs-comment">// OK</span></code>
+<code><span class="hljs-comment">// @ts-expect-error: Type '999' is not assignable to type '1000'.</span></code>
+<code>thousand = <span class="hljs-number">999</span>;</code>
+</pre>
+<p>On the other hand, we can assign <code>thousand</code> to any variable whose type is <code>number</code> because its type is a subtype of <code>number</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">num</span>: <span class="hljs-built_in">number</span> = thousand;</code>
+</pre>
+<p>Except for <code>symbol</code>, all primitive types have literal types:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// boolean literal type</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">TRUTHY</span>: <span class="hljs-literal">true</span> = <span class="hljs-literal">true</span>;</code>
+<code/>
+<code><span class="hljs-comment">// bigint literal type</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">HUNDRED</span>: <span class="hljs-number">100n</span> = <span class="hljs-number">100n</span>;</code>
+<code/>
+<code><span class="hljs-comment">// string literal type</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">YES</span>: <span class="hljs-string">'yes'</span> = <span class="hljs-string">'yes'</span>;</code>
+<code/>
+<code><span class="hljs-comment">// These could also be considered literal types</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">UNDEF</span>: <span class="hljs-literal">undefined</span> = <span class="hljs-literal">undefined</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">NULL</span>: <span class="hljs-literal">null</span> = <span class="hljs-literal">null</span>;</code>
+</pre>
+<p>Especially string literal types will become useful later (when we get to union types).</p>
+<h3 id="the-types-any-unknown-and-never"><a class="heading-id-link" href="#the-types-any-unknown-and-never">4.6 The types <code>any</code>, <code>unknown</code> and <code>never</code></a></h3>
+<p>TypeScript has several types that are specific to the type level:</p>
+<ul>
+  <li>
+    <p><code>any</code> is a wildcard type and accepts any value (see below).</p>
+  </li>
+  <li>
+    <p><code>unknown</code> is similar to <code>any</code> but less flexible: If a variable or parameter has that type, we can also write any value to it. However, we can’t do anything with its content unless we perform further type checks. Being less flexible is a good thing: I recommend avoiding <code>any</code> and instead using <code>unknown</code> whenever possible. For more information see <a href="ch_any-unknown.html#ch_any-unknown">“The top types <code>any</code> and <code>unknown</code>” (§14)</a>.</p>
+  </li>
+  <li>
+    <p><code>never</code> the empty set as a type. Among other things, it is used for locations that are never reached when a program is executed.</p>
+  </li>
+</ul>
+<h4 id="the-wildcard-type-any"><a class="heading-id-link" href="#the-wildcard-type-any">4.6.1 The wildcard type <code>any</code></a></h4>
+<p>If the type of a storage location is neither explicitly specified nor inferrable, TypeScript uses the type <code>any</code> for it. <code>any</code> is the type of all values and a wildcard type: If a value has that type, TypeScript does not limit us in any way.</p>
+<p>If <code>strict</code> type checking is enabled, we can only use <code>any</code> explicitly: Every location must have an explicit or inferred static type. That is safer because there are no holes in type checking, no unintended blind spots.</p>
+<p>Let’s look at examples – the type of parameters can usually not be inferred:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: Parameter 'arg' implicitly has an 'any' type.</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">arg</span>): <span class="hljs-built_in">void</span> {} <span class="hljs-comment">// error</span></code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">func2</span>(<span class="hljs-params">arg: <span class="hljs-built_in">boolean</span></span>): <span class="hljs-built_in">void</span> {} <span class="hljs-comment">// OK</span></code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">func3</span>(<span class="hljs-params">arg = <span class="hljs-literal">false</span></span>): <span class="hljs-built_in">void</span> {} <span class="hljs-comment">// OK</span></code>
+</pre>
+<p>For <code>func3</code>, TypeScript can infer that <code>arg</code> has the type <code>boolean</code> because it has the default value <code>false</code>.</p>
+<h3 id="type-inference"><a class="heading-id-link" href="#type-inference">4.7 Type inference</a></h3>
+<p>In many cases, TypeScript can automatically derive the types of data sources or data sinks, without us having to annotate anything. That is called <em>type inference</em>.</p>
+<p>This is an example of type inference:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> count = <span class="hljs-number">14</span>;</code>
+<code>assertType&lt;<span class="hljs-number">14</span>&gt;(count);</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/837806d7ec89826c3784b2e685feb762.png" height="24" class="boxout-icon" alt="Icon “details”" data-original-src="https://exploringjs.com/ts/book/icon/details.svg"/> <strong><code>assertType&lt;T&gt;(v)</code> shows the type <code>T</code> of a value <code>v</code></strong></p>
+  <div class="boxout-vspace"/>
+  <p>In this book, <code>assertType&lt;T&gt;(v)</code> is used to show that a value <code>v</code> has the type <code>T</code> – which was either inferred or explicitly assigned. For more information see <a href="ch_book-notation.html#notation-assertType">“Type level: <code>assertType&lt;T&gt;(v)</code>” (§5.2)</a>.</p>
+</div>
+<p>TypeScript infers that the type of <code>count</code> is <code>14</code>. It can do so because it knows that the value <code>14</code> has the type <code>14</code>. Interestingly, TypeScript infers a more general type when we use <code>let</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> count = <span class="hljs-number">14</span>;</code>
+<code>assertType&lt;<span class="hljs-built_in">number</span>&gt;(count);</code>
+</pre>
+<p>Why is that? The assumption is that the value of <code>count</code> is preliminary and that we want to assign other (similar!) values later on. If <code>count</code> had the type <code>14</code> then we wouldn’t be able to do that.</p>
+<p>Another example of type inference: In this case TypeScript infers that function <code>toString()</code> has the return type <code>string</code>.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">toString</span>(<span class="hljs-params">num: <span class="hljs-built_in">number</span></span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">String</span>(num);</code>
+<code>}</code>
+<code>assertType&lt;<span class="hljs-built_in">string</span>&gt;(<span class="hljs-title function_">toString</span>(<span class="hljs-number">32</span>));</code>
+</pre>
+<h4 id="the-rules-of-type-inference"><a class="heading-id-link" href="#the-rules-of-type-inference">4.7.1 The rules of type inference</a></h4>
+<p>Type inference is not guesswork: It follows clear rules (similar to arithmetic) for deriving types where they haven’t been specified explicitly. For example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> strValue = <span class="hljs-title class_">String</span>(<span class="hljs-number">32</span>);</code>
+<code>assertType&lt;<span class="hljs-built_in">string</span>&gt;(strValue);</code>
+</pre>
+<p>The inferred type of <code>strValue</code> is <code>string</code>:</p>
+<p><strong>Step 1:</strong> The inferred type of <code>32</code> is <code>32</code>.</p>
+<p><strong>Step 2:</strong> <code>String</code> used as a function has the following type (simplified):</p>
+<pre class="language-ts">
+<code>(<span class="hljs-attr">value</span>: <span class="hljs-built_in">any</span>) =&gt; <span class="hljs-built_in">string</span></code>
+</pre>
+<p>This type notation is used for functions and means:</p>
+<ul>
+  <li>
+    The function has one parameter, <code>value</code>. That parameter has the type <code>any</code>. If a parameter has that type, it accepts any kind of value. (More on <code>any</code> soon.)
+  </li>
+  <li>
+    The function returns values of type <code>string</code>.
+  </li>
+</ul>
+<p><strong>Step 3:</strong> By combining the results of step 1 and step 2, TypeScript can infer that <code>strValue</code> has the type <code>string</code>.</p>
+<h3 id="type-aliases"><a class="heading-id-link" href="#type-aliases">4.8 Type aliases</a></h3>
+<p>With <code>type</code> we can create a new name (an alias) for an existing type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Age</span> = <span class="hljs-built_in">number</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">age</span>: <span class="hljs-title class_">Age</span> = <span class="hljs-number">82</span>;</code>
+</pre>
+<h3 id="compound-types"><a class="heading-id-link" href="#compound-types">4.9 Compound types</a></h3>
+<p>Compound types have other types inside them – which makes them very expressive. These are a few examples:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// Array types</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StringArray</span> = <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;;</code>
+<code/>
+<code><span class="hljs-comment">// Function types</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NumToStr</span> = <span class="hljs-function">(<span class="hljs-params">num: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">string</span>;</code>
+<code/>
+<code><span class="hljs-comment">// Object literal types</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">BlogPost</span> = {</code>
+<code>  <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">tags</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-comment">// Union types</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">YesOrNo</span> = <span class="hljs-string">'yes'</span> | <span class="hljs-string">'no'</span>;</code>
+</pre>
+<p>Next, we’ll explore all of these compound types and more.</p>
+<h3 id="typing-arrays"><a class="heading-id-link" href="#typing-arrays">4.10 Typing Arrays</a></h3>
+<p>TypeScript has two different ways of typing Arrays:</p>
+<ul>
+  <li>
+    An <em>Array type</em> <code>T[]</code> or <code>Array&lt;T&gt;</code> is used if an Array is a collection of values that all have the same type <code>T</code>.
+  </li>
+  <li>
+    A <em>tuple type</em> <code>[T0, T1, ···]</code> is used if the index of an Array element determines its type.
+  </li>
+</ul>
+<h4 id="array-types-t-and-array-t"><a class="heading-id-link" href="#array-types-t-and-array-t">4.10.1 Array types: <code>T[]</code> and <code>Array&lt;T&gt;</code></a></h4>
+<p>For historical reasons, there are two equivalent ways of expressing the fact that <code>arr</code> is an Array, used to manage a sequence of numbers (think list, stack, queue, etc.):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">arr1</span>: <span class="hljs-built_in">number</span>[] = [];</code>
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">arr2</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt; = [];</code>
+</pre>
+<p>Normally, TypeScript can infer the type of a variable if there is an assignment. In this case, we have to help it because with an empty Array, it can’t determine the type of the elements.</p>
+<p>We’ll explore the angle brackets notation of <code>Array&lt;number&gt;</code> in more detail later (spoiler: <code>Array</code> is a <em>generic type</em> and <code>number</code> is a <em>type parameter</em>).</p>
+<p>In JavaScript’s standard library, <code>Object.keys()</code> returns an array:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> keys = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>({<span class="hljs-attr">prop</span>: <span class="hljs-number">123</span>});</code>
+<code>assertType&lt;<span class="hljs-built_in">string</span>[]&gt;(keys);</code>
+</pre>
+<h4 id="tuple-types-t0-t1"><a class="heading-id-link" href="#tuple-types-t0-t1">4.10.2 Tuple types: <code>[T0, T1, ···]</code></a></h4>
+<p>The following variable <code>entry</code> has a tuple type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">entry</span>: [<span class="hljs-built_in">string</span>, <span class="hljs-built_in">number</span>] = [<span class="hljs-string">'count'</span>, <span class="hljs-number">33</span>];</code>
+</pre>
+<p>We can use it to create an object via <code>Object.fromEntries()</code>:</p>
+<pre class="language-ts">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>([entry]),</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">count</span>: <span class="hljs-number">33</span>,</code>
+<code>  }</code>
+<code>);</code>
+</pre>
+<p>What is the nature of <code>entry</code>? At the JavaScript level, it’s also an Array, but it is used differently:</p>
+<ul>
+  <li>
+    The length is fixed: <code>2</code>.
+  </li>
+  <li>
+    The index of an element determines its meaning and its type:
+    <ul>
+      <li>
+        At index 0, there are keys whose type is <code>string</code>.
+      </li>
+      <li>
+        At index 1, there are values whose type is <code>number</code>.
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="function-types"><a class="heading-id-link" href="#function-types">4.11 Function types</a></h3>
+<p>This is an example of a function type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NumToStr</span> = <span class="hljs-function">(<span class="hljs-params">num: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">string</span>;</code>
+</pre>
+<p>This type comprises every function that accepts a single parameter of type number and returns a string. Let’s use this type in a type annotation:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">toString</span>: <span class="hljs-title class_">NumToStr</span> = <span class="hljs-function">(<span class="hljs-params">num</span>) =&gt;</span> <span class="hljs-title class_">String</span>(num);</code>
+</pre>
+<p>Because TypeScript knows that <code>toString</code> has the type <code>NumToStr</code>, we do not need type annotations inside the arrow function.</p>
+<h4 id="inferring-function-types"><a class="heading-id-link" href="#inferring-function-types">4.11.1 Inferring function types</a></h4>
+<p>We can also define <code>toString</code> like this:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> toString = (<span class="hljs-attr">num</span>: <span class="hljs-built_in">number</span>): <span class="hljs-function"><span class="hljs-params">string</span> =&gt;</span> <span class="hljs-title class_">String</span>(num);</code>
+</pre>
+<p>Note that we specified both a type for the parameter <code>num</code> and a return type. The inferred type of <code>toString</code> is:</p>
+<pre class="language-ts">
+<code>assertType&lt;</code>
+<code>  <span class="hljs-function">(<span class="hljs-params">num: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">string</span></code>
+<code>&gt;(toString);</code>
+</pre>
+<h4 id="example-a-function-whose-parameter-is-a-function"><a class="heading-id-link" href="#example-a-function-whose-parameter-is-a-function">4.11.2 Example: a function whose parameter is a function</a></h4>
+<p>The following function has a parameter <code>callback</code> whose type is a function:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">stringify123</span>(<span class="hljs-params">callback: (num: <span class="hljs-built_in">number</span>) =&gt; <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">callback</span>(<span class="hljs-number">123</span>);</code>
+<code>}</code>
+</pre>
+<p>Due to the type of the parameter <code>callback</code>, TypeScript rejects the following function call:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: Argument of type 'NumberConstructor' is not</span></code>
+<code><span class="hljs-comment">// assignable to parameter of type '(num: number) =&gt; string'.</span></code>
+<code><span class="hljs-title function_">stringify123</span>(<span class="hljs-title class_">Number</span>);</code>
+</pre>
+<p>But it accepts this function call:</p>
+<pre class="language-ts">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">stringify123</span>(<span class="hljs-title class_">String</span>), <span class="hljs-string">'123'</span></code>
+<code>);</code>
+</pre>
+<p>We can also use an arrow function to implement <code>stringify123()</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> stringify123 =</code>
+<code>  (<span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">num: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">string</span>): <span class="hljs-function"><span class="hljs-params">string</span> =&gt;</span> <span class="hljs-title function_">callback</span>(<span class="hljs-number">123</span>);</code>
+</pre>
+<h4 id="inferring-the-return-types-of-functions"><a class="heading-id-link" href="#inferring-the-return-types-of-functions">4.11.3 Inferring the return types of functions</a></h4>
+<p>TypeScript is good at inferring the return types of functions, but specifying them explicitly is recommended: It makes intentions clearer, enables additional consistency checks and helps external tools with generating declaration files (those tools usually can’t infer return types).</p>
+<h4 id="the-special-return-type-void"><a class="heading-id-link" href="#the-special-return-type-void">4.11.4 The special return type <code>void</code></a></h4>
+<p><code>void</code> is a special return type for a function: It tells TypeScript that the function always returns <code>undefined</code>.</p>
+<p>It may do so explicitly:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params">): <span class="hljs-built_in">void</span> {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-literal">undefined</span>;</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>Or it may do so implicitly:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f2</span>(<span class="hljs-params">): <span class="hljs-built_in">void</span> {}</span></code>
+</pre>
+<p>However, such a function cannot explicitly return values other than <code>undefined</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f3</span>(<span class="hljs-params">): <span class="hljs-built_in">void</span> {</span></code>
+<code><span class="hljs-params">  <span class="hljs-comment">// @ts-expect-error: Type 'string' is not assignable to type 'void'.</span></span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-string">'abc'</span>;</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h4 id="optional-parameters"><a class="heading-id-link" href="#optional-parameters">4.11.5 Optional parameters</a></h4>
+<p>A question mark after an identifier means that the parameter is optional. For example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">stringify123</span>(<span class="hljs-params">callback?: (num: <span class="hljs-built_in">number</span>) =&gt; <span class="hljs-built_in">string</span></span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (callback === <span class="hljs-literal">undefined</span>) {</code>
+<code>    callback = <span class="hljs-title class_">String</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">callback</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// (A)</span></code>
+<code>}</code>
+</pre>
+<p>TypeScript only lets us make the function call in line A if we make sure that <code>callback</code> isn’t <code>undefined</code> (which it is if the parameter was omitted).</p>
+<h4 id="parameter-default-values"><a class="heading-id-link" href="#parameter-default-values">4.11.6 Parameter default values</a></h4>
+<p>TypeScript supports <a href="https://exploringjs.com/js/book/ch_callables.html#parameter-default-values">parameter default values</a>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">createPoint</span>(<span class="hljs-params">x=<span class="hljs-number">0</span>, y=<span class="hljs-number">0</span></span>): [<span class="hljs-built_in">number</span>, <span class="hljs-built_in">number</span>] {</code>
+<code>  <span class="hljs-keyword">return</span> [x, y];</code>
+<code>}</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title function_">createPoint</span>(),</code>
+<code>  [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title function_">createPoint</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>),</code>
+<code>  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]);</code>
+</pre>
+<p>Default values make parameters optional. We can usually omit type annotations, because TypeScript can infer the types. For example, it can infer that <code>x</code> and <code>y</code> both have the type <code>number</code>.</p>
+<p>If we wanted to add type annotations, that would look as follows.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">createPoint</span>(<span class="hljs-params">x:<span class="hljs-built_in">number</span> = <span class="hljs-number">0</span>, y:<span class="hljs-built_in">number</span> = <span class="hljs-number">0</span></span>): [<span class="hljs-built_in">number</span>, <span class="hljs-built_in">number</span>] {</code>
+<code>  <span class="hljs-keyword">return</span> [x, y];</code>
+<code>}</code>
+</pre>
+<h4 id="rest-parameters"><a class="heading-id-link" href="#rest-parameters">4.11.7 Rest parameters</a></h4>
+<p>We can also use <a href="https://exploringjs.com/js/book/ch_callables.html#rest-parameters">rest parameters</a> in TypeScript parameter definitions. Their static types must be Arrays or tuples:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">joinNumbers</span>(<span class="hljs-params">...nums: <span class="hljs-built_in">number</span>[]</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">return</span> nums.<span class="hljs-title function_">join</span>(<span class="hljs-string">'-'</span>);</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">joinNumbers</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>),</code>
+<code>  <span class="hljs-string">'1-2-3'</span></code>
+<code>);</code>
+</pre>
+<h3 id="typing-objects"><a class="heading-id-link" href="#typing-objects">4.12 Typing objects</a></h3>
+<p>Similarly to Arrays, objects can be used in two ways in JavaScript (that are occasionally mixed):</p>
+<ul>
+  <li>
+    <p>Fixed-layout object: A fixed number of properties that are known at development time. Each property can have a different type.</p>
+  </li>
+  <li>
+    <p>Dictionary object: An arbitrary number of properties whose names are not known at development time. All properties have the same type.</p>
+  </li>
+</ul>
+<p>We are ignoring dictionary objects in this chapter – they are covered in <a href="ch_typing-objects.html#index-signatures">“Index signatures: objects as dictionaries” (§18.7)</a>. As an aside, Maps are usually a better choice for dictionaries, anyway.</p>
+<h4 id="typing-fixed-layout-objects-via-object-literal-types"><a class="heading-id-link" href="#typing-fixed-layout-objects-via-object-literal-types">4.12.1 Typing fixed-layout objects via object literal types</a></h4>
+<p>Object literal types describe fixed-layout objects – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Point</span> = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+</pre>
+<p>We can also use semicolons instead of commas to separate members, but the latter are more common.</p>
+<p>The members can also be separated by semicolons instead of commas but since the syntax of object literals types is related to the syntax of object literals (where members must be separated by commas), commas are used more often.</p>
+<h4 id="interfaces-as-an-alternative-to-object-literal-types"><a class="heading-id-link" href="#interfaces-as-an-alternative-to-object-literal-types">4.12.2 Interfaces as an alternative to object literal types</a></h4>
+<p>Interfaces are mostly equivalent to object literal types but have become less popular over time. This is what an interface looks like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Point</span> {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>;</code>
+<code>} <span class="hljs-comment">// no semicolon!</span></code>
+</pre>
+<p>The members can also be separated by commas instead of semicolons but since the syntax of interfaces is related to the syntax of classes (where members must be separated by semicolons), semicolons are used more often.</p>
+<h4 id="typescript-s-structural-typing-vs-nominal-typing"><a class="heading-id-link" href="#typescript-s-structural-typing-vs-nominal-typing">4.12.3 TypeScript’s structural typing vs. nominal typing</a></h4>
+<p>One big advantage of TypeScript’s type system is that it works <em>structurally</em>, not <em>nominally</em>. That is, the type <code>Point</code> matches all objects that have the appropriate structure:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Point</span> = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">pointToString</span>(<span class="hljs-params">pt: Point</span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-string">`(<span class="hljs-subst">${pt.x}</span>, <span class="hljs-subst">${pt.y}</span>)`</span>;</code>
+<code>}</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">pointToString</span>({<span class="hljs-attr">x</span>: <span class="hljs-number">5</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">7</span>}), <span class="hljs-comment">// compatible structure</span></code>
+<code>  <span class="hljs-string">'(5, 7)'</span>);</code>
+</pre>
+<p>Conversely, in Java’s nominal type system, we must explicitly declare with each class which interfaces it implements. Therefore, a class can only implement interfaces that exist at its creation time.</p>
+<h4 id="optional-properties"><a class="heading-id-link" href="#optional-properties">4.12.4 Optional properties</a></h4>
+<p>If a property can be omitted, we put a question mark after its name:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Person</span> = {</code>
+<code>  <span class="hljs-attr">name</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  company?: <span class="hljs-built_in">string</span>,</code>
+<code>};</code>
+</pre>
+<p>In the following example, both <code>john</code> and <code>jane</code> match the type <code>Person</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">john</span>: <span class="hljs-title class_">Person</span> = {</code>
+<code>  <span class="hljs-attr">name</span>: <span class="hljs-string">'John'</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">jane</span>: <span class="hljs-title class_">Person</span> = {</code>
+<code>  <span class="hljs-attr">name</span>: <span class="hljs-string">'Jane'</span>,</code>
+<code>  <span class="hljs-attr">company</span>: <span class="hljs-string">'Massive Dynamic'</span>,</code>
+<code>};</code>
+</pre>
+<h4 id="methods"><a class="heading-id-link" href="#methods">4.12.5 Methods</a></h4>
+<p>Object literal types can also contain methods:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Point</span> = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-title function_">distance</span>(<span class="hljs-attr">other</span>: <span class="hljs-title class_">Point</span>): <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+</pre>
+<p>As far as TypeScript’s type system is concerned, method definitions and properties whose values are functions, are equivalent:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">HasMethodDef</span> = {</code>
+<code>  <span class="hljs-title function_">simpleMethod</span>(<span class="hljs-attr">flag</span>: <span class="hljs-built_in">boolean</span>): <span class="hljs-built_in">void</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">HasFuncProp</span> = {</code>
+<code>  <span class="hljs-attr">simpleMethod</span>: <span class="hljs-function">(<span class="hljs-params">flag: <span class="hljs-built_in">boolean</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">HasMethodDef</span>,</code>
+<code>  <span class="hljs-title class_">HasFuncProp</span></code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> objWithMethod = {</code>
+<code>  <span class="hljs-title function_">simpleMethod</span>(<span class="hljs-attr">flag</span>: <span class="hljs-built_in">boolean</span>): <span class="hljs-built_in">void</span> {},</code>
+<code>};</code>
+<code>assertType&lt;<span class="hljs-title class_">HasMethodDef</span>&gt;(objWithMethod);</code>
+<code>assertType&lt;<span class="hljs-title class_">HasFuncProp</span>&gt;(objWithMethod);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">objWithOrdinaryFunction</span>: <span class="hljs-title class_">HasMethodDef</span> = {</code>
+<code>  <span class="hljs-attr">simpleMethod</span>: <span class="hljs-keyword">function</span> (<span class="hljs-params">flag: <span class="hljs-built_in">boolean</span></span>): <span class="hljs-built_in">void</span> {},</code>
+<code>};</code>
+<code>assertType&lt;<span class="hljs-title class_">HasMethodDef</span>&gt;(objWithOrdinaryFunction);</code>
+<code>assertType&lt;<span class="hljs-title class_">HasFuncProp</span>&gt;(objWithOrdinaryFunction);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">objWithArrowFunction</span>: <span class="hljs-title class_">HasMethodDef</span> = {</code>
+<code>  <span class="hljs-attr">simpleMethod</span>: (<span class="hljs-attr">flag</span>: <span class="hljs-built_in">boolean</span>): <span class="hljs-function"><span class="hljs-params">void</span> =&gt;</span> {},</code>
+<code>};</code>
+<code>assertType&lt;<span class="hljs-title class_">HasMethodDef</span>&gt;(objWithArrowFunction);</code>
+<code>assertType&lt;<span class="hljs-title class_">HasFuncProp</span>&gt;(objWithArrowFunction);</code>
+</pre>
+<p>My recommendation is to use whichever syntax best expresses how a property should be set up.</p>
+<h3 id="union-types"><a class="heading-id-link" href="#union-types">4.13 Union types</a></h3>
+<p>The values that are held by a variable (one value at a time) may be members of different types. In that case, we need a <em>union type</em>. For example, in the following code, <code>stringOrNumber</code> is either of type <code>string</code> or of type <code>number</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getScore</span>(<span class="hljs-params">stringOrNumber: <span class="hljs-built_in">string</span>|<span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> stringOrNumber === <span class="hljs-string">'string'</span></code>
+<code>    &amp;&amp; <span class="hljs-regexp">/^\*{1,5}$/</span>.<span class="hljs-title function_">test</span>(stringOrNumber)) {</code>
+<code>      <span class="hljs-keyword">return</span> stringOrNumber.<span class="hljs-property">length</span>;</code>
+<code>  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> stringOrNumber === <span class="hljs-string">'number'</span></code>
+<code>    &amp;&amp; stringOrNumber &gt;= <span class="hljs-number">1</span> &amp;&amp; stringOrNumber &lt;= <span class="hljs-number">5</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> stringOrNumber</code>
+<code>  } <span class="hljs-keyword">else</span> {</code>
+<code>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Illegal value: '</span> + <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(stringOrNumber));</code>
+<code>  }</code>
+<code>}</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">getScore</span>(<span class="hljs-string">'*****'</span>), <span class="hljs-number">5</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">getScore</span>(<span class="hljs-number">3</span>), <span class="hljs-number">3</span>);</code>
+</pre>
+<p><code>stringOrNumber</code> has the type <code>string|number</code>. The result of the type expression <code>s|t</code> is the set-theoretic union of the types <code>s</code> and <code>t</code> (interpreted as sets).</p>
+<h4 id="adding-undefined-and-null-to-types"><a class="heading-id-link" href="#adding-undefined-and-null-to-types">4.13.1 Adding <code>undefined</code> and <code>null</code> to types</a></h4>
+<p>In TypeScript, the values <code>undefined</code> and <code>null</code> are not included in any type (other than the types <code>undefined</code>, <code>null</code>, <code>any</code> and <code>unknown</code>). That is common in statically type languages (with one notable exception being Java). We need union types such as <code>undefined|string</code> and <code>null|string</code> if we want to allow those values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">numberOrNull</span>: <span class="hljs-literal">undefined</span>|<span class="hljs-built_in">number</span> = <span class="hljs-literal">undefined</span>;</code>
+<code>numberOrNull = <span class="hljs-number">123</span>;</code>
+</pre>
+<p>Otherwise, we get an error:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: Type 'undefined' is not assignable to type 'number'.</span></code>
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">mustBeNumber</span>: <span class="hljs-built_in">number</span> = <span class="hljs-literal">undefined</span>;</code>
+<code>mustBeNumber = <span class="hljs-number">123</span>;</code>
+</pre>
+<p>Note that TypeScript does not force us to initialize immediately (as long as we don’t read from the variable before initializing it):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">myNumber</span>: <span class="hljs-built_in">number</span>; <span class="hljs-comment">// OK</span></code>
+<code>myNumber = <span class="hljs-number">123</span>;</code>
+</pre>
+<h4 id="unions-of-string-literal-types"><a class="heading-id-link" href="#unions-of-string-literal-types">4.13.2 Unions of string literal types</a></h4>
+<p>Unions of string literals provide a quick way of defining a type with a limited set of values. For example, this is how the Node.js types define the buffer encoding that you can use (e.g.) with <code>fs.readFileSync()</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">BufferEncoding</span> =</code>
+<code>  | <span class="hljs-string">'ascii'</span></code>
+<code>  | <span class="hljs-string">'utf8'</span></code>
+<code>  | <span class="hljs-string">'utf-8'</span></code>
+<code>  | <span class="hljs-string">'utf16le'</span></code>
+<code>  | <span class="hljs-string">'utf-16le'</span></code>
+<code>  | <span class="hljs-string">'ucs2'</span></code>
+<code>  | <span class="hljs-string">'ucs-2'</span></code>
+<code>  | <span class="hljs-string">'base64'</span></code>
+<code>  | <span class="hljs-string">'base64url'</span></code>
+<code>  | <span class="hljs-string">'latin1'</span></code>
+<code>  | <span class="hljs-string">'binary'</span></code>
+<code>  | <span class="hljs-string">'hex'</span></code>
+<code>;</code>
+</pre>
+<p>It’s neat that we get auto-completion for such unions (<a href="#fig:buffer-encoding-auto-completion">figure 4.1</a>). We can also rename the elements of the union everywhere they are used – via the same refactoring that also changes function names.</p>
+<figure id="fig:buffer-encoding-auto-completion" class="float">
+  <p><img src="../Images/e83419228addc1b19a19dd9cd54dc537.png" width="316" alt="" style="height:292.5px" data-original-src="https://exploringjs.com/ts/book/img/typescript-essentials/buffer-encoding-auto-completion.png"/></p>
+  <figcaption>
+    <p><span class="float-label">Figure 4.1:</span> The auto-completion for <code>BufferEncoding</code> shows all elements of the union type.</p>
+  </figcaption>
+</figure>
+<h3 id="intersection-types"><a class="heading-id-link" href="#intersection-types">4.14 Intersection types</a></h3>
+<p>Where a union type computes the union of two types, viewed as sets, an intersection type computes the intersection:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Type1</span> = <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Type2</span> = <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span> | <span class="hljs-string">'d'</span> | <span class="hljs-string">'e'</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Type1</span> &amp; <span class="hljs-title class_">Type2</span>,</code>
+<code>  <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<div class="boxout">
+  <p><img src="../Images/837806d7ec89826c3784b2e685feb762.png" height="24" class="boxout-icon" alt="Icon “details”" data-original-src="https://exploringjs.com/ts/book/icon/details.svg"/> <strong>The generic type <code>Assert&lt;B&gt;</code> is for comparing types</strong></p>
+  <div class="boxout-vspace"/>
+  <p>In this book, types are compared via the generic type <code>Assert&lt;B&gt;</code> (<a href="ch_book-notation.html#notation-generic-type-Assert">more information</a>).</p>
+</div>
+<p>One key use case for intersection types is combining object types (<a href="ch_intersections-object-types.html#ch_intersections-object-types">more information</a>).</p>
+<h3 id="type-guards-and-narrowing"><a class="heading-id-link" href="#type-guards-and-narrowing">4.15 Type guards and narrowing</a></h3>
+<p>Sometimes we are faced with types that are overly general. Then we need to use conditions with so-called <em>type guards</em> to make them small enough so that we can use them. That process is called <em>narrowing</em>.</p>
+<p>In the following code, we narrow the type of <code>value</code> via the type guard <code>typeof</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getLength</span>(<span class="hljs-params">value: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">number</span> {</code>
+<code>  assertType&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>&gt;(value); <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Property 'length' does not exist on</span></code>
+<code>  <span class="hljs-comment">// type 'string | number'.</span></code>
+<code>  value.<span class="hljs-property">length</span>; <span class="hljs-comment">// (B)</span></code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'string'</span>) {</code>
+<code>    assertType&lt;<span class="hljs-built_in">string</span>&gt;(value); <span class="hljs-comment">// (C)</span></code>
+<code>    <span class="hljs-keyword">return</span> value.<span class="hljs-property">length</span>; <span class="hljs-comment">// (D)</span></code>
+<code>  }</code>
+<code>  assertType&lt;<span class="hljs-built_in">number</span>&gt;(value); <span class="hljs-comment">// (E)</span></code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">String</span>(value).<span class="hljs-property">length</span>;</code>
+<code>}</code>
+</pre>
+<p>It’s interesting to see how the type of <code>value</code> changes, due to us using <code>typeof</code> in the condition of an <code>if</code> statement:</p>
+<ul>
+  <li>
+    Initially, the type of <code>value</code> is <code>string | number</code> (line A).
+    <ul>
+      <li>
+        That’s why we can’t access property <code>.length</code> in line B.
+      </li>
+    </ul>
+  </li>
+  <li>
+    Inside the true branch of the <code>if</code> statement, the type of <code>value</code> is <code>string</code> (line C).
+    <ul>
+      <li>
+        Now we can access property <code>.length</code> (line D).
+      </li>
+    </ul>
+  </li>
+  <li>
+    Because we return from inside the true branch, TypeScript knows that <code>value</code> has type <code>number</code> in line E.
+  </li>
+</ul>
+<h3 id="type-variables-and-generic-types"><a class="heading-id-link" href="#type-variables-and-generic-types">4.16 Type variables and generic types</a></h3>
+<p>Recall <a href="#language-levels">the two language levels of TypeScript</a>:</p>
+<ul>
+  <li>
+    Values exist at the <em>dynamic level</em>.
+  </li>
+  <li>
+    Types exist at the <em>static level</em>.
+  </li>
+</ul>
+<p>Similarly:</p>
+<ul>
+  <li>
+    <p>Normal functions exist at the dynamic level, are factories for values and have parameters representing values. Parameters are declared between parentheses:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title function_">valueFactory</span> = (<span class="hljs-params">x: <span class="hljs-built_in">number</span></span>) =&gt; x; <span class="hljs-comment">// definition</span></code>
+<code><span class="hljs-keyword">const</span> myValue = <span class="hljs-title function_">valueFactory</span>(<span class="hljs-number">123</span>); <span class="hljs-comment">// use</span></code>
+</pre>
+  </li>
+  <li>
+    <p><em>Generic types</em> exist at the static level, are factories for types and have parameters representing types. Parameters are declared between angle brackets:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TypeFactory</span>&lt;X&gt; = X; <span class="hljs-comment">// definition</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">MyType</span> = <span class="hljs-title class_">TypeFactory</span>&lt;<span class="hljs-built_in">string</span>&gt;; <span class="hljs-comment">// use</span></code>
+</pre>
+  </li>
+</ul>
+<div class="boxout">
+  <p><img src="../Images/0873709827ba4924e4afbb757e47a4df.png" height="24" class="boxout-icon" alt="Icon “tip”" data-original-src="https://exploringjs.com/ts/book/icon/tip.svg"/> <strong>Naming type parameters</strong></p>
+  <div class="boxout-vspace"/>
+  <p>In TypeScript, it is common to use a single uppercase character (such as <code>T</code>, <code>I</code>, and <code>O</code>) for a type parameter. However, any legal JavaScript identifier is allowed and longer names often make code easier to understand.</p>
+</div>
+<h4 id="example-a-container-for-values"><a class="heading-id-link" href="#example-a-container-for-values">4.16.1 Example: a container for values</a></h4>
+<pre class="language-ts">
+<code><span class="hljs-comment">// Factory for types</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ValueContainer</span>&lt;<span class="hljs-title class_">Value</span>&gt; = {</code>
+<code>  <span class="hljs-attr">value</span>: <span class="hljs-title class_">Value</span>;</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-comment">// Creating one type</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StringContainer</span> = <span class="hljs-title class_">ValueContainer</span>&lt;<span class="hljs-built_in">string</span>&gt;;</code>
+</pre>
+<p><code>Value</code> is a <em>type variable</em>. One or more type variables can be introduced between angle brackets.</p>
+<h4 id="example-a-generic-class"><a class="heading-id-link" href="#example-a-generic-class">4.16.2 Example: a generic class</a></h4>
+<p>Classes can have type parameters, too:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">SimpleStack</span>&lt;<span class="hljs-title class_">Elem</span>&gt; {</code>
+<code>  #<span class="hljs-attr">data</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">Elem</span>&gt; = [];</code>
+<code>  <span class="hljs-title function_">push</span>(<span class="hljs-attr">x</span>: <span class="hljs-title class_">Elem</span>): <span class="hljs-built_in">void</span> {</code>
+<code>    <span class="hljs-variable language_">this</span>.#data.<span class="hljs-title function_">push</span>(x);</code>
+<code>  }</code>
+<code>  <span class="hljs-title function_">pop</span>(): <span class="hljs-title class_">Elem</span> {</code>
+<code>    <span class="hljs-keyword">const</span> result = <span class="hljs-variable language_">this</span>.#data.<span class="hljs-title function_">pop</span>();</code>
+<code>    <span class="hljs-keyword">if</span> (result === <span class="hljs-literal">undefined</span>) {</code>
+<code>        <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>();</code>
+<code>    }</code>
+<code>    <span class="hljs-keyword">return</span> result;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">length</span>() {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#data.<span class="hljs-property">length</span>;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Class <code>SimpleStack</code> has the type parameter <code>Elem</code>. When we instantiate the class, we also provide a value for the type parameter:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> stringStack = <span class="hljs-keyword">new</span> <span class="hljs-title class_">SimpleStack</span>&lt;<span class="hljs-built_in">string</span>&gt;();</code>
+<code>stringStack.<span class="hljs-title function_">push</span>(<span class="hljs-string">'first'</span>);</code>
+<code>stringStack.<span class="hljs-title function_">push</span>(<span class="hljs-string">'second'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(stringStack.<span class="hljs-property">length</span>, <span class="hljs-number">2</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(stringStack.<span class="hljs-title function_">pop</span>(), <span class="hljs-string">'second'</span>);</code>
+</pre>
+<h4 id="example-maps"><a class="heading-id-link" href="#example-maps">4.16.3 Example: Maps</a></h4>
+<p>Maps are typed generically in TypeScript. For example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">myMap</span>: <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">boolean</span>,<span class="hljs-built_in">string</span>&gt; = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
+<code>  [<span class="hljs-literal">false</span>, <span class="hljs-string">'no'</span>],</code>
+<code>  [<span class="hljs-literal">true</span>, <span class="hljs-string">'yes'</span>],</code>
+<code>]);</code>
+</pre>
+<p>Thanks to type inference (based on the argument of <code>new Map()</code>), we can omit the type parameters:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> myMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
+<code>  [<span class="hljs-literal">false</span>, <span class="hljs-string">'no'</span>],</code>
+<code>  [<span class="hljs-literal">true</span>, <span class="hljs-string">'yes'</span>],</code>
+<code>]);</code>
+<code>assertType&lt;<span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">boolean</span>, <span class="hljs-built_in">string</span>&gt;&gt;(myMap);</code>
+</pre>
+<h4 id="functions-and-methods-with-type-parameters"><a class="heading-id-link" href="#functions-and-methods-with-type-parameters">4.16.4 Functions and methods with type parameters</a></h4>
+<p>Function definitions can introduce type variables like this:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> identity&lt;<span class="hljs-title class_">Arg</span>&gt;(<span class="hljs-attr">arg</span>: <span class="hljs-title class_">Arg</span>): <span class="hljs-title class_">Arg</span> {</code>
+<code>  <span class="hljs-keyword">return</span> arg;</code>
+<code>}</code>
+</pre>
+<p>We use the function as follows:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> num1 = identity&lt;<span class="hljs-built_in">number</span>&gt;(<span class="hljs-number">123</span>);</code>
+<code>assertType&lt;<span class="hljs-built_in">number</span>&gt;(num1);</code>
+</pre>
+<p>Due to type inference, we can once again omit the type parameter:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> num2 = <span class="hljs-title function_">identity</span>(<span class="hljs-number">123</span>);</code>
+<code>assertType&lt;<span class="hljs-number">123</span>&gt;(num2);</code>
+</pre>
+<p>The type of <code>num2</code> is the number literal type <code>123</code>.</p>
+<h5 id="arrow-functions-with-type-parameters"><a class="heading-id-link" href="#arrow-functions-with-type-parameters">4.16.4.1 Arrow functions with type parameters</a></h5>
+<p>Arrow functions can also have type parameters:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> identity = &lt;<span class="hljs-title class_">Arg</span>&gt;(<span class="hljs-attr">arg</span>: <span class="hljs-title class_">Arg</span>): <span class="hljs-function"><span class="hljs-params">Arg</span> =&gt;</span> arg;</code>
+</pre>
+<h5 id="methods-with-type-parameters"><a class="heading-id-link" href="#methods-with-type-parameters">4.16.4.2 Methods with type parameters</a></h5>
+<p>This is the type parameter syntax for methods:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> obj = {</code>
+<code>  identity&lt;<span class="hljs-title class_">Arg</span>&gt;(<span class="hljs-attr">arg</span>: <span class="hljs-title class_">Arg</span>): <span class="hljs-title class_">Arg</span> {</code>
+<code>    <span class="hljs-keyword">return</span> arg;</code>
+<code>  },</code>
+<code>};</code>
+</pre>
+<h5 id="a-more-complicated-function-example"><a class="heading-id-link" href="#a-more-complicated-function-example">4.16.4.3 A more complicated function example</a></h5>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> fillArray&lt;T&gt;(<span class="hljs-attr">len</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">elem</span>: T): T[] {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>&lt;T&gt;(len).<span class="hljs-title function_">fill</span>(elem);</code>
+<code>}</code>
+</pre>
+<p>The type variable <code>T</code> appears four times in this code:</p>
+<ul>
+  <li>
+    It is introduced via <code>fillArray&lt;T&gt;</code>. Therefore, its scope is the function.
+  </li>
+  <li>
+    It is used for the first time in the type annotation for the parameter <code>elem</code>.
+  </li>
+  <li>
+    It is used for the second time to specify the return type of <code>fillArray()</code>.
+  </li>
+  <li>
+    It is also used as a type argument for the constructor <code>Array()</code>.
+  </li>
+</ul>
+<p>We can omit the type parameter when calling <code>fillArray()</code> (line A) because TypeScript can infer <code>T</code> from the parameter <code>elem</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> arr1 = fillArray&lt;<span class="hljs-built_in">string</span>&gt;(<span class="hljs-number">3</span>, <span class="hljs-string">'*'</span>);</code>
+<code>assertType&lt;<span class="hljs-built_in">string</span>[]&gt;(arr1);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  arr1, [<span class="hljs-string">'*'</span>, <span class="hljs-string">'*'</span>, <span class="hljs-string">'*'</span>]);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> arr2 = <span class="hljs-title function_">fillArray</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'*'</span>); <span class="hljs-comment">// (A)</span></code>
+<code>assertType&lt;<span class="hljs-built_in">string</span>[]&gt;(arr2);</code>
+</pre>
+<h3 id="conclusion-understanding-the-initial-example"><a class="heading-id-link" href="#conclusion-understanding-the-initial-example">4.17 Conclusion: understanding the initial example</a></h3>
+<p>Let’s use what we have learned to understand the piece of code we have seen earlier:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Array</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-title function_">concat</span>(...<span class="hljs-attr">items</span>: <span class="hljs-title class_">Array</span>&lt;T[] | T&gt;): T[];</code>
+<code>  reduce&lt;U&gt;(</code>
+<code>    <span class="hljs-attr">callback</span>: <span class="hljs-function">(<span class="hljs-params">state: U, element: T, index: <span class="hljs-built_in">number</span></span>) =&gt;</span> U,</code>
+<code>    firstState?: U</code>
+<code>  ): U;</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>This is an interface for Arrays whose elements are of type <code>T</code>:</p>
+<ul>
+  <li>
+    <p>method <code>.concat()</code>:</p>
+    <ul>
+      <li>
+        Has zero or more parameters (defined via a rest parameter). Each of those parameters has the type <code>T[]|T</code>. That is, it is either an Array of <code>T</code> values or a single <code>T</code> value. That means that the values in <code>items</code> have the same type <code>T</code> as the values in <code>this</code> (the receiver of the method call).
+      </li>
+      <li>
+        Returns an Array whose elements also have the type <code>T</code>.
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>method <code>.reduce()</code> introduces its own type variable <code>U</code>. <code>U</code> is used to express the fact that the following entities all have the same type:</p>
+    <ul>
+      <li>
+        Parameter <code>state</code> of <code>callback()</code>
+      </li>
+      <li>
+        Result of <code>callback()</code>
+      </li>
+      <li>
+        Optional parameter <code>firstState</code> of <code>.reduce()</code>
+      </li>
+      <li>
+        Result of <code>.reduce()</code>
+      </li>
+    </ul>
+    <p>In addition to <code>state</code>, <code>callback()</code> has the following parameters:</p>
+    <ul>
+      <li>
+        <code>element</code>: which has the same type <code>T</code> as the Array elements
+      </li>
+      <li>
+        <code>index</code>: a number
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="next-steps"><a class="heading-id-link" href="#next-steps">4.18 Next steps</a></h3>
+<ul>
+  <li>
+    Next, you’ll probably want to read <a href="ch_typescript-workflows.html#ch_typescript-workflows">“How TypeScript is used: workflows, tools, etc.” (§6)</a> – which gives you a better understanding of how TypeScript is used in practice.
+  </li>
+  <li>
+    Then you can move on to the rest of the book.
+  </li>
+</ul>
+<p>While using TypeScript, keep the following tip in mind.</p>
+<h4 id="tip-use-strict-type-checking-whenever-you-can"><a class="heading-id-link" href="#tip-use-strict-type-checking-whenever-you-can">4.18.1 Tip: Use <code>strict</code> type checking whenever you can</a></h4>
+<p>There are many ways in which the TypeScript compiler can be configured. One important group of options controls how strictly the compiler checks TypeScript code. My recommendation is:</p>
+<ul>
+  <li>
+    Option <code>strict</code> should always be enabled.
+  </li>
+  <li>
+    There are a few additional settings that increase strictness even further: I’d start with all of them and deactivate those whose errors you don’t like or don’t want to deal with.
+  </li>
+</ul>
+<p>You may be tempted to use settings that produce fewer compiler errors. However, without <code>strict</code> checking, TypeScript simply doesn’t work as well and will detect far fewer problems in your code.</p>
+<p>For more information on configuring TypeScript, see <a href="ch_tsconfig-json.html#ch_tsconfig-json">“Guide to <code>tsconfig.json</code>” (§8)</a>.</p>
+
+    
+      
+</body>
+</html>

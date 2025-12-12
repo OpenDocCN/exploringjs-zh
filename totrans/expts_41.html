@@ -1,0 +1,1140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>33 Overview: computing with types</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>33 Overview: computing with types</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_computing-with-types-overview.html">https://exploringjs.com/ts/book/ch_computing-with-types-overview.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#computation-in-typescript-program-level-vs-type-level">33.1 Computation in TypeScript: program level vs. type level</a>
+    </li>
+    <li>
+      <a href="#values-we-can-compute-with-at-the-type-level">33.2 “Values” we can compute with at the type level</a>
+      <ol>
+        <li>
+          <a href="#primitive-types">33.2.1 Primitive types</a>
+        </li>
+        <li>
+          <a href="#literal-types">33.2.2 Literal types</a>
+        </li>
+        <li>
+          <a href="#non-generic-object-types">33.2.3 Non-generic object types</a>
+        </li>
+        <li>
+          <a href="#compound-types-1">33.2.4 Compound types</a>
+        </li>
+        <li>
+          <a href="#unions-of-literal-types-as-sets-of-values">33.2.5 Unions of literal types as sets of values</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#generic-types">33.3 Generic types are type-level functions</a>
+      <ol>
+        <li>
+          <a href="#terminology-generic-type-parameterized-type-concrete-type">33.3.1 Terminology: generic type, parameterized type, concrete type</a>
+        </li>
+        <li>
+          <a href="#optional-type-parameters">33.3.2 Optional type parameters</a>
+        </li>
+        <li>
+          <a href="#constraining-type-parameters">33.3.3 Constraining type parameters </a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#the-typeof-type-operator-referring-to-the-program-level-from-the-type-level">33.4 The <code>typeof</code> type operator: referring to the program level from the type level</a>
+      <ol>
+        <li>
+          <a href="#program-level-typeof-vs-type-level-typeof">33.4.1 Program-level <code>typeof</code> vs. type-level <code>typeof</code></a>
+        </li>
+        <li>
+          <a href="#syntax-of-typeof">33.4.2 Syntax of <code>typeof</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#keyof-operator">33.5 The <code>keyof</code> type operator</a>
+      <ol>
+        <li>
+          <a href="#number-keys-javascript-vs-typescript">33.5.1 Number keys: JavaScript vs. TypeScript</a>
+        </li>
+        <li>
+          <a href="#keyof-and-index-signatures">33.5.2 <code>keyof</code> and index signatures</a>
+        </li>
+        <li>
+          <a href="#keyof-array">33.5.3 <code>keyof</code> of an Array</a>
+        </li>
+        <li>
+          <a href="#keyof-tuple">33.5.4 <code>keyof</code> of a tuple</a>
+        </li>
+        <li>
+          <a href="#keyof-of-intersection-types-and-union-types">33.5.5 <code>keyof</code> of intersection types and union types</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#indexed-access-types">33.6 Indexed access types <code>T[K]</code></a>
+      <ol>
+        <li>
+          <a href="#indexed-access-type-index">33.6.1 <code>T[K]</code>: <code>K</code> must be a subset of the keys of <code>T</code></a>
+        </li>
+        <li>
+          <a href="#indexed-access-of-a-tuple">33.6.2 Indexed access of a tuple</a>
+        </li>
+        <li>
+          <a href="#ValueOf">33.6.3 Example: implementing <code>ValueOf</code></a>
+        </li>
+        <li>
+          <a href="#example-getting-a-property-value">33.6.4 Example: getting a property value</a>
+        </li>
+        <li>
+          <a href="#example-lookup-table-and-indexed-access">33.6.5 Example: lookup table and indexed access</a>
+        </li>
+        <li>
+          <a href="#indexed-access-and-lookup-table-in-lib-dom-d-ts">33.6.6 Indexed access and lookup table in <code>lib.dom.d.ts</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#conditional-types-c-t-f">33.7 Conditional types (<code>C ? T : F</code>)</a>
+      <ol>
+        <li>
+          <a href="#extracting-parts-of-compound-types-via-infer">33.7.1 Extracting parts of compound types via <code>infer</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#local-type-variables">33.8 Defining local type variables</a>
+      <ol>
+        <li>
+          <a href="#example">33.8.1 Example</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#mapped-types-k-in-u-x">33.9 Mapped types <code>{[K in U]: X}</code></a>
+    </li>
+    <li>
+      <a href="#template-literal-types-processing-strings">33.10 Template literal types: processing strings</a>
+    </li>
+    <li>
+      <a href="#computing-with-union-types">33.11 Computing with union types</a>
+      <ol>
+        <li>
+          <a href="#intersection-and-union">33.11.1 Intersection and union</a>
+        </li>
+        <li>
+          <a href="#distributivity">33.11.2 Distributivity over union types</a>
+        </li>
+        <li>
+          <a href="#distributivity-of-template-literal-types">33.11.3 Template literal types are distributive</a>
+        </li>
+        <li>
+          <a href="#distributivity-of-indexed-access-types">33.11.4 Indexed access types <code>T[K]</code> are distributive</a>
+        </li>
+        <li>
+          <a href="#conditional-types-are-distributive">33.11.5 Conditional types are distributive</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#computing-with-object-types">33.12 Computing with object types</a>
+    </li>
+    <li>
+      <a href="#computing-with-tuple-types">33.13 Computing with tuple types</a>
+    </li>
+    <li>
+      <a href="#computed-return-types-dont-match">33.14 Computed return types of functions often don’t match returned values</a>
+    </li>
+    <li>
+      <a href="#computing-with-types-conclusion">33.15 Conclusion</a>
+    </li>
+  </ol>
+</nav>
+<p>In this chapter, we explore how we can compute with types at compile time in TypeScript.</p>
+<div class="boxout">
+  <p><img src="../Images/471cce0defd950c2994152f322a88405.png" height="24" class="boxout-icon" alt="Icon “question”" data-original-src="https://exploringjs.com/ts/book/icon/question.svg"/> <strong>Is computing with types useful in practice?</strong></p>
+  <div class="boxout-vspace"/>
+  <p>We first have to learn the foundations and some of the examples may seem a bit abstract. But those foundations help with solving practical problems – some of which are listed in <a href="#computing-with-types-conclusion">the conclusion</a>.</p>
+  <p>If you are <em>using</em> libraries, you can often get by without computing with types. If, however, you are <em>writing</em> libraries, it tends to come in handy.</p>
+</div>
+<h3 id="computation-in-typescript-program-level-vs-type-level"><a class="heading-id-link" href="#computation-in-typescript-program-level-vs-type-level">33.1 Computation in TypeScript: program level vs. type level</a></h3>
+<p>TypeScript code has two levels of computation:</p>
+<ul>
+  <li>
+    Program level: At runtime, we can compute via values and functions.
+  </li>
+  <li>
+    Type level: At compile time, we can compute via concrete types and generic types.
+  </li>
+</ul>
+<table class="framed">
+  <style>
+    th:nth-child(1), td:nth-child(1) {
+      text-align: left;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+    th:nth-child(3), td:nth-child(3) {
+      text-align: left;
+    }
+  </style>
+  <thead>
+    <tr>
+      <th/><th>Program level</th><th>Type level</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Programming language</td><td>JavaScript</td><td>TypeScript excluding JS</td>
+    </tr>
+    <tr>
+      <td>Operands</td><td>values</td><td>concrete types</td>
+    </tr>
+    <tr>
+      <td>Operations</td><td>functions</td><td>generic types</td>
+    </tr>
+    <tr>
+      <td>Invoking an operation</td><td>calling a function</td><td>instantiating a generic type</td>
+    </tr>
+    <tr>
+      <td>Computation happens</td><td>at runtime</td><td>at compile time</td>
+    </tr>
+  </tbody>
+</table>
+<p>This is an example of computing at the type level:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Result</span> = <span class="hljs-title class_">Uppercase</span>&lt;<span class="hljs-string">'hello'</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Result</span>, <span class="hljs-string">'HELLO'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p><code>Uppercase</code> is a generic type. Its argument, in angular brackets, is the string literal type <code>'hello'</code>. The result of instantiating the generic type is the string literal type <code>'HELLO'</code>.</p>
+<p>The analogous computation at the program level looks like this:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> result = <span class="hljs-string">'hello'</span>.<span class="hljs-title function_">toUpperCase</span>();</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  result, <span class="hljs-string">'HELLO'</span></code>
+<code>);</code>
+</pre>
+<p>In the next subsection, we examine the “values” we can use at the type level. Then we’ll define our own type-level “functions”.</p>
+<h3 id="values-we-can-compute-with-at-the-type-level"><a class="heading-id-link" href="#values-we-can-compute-with-at-the-type-level">33.2 “Values” we can compute with at the type level</a></h3>
+<p>At the type level we can compute with the following “values”.</p>
+<h4 id="primitive-types"><a class="heading-id-link" href="#primitive-types">33.2.1 Primitive types</a></h4>
+<p>These are the primitive types:</p>
+<ul>
+  <li>
+    <code>undefined</code>
+  </li>
+  <li>
+    <code>null</code>
+  </li>
+  <li>
+    <code>boolean</code>
+  </li>
+  <li>
+    <code>number</code>
+  </li>
+  <li>
+    <code>bigint</code>
+  </li>
+  <li>
+    <code>string</code>
+  </li>
+  <li>
+    <code>symbol</code>
+  </li>
+</ul>
+<p>Even though two of them look like JavaScript values, we are operating at the type level:</p>
+<ul>
+  <li>
+    <code>undefined</code> is a type whose only value is <code>undefined</code>.
+  </li>
+  <li>
+    <code>null</code> is a type whose only value is <code>null</code>.
+  </li>
+</ul>
+<h4 id="literal-types"><a class="heading-id-link" href="#literal-types">33.2.2 Literal types</a></h4>
+<p>These are examples of literal types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">BooleanLiteralType</span> = <span class="hljs-literal">true</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NumberLiteralType</span> = <span class="hljs-number">12.34</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">BigIntLiteralType</span> = <span class="hljs-number">1234n</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StringLiteralType</span> = <span class="hljs-string">'abc'</span>;</code>
+</pre>
+<p>We are still operating at the type level:</p>
+<ul>
+  <li>
+    <code>true</code> is a type whose only value is <code>true</code>. It is a subset of <code>boolean</code>.
+  </li>
+  <li>
+    <code>12.34</code> is a type whose only value is <code>12.34</code>. It is a subset of <code>number</code>.
+  </li>
+  <li>
+    Etc.
+  </li>
+</ul>
+<h4 id="non-generic-object-types"><a class="heading-id-link" href="#non-generic-object-types">33.2.3 Non-generic object types</a></h4>
+<p>These are examples of non-generic object types:</p>
+<ul>
+  <li>
+    <code>RegExp</code>
+  </li>
+  <li>
+    <code>Date</code>
+  </li>
+  <li>
+    <code>Uint8Array</code>
+  </li>
+</ul>
+<h4 id="compound-types-1"><a class="heading-id-link" href="#compound-types-1">33.2.4 Compound types</a></h4>
+<p>We can also compose types to produce new types – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">InstantiatedGenericType</span> = <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TupleType</span> = [<span class="hljs-built_in">boolean</span>, <span class="hljs-built_in">bigint</span>];</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ObjectLiteralType</span> = {</code>
+<code>  <span class="hljs-attr">prop1</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">prop2</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+</pre>
+<h4 id="unions-of-literal-types-as-sets-of-values"><a class="heading-id-link" href="#unions-of-literal-types-as-sets-of-values">33.2.5 Unions of literal types as sets of values</a></h4>
+<p>When computing with types, unions of literal types are often used to represent sets of values – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Person</span> = {</code>
+<code>  <span class="hljs-attr">givenName</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">familyName</span>: <span class="hljs-built_in">string</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof <span class="hljs-title class_">Person</span>,</code>
+<code>  <span class="hljs-string">'givenName'</span> | <span class="hljs-string">'familyName'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p><a href="#keyof-operator">The <code>keyof</code> operator</a> returns the keys of an object type. And it uses a union of string literal types to do so.</p>
+<h3 id="generic-types"><a class="heading-id-link" href="#generic-types">33.3 Generic types are type-level functions</a></h3>
+<p>The following example is type-level code (that runs at compile time):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Pair</span>&lt;T&gt; = [T, T]; <span class="hljs-comment">// (A)</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Result</span> = <span class="hljs-title class_">Pair</span>&lt;<span class="hljs-string">'abc'</span>&gt;; <span class="hljs-comment">// (B)</span></code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Result</span>, [<span class="hljs-string">'abc'</span>, <span class="hljs-string">'abc'</span>]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<ul>
+  <li>
+    In line A, we define the <em>generic type</em> <code>Pair</code> that has one <em>type parameter</em> called <code>T</code>.
+  </li>
+  <li>
+    In line B, we define type <code>Result</code> to be the instantiation of <code>Pair</code> with the string literal type <code>'abc'</code>.
+  </li>
+  <li>
+    Note that the body of <code>Pair</code> contains type variables (<code>T</code>, twice). When we instantiate it, those variables are replaced with concrete types.
+  </li>
+</ul>
+<p>The following example is similar program-level code (that runs at runtime):</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title function_">pair</span> = (<span class="hljs-params">x</span>) =&gt; [x, x];</code>
+<code><span class="hljs-keyword">const</span> result = <span class="hljs-title function_">pair</span>(<span class="hljs-string">'abc'</span>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  result, [<span class="hljs-string">'abc'</span>, <span class="hljs-string">'abc'</span>]</code>
+<code>);</code>
+</pre>
+<h4 id="terminology-generic-type-parameterized-type-concrete-type"><a class="heading-id-link" href="#terminology-generic-type-parameterized-type-concrete-type">33.3.1 Terminology: generic type, parameterized type, concrete type</a></h4>
+<p>I like <a href="http://www.angelikalanger.com/GenericsFAQ/FAQSections/ParameterizedTypes.html#FAQ001">Angelika Langer’s definitions</a>:</p>
+<ul>
+  <li>
+    A <em>generic type</em> is a type with formal type parameters.
+  </li>
+  <li>
+    A <em>parameterized type</em> is an instantiation of a generic type with actual type arguments.
+  </li>
+</ul>
+<p>For example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Pair</span>&lt;T&gt; = [T, T];</code>
+</pre>
+<p><code>Pair</code> is a generic type. <code>Pair&lt;3&gt;</code> is a parameterized type – an instantiation of <code>Pair</code>. We say that <code>Pair&lt;3&gt;</code> <em>constructs</em> (“returns”) the type <code>[3, 3]</code>.</p>
+<p>A <em>concrete type</em> is a specific (potentially compound) type that can be used in a type annotation:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">v1</span>: <span class="hljs-built_in">number</span>;</code>
+<code><span class="hljs-keyword">let</span> <span class="hljs-attr">v2</span>: <span class="hljs-title class_">Pair</span>&lt;<span class="hljs-number">3</span>&gt;;</code>
+</pre>
+<h4 id="optional-type-parameters"><a class="heading-id-link" href="#optional-type-parameters">33.3.2 Optional type parameters</a></h4>
+<p>We can make a type parameter optional by specifying a default value via an equals sign (<code>=</code>): </p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Pair</span>&lt;T=<span class="hljs-string">'hello'</span>&gt; = [T, T];</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Pair</span>,</code>
+<code>  [<span class="hljs-string">'hello'</span>, <span class="hljs-string">'hello'</span>]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="constraining-type-parameters"><a class="heading-id-link" href="#constraining-type-parameters">33.3.3 Constraining type parameters </a></h4>
+<p>If a type parameter definition is just the variable, it accepts any type but we can also constrain which types it accepts – via the keyword <code>extends</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NumberPair</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span>&gt; = [T, T];</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">P1</span> = <span class="hljs-title class_">NumberPair</span>&lt;<span class="hljs-number">123</span>&gt;; <span class="hljs-comment">// OK</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">P2</span> = <span class="hljs-title class_">NumberPair</span>&lt;<span class="hljs-built_in">number</span>&gt;; <span class="hljs-comment">// OK</span></code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Type 'string' does not satisfy the constraint 'number'.</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-variable constant_">P3</span> = <span class="hljs-title class_">NumberPair</span>&lt;<span class="hljs-string">'abc'</span>&gt;;</code>
+</pre>
+<p><code>T extends C</code> means that:</p>
+<ul>
+  <li>
+    <code>T</code> must be assignable to <code>C</code>.
+  </li>
+  <li>
+    <code>T</code> must be a subset of <code>C</code>.
+  </li>
+</ul>
+<p><code>extends</code> in a parameter definition of a generic type is similar to the colon (<code>:</code>) in a parameter definition of a function:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NumberPair</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span>&gt; = [T, T];</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title function_">numberPair</span> = (<span class="hljs-params">x: <span class="hljs-built_in">number</span></span>) =&gt; [x, x];</code>
+</pre>
+<p>We an also combine <code>extends</code> with a parameter default value:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NumberPair</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> = <span class="hljs-number">0</span>&gt; = [T, T];</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">NumberPair</span>,</code>
+<code>  [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="the-typeof-type-operator-referring-to-the-program-level-from-the-type-level"><a class="heading-id-link" href="#the-typeof-type-operator-referring-to-the-program-level-from-the-type-level">33.4 The <code>typeof</code> type operator: referring to the program level from the type level</a></h3>
+<p>(Non-type) variables and type expressions exist at two different levels:</p>
+<ul>
+  <li>
+    Variables exist at the program level.
+  </li>
+  <li>
+    Type expressions exist at the type level.
+  </li>
+</ul>
+<p>Therefore, we can’t directly mention a variable inside a type expression. However, the type-level <code>typeof</code> operator enables us to refer to the type of a variable inside a type expression:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> programLevelVariable = <span class="hljs-string">'abc'</span>;</code>
+<code/>
+<code><span class="hljs-comment">// The right-hand side of `=` is a type expression</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TypeLevelType</span> = <span class="hljs-title class_">Array</span>&lt;<span class="hljs-keyword">typeof</span> programLevelVariable&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">TypeLevelType</span>,</code>
+<code>  <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="program-level-typeof-vs-type-level-typeof"><a class="heading-id-link" href="#program-level-typeof-vs-type-level-typeof">33.4.1 Program-level <code>typeof</code> vs. type-level <code>typeof</code></a></h4>
+<p>JavaScript also has a <code>typeof</code> operator – one that operates at the program level. For a given value, it returns the name of its type as a string:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-string">'abc'</span>,</code>
+<code>  <span class="hljs-string">'string'</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-number">123</span>,</code>
+<code>  <span class="hljs-string">'number'</span></code>
+<code>);</code>
+</pre>
+<p>The results of type-level <code>typeof</code> are usually much more complex than the results of program-level <code>typeof</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> robin = {</code>
+<code>  <span class="hljs-attr">givenName</span>: <span class="hljs-string">'Robin'</span>,</code>
+<code>  <span class="hljs-attr">familyName</span>: <span class="hljs-string">'Doe'</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> robin,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">givenName</span>: <span class="hljs-built_in">string</span>;</code>
+<code>    <span class="hljs-attr">familyName</span>: <span class="hljs-built_in">string</span>;</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="syntax-of-typeof"><a class="heading-id-link" href="#syntax-of-typeof">33.4.2 Syntax of <code>typeof</code></a></h4>
+<p>The operand must be an an identifier which can optionally be followed by member accesses (dot operator or square brackets operator). Example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> article = {</code>
+<code>  <span class="hljs-attr">tags</span>: [<span class="hljs-string">'dev'</span>, <span class="hljs-string">'typescript'</span>],</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-keyword">typeof</span> article,</code>
+<code>    {</code>
+<code>      <span class="hljs-attr">tags</span>: <span class="hljs-built_in">string</span>[];</code>
+<code>    }</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-keyword">typeof</span> article.<span class="hljs-property">tags</span>,</code>
+<code>    <span class="hljs-built_in">string</span>[]</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-keyword">typeof</span> article.<span class="hljs-property">tags</span>[<span class="hljs-number">0</span>],</code>
+<code>    <span class="hljs-built_in">string</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Any other operand produces a syntax error:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-keyword">typeof</span> <span class="hljs-string">'abc'</span>;</code>
+<code>  <span class="hljs-comment">// Error: Identifier expected.</span></code>
+</pre>
+<h3 id="keyof-operator"><a class="heading-id-link" href="#keyof-operator">33.5 The <code>keyof</code> type operator</a></h3>
+<p>The type operator <code>keyof</code> lists the property keys of an object type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  <span class="hljs-attr">prop1</span>: <span class="hljs-string">'a'</span>,</code>
+<code>  <span class="hljs-attr">prop2</span>: <span class="hljs-string">'b'</span>,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof <span class="hljs-title class_">Obj</span>,</code>
+<code>  <span class="hljs-string">'prop1'</span> | <span class="hljs-string">'prop2'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The property keys of an empty object type are the empty set <code>never</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof {},</code>
+<code>  <span class="hljs-built_in">never</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="number-keys-javascript-vs-typescript"><a class="heading-id-link" href="#number-keys-javascript-vs-typescript">33.5.1 Number keys: JavaScript vs. TypeScript</a></h4>
+<h5 id="number-keys-in-javascript"><a class="heading-id-link" href="#number-keys-in-javascript">33.5.1.1 Number keys in JavaScript</a></h5>
+<p>JavaScript treats all number keys (whether quoted or not) as strings:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>({<span class="hljs-number">0</span>: <span class="hljs-string">'a'</span>, <span class="hljs-number">1</span>: <span class="hljs-string">'b'</span>})</span></code>
+<code>[ '0', '1' ]</code>
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>({<span class="hljs-string">'0'</span>: <span class="hljs-string">'a'</span>, <span class="hljs-string">'1'</span>: <span class="hljs-string">'b'</span>})</span></code>
+<code>[ '0', '1' ]</code>
+</pre>
+<p>Similarly, Array elements are properties whose keys are stringified numbers:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>])</span></code>
+<code>[ '0', '1' ]</code>
+</pre>
+<p>For information on what Array elements are in JavaScript, see <a href="https://exploringjs.com/js/book/ch_arrays.html#arrays-are-actually-dictionaries">“Exploring JavaScript”</a>.</p>
+<h5 id="number-keys-in-typescript"><a class="heading-id-link" href="#number-keys-in-typescript">33.5.1.2 Number keys in TypeScript</a></h5>
+<p>In object literal types, unquoted number keys are number literal types and quoted number keys are string literal types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof {<span class="hljs-number">0</span>: <span class="hljs-string">'a'</span>, <span class="hljs-string">'1'</span>: <span class="hljs-string">'b'</span>},</code>
+<code>  <span class="hljs-number">0</span> | <span class="hljs-string">'1'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>TypeScript also makes that distinction if types are derived from JavaScript values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> obj = {<span class="hljs-number">0</span>: <span class="hljs-string">'a'</span>, <span class="hljs-string">'1'</span>: <span class="hljs-string">'b'</span>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof <span class="hljs-keyword">typeof</span> obj,</code>
+<code>  <span class="hljs-number">0</span> | <span class="hljs-string">'1'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The indices of an Array type are numbers (note the <code>Includes</code> in the first line):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Includes</span>&lt;</code>
+<code>  keyof <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>  <span class="hljs-built_in">number</span> <span class="hljs-comment">// type for all indices</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="keyof-and-index-signatures"><a class="heading-id-link" href="#keyof-and-index-signatures">33.5.2 <code>keyof</code> and index signatures</a></h4>
+<p>The key of a number index signature is <code>number</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NumberIndexSignature</span> = {</code>
+<code>  [<span class="hljs-attr">k</span>: <span class="hljs-built_in">number</span>]: <span class="hljs-built_in">unknown</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof <span class="hljs-title class_">NumberIndexSignature</span>,</code>
+<code>  <span class="hljs-built_in">number</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The key of a string index signature is <code>string | number</code> because in JavaScript, number keys are a subset of string keys (as explained the previous subsection):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StringIndexSignature</span> = {</code>
+<code>  [<span class="hljs-attr">k</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">unknown</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof <span class="hljs-title class_">StringIndexSignature</span>,</code>
+<code>  <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="keyof-array"><a class="heading-id-link" href="#keyof-array">33.5.3 <code>keyof</code> of an Array</a></h4>
+<p>The keys of an Array type include a variety of types (note the <code>Includes</code> in the first line):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Includes</span>&lt;</code>
+<code>  keyof <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>  <span class="hljs-built_in">number</span> | <span class="hljs-string">'length'</span> | <span class="hljs-string">'push'</span> | <span class="hljs-string">'join'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The keys consist of:</p>
+<ul>
+  <li>
+    The type <code>number</code> for Array indices
+  </li>
+  <li>
+    The name of the special instance property <code>.length</code>
+  </li>
+  <li>
+    The names of all <code>Array</code> methods: <code>'push' | 'join' | ···</code>
+  </li>
+</ul>
+<h4 id="keyof-tuple"><a class="heading-id-link" href="#keyof-tuple">33.5.4 <code>keyof</code> of a tuple</a></h4>
+<p>Since tuples are mostly Arrays, their keys look similar (note the <code>Includes</code> in the first line):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Includes</span>&lt;</code>
+<code>  keyof [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>],</code>
+<code>  <span class="hljs-built_in">number</span> | <span class="hljs-string">'0'</span> | <span class="hljs-string">'1'</span> | <span class="hljs-string">'length'</span> | <span class="hljs-string">'push'</span> | <span class="hljs-string">'join'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>As with Arrays, there are <code>number</code>, <code>'length'</code> and the names of methods. Additionally, there is a stringified index for each element.</p>
+<p>For more information on this topic, including how to extract tuple indices, see <a href="ch_computing-with-tuple-types.html#keyof-tuple-type">“The keys of tuple types” (§37.3)</a>.</p>
+<h4 id="keyof-of-intersection-types-and-union-types"><a class="heading-id-link" href="#keyof-of-intersection-types-and-union-types">33.5.5 <code>keyof</code> of intersection types and union types</a></h4>
+<p>This is how <code>keyof</code> handles intersection types and union types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> A = { <span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">shared</span>: <span class="hljs-built_in">string</span> };</code>
+<code><span class="hljs-keyword">type</span> B = { <span class="hljs-attr">b</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">shared</span>: <span class="hljs-built_in">string</span> };</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof (A &amp; B),</code>
+<code>  <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-string">'shared'</span></code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof (A | B),</code>
+<code>  <span class="hljs-string">'shared'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>This makes sense if we remember that:</p>
+<ul>
+  <li>
+    An object of type <code>A &amp; B</code> has the properties of <em>both</em> type <code>A</code> and type <code>B</code>.
+  </li>
+  <li>
+    An object of type <code>A | B</code> has  either the properties of type <code>A</code> or the properties of type <code>B</code>. That is, only properties that both types have in common are always there.
+  </li>
+</ul>
+<h3 id="indexed-access-types"><a class="heading-id-link" href="#indexed-access-types">33.6 Indexed access types <code>T[K]</code></a></h3>
+<p>The indexed access operator <code>T[K]</code> returns the types of all properties of <code>T</code> whose keys are assignable to type <code>K</code>. <code>T[K]</code> is also called a <em>lookup type</em>.</p>
+<p>These are examples of the operator being used:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  <span class="hljs-number">0</span>: <span class="hljs-string">'a'</span>,</code>
+<code>  <span class="hljs-number">1</span>: <span class="hljs-string">'b'</span>,</code>
+<code>  <span class="hljs-attr">prop0</span>: <span class="hljs-string">'c'</span>,</code>
+<code>  <span class="hljs-attr">prop1</span>: <span class="hljs-string">'d'</span>,</code>
+<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]: <span class="hljs-string">'e'</span>,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Obj</span>[<span class="hljs-number">0</span> | <span class="hljs-number">1</span>],</code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-comment">// The stringified versions of number keys work the same</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Obj</span>[<span class="hljs-string">'0'</span> | <span class="hljs-string">'1'</span>],</code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Obj</span>[<span class="hljs-string">'prop0'</span> | <span class="hljs-string">'prop1'</span>],</code>
+<code>    <span class="hljs-string">'c'</span> | <span class="hljs-string">'d'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Obj</span>[keyof <span class="hljs-title class_">Obj</span>],</code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span> | <span class="hljs-string">'d'</span> | <span class="hljs-string">'e'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-comment">// - Symbol.iterator is a value (program level).</span></code>
+<code>  <span class="hljs-comment">// - typeof Symbol.iterator is a type (type level).</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Obj</span>[<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>],</code>
+<code>    <span class="hljs-string">'e'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h4 id="indexed-access-type-index"><a class="heading-id-link" href="#indexed-access-type-index">33.6.1 <code>T[K]</code>: <code>K</code> must be a subset of the keys of <code>T</code></a></h4>
+<p>The type in brackets must be assignable to the type of all property keys (as computed by <code>keyof</code>). That’s why <code>Obj[string]</code> and <code>Obj[number]</code> are not allowed here:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {<span class="hljs-attr">prop</span>: <span class="hljs-string">'yes'</span>};</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type 'Obj' has no matching index signature for type</span></code>
+<code>  <span class="hljs-comment">// 'string'.</span></code>
+<code>  <span class="hljs-title class_">Obj</span>[<span class="hljs-built_in">string</span>],</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type 'Obj' has no matching index signature for type</span></code>
+<code>  <span class="hljs-comment">// 'number'.</span></code>
+<code>  <span class="hljs-title class_">Obj</span>[<span class="hljs-built_in">number</span>],</code>
+<code>];</code>
+</pre>
+<p>However, we can use <code>string</code> and <code>number</code> as index types if the indexed type has an index signature (line A):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  [<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-title class_">RegExp</span>, <span class="hljs-comment">// (A)</span></code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    keyof <span class="hljs-title class_">Obj</span>, <span class="hljs-comment">// (B)</span></code>
+<code>    <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Obj</span>[<span class="hljs-built_in">string</span>],</code>
+<code>    <span class="hljs-title class_">RegExp</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Obj</span>[<span class="hljs-built_in">number</span>],</code>
+<code>    <span class="hljs-title class_">RegExp</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p><code>keyof Obj</code> (line B) includes the type <code>number</code> because number keys are a subset of string keys in JavaScript (and therefore in TypeScript).</p>
+<h4 id="indexed-access-of-a-tuple"><a class="heading-id-link" href="#indexed-access-of-a-tuple">33.6.2 Indexed access of a tuple</a></h4>
+<p>Tuple types also support indexed access:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Tuple</span> = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>];</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Tuple</span>[<span class="hljs-number">0</span> | <span class="hljs-number">1</span>],</code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Tuple</span>[<span class="hljs-string">'0'</span> | <span class="hljs-string">'1'</span>],</code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Tuple</span>[<span class="hljs-built_in">number</span>],</code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>We can use <code>number</code> as an index because the <code>keyof</code> of a tuple includes the type <code>number</code> (<a href="#keyof-tuple">more information</a>).</p>
+<h4 id="ValueOf"><a class="heading-id-link" href="#ValueOf">33.6.3 Example: implementing <code>ValueOf</code></a></h4>
+<p>TypeScript has a <code>keyof</code> operator but no <code>valueof</code> operator. However, we can implement that operator ourselves:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ValueOf</span>&lt;T&gt; = T[keyof T];</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = { <span class="hljs-attr">a</span>: <span class="hljs-built_in">string</span>, <span class="hljs-attr">b</span>: <span class="hljs-built_in">number</span> };</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-title class_">Obj</span>&gt;,</code>
+<code>  <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="example-getting-a-property-value"><a class="heading-id-link" href="#example-getting-a-property-value">33.6.4 Example: getting a property value</a></h4>
+<p>The following function retrieves the value of the property of <code>obj</code> whose key is <code>key</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> get&lt;O, K <span class="hljs-keyword">extends</span> keyof O&gt;(<span class="hljs-attr">obj</span>: O, <span class="hljs-attr">key</span>: K): O[K] {</code>
+<code>  <span class="hljs-keyword">return</span> obj[key];</code>
+<code>}</code>
+<code><span class="hljs-keyword">const</span> obj = {</code>
+<code>  <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>,</code>
+<code>  <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">const</span> result = <span class="hljs-title function_">get</span>(obj, <span class="hljs-string">'a'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">1</span>);</code>
+<code>assertType&lt;<span class="hljs-built_in">number</span>&gt;(result);</code>
+</pre>
+<p>It’s interesting that, in addition to correctly computing the type of <code>result</code>, TypeScript also warns us if we get the key wrong:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: Argument of type '"aaa"' is not assignable to</span></code>
+<code><span class="hljs-comment">// parameter of type '"a" | "b"'.</span></code>
+<code><span class="hljs-title function_">get</span>(obj, <span class="hljs-string">'aaa'</span>);</code>
+</pre>
+<h4 id="example-lookup-table-and-indexed-access"><a class="heading-id-link" href="#example-lookup-table-and-indexed-access">33.6.5 Example: lookup table and indexed access</a></h4>
+<p>Thanks to the indexed access operator, we can easily map from one kind of type to another:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TypeofLookupTable</span> = {</code>
+<code>  <span class="hljs-string">'undefined'</span>: <span class="hljs-literal">undefined</span>,</code>
+<code>  <span class="hljs-string">'boolean'</span>: <span class="hljs-built_in">boolean</span>,</code>
+<code>  <span class="hljs-string">'number'</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-string">'bigint'</span>: <span class="hljs-built_in">bigint</span>,</code>
+<code>  <span class="hljs-string">'string'</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-string">'symbol'</span>: <span class="hljs-built_in">symbol</span>,</code>
+<code>  <span class="hljs-string">'object'</span>: <span class="hljs-literal">null</span> | <span class="hljs-built_in">object</span>,</code>
+<code>  <span class="hljs-string">'function'</span>: <span class="hljs-title class_">Function</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TypeofResult</span> = keyof <span class="hljs-title class_">TypeofLookupTable</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TypeofStringToType</span>&lt;S <span class="hljs-keyword">extends</span> <span class="hljs-title class_">TypeofResult</span>&gt; = <span class="hljs-title class_">TypeofLookupTable</span>[S];</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">TypeofStringToType</span>&lt;<span class="hljs-string">'undefined'</span>&gt;,</code>
+<code>    <span class="hljs-literal">undefined</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">TypeofStringToType</span>&lt;<span class="hljs-string">'bigint'</span>&gt;,</code>
+<code>    <span class="hljs-built_in">bigint</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Alas, object literal types only work as lookup tables if the key type is a subset of <code>string</code>, <code>number</code> or <code>symbol</code>. For other types, we need to <a href="ch_computing-with-tuple-types.html#tuple-lookup-table">work with tuples</a>.</p>
+<h4 id="indexed-access-and-lookup-table-in-lib-dom-d-ts"><a class="heading-id-link" href="#indexed-access-and-lookup-table-in-lib-dom-d-ts">33.6.6 Indexed access and lookup table in <code>lib.dom.d.ts</code></a></h4>
+<p>The built-in type definitions for the DOM (<a href="https://github.com/microsoft/TypeScript/blob/main/src/lib/dom.generated.d.ts"><code>lib.dom.d.ts</code></a>) use indexed access and a lookup table <code>GlobalEventHandlersEventMap</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">GlobalEventHandlersEventMap</span> {</code>
+<code>  <span class="hljs-string">"abort"</span>: <span class="hljs-title class_">UIEvent</span>;</code>
+<code>  <span class="hljs-string">"animationcancel"</span>: <span class="hljs-title class_">AnimationEvent</span>;</code>
+<code>  <span class="hljs-string">"animationend"</span>: <span class="hljs-title class_">AnimationEvent</span>;</code>
+<code>  <span class="hljs-string">"animationiteration"</span>: <span class="hljs-title class_">AnimationEvent</span>;</code>
+<code>  <span class="hljs-string">"animationstart"</span>: <span class="hljs-title class_">AnimationEvent</span>;</code>
+<code>  <span class="hljs-string">"auxclick"</span>: <span class="hljs-title class_">MouseEvent</span>;</code>
+<code>  <span class="hljs-string">"beforeinput"</span>: <span class="hljs-title class_">InputEvent</span>;</code>
+<code>  <span class="hljs-string">"beforetoggle"</span>: <span class="hljs-title class_">Event</span>;</code>
+<code>  <span class="hljs-string">"blur"</span>: <span class="hljs-title class_">FocusEvent</span>;</code>
+<code>  <span class="hljs-string">"cancel"</span>: <span class="hljs-title class_">Event</span>;</code>
+<code>  <span class="hljs-string">"canplay"</span>: <span class="hljs-title class_">Event</span>;</code>
+<code>  <span class="hljs-string">"canplaythrough"</span>: <span class="hljs-title class_">Event</span>;</code>
+<code>  <span class="hljs-string">"change"</span>: <span class="hljs-title class_">Event</span>;</code>
+<code>  <span class="hljs-string">"click"</span>: <span class="hljs-title class_">MouseEvent</span>;</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+<code/>
+<code><span class="hljs-comment">/** One of the interfaces extended by interface `Window` */</span></code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">GlobalEventHandlers</span> {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>  addEventListener&lt;K <span class="hljs-keyword">extends</span> keyof <span class="hljs-title class_">GlobalEventHandlersEventMap</span>&gt;(</code>
+<code>    <span class="hljs-attr">type</span>: K, <span class="hljs-comment">// a string</span></code>
+<code>    <span class="hljs-attr">listener</span>: <span class="hljs-function">(</span></code>
+<code><span class="hljs-function"><span class="hljs-params">      <span class="hljs-variable language_">this</span>: GlobalEventHandlers,</span></span></code>
+<code><span class="hljs-function"><span class="hljs-params">      ev: GlobalEventHandlersEventMap[K]</span></span></code>
+<code><span class="hljs-function"><span class="hljs-params">    </span>) =&gt;</span> <span class="hljs-built_in">any</span>,</code>
+<code>    options?: <span class="hljs-built_in">boolean</span> | <span class="hljs-title class_">AddEventListenerOptions</span></code>
+<code>  ): <span class="hljs-built_in">void</span>;</code>
+<code>}</code>
+</pre>
+<h3 id="conditional-types-c-t-f"><a class="heading-id-link" href="#conditional-types-c-t-f">33.7 Conditional types (<code>C ? T : F</code>)</a></h3>
+<p>A <em>conditional type</em> has the following syntax:</p>
+<pre class="language-ts">
+<code>«<span class="hljs-title class_">Sub</span>» <span class="hljs-keyword">extends</span> «<span class="hljs-title class_">Super</span>» ? «<span class="hljs-title class_">TrueBranch</span>» : «<span class="hljs-title class_">FalseBranch</span>»</code>
+</pre>
+<p>If <code>Sub</code> is assignable to <code>Super</code>, the result of the conditional type is <code>TrueBranch</code>. Otherwise, it is <code>FalseBranch</code>. This is an example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsNumber</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsNumber</span>&lt;<span class="hljs-number">123</span>&gt;, <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsNumber</span>&lt;<span class="hljs-built_in">number</span>&gt;, <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsNumber</span>&lt;<span class="hljs-string">'abc'</span>&gt;, <span class="hljs-literal">false</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>For more information see <a href="ch_conditional-types.html#ch_conditional-types">“Conditional types (<code>C ? T : F</code>)” (§34)</a>.</p>
+<h4 id="extracting-parts-of-compound-types-via-infer"><a class="heading-id-link" href="#extracting-parts-of-compound-types-via-infer">33.7.1 Extracting parts of compound types via <code>infer</code></a></h4>
+<p>The <code>infer</code> keyword can only be used in the condition of a conditional type and extracts parts of compound types into type variables – e.g., the following generic type extracts what’s inside the angle brackets of <code>Array&lt;&gt;</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ElemType</span>&lt;<span class="hljs-title class_">Arr</span>&gt; = <span class="hljs-title class_">Arr</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Array</span>&lt;infer <span class="hljs-title class_">Elem</span>&gt; ? <span class="hljs-title class_">Elem</span> : <span class="hljs-built_in">never</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">ElemType</span>&lt;<span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;, <span class="hljs-built_in">string</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p><code>infer</code> has a lot in common with <a href="https://exploringjs.com/js/book/ch_destructuring.html#ch_destructuring">destructuring</a> in JavaScript.</p>
+<p>For more information, see <a href="ch_infer-keyword.html#ch_infer-keyword">“Extracting parts of compound types via <code>infer</code>” (§35)</a>.</p>
+<h3 id="local-type-variables"><a class="heading-id-link" href="#local-type-variables">33.8 Defining local type variables</a></h3>
+<p>Normal programming languages let us define local variables to help with managing various bits of data. Alas, the type level of TypeScript does not have this feature. If it had, it would look like this:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Result</span> = <span class="hljs-keyword">let</span> <span class="hljs-title class_">Var</span> = «<span class="hljs-title class_">Value</span>» <span class="hljs-keyword">in</span> «<span class="hljs-title class_">Body</span>»;</code>
+</pre>
+<p>However, we can emulate it via <code>infer</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Result</span> = «<span class="hljs-title class_">Value</span>» <span class="hljs-keyword">extends</span> infer <span class="hljs-title class_">Var</span> ? «<span class="hljs-title class_">Body</span>» : <span class="hljs-built_in">never</span>;</code>
+</pre>
+<p>We can also define multiple variables at the same time:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Result</span> = [«<span class="hljs-title class_">Value1</span>», «<span class="hljs-title class_">Value2</span>», «<span class="hljs-title class_">Value3</span>»] <span class="hljs-keyword">extends</span></code>
+<code>  infer [<span class="hljs-title class_">Var1</span>, <span class="hljs-title class_">Var2</span>, <span class="hljs-title class_">Var3</span>]</code>
+<code>  ? «<span class="hljs-title class_">Body</span>»</code>
+<code>  : <span class="hljs-built_in">never</span></code>
+<code>;</code>
+</pre>
+<h4 id="example"><a class="heading-id-link" href="#example">33.8.1 Example</a></h4>
+<p>This is an example where this technique is useful:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">WrapTriple</span>&lt;T&gt; = <span class="hljs-title class_">Promise</span>&lt;T&gt; <span class="hljs-keyword">extends</span> infer W</code>
+<code>  ? [W, W, W]</code>
+<code>  : <span class="hljs-built_in">never</span></code>
+<code>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">WrapTriple</span>&lt;<span class="hljs-built_in">number</span>&gt;,</code>
+<code>  [<span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">number</span>&gt;, <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">number</span>&gt;, <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">number</span>&gt;]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>In the “body” of a generic type, we can also use a different technique – a helper parameter with a default value (<code>W</code> in the following code):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">WrapTriple2</span>&lt;T, W=<span class="hljs-title class_">Promise</span>&lt;T&gt;&gt; = [W, W, W];</code>
+</pre>
+<h3 id="mapped-types-k-in-u-x"><a class="heading-id-link" href="#mapped-types-k-in-u-x">33.9 Mapped types <code>{[K in U]: X}</code></a></h3>
+<p>Roughly, a mapped type creates a new version of an input type <code>T</code> (usually an object type or a tuple type) by looping over its keys:</p>
+<pre class="language-ts">
+<code>{</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof T]: «<span class="hljs-title class_">PropValue</span>»</code>
+<code>}</code>
+</pre>
+<p><code>«PropValue»</code> is a type expression that often uses <code>K</code> in some way. This is an example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">InputObj</span> = {</code>
+<code>  <span class="hljs-attr">str</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">num</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Arrayify</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof <span class="hljs-title class_">Obj</span>]: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">Obj</span>[K]&gt;</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Arrayify</span>&lt;<span class="hljs-title class_">InputObj</span>&gt;,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">str</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>    <span class="hljs-attr">num</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="template-literal-types-processing-strings"><a class="heading-id-link" href="#template-literal-types-processing-strings">33.10 Template literal types: processing strings</a></h3>
+<p>Template literal types have the same syntax as JavaScript template literals. Two important use cases for them are:</p>
+<p>First, concatenating string literal types (the template literal is in line A, delimited by backticks):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">MethodName</span> = <span class="hljs-string">'compute'</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">AsyncMethodName</span> = <span class="hljs-string">`async<span class="hljs-subst">${Capitalize&lt;MethodName&gt;}</span>`</span>; <span class="hljs-comment">// (A)</span></code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">AsyncMethodName</span>, <span class="hljs-string">'asyncCompute'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>Second, extracting parts of string literal types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">AsyncMethodName</span> = <span class="hljs-string">'asyncCompute'</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">MethodName</span> = <span class="hljs-title class_">Uncapitalize</span>&lt;</code>
+<code>  <span class="hljs-title class_">AsyncMethodName</span> <span class="hljs-keyword">extends</span> <span class="hljs-string">`async<span class="hljs-subst">${infer MN}</span>`</span> ? <span class="hljs-variable constant_">MN</span> : <span class="hljs-built_in">never</span> <span class="hljs-comment">// (A)</span></code>
+<code>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">MethodName</span>, <span class="hljs-string">'compute'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>In line A, we extract part of <code>AsyncMethodName</code> into the type variable <code>MN</code>, via the <code>infer</code> operator. That operator works similarly destructuring in JavaScript. It must be used inside a conditional type (<code>Cond ? True : False</code>).</p>
+<p>Both concatenating and extracting string literal types are useful in many situations, e.g. they enable us to transform the names of object properties.</p>
+<h3 id="computing-with-union-types"><a class="heading-id-link" href="#computing-with-union-types">33.11 Computing with union types</a></h3>
+<p>In this section, we explore how to compute with union types.</p>
+<h4 id="intersection-and-union"><a class="heading-id-link" href="#intersection-and-union">33.11.1 Intersection and union</a></h4>
+<p>We can intersect union types via <code>&amp;</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union1</span> = <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-number">0</span> | <span class="hljs-number">1</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union2</span> = <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span> | <span class="hljs-number">1</span> | <span class="hljs-number">2</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Intersection</span> = <span class="hljs-title class_">Union1</span> &amp; <span class="hljs-title class_">Union2</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Intersection</span>,</code>
+<code>  <span class="hljs-number">1</span> | <span class="hljs-string">'b'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>And, as expected, we can also compute unions via <code>|</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union1</span> = <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union2</span> = <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">UnionResult</span> = <span class="hljs-title class_">Union1</span> | <span class="hljs-title class_">Union2</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">UnionResult</span>,</code>
+<code>  <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="distributivity"><a class="heading-id-link" href="#distributivity">33.11.2 Distributivity over union types</a></h4>
+<p>One interesting phenomenon with union types is that some operations are <em>distributive</em> over them:</p>
+<ul>
+  <li>
+    Applying the operation to a non-union type produces a single output type.
+  </li>
+  <li>
+    Applying the operation to a union type produces a union of output types – one for each element of the input union.
+  </li>
+</ul>
+<h4 id="distributivity-of-template-literal-types"><a class="heading-id-link" href="#distributivity-of-template-literal-types">33.11.3 Template literal types are distributive</a></h4>
+<p>The next example demonstrates that applying the template literal type in line A to a union produces a union of string literal types.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union</span> = <span class="hljs-string">'l'</span> | <span class="hljs-string">'f'</span> | <span class="hljs-string">'r'</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-string">`<span class="hljs-subst">${Union}</span>ight`</span>, <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-string">'light'</span> | <span class="hljs-string">'fight'</span> | <span class="hljs-string">'right'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="distributivity-of-indexed-access-types"><a class="heading-id-link" href="#distributivity-of-indexed-access-types">33.11.4 Indexed access types <code>T[K]</code> are distributive</a></h4>
+<p>The next example applies an indexed access type to a union of object literal types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union</span> = { <span class="hljs-attr">prop</span>: <span class="hljs-number">1</span> } | { <span class="hljs-attr">prop</span>: <span class="hljs-number">2</span> } | { <span class="hljs-attr">prop</span>: <span class="hljs-number">3</span> };</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Union</span>[<span class="hljs-string">'prop'</span>],</code>
+<code>  <span class="hljs-number">1</span> | <span class="hljs-number">2</span> | <span class="hljs-number">3</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="conditional-types-are-distributive"><a class="heading-id-link" href="#conditional-types-are-distributive">33.11.5 Conditional types are distributive</a></h4>
+<p>Because they are distributive, conditional types are the most important tool for working with union types. In this section, we explore a few examples. For more information, see <a href="ch_conditional-types.html#distributivity-of-conditional-types">“Conditional types are distributive over union types” (§34.2)</a>.</p>
+<h5 id="mapping-a-union-type"><a class="heading-id-link" href="#mapping-a-union-type">33.11.5.1 Mapping a union type</a></h5>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">WrapStrings</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span> ? <span class="hljs-title class_">Promise</span>&lt;T&gt; : T;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapStrings</span>&lt;<span class="hljs-string">'abc'</span>&gt;, <span class="hljs-comment">// normal instantiation</span></code>
+<code>    <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'abc'</span>&gt;</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapStrings</span>&lt;<span class="hljs-number">123</span>&gt;, <span class="hljs-comment">// normal instantiation</span></code>
+<code>    <span class="hljs-number">123</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapStrings</span>&lt;<span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-number">0</span> | <span class="hljs-number">1</span>&gt;, <span class="hljs-comment">// distributed instantiation</span></code>
+<code>    <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'a'</span>&gt; | <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'b'</span>&gt; | <span class="hljs-number">0</span> | <span class="hljs-number">1</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h5 id="filtering-a-union-type"><a class="heading-id-link" href="#filtering-a-union-type">33.11.5.2 Filtering a union type</a></h5>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">KeepStrings</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span> ? T : <span class="hljs-built_in">never</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">KeepStrings</span>&lt;<span class="hljs-string">'abc'</span>&gt;, <span class="hljs-comment">// normal instantiation</span></code>
+<code>    <span class="hljs-string">'abc'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">KeepStrings</span>&lt;<span class="hljs-number">123</span>&gt;, <span class="hljs-comment">// normal instantiation</span></code>
+<code>    <span class="hljs-built_in">never</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">KeepStrings</span>&lt;<span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-number">0</span> | <span class="hljs-number">1</span>&gt;, <span class="hljs-comment">// distributed instantiation</span></code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h3 id="computing-with-object-types"><a class="heading-id-link" href="#computing-with-object-types">33.12 Computing with object types</a></h3>
+<p>How to compute with object types is explained elsewhere:</p>
+<ul>
+  <li>
+    We can transform and create object types via <a href="ch_mapped-types.html#ch_mapped-types">mapped types</a>.
+  </li>
+  <li>
+    <a href="ch_template-literal-types.html#ch_template-literal-types">Template literal types</a> help us with changing property names.
+  </li>
+</ul>
+<h3 id="computing-with-tuple-types"><a class="heading-id-link" href="#computing-with-tuple-types">33.13 Computing with tuple types</a></h3>
+<p>See <a href="ch_computing-with-tuple-types.html#ch_computing-with-tuple-types">“Computing with tuple types” (§37)</a>:</p>
+<ul>
+  <li>
+    We can map tuples via mapped types.
+  </li>
+  <li>
+    For other operations, such as filtering, we often need recursion.
+  </li>
+</ul>
+<h3 id="computed-return-types-dont-match"><a class="heading-id-link" href="#computed-return-types-dont-match">33.14 Computed return types of functions often don’t match returned values</a></h3>
+<p>One downside of computed return types of functions is that TypeScript often thinks that the type of the returned value doesn’t match the computed type. This is an example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">PrependDollarSign</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  [<span class="hljs-title class_">Key</span> <span class="hljs-keyword">in</span> (keyof <span class="hljs-title class_">Obj</span> &amp; <span class="hljs-built_in">string</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">`$<span class="hljs-subst">${Key}</span>`</span>]: <span class="hljs-title class_">Obj</span>[<span class="hljs-title class_">Key</span>]</code>
+<code>};</code>
+<code><span class="hljs-keyword">function</span> prependDollarSign&lt;</code>
+<code>  <span class="hljs-title class_">Obj</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span></code>
+<code>&gt;(<span class="hljs-attr">obj</span>: <span class="hljs-title class_">Obj</span>): <span class="hljs-title class_">PrependDollarSign</span>&lt;<span class="hljs-title class_">Obj</span>&gt; { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type '{ [k: string]: any; }' is not assignable to</span></code>
+<code>  <span class="hljs-comment">// type 'PrependDollarSign&lt;Obj&gt;'.</span></code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>( <span class="hljs-comment">// (B)</span></code>
+<code>    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(obj)</code>
+<code>      .<span class="hljs-title function_">map</span>(</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">[key, value]</span>) =&gt;</span> [<span class="hljs-string">'$'</span>+key, value]</code>
+<code>      )</code>
+<code>  );</code>
+<code>}</code>
+</pre>
+<p>Sadly, the value returned in line B is not assignable to the return type specified in line A. There are several ways of fixing this error – all of them involve a type assertion (<code>as</code>). This is one solution – using <code>as any</code> in line B:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> prependDollarSign&lt;</code>
+<code>  <span class="hljs-title class_">Obj</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span></code>
+<code>&gt;(<span class="hljs-attr">obj</span>: <span class="hljs-title class_">Obj</span>): <span class="hljs-title class_">PrependDollarSign</span>&lt;<span class="hljs-title class_">Obj</span>&gt; { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(</code>
+<code>    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(obj)</code>
+<code>      .<span class="hljs-title function_">map</span>(</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">[key, value]</span>) =&gt;</span> [<span class="hljs-string">'$'</span>+key, value]</code>
+<code>      )</code>
+<code>  ) <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>; <span class="hljs-comment">// (B)</span></code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">const</span> dollarObject = <span class="hljs-title function_">prependDollarSign</span>({</code>
+<code>  <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span>,</code>
+<code>});</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  dollarObject,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">$prop</span>: <span class="hljs-number">123</span>,</code>
+<code>  }</code>
+<code>);</code>
+<code>assertType&lt;</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">$prop</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>&gt;(dollarObject);</code>
+</pre>
+<p>Options for getting the return type right:</p>
+<ul>
+  <li>
+    Explicitly defining a return type (as we have done in line A) plus a type assertion in line B:
+    <ul>
+      <li>
+        <code>as any</code> (our current solution)
+      </li>
+      <li>
+        <code>as unknown as PrependDollarSign&lt;Obj&gt;</code> (an alternative to what we have done).
+      </li>
+      <li>
+        Does not work: <code>as unknown</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Inferring the return type (omitting it in line A) plus a type assertion in line B:
+    <ul>
+      <li>
+        <code>as unknown as PrependDollarSign&lt;Obj&gt;</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>I prefer the solution that is used above because inferred return types prevent some ways of generating <code>.d.ts</code> files: <a href="ch_tsconfig-json.html#isolatedDeclarations">“<code>isolatedDeclarations</code>: generating <code>.d.ts</code> files more efficiently” (§8.8.5)</a></p>
+<h3 id="computing-with-types-conclusion"><a class="heading-id-link" href="#computing-with-types-conclusion">33.15 Conclusion</a></h3>
+<p>Computing with types is fascinating:</p>
+<ul>
+  <li>
+    We are writing programs at the type level.
+  </li>
+  <li>
+    It enables us to provide types for relatively complicated functionality, such as:
+    <ul>
+      <li>
+        <a href="ch_computing-with-tuple-types.html#typing-Promise.all"><code>Promise.all()</code></a>
+      </li>
+      <li>
+        <a href="ch_computing-with-tuple-types.html#typing-zip"><code>zip()</code></a>
+      </li>
+      <li>
+        <a href="ch_template-literal-types.html#example-property-paths">Property paths</a>
+      </li>
+      <li>
+        <a href="ch_template-literal-types.html#example-from-hyphen-case-to-camel-case">Converting hyphen case to camel case at the type level</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    We effectively implement a solution twice (see previous section): Once at the program level and once at the type level.
+  </li>
+</ul>
+<p>Computed types do make code more complex. My general recommendation is: Keep your types as simple as possible and do type-level computations only if it’s absolutely necessary. In some cases, it may be possible to use simpler types by restructuring code and/or data.</p>
+<p>On the other hand, there are projects where <em>writing</em> the types took cleverness, but <em>using</em> them is fun. One small example is <a href="https://github.com/rauschma/simple-sql">a prototype of a simple SQL API</a> that I wrote.</p>
+
+    
+      
+</body>
+</html>

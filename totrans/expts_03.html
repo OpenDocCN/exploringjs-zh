@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>2 Sales pitch for TypeScript</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>2 Sales pitch for TypeScript</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_why-typescript.html">https://exploringjs.com/ts/book/ch_why-typescript.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#notation-used-in-this-chapter">2.1 Notation used in this chapter</a>
+    </li>
+    <li>
+      <a href="#typescript-benefit-auto-completion-and-detecting-more-errors-during-editing">2.2 TypeScript benefit: auto-completion and detecting more errors during editing</a>
+      <ol>
+        <li>
+          <a href="#example-typos-incorrect-types-missing-arguments">2.2.1 Example: typos, incorrect types, missing arguments</a>
+        </li>
+        <li>
+          <a href="#example-getting-function-results-wrong">2.2.2 Example: getting function results wrong</a>
+        </li>
+        <li>
+          <a href="#example-working-with-optional-properties">2.2.3 Example: working with optional properties</a>
+        </li>
+        <li>
+          <a href="#example-forgetting-switch-cases">2.2.4 Example: forgetting switch cases</a>
+        </li>
+        <li>
+          <a href="#example-code-handles-some-cases-incorrectly">2.2.5 Example: code handles some cases incorrectly</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#type-annotations-for-function-parameters-and-results-are-good-documentation">2.3 Type annotations for function parameters and results are good documentation</a>
+    </li>
+    <li>
+      <a href="#typescript-benefit-better-refactoring">2.4 TypeScript benefit: better refactoring</a>
+    </li>
+    <li>
+      <a href="#easier-typescript">2.5 Using TypeScript has become easier</a>
+    </li>
+    <li>
+      <a href="#the-downsides-of-using-typescript">2.6 The downsides of using TypeScript</a>
+    </li>
+    <li>
+      <a href="#typescript-faq">2.7 TypeScript FAQ</a>
+      <ol>
+        <li>
+          <a href="#is-typescript-code-heavyweight">2.7.1 Is TypeScript code heavyweight?</a>
+        </li>
+        <li>
+          <a href="#is-typescript-trying-to-turn-javascript-into-c-or-java">2.7.2 Is TypeScript trying to turn JavaScript into C# or Java?</a>
+        </li>
+        <li>
+          <a href="#advanced-usage-of-types-seems-very-complicated-do-i-really-have-to-learn-that">2.7.3 Advanced usage of types seems very complicated. Do I really have to learn that?</a>
+        </li>
+        <li>
+          <a href="#how-long-does-it-take-to-learn-typescript">2.7.4 How long does it take to learn TypeScript?</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p>Roughly, TypeScript is JavaScript plus type information. The latter is removed before TypeScript code is executed by JavaScript engines. Therefore, writing and deploying TypeScript is more work. Is that added work worth it? In this chapter, I’m going to argue that yes, it is. Read it if you are skeptical about TypeScript but interested in giving it a chance.</p>
+<div class="boxout">
+  <p><img src="../Images/00b0d6029a045810b908b88d1a6733d2.png" height="24" class="boxout-icon" alt="Icon “reading”" data-original-src="https://exploringjs.com/ts/book/icon/reading.svg"/> <strong>You can skip this chapter if you’re already sure you want to learn and use TypeScript</strong></p>
+</div>
+<h3 id="notation-used-in-this-chapter"><a class="heading-id-link" href="#notation-used-in-this-chapter">2.1 Notation used in this chapter</a></h3>
+<p>In TypeScript code, I’ll show the errors reported by TypeScript via comments that start with <code>@ts-expect-error</code> – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: The right-hand side of an arithmetic operation</span></code>
+<code><span class="hljs-comment">// must be of type 'any', 'number', 'bigint' or an enum type.</span></code>
+<code><span class="hljs-keyword">const</span> value = <span class="hljs-number">5</span> * <span class="hljs-string">'8'</span>;</code>
+</pre>
+<p>That makes it easier to automatically test all the source code in this chapter. It’s also a built-in TypeScript feature that can be useful (albeit rarely).</p>
+<h3 id="typescript-benefit-auto-completion-and-detecting-more-errors-during-editing"><a class="heading-id-link" href="#typescript-benefit-auto-completion-and-detecting-more-errors-during-editing">2.2 TypeScript benefit: auto-completion and detecting more errors during editing</a></h3>
+<p>Let’s look at examples of code where TypeScript helps us – by auto-completing and by detecting errors. The first example is simple; later ones are more sophisticated.</p>
+<h4 id="example-typos-incorrect-types-missing-arguments"><a class="heading-id-link" href="#example-typos-incorrect-types-missing-arguments">2.2.1 Example: typos, incorrect types, missing arguments</a></h4>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Point</span> {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">x: <span class="hljs-built_in">number</span>, y = x</span>) {</code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">x</span> = x;</code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">y</span> = y;</code>
+<code>  }</code>
+<code>}</code>
+<code><span class="hljs-keyword">const</span> point1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">3</span>, <span class="hljs-number">8</span>);</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Property 'z' does not exist on type 'Point'.</span></code>
+<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(point1.<span class="hljs-property">z</span>); <span class="hljs-comment">// (A)</span></code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Property 'toUpperCase' does not exist on</span></code>
+<code><span class="hljs-comment">// type 'number'.</span></code>
+<code>point1.<span class="hljs-property">x</span>.<span class="hljs-title function_">toUpperCase</span>(); <span class="hljs-comment">// (B)</span></code>
+<code/>
+<code><span class="hljs-keyword">const</span> point2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">3</span>); <span class="hljs-comment">// (C)</span></code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Expected 1-2 arguments, but got 0.</span></code>
+<code><span class="hljs-keyword">const</span> point3 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(); <span class="hljs-comment">// (D)</span></code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Argument of type 'string' is not assignable to</span></code>
+<code><span class="hljs-comment">// parameter of type 'number'.</span></code>
+<code><span class="hljs-keyword">const</span> point4 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Point</span>(<span class="hljs-number">3</span>, <span class="hljs-string">'8'</span>); <span class="hljs-comment">// (E)</span></code>
+</pre>
+<p>What is happening here?</p>
+<ul>
+  <li>
+    <p>Line A: TypeScript knows the type of <code>point1</code> and it doesn’t have a property <code>.z</code>.</p>
+  </li>
+  <li>
+    <p>Line B: <code>point1.x</code> is a number and therefore doesn’t have the string method <code>.toUpperCase()</code>.</p>
+  </li>
+  <li>
+    <p>Line C: This invocation works because the second argument of <code>new Point()</code> is optional.</p>
+  </li>
+  <li>
+    <p>Line D: At least one argument must be provided.</p>
+  </li>
+  <li>
+    <p>Line E: The second argument of <code>new Point()</code> must be a number.</p>
+  </li>
+</ul>
+<p>In line A, we get auto-completion after <code>point1.</code> (the properties <code>x</code> and <code>y</code> of that object):</p>
+<p><img src="../Images/7b1a3c569b4d72f4b590282515bc15ca.png" width="140" alt="" style="height:84.5px" data-original-src="https://exploringjs.com/ts/book/img/why-typescript/auto-completion-point.png"/></p>
+<h4 id="example-getting-function-results-wrong"><a class="heading-id-link" href="#example-getting-function-results-wrong">2.2.2 Example: getting function results wrong</a></h4>
+<p>How many issues can you see in the following JavaScript code?</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">reverseString</span>(<span class="hljs-params">str</span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (str.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> str;</code>
+<code>  }</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(str).<span class="hljs-title function_">reverse</span>();</code>
+<code>}</code>
+</pre>
+<p>Let’s see what TypeScript tells us if we add type annotations (line A):</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: Function lacks ending return statement and</span></code>
+<code><span class="hljs-comment">// return type does not include 'undefined'.</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">reverseString</span>(<span class="hljs-params">str: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">string</span> { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-keyword">if</span> (str.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> str;</code>
+<code>  }</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(str).<span class="hljs-title function_">reverse</span>(); <span class="hljs-comment">// (B)</span></code>
+<code>}</code>
+</pre>
+<p>TypeScript tells us:</p>
+<ul>
+  <li>
+    At the end, there is no <code>return</code> statement – which is true: We forgot to start line B with <code>return</code> and therefore implicitly return <code>undefined</code> after line B.
+  </li>
+  <li>
+    The implicitly returned <code>undefined</code>is incompatible with the return type <code>string</code> (line A).
+  </li>
+</ul>
+<p>If we fix this issue, TypeScript points out another error:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">reverseString</span>(<span class="hljs-params">str: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">string</span> { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-keyword">if</span> (str.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> str;</code>
+<code>  }</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type 'string[]' is not assignable to</span></code>
+<code>  <span class="hljs-comment">// type 'string'.</span></code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(str).<span class="hljs-title function_">reverse</span>(); <span class="hljs-comment">// (B)</span></code>
+<code>}</code>
+</pre>
+<p>In line B, we are returning an Array while the return type in line A says that we want to return a string. If we fix that issue too, TypeScript is finally happy with our code:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">reverseString</span>(<span class="hljs-params">str: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">if</span> (str.<span class="hljs-property">length</span> === <span class="hljs-number">0</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> str;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(str).<span class="hljs-title function_">reverse</span>().<span class="hljs-title function_">join</span>(<span class="hljs-string">''</span>);</code>
+<code>}</code>
+</pre>
+<h4 id="example-working-with-optional-properties"><a class="heading-id-link" href="#example-working-with-optional-properties">2.2.3 Example: working with optional properties</a></h4>
+<p>In our next example, we work with names that are defined via objects. We define the structure of those objects via the following TypeScrip type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NameDef</span> = {</code>
+<code>  name?: <span class="hljs-built_in">string</span>, <span class="hljs-comment">// (A)</span></code>
+<code>  nick?: <span class="hljs-built_in">string</span>, <span class="hljs-comment">// (B)</span></code>
+<code>};</code>
+</pre>
+<p>In other words: NameDef objects have two properties whose values are strings. Both properties are optional – which is indicated via the question marks in line A and line B.</p>
+<p>The following code contains an error and TypeScript warns us about it:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getName</span>(<span class="hljs-params">nameDef: NameDef</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type 'string | undefined' is not assignable</span></code>
+<code>  <span class="hljs-comment">// to type 'string'.</span></code>
+<code>  <span class="hljs-keyword">return</span> nameDef.<span class="hljs-property">nick</span> ?? nameDef.<span class="hljs-property">name</span>;</code>
+<code>}</code>
+</pre>
+<p><code>??</code> is the nullish coalescing operator that returns its left-hand side – unless it is <code>undefined</code> or <code>null</code>. In that case, it returns its right-hand side. For more information, see <a href="https://exploringjs.com/js/book/ch_undefined-null.html#nullish-coalescing-operator">“Exploring JavaScript”</a>.</p>
+<p><code>nameDef.name</code> may be missing. In that case, the result is <code>undefined</code> and not a string. If we fix that, TypeScript does not report any more errors:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getName</span>(<span class="hljs-params">nameDef: NameDef</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">return</span> nameDef.<span class="hljs-property">nick</span> ?? nameDef.<span class="hljs-property">name</span> ?? <span class="hljs-string">'(Anonymous)'</span>;</code>
+<code>}</code>
+</pre>
+<h4 id="example-forgetting-switch-cases"><a class="heading-id-link" href="#example-forgetting-switch-cases">2.2.4 Example: forgetting switch cases</a></h4>
+<p>Consider the following type for colors:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Color</span> = <span class="hljs-string">'red'</span> | <span class="hljs-string">'green'</span> | <span class="hljs-string">'blue'</span>;</code>
+</pre>
+<p>In other words: a color is either the string <code>'red'</code> or the string <code>'green'</code> or the string <code>'blue'</code>. The following function translates such colors to CSS hexadecimal color values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getCssColor</span>(<span class="hljs-params">color: Color</span>): <span class="hljs-string">`#<span class="hljs-subst">${<span class="hljs-built_in">string</span>}</span>`</span> {</code>
+<code>  <span class="hljs-keyword">switch</span> (color) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-string">'red'</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'#FF0000'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-string">'green'</span>:</code>
+<code>      <span class="hljs-comment">// @ts-expect-error: Type '"00FF00"' is not assignable to</span></code>
+<code>      <span class="hljs-comment">// type '`#${string}`'.</span></code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'00FF00'</span>; <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      <span class="hljs-comment">// (B)</span></code>
+<code>      <span class="hljs-comment">// @ts-expect-error: Argument of type '"blue"' is not</span></code>
+<code>      <span class="hljs-comment">// assignable to parameter of type 'never'.</span></code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(color); <span class="hljs-comment">// (C)</span></code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>In line A, we get an error because we return a string that is incompatible with the return type <code>`#${string}`</code>: It does not start with a hash symbol.</p>
+<p>The error in line C means that we forgot a case (the value <code>'blue'</code>). To understand the error message, we must know that TypeScript continually adapts the type of <code>color</code>:</p>
+<ul>
+  <li>
+    Before the <code>switch</code> statement, its type is <code>'red' | 'green' | 'blue'</code>.
+  </li>
+  <li>
+    After we crossed off the cases <code>'red'</code> and <code>'green'</code>, its type is <code>'blue'</code> in line B.
+  </li>
+</ul>
+<p>And that type is incompatible with the special type <code>never</code> that the parameter of <code>new UnexpectedValueError()</code> has. That type is used for variables at locations that we never reach. For more information see <a href="ch_never.html#ch_never">“The bottom type <code>never</code>” (§15)</a>.</p>
+<p>After we fix both errors, our code looks like this:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getCssColor</span>(<span class="hljs-params">color: Color</span>): <span class="hljs-string">`#<span class="hljs-subst">${<span class="hljs-built_in">string</span>}</span>`</span> {</code>
+<code>  <span class="hljs-keyword">switch</span> (color) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-string">'red'</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'#FF0000'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-string">'green'</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'#00FF00'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-string">'blue'</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'#0000FF'</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(color);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>This is what the error class <code>UnexpectedValueError</code> looks like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">UnexpectedValueError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {</code>
+<code>  <span class="hljs-title function_">constructor</span>(</code>
+<code><span class="hljs-params">    <span class="hljs-comment">// Type enables type checking</span></span></code>
+<code><span class="hljs-params">    value: <span class="hljs-built_in">never</span>,</span></code>
+<code><span class="hljs-params">    <span class="hljs-comment">// Avoid exception if `value` is:</span></span></code>
+<code><span class="hljs-params">    <span class="hljs-comment">// - object without prototype</span></span></code>
+<code><span class="hljs-params">    <span class="hljs-comment">// - symbol</span></span></code>
+<code><span class="hljs-params">    message = <span class="hljs-string">`Unexpected value: <span class="hljs-subst">${{}.toString.call(value)}</span>`</span></span></code>
+<code><span class="hljs-params">  </span>) {</code>
+<code>    <span class="hljs-variable language_">super</span>(message)</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Lastly, TypeScript gives us auto-completion for the argument of <code>getCssColor()</code> (the values <code>'blue'</code>, <code>'green'</code> and <code>'red'</code> that we can use for it):</p>
+<p><img src="../Images/3912e75bc5156e6c1c88db9527658f69.png" alt="" style="width:356.5px; height:110.5px" data-original-src="https://exploringjs.com/ts/book/img/why-typescript/auto-completion-color.png"/></p>
+<h4 id="example-code-handles-some-cases-incorrectly"><a class="heading-id-link" href="#example-code-handles-some-cases-incorrectly">2.2.5 Example: code handles some cases incorrectly</a></h4>
+<p>The following type describes content via objects. Content can be text, an image or a video:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Content</span> =</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">kind</span>: <span class="hljs-string">'text'</span>,</code>
+<code>    <span class="hljs-attr">charCount</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">kind</span>: <span class="hljs-string">'image'</span>,</code>
+<code>    <span class="hljs-attr">width</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">kind</span>: <span class="hljs-string">'video'</span>,</code>
+<code>    <span class="hljs-attr">width</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">runningTimeInSeconds</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>;</code>
+</pre>
+<p>In the following code, we use content incorrectly:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getWidth</span>(<span class="hljs-params">content: Content</span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Property 'width' does not exist on</span></code>
+<code>  <span class="hljs-comment">// type 'Content'.</span></code>
+<code>  <span class="hljs-keyword">return</span> content.<span class="hljs-property">width</span>;</code>
+<code>}</code>
+</pre>
+<p>TypeScript warns us because not all kinds of content have the property <code>.content</code>. However, they all do have the property <code>.kind</code> – which we can use to fix the error:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getWidth</span>(<span class="hljs-params">content: Content</span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-keyword">if</span> (content.<span class="hljs-property">kind</span> === <span class="hljs-string">'text'</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">NaN</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> content.<span class="hljs-property">width</span>; <span class="hljs-comment">// (A)</span></code>
+<code>}</code>
+</pre>
+<p>Note that TypeScript does not complain in line A, because we have excluded text content, which is the only content that does not have the property <code>.width</code>.</p>
+<h3 id="type-annotations-for-function-parameters-and-results-are-good-documentation"><a class="heading-id-link" href="#type-annotations-for-function-parameters-and-results-are-good-documentation">2.3 Type annotations for function parameters and results are good documentation</a></h3>
+<p>Consider the following JavaScript code:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">filter</span>(<span class="hljs-params">items, callback</span>) {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>That does not tell us much about the arguments expected by <code>filter()</code>. We also don’t know what it returns. In contrast, this is what the corresponding TypeScript code looks like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">filter</span>(</code>
+<code><span class="hljs-params">  items: Iterable&lt;<span class="hljs-built_in">string</span>&gt;,</span></code>
+<code><span class="hljs-params">  callback: (item: <span class="hljs-built_in">string</span>, index: <span class="hljs-built_in">number</span>) =&gt; <span class="hljs-built_in">boolean</span></span></code>
+<code>): <span class="hljs-title class_">Iterable</span>&lt;<span class="hljs-built_in">string</span>&gt; {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>This information tells us:</p>
+<ul>
+  <li>
+    Argument <code>items</code> is an iterable over strings.
+  </li>
+  <li>
+    The <code>callback</code> receives a string and an index and returns a boolean.
+  </li>
+  <li>
+    The result of <code>filter()</code> is another iterable over strings.
+  </li>
+</ul>
+<p>Yes, the type notation takes getting used to. But, once we understand it, we can quickly get a rough understand of what <code>filter()</code> does. More quickly than by reading prose in English (which, admittedly, is still needed to fill in the gaps left by the type notation and the name of the function).</p>
+<p>I find it easier to understand TypeScript code bases than JavaScript code bases because, to me, TypeScript provides an additional layer of documentation.</p>
+<p>This additional documentation also helps when working in teams because it is clearer how code is to be used and TypeScript often warns us if we are doing something wrong.</p>
+<p>Whenever I migrate JavaScript code to TypeScript, I’m noticing an interesting phenomenon: In order to find the appropriate types for the parameters of a function or method, I have to check where it is invoked. That means that static types give me information locally that I otherwise have to look up elsewhere.</p>
+<h3 id="typescript-benefit-better-refactoring"><a class="heading-id-link" href="#typescript-benefit-better-refactoring">2.4 TypeScript benefit: better refactoring</a></h3>
+<p>Refactorings are automated code transformations that many integrated development environments offer.</p>
+<p>Renaming methods is an example of a refactoring. Doing so in plain JavaScript can be tricky because the same name might refer to different methods. TypeScript has more information on how methods and types are connected, which makes renaming methods safer there.</p>
+<h3 id="easier-typescript"><a class="heading-id-link" href="#easier-typescript">2.5 Using TypeScript has become easier</a></h3>
+<p>We now often don’t need an extra build step compared to JavaScript:</p>
+<ul>
+  <li>
+    On server side JavaScript platforms such as Node.js, Deno and Bun, we can run TypeScript directly – without compiling it.
+  </li>
+  <li>
+    Most bundlers such as Vite have built-in support for TypeScript.
+  </li>
+</ul>
+<p>More good news:</p>
+<ul>
+  <li>
+    Compiling TypeScript to JavaScript has become more efficient – thanks to a technique called <em>type stripping</em> which simply removes the type part of TypeScript syntax and makes no other transformations (<a href="ch_tsconfig-json.html#type-stripping">more information</a>).
+  </li>
+</ul>
+<p>Creating packages has also improved:</p>
+<ul>
+  <li>
+    npm: Non-library packages can be published in TypeScript. Library packages must contain JavaScript plus <em>declaration files</em> (with type information). Generating the latter has also improved – thanks to a technique called <a href="ch_tsconfig-json.html#isolatedDeclarations"><em>isolated declarations</em></a>.
+  </li>
+  <li>
+    <a href="https://jsr.io">JSR (JavaScript Registry)</a> is an alternative to npm where packages can be uploaded as TypeScript. It supports a variety of platforms. For Node.js, it automatically generates JavaScript files and declaration files.
+  </li>
+</ul>
+<p>Alas, type checking is still relatively slow and must be performed via the TypeScript compiler <code>tsc</code>.</p>
+<h3 id="the-downsides-of-using-typescript"><a class="heading-id-link" href="#the-downsides-of-using-typescript">2.6 The downsides of using TypeScript</a></h3>
+<ul>
+  <li>
+    It is an added layer on top of JavaScript: more complexity, more things to learn, etc.
+  </li>
+  <li>
+    npm packages can only be used if they have static type definitions. These days, most packages either come with type definitions or there are type definitions available for them on <a href="http://definitelytyped.org">DefinitelyTyped</a>. However, especially the latter can occasionally be slightly wrong, which leads to issues that you don’t have without static typing.
+  </li>
+  <li>
+    Configuring TypeScript via <code>tsconfig.json</code> also adds a bit of complexity and means that there is a lot of variation w.r.t. how TypeScript code bases are type-checked. There are two mitigating factors:
+    <ul>
+      <li>
+        For my own projects, I’m now using <a href="ch_tsconfig-json.html#tsconfig-summary">a maximally strict <code>tsconfig.json</code></a> – which eliminated my doubts about what my <code>tsconfig.json</code> should look like.
+      </li>
+      <li>
+        Type stripping (see previous section) has clarified the role of <code>tsconfig.json</code> for me: With them, it only configures how type checking works. Generating JavaScript can be done without <code>tsconfig.json</code>.
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="typescript-faq"><a class="heading-id-link" href="#typescript-faq">2.7 TypeScript FAQ</a></h3>
+<h4 id="is-typescript-code-heavyweight"><a class="heading-id-link" href="#is-typescript-code-heavyweight">2.7.1 Is TypeScript code heavyweight?</a></h4>
+<p>TypeScript code <em>can</em> be heavyweight. But it doesn’t have to be. For example, due to type inference, we can often get away with relatively few type annotations:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> setDifference&lt;T&gt;(<span class="hljs-attr">set1</span>: <span class="hljs-title class_">Set</span>&lt;T&gt;, <span class="hljs-attr">set2</span>: <span class="hljs-title class_">Set</span>&lt;T&gt;): <span class="hljs-title class_">Set</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>&lt;T&gt;();</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> elem <span class="hljs-keyword">of</span> set1) {</code>
+<code>    <span class="hljs-keyword">if</span> (!set2.<span class="hljs-title function_">has</span>(elem)) {</code>
+<code>      result.<span class="hljs-title function_">add</span>(elem);</code>
+<code>    }</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> result;</code>
+<code>}</code>
+</pre>
+<p>The only non-JavaScript syntax in this code is <code>&lt;T&gt;</code>: Its first occurrence <code>setDifference&lt;T&gt;</code> means that the function <code>setDifference()</code> has a <em>type parameter</em> – a parameter at the type level. All later occurrences of <code>&lt;T&gt;</code> refer to that parameter. They mean:</p>
+<ul>
+  <li>
+    The parameters <code>set1</code> and <code>set2</code> are Sets whose elements have the same type <code>T</code>.
+  </li>
+  <li>
+    The result is also a Set. Its elements have the same type as those of <code>set1</code> and <code>set2</code>.
+  </li>
+</ul>
+<p>Note that we normally don’t have to provide the type parameter <code>&lt;T&gt;</code> – TypeScript can extract it automatically from the types of the parameters:</p>
+<pre class="language-ts">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title function_">setDifference</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">'b'</span>])),</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">'a'</span>]),</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title function_">setDifference</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]), <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>])),</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>(),</code>
+<code>);</code>
+</pre>
+<p>When it comes to <em>using</em> <code>setDifference()</code>, the TypeScript code is not different from JavaScript code in this case.</p>
+<h4 id="is-typescript-trying-to-turn-javascript-into-c-or-java"><a class="heading-id-link" href="#is-typescript-trying-to-turn-javascript-into-c-or-java">2.7.2 Is TypeScript trying to turn JavaScript into C# or Java?</a></h4>
+<p>Over time, the nature of TypeScript has evolved.</p>
+<p>TypeScript 0.8 was released in October 2012 when JavaScript had remained stagnant for a long time. Therefore, TypeScript added features that its team felt JavaScript was missing - e.g. classes, modules and enums.</p>
+<p>Since then, JavaScript has gained many new features. TypeScript now tracks what JavaScript provides and does not introduce new language-level features anymore – for example:</p>
+<ul>
+  <li>
+    <p>In 2012, TypeScript had its own way of doing modules. Now it supports ECMAScript modules and CommonJS.</p>
+  </li>
+  <li>
+    <p>In 2012, TypeScript had classes that were transpiled to functions. Since ECMAScript 6 came out in 2015, TypeScript has supported the built-in classes.</p>
+  </li>
+  <li>
+    <p>In 2015, TypeScript introduced its own flavor of decorators, in order to support Angular. In 2022, ECMAScript decorators reached stage 3 and TypeScript has supported them since. For more information, see section <a href="https://2ality.com/2022/10/javascript-decorators.html#the-history-of-decorators">“The history of decorators”</a> in the 2ality post on ECMAScript decorators.</p>
+  </li>
+  <li>
+    <p>If the type checking option <a href="ch_tsconfig-json.html#erasableSyntaxOnly"><code>erasableSyntaxOnly</code></a> is active, TypeScript only supports JavaScript’s language features – e.g. we are not allowed to use enums. This option enables <a href="#easier-typescript">type stripping</a> and is popular among TypeScript programmers. Thus it looks like in the future, most TypeScript will really be pure JavaScript plus type information.</p>
+  </li>
+  <li>
+    <p>TypeScript will only get better enums or pattern matching if and when JavaScript gets them.</p>
+  </li>
+</ul>
+<h5 id="typescript-is-more-than-oop"><a class="heading-id-link" href="#typescript-is-more-than-oop">2.7.2.1 TypeScript is more than OOP</a></h5>
+<p>A common misconception is that TypeScript only supports a class-heavy OOP style; it supports many functional programming patterns just as well – e.g. <em>discriminated unions</em> which are a (slightly less elegant) version of algebraic data types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Content</span> =</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">kind</span>: <span class="hljs-string">'text'</span>,</code>
+<code>    <span class="hljs-attr">charCount</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">kind</span>: <span class="hljs-string">'image'</span>,</code>
+<code>    <span class="hljs-attr">width</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">kind</span>: <span class="hljs-string">'video'</span>,</code>
+<code>    <span class="hljs-attr">width</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">height</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">runningTimeInSeconds</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>;</code>
+</pre>
+<p>In Haskell, this data type would look like this (without labels, for simplicity’s sake):</p>
+<pre class="language-hs">
+<code><span class="hljs-class"><span class="hljs-keyword">data</span> <span class="hljs-type">Content</span> =</span></code>
+<code>  <span class="hljs-type">Text</span> <span class="hljs-type">Int</span></code>
+<code>  | <span class="hljs-type">Image</span> <span class="hljs-type">Int</span> <span class="hljs-type">Int</span></code>
+<code>  | <span class="hljs-type">Video</span> <span class="hljs-type">Int</span> <span class="hljs-type">Int</span> <span class="hljs-type">Int</span></code>
+</pre>
+<p>More information: <a href="https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html">“TypeScript for functional programmers”</a> in the TypeScript Handbook.</p>
+<h4 id="advanced-usage-of-types-seems-very-complicated-do-i-really-have-to-learn-that"><a class="heading-id-link" href="#advanced-usage-of-types-seems-very-complicated-do-i-really-have-to-learn-that">2.7.3 Advanced usage of types seems very complicated. Do I really have to learn that?</a></h4>
+<p>Normal use of TypeScript almost always involves relatively simple types. For libraries, complicated types can be useful but then they are complicated to write and not complicated to use. My general recommendation is to make types as simple as possible and therefore easier to understand and maintain. If types for code are too complicated then it’s often possible to simplify them – e.g. by changing the code and using two functions instead of one or by not capturing every last detail with them.</p>
+<p>One key insight for making sense of advanced types, is that they are mostly like a new programming language at the type level and usually describe how input types are transformed into output types. In many ways, they are similar to JavaScript. There are:</p>
+<ul>
+  <li>
+    Variables (type variables)
+  </li>
+  <li>
+    Functions with parameters (generic types with type parameters)
+  </li>
+  <li>
+    Conditional expressions <code>C ? T : F</code> (conditional types)
+  </li>
+  <li>
+    Loops over objects (mapped types)
+  </li>
+  <li>
+    Etc.
+  </li>
+</ul>
+<p>For more information on this topic, see <a href="ch_computing-with-types-overview.html#ch_computing-with-types-overview">“Overview: computing with types” (§33)</a>.</p>
+<h5 id="are-complicated-types-worth-it"><a class="heading-id-link" href="#are-complicated-types-worth-it">2.7.3.1 Are complicated types worth it?</a></h5>
+<p>Sometimes they are – for example, as an experiment, I wrote <a href="https://github.com/rauschma/simple-sql">a simple SQL API</a> that gives you a lot of type completions and warnings during editing (if you make typos etc). Note that writing that API involved some work; using it is simple.</p>
+<h4 id="how-long-does-it-take-to-learn-typescript"><a class="heading-id-link" href="#how-long-does-it-take-to-learn-typescript">2.7.4 How long does it take to learn TypeScript?</a></h4>
+<p>I believe that you can learn the basics of TypeScript within a day and be productive the next day. There is still more to learn after that, but you can do so while already using it.</p>
+<p><a href="ch_typescript-essentials.html#ch_typescript-essentials">“The basics of TypeScript” (§4)</a> teaches you those basics. If you are new to TypeScript, I’d love to hear from you: Is my assumption correct? Were you able to write (simple) TypeScript after reading it?</p>
+
+    
+      
+</body>
+</html>

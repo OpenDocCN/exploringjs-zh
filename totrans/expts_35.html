@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>28 Type assertions (related to casting)</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>28 Type assertions (related to casting)</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_type-assertions.html">https://exploringjs.com/ts/book/ch_type-assertions.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#type-assertions">28.1 Type assertions</a>
+      <ol>
+        <li>
+          <a href="#obsolete-alternative-syntax-for-type-assertions">28.1.1 Obsolete alternative syntax for type assertions</a>
+        </li>
+        <li>
+          <a href="#example-asserting-an-index-signature">28.1.2 Example: asserting an index signature</a>
+        </li>
+        <li>
+          <a href="#example-as-any">28.1.3 Example: <code>as any</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#constructs-related-to-type-assertions">28.2 Constructs related to type assertions</a>
+      <ol>
+        <li>
+          <a href="#non-nullish-assertion-operator-postfix">28.2.1 Non-nullish assertion operator (postfix <code>!</code>)</a>
+        </li>
+        <li>
+          <a href="#definite-assignment-assertions">28.2.2 Definite assignment assertions</a>
+        </li>
+        <li>
+          <a href="#const-assertions-as-const">28.2.3 Const assertions (<code>as const</code>)</a>
+        </li>
+        <li>
+          <a href="#satisfies-operator">28.2.4 <code>satisfies</code> operator</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p>This chapter is about <em>type assertions</em> in TypeScript, which are related to type casts in other languages and performed via the <code>as</code> operator.</p>
+<h3 id="type-assertions"><a class="heading-id-link" href="#type-assertions">28.1 Type assertions</a></h3>
+<p>A type assertion lets us override a static type that TypeScript has computed for a value. That is useful for working around limitations of the type system.</p>
+<p>Type assertions are related to type casts in other languages, but they don’t throw exceptions and don’t do anything at runtime (they do perform a few minimal checks statically).</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">data</span>: <span class="hljs-built_in">object</span> = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]; <span class="hljs-comment">// (A)</span></code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Property 'length' does not exist on type 'object'.</span></code>
+<code>data.<span class="hljs-property">length</span>; <span class="hljs-comment">// (B)</span></code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  (data <span class="hljs-keyword">as</span> <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;).<span class="hljs-property">length</span>, <span class="hljs-number">3</span> <span class="hljs-comment">// (C)</span></code>
+<code>);</code>
+</pre>
+<p>Comments:</p>
+<ul>
+  <li>
+    <p>In line A, we widen the type of the Array to <code>object</code>.</p>
+  </li>
+  <li>
+    <p>In line B, we see that this type doesn’t let us access any properties (<a href="ch_typing-objects.html#general-types-for-objects">details</a>).</p>
+  </li>
+  <li>
+    <p>In line C, we use a type assertion (the operator <code>as</code>) to tell TypeScript that <code>data</code> is an Array. Now we can access property <code>.length</code>.</p>
+  </li>
+</ul>
+<p>Type assertions are a last resort and should be avoided as much as possible. They remove the safety net that the static type system normally gives us.</p>
+<p>Note that, in line A, we also overrode TypeScript’s type. But we did it via a type annotation. This way of overriding is safer than type assertions because we are more constrained: TypeScript’s type must be assignable to the type of the annotation.</p>
+<h4 id="obsolete-alternative-syntax-for-type-assertions"><a class="heading-id-link" href="#obsolete-alternative-syntax-for-type-assertions">28.1.1 Obsolete alternative syntax for type assertions</a></h4>
+<p>TypeScript has an alternative “angle-bracket” syntax for type assertions:</p>
+<pre class="language-ts">
+<code>&lt;<span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;data</code>
+</pre>
+<p>I recommend avoiding this syntax:</p>
+<ul>
+  <li>
+    It has grown out of style.
+  </li>
+  <li>
+    It is not compatible with React JSX code (in <code>.tsx</code> files).
+  </li>
+  <li>
+    It is not allowed if <a href="ch_tsconfig-json.html#erasableSyntaxOnly">the compiler option <code>erasableSyntaxOnly</code></a> is active.
+  </li>
+</ul>
+<h4 id="example-asserting-an-index-signature"><a class="heading-id-link" href="#example-asserting-an-index-signature">28.1.2 Example: asserting an index signature</a></h4>
+<p>In the following code (line A), we use the type assertion <code>as Dict</code>, so that we can access the properties of a value whose inferred type is <code>object</code>. That is, we are overriding the static type <code>object</code> with the static type <code>Dict</code>.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Dict</span> = {[<span class="hljs-attr">k</span>:<span class="hljs-built_in">string</span>]: <span class="hljs-built_in">unknown</span>};</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getPropertyValue</span>(<span class="hljs-params">dict: <span class="hljs-built_in">unknown</span>, key: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">unknown</span> {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> dict === <span class="hljs-string">'object'</span> &amp;&amp; dict !== <span class="hljs-literal">null</span> &amp;&amp; key <span class="hljs-keyword">in</span> dict) {</code>
+<code>    assertType&lt;<span class="hljs-built_in">object</span>&gt;(dict);</code>
+<code/>
+<code>    <span class="hljs-comment">// @ts-expect-error: Element implicitly has an 'any' type because</span></code>
+<code>    <span class="hljs-comment">// expression of type 'string' can't be used to index type '{}'. No</span></code>
+<code>    <span class="hljs-comment">// index signature with a parameter of type 'string' was found on</span></code>
+<code>    <span class="hljs-comment">// type '{}'.</span></code>
+<code>    dict[key];</code>
+<code>    </code>
+<code>    <span class="hljs-keyword">return</span> (dict <span class="hljs-keyword">as</span> <span class="hljs-title class_">Dict</span>)[key]; <span class="hljs-comment">// (A)</span></code>
+<code>  } <span class="hljs-keyword">else</span> {</code>
+<code>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>();</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<h4 id="example-as-any"><a class="heading-id-link" href="#example-as-any">28.1.3 Example: <code>as any</code></a></h4>
+<p>In the following example, the computed return type in line A does not match the value we return in line B:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">PrependDollarSign</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  [<span class="hljs-title class_">Key</span> <span class="hljs-keyword">in</span> (keyof <span class="hljs-title class_">Obj</span> &amp; <span class="hljs-built_in">string</span>) <span class="hljs-keyword">as</span> <span class="hljs-string">`$<span class="hljs-subst">${Key}</span>`</span>]: <span class="hljs-title class_">Obj</span>[<span class="hljs-title class_">Key</span>]</code>
+<code>};</code>
+<code><span class="hljs-keyword">function</span> prependDollarSign&lt;</code>
+<code>  <span class="hljs-title class_">Obj</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span></code>
+<code>&gt;(<span class="hljs-attr">obj</span>: <span class="hljs-title class_">Obj</span>): <span class="hljs-title class_">PrependDollarSign</span>&lt;<span class="hljs-title class_">Obj</span>&gt; { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type '{ [k: string]: any; }' is not assignable to</span></code>
+<code>  <span class="hljs-comment">// type 'PrependDollarSign&lt;Obj&gt;'.</span></code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>( <span class="hljs-comment">// (B)</span></code>
+<code>    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(obj)</code>
+<code>      .<span class="hljs-title function_">map</span>(</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">[key, value]</span>) =&gt;</span> [<span class="hljs-string">'$'</span>+key, value]</code>
+<code>      )</code>
+<code>  );</code>
+<code>}</code>
+</pre>
+<p>To make the error go away, we use <code>as any</code> in line A:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> prependDollarSign&lt;</code>
+<code>  <span class="hljs-title class_">Obj</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span></code>
+<code>&gt;(<span class="hljs-attr">obj</span>: <span class="hljs-title class_">Obj</span>): <span class="hljs-title class_">PrependDollarSign</span>&lt;<span class="hljs-title class_">Obj</span>&gt; {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(</code>
+<code>    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(obj)</code>
+<code>      .<span class="hljs-title function_">map</span>(</code>
+<code>        <span class="hljs-function">(<span class="hljs-params">[key, value]</span>) =&gt;</span> [<span class="hljs-string">'$'</span>+key, value]</code>
+<code>      )</code>
+<code>  ) <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>; <span class="hljs-comment">// (A)</span></code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">const</span> dollarObject = <span class="hljs-title function_">prependDollarSign</span>({</code>
+<code>  <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span>,</code>
+<code>});</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  dollarObject,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">$prop</span>: <span class="hljs-number">123</span>,</code>
+<code>  }</code>
+<code>);</code>
+<code>assertType&lt;</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">$prop</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>&gt;(dollarObject);</code>
+</pre>
+<p>This is an extreme measure. Alas it’s unavoidable in this case. For more information, see <a href="ch_computing-with-types-overview.html#computed-return-types-dont-match">“Computed return types of functions often don’t match returned values” (§33.14)</a>.</p>
+<h3 id="constructs-related-to-type-assertions"><a class="heading-id-link" href="#constructs-related-to-type-assertions">28.2 Constructs related to type assertions</a></h3>
+<h4 id="non-nullish-assertion-operator-postfix"><a class="heading-id-link" href="#non-nullish-assertion-operator-postfix">28.2.1 Non-nullish assertion operator (postfix <code>!</code>)</a></h4>
+<p>If a value’s type is a union that includes the types <code>undefined</code> or <code>null</code>, the <em>non-nullish assertion operator</em> (or <em>non-null assertion operator</em>) removes these types from the union. We are telling TypeScript: “This value can’t be <code>undefined</code> or <code>null</code>.” As a consequence, we can perform operations that are prevented by the types of these two values – for example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> theName = <span class="hljs-string">'Jane'</span> <span class="hljs-keyword">as</span> (<span class="hljs-literal">null</span> | <span class="hljs-built_in">string</span>);</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: 'theName' is possibly 'null'.</span></code>
+<code>theName.<span class="hljs-property">length</span>;</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  theName!.<span class="hljs-property">length</span>, <span class="hljs-number">4</span>); <span class="hljs-comment">// OK</span></code>
+</pre>
+<h5 id="example-maps-get-after-has"><a class="heading-id-link" href="#example-maps-get-after-has">28.2.1.1 Example – Maps: <code>.get()</code> after <code>.has()</code></a></h5>
+<p>After we use the Map method <code>.has()</code>, we know that a Map has a given key. Alas, the result of <code>.get()</code> does not reflect that knowledge, which is why we have to use the nullish assertion operator:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getLength</span>(<span class="hljs-params">strMap: <span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt;, key: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-keyword">if</span> (strMap.<span class="hljs-title function_">has</span>(key)) {</code>
+<code>    <span class="hljs-comment">// We are sure x is not undefined:</span></code>
+<code>    <span class="hljs-keyword">const</span> value = strMap.<span class="hljs-title function_">get</span>(key)!; <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-keyword">return</span> value.<span class="hljs-property">length</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;</code>
+<code>}</code>
+</pre>
+<p>We can avoid the nullish assertion operator whenever the values of a Map can’t be <code>undefined</code>. Then missing entries can be detected by checking if the result of <code>.get()</code> is <code>undefined</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getLength</span>(<span class="hljs-params">strMap: <span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt;, key: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-keyword">const</span> value = strMap.<span class="hljs-title function_">get</span>(key);</code>
+<code>  assertType&lt;<span class="hljs-built_in">string</span> | <span class="hljs-literal">undefined</span>&gt;(value);</code>
+<code/>
+<code>  <span class="hljs-keyword">if</span> (value === <span class="hljs-literal">undefined</span>) { <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-keyword">return</span> -<span class="hljs-number">1</span>;</code>
+<code>  }</code>
+<code>  assertType&lt;<span class="hljs-built_in">string</span>&gt;(value);</code>
+<code/>
+<code>  <span class="hljs-keyword">return</span> value.<span class="hljs-property">length</span>;</code>
+<code>}</code>
+</pre>
+<h4 id="definite-assignment-assertions"><a class="heading-id-link" href="#definite-assignment-assertions">28.2.2 Definite assignment assertions</a></h4>
+<p>If <a href="ch_class-definitions.html#strictPropertyInitialization"><em>strict property initialization</em></a> is switched on, we occasionally need to tell TypeScript that we do initialize certain properties – even though it thinks we don’t.</p>
+<p>This is an example where TypeScript complains even though it shouldn’t:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Point1</span> {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Property 'x' has no initializer and is not definitely</span></code>
+<code>  <span class="hljs-comment">// assigned in the constructor.</span></code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>;</code>
+<code/>
+<code>  <span class="hljs-comment">// @ts-expect-error: Property 'y' has no initializer and is not definitely</span></code>
+<code>  <span class="hljs-comment">// assigned in the constructor.</span></code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>;</code>
+<code/>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">initProperties</span>();</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">  <span class="hljs-title function_">initProperties</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.<span class="hljs-property">x</span> = <span class="hljs-number">0</span>;</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.<span class="hljs-property">y</span> = <span class="hljs-number">0</span>;</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>The errors go away if we use <em>definite assignment assertions</em> (exclamation marks) in line A and line B:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Point2</span> {</code>
+<code>  x!: <span class="hljs-built_in">number</span>; <span class="hljs-comment">// (A)</span></code>
+<code>  y!: <span class="hljs-built_in">number</span>; <span class="hljs-comment">// (B)</span></code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">initProperties</span>();</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">  <span class="hljs-title function_">initProperties</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.<span class="hljs-property">x</span> = <span class="hljs-number">0</span>;</span></code>
+<code><span class="hljs-params">    <span class="hljs-variable language_">this</span>.<span class="hljs-property">y</span> = <span class="hljs-number">0</span>;</span></code>
+<code><span class="hljs-params">  }</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h4 id="const-assertions-as-const"><a class="heading-id-link" href="#const-assertions-as-const">28.2.3 Const assertions (<code>as const</code>)</a></h4>
+<p>Const assertions make values read-only and lead to more specific inferred types – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> obj = { <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> };</code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> obj, { <span class="hljs-attr">prop</span>: <span class="hljs-built_in">number</span> }</code>
+<code>&gt;&gt;;</code>
+<code><span class="hljs-keyword">const</span> constObj = { <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> } <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> constObj, { <span class="hljs-keyword">readonly</span> <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> }</code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</code>
+<code><span class="hljs-keyword">type</span> _3 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> arr, <span class="hljs-built_in">string</span>[]</code>
+<code>&gt;&gt;;</code>
+<code><span class="hljs-keyword">const</span> constTuple = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> _4 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> constTuple, <span class="hljs-keyword">readonly</span> [<span class="hljs-string">"a"</span>, <span class="hljs-string">"b"</span>]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>More information: <a href="ch_readonly.html#const-assertions">“Const assertions (<code>as const</code>)” (§25.7)</a>.</p>
+<h4 id="satisfies-operator"><a class="heading-id-link" href="#satisfies-operator">28.2.4 <code>satisfies</code> operator</a></h4>
+<p>The <code>satisfies</code> operator enforces that a value has a given type but (mostly) otherwise does not affect the type of that value – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">TextStyle</span>  = {</code>
+<code>  <span class="hljs-title class_">Bold</span>: {</code>
+<code>    <span class="hljs-attr">html</span>: <span class="hljs-string">'b'</span>,</code>
+<code>    <span class="hljs-attr">latex</span>: <span class="hljs-string">'textbf'</span>,</code>
+<code>  },</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Property 'latex' is missing in type</span></code>
+<code>  <span class="hljs-comment">// '{ html: string; }' but required in type 'TTextStyle'.</span></code>
+<code>  <span class="hljs-title class_">Italics</span>: { <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-attr">html</span>: <span class="hljs-string">'i'</span>,</code>
+<code>  },</code>
+<code>} satisfies <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-title class_">TTextStyle</span>&gt;; <span class="hljs-comment">// (B)</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TTextStyle</span> = {</code>
+<code>  <span class="hljs-attr">html</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">latex</span>: <span class="hljs-built_in">string</span>,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TextStyleKeys</span> = keyof <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TextStyle</span>; <span class="hljs-comment">// (C)</span></code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">TextStyleKeys</span>, <span class="hljs-string">"Bold"</span> | <span class="hljs-string">"Italics"</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The <code>satisfies</code> operator in line B catches the error in line A but does not prevent <code>TextStyle</code> from having an object literal type. Therefore, we can extract the property keys in line C.</p>
+<p>More information: <a href="ch_satisfies.html#ch_satisfies">“The <code>satisfies</code> operator” (§29)</a>.</p>
+
+    
+      
+</body>
+</html>

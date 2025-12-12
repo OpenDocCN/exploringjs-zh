@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>25 Read-only accessibility (readonly etc.)</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>25 Read-only accessibility (readonly etc.)</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_readonly.html">https://exploringjs.com/ts/book/ch_readonly.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#const-variable-declarations-only-the-binding-is-immutable">25.1 <code>const</code> variable declarations: only the binding is immutable</a>
+    </li>
+    <li>
+      <a href="#read-only-object-properties">25.2 Read-only object properties</a>
+      <ol>
+        <li>
+          <a href="#no-change-after-initialization">25.2.1 No change after initialization</a>
+        </li>
+        <li>
+          <a href="#readonly-doesn-t-affect-assignability">25.2.2 <code>readonly</code> doesn’t affect assignability</a>
+        </li>
+        <li>
+          <a href="#read-only-index-signatures">25.2.3 Read-only index signatures</a>
+        </li>
+        <li>
+          <a href="#utility-type-readonly-t">25.2.4 Utility type <code>Readonly&lt;T&gt;</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#class-properties">25.3 Class properties</a>
+    </li>
+    <li>
+      <a href="#read-only-arrays">25.4 Read-only Arrays</a>
+    </li>
+    <li>
+      <a href="#read-only-tuples">25.5 Read-only tuples</a>
+    </li>
+    <li>
+      <a href="#readonlyset-and-readonlymap">25.6 <code>ReadonlySet</code> and <code>ReadonlyMap</code></a>
+    </li>
+    <li>
+      <a href="#const-assertions">25.7 Const assertions (<code>as const</code>)</a>
+    </li>
+    <li>
+      <a href="#usage-recommendations">25.8 Usage recommendations</a>
+      <ol>
+        <li>
+          <a href="#you-need-readonlyarray-if-you-want-to-accept-read-only-tuples">25.8.1 You need <code>ReadonlyArray</code> if you want to accept read-only tuples</a>
+        </li>
+        <li>
+          <a href="#a-downside-of-using-the-type-readonlyarray">25.8.2 A downside of using the type <code>ReadonlyArray</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#further-reading-8">25.9 Further reading</a>
+      <ol>
+        <li>
+          <a href="#sources-of-this-chapter-3">25.9.1 Sources of this chapter</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p>In this chapter, we look at how can make things “read-only” in TypeScript – mainly via the keyword <code>readonly</code>.</p>
+<h3 id="const-variable-declarations-only-the-binding-is-immutable"><a class="heading-id-link" href="#const-variable-declarations-only-the-binding-is-immutable">25.1 <code>const</code> variable declarations: only the binding is immutable</a></h3>
+<p>In JavaScript, if a variable is declared via <code>const</code>, the binding becomes immutable but not the bound value:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> obj = {<span class="hljs-attr">prop</span>: <span class="hljs-string">'yes'</span>};</code>
+<code/>
+<code><span class="hljs-comment">// We can’t assign a different value:</span></code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> obj = {},</code>
+<code>  <span class="hljs-regexp">/^TypeError: Assignment to constant variable./</span></code>
+<code>);</code>
+<code/>
+<code><span class="hljs-comment">// But we can modify the assigned value:</span></code>
+<code>obj.<span class="hljs-property">prop</span> = <span class="hljs-string">'no'</span>; <span class="hljs-comment">// OK</span></code>
+</pre>
+<p>TypeScript’s read-only accessibility is similar. However, it is only checked at compile time; it does not affect the emitted JavaScript in any way.</p>
+<h3 id="read-only-object-properties"><a class="heading-id-link" href="#read-only-object-properties">25.2 Read-only object properties</a></h3>
+<p>We can use the keyword <code>readonly</code> to make object properties immutable:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ReadonlyProp</span> = {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">prop</span>: { <span class="hljs-attr">str</span>: <span class="hljs-built_in">string</span> },</code>
+<code>};</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj</span>: <span class="hljs-title class_">ReadonlyProp</span> = {</code>
+<code>  <span class="hljs-attr">prop</span>: { <span class="hljs-attr">str</span>: <span class="hljs-string">'a'</span> },</code>
+<code>};</code>
+</pre>
+<p>Making a property immutable has the following consequences:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// The property is immutable:</span></code>
+<code><span class="hljs-comment">// @ts-expect-error: Cannot assign to 'prop' because it is</span></code>
+<code><span class="hljs-comment">// a read-only property.</span></code>
+<code>obj.<span class="hljs-property">prop</span> = { <span class="hljs-attr">str</span>: <span class="hljs-string">'x'</span> };</code>
+<code/>
+<code><span class="hljs-comment">// But not the property value:</span></code>
+<code>obj.<span class="hljs-property">prop</span>.<span class="hljs-property">str</span> += <span class="hljs-string">'b'</span>;</code>
+</pre>
+<h4 id="no-change-after-initialization"><a class="heading-id-link" href="#no-change-after-initialization">25.2.1 No change after initialization</a></h4>
+<p>If a property <code>.count</code> is read-only, we can initialize it via an object literal but not change it afterwards. If we want to change its value, we have to create a new object (line A):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Counter</span> = {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">count</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">createCounter</span>(<span class="hljs-params">): <span class="hljs-title class_">Counter</span> {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> { <span class="hljs-attr">count</span>: <span class="hljs-number">0</span> };</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-keyword">function</span> <span class="hljs-title function_">toIncremented</span>(<span class="hljs-params">counter: Counter</span>): <span class="hljs-title class_">Counter</span> {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> { <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">    <span class="hljs-attr">count</span>: counter.<span class="hljs-property">count</span> + <span class="hljs-number">1</span>,</span></code>
+<code><span class="hljs-params">  };</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>This mutating version of <code>toIncremented()</code> produces a compile-time error:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">increment</span>(<span class="hljs-params">counter: Counter</span>): <span class="hljs-built_in">void</span> {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Cannot assign to 'count' because it is</span></code>
+<code>  <span class="hljs-comment">// a read-only property.</span></code>
+<code>  counter.<span class="hljs-property">count</span>++;</code>
+<code>}</code>
+</pre>
+<h4 id="readonly-doesn-t-affect-assignability"><a class="heading-id-link" href="#readonly-doesn-t-affect-assignability">25.2.2 <code>readonly</code> doesn’t affect assignability</a></h4>
+<p>Somewhat surprisingly, <code>readonly</code> does not affect assignability:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = { <span class="hljs-attr">prop</span>: <span class="hljs-built_in">number</span> };</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ReadonlyObj</span> = { <span class="hljs-keyword">readonly</span> <span class="hljs-attr">prop</span>: <span class="hljs-built_in">number</span> };</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">_obj: Obj</span>) { }</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">readonlyFunc</span>(<span class="hljs-params">_readonlyObj: ReadonlyObj</span>) { }</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj</span>: <span class="hljs-title class_">Obj</span> = { <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> };</code>
+<code><span class="hljs-title function_">func</span>(obj);</code>
+<code><span class="hljs-title function_">readonlyFunc</span>(obj);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">readonlyObj</span>: <span class="hljs-title class_">ReadonlyObj</span> = { <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> };</code>
+<code><span class="hljs-title function_">func</span>(readonlyObj);</code>
+<code><span class="hljs-title function_">readonlyFunc</span>(readonlyObj);</code>
+</pre>
+<p>We can, however, detect it via type equality:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Not</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  { <span class="hljs-keyword">readonly</span> <span class="hljs-attr">prop</span>: <span class="hljs-built_in">number</span> },</code>
+<code>  { <span class="hljs-attr">prop</span>: <span class="hljs-built_in">number</span> }</code>
+<code>&gt;&gt;&gt;;</code>
+</pre>
+<p>There already is <a href="https://github.com/microsoft/TypeScript/pull/58296">a pull request</a> for the compiler option <code>--enforceReadonly</code> which would change this behavior.</p>
+<h4 id="read-only-index-signatures"><a class="heading-id-link" href="#read-only-index-signatures">25.2.3 Read-only index signatures</a></h4>
+<p>In addition to properties, index signatures can also be modified by <code>readonly</code>. The following built-in type describes Array-like objects:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ArrayLike</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">length</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-keyword">readonly</span> [<span class="hljs-attr">n</span>: <span class="hljs-built_in">number</span>]: T; <span class="hljs-comment">// (A)</span></code>
+<code>}</code>
+</pre>
+<p>Line A is a read-only index signature. One example of <code>ArrayLike</code> being used: The type of the parameter of <code>Array.from()</code>.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ArrayConstructor</span> {</code>
+<code>  <span class="hljs-keyword">from</span>&lt;T&gt;(<span class="hljs-attr">iterable</span>: <span class="hljs-title class_">Iterable</span>&lt;T&gt; | <span class="hljs-title class_">ArrayLike</span>&lt;T&gt;): T[];</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>If the index signature is read-only, we can’t use indexed access to change values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">arrayLike</span>: <span class="hljs-title class_">ArrayLike</span>&lt;<span class="hljs-built_in">string</span>&gt; = {</code>
+<code>  <span class="hljs-attr">length</span>: <span class="hljs-number">2</span>,</code>
+<code>  <span class="hljs-number">0</span>: <span class="hljs-string">'a'</span>,</code>
+<code>  <span class="hljs-number">1</span>: <span class="hljs-string">'b'</span>,</code>
+<code>};</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(arrayLike), [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-comment">// Reading is allowed:</span></code>
+<code>  arrayLike[<span class="hljs-number">0</span>], <span class="hljs-string">'a'</span></code>
+<code>);</code>
+<code><span class="hljs-comment">// Writing is not allowed:</span></code>
+<code><span class="hljs-comment">// @ts-expect-error: Index signature in type 'ArrayLike&lt;string&gt;'</span></code>
+<code><span class="hljs-comment">// only permits reading.</span></code>
+<code>arrayLike[<span class="hljs-number">0</span>] = <span class="hljs-string">'x'</span>;</code>
+</pre>
+<h4 id="utility-type-readonly-t"><a class="heading-id-link" href="#utility-type-readonly-t">25.2.4 Utility type <code>Readonly&lt;T&gt;</code></a></h4>
+<p>The utility type <code>Readonly&lt;T&gt;</code> makes all properties of <code>T</code> read-only:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Point</span> = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-title function_">dist</span>(): <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ReadonlyPoint</span> = <span class="hljs-title class_">Readonly</span>&lt;<span class="hljs-title class_">Point</span>&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">ReadonlyPoint</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">dist</span>: <span class="hljs-function">() =&gt;</span> <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="class-properties"><a class="heading-id-link" href="#class-properties">25.3 Class properties</a></h3>
+<p>Classes can also have read-only properties. Those must be initialized directly or in the constructor and can’t be changed afterward. That’s why the mutating increment <code>.incMut()</code> doesn’t work:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Counter</span> {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">count</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">count: <span class="hljs-built_in">number</span></span>) {</code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">count</span> = count;</code>
+<code>  }</code>
+<code>  <span class="hljs-title function_">inc</span>(): <span class="hljs-title class_">Counter</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Counter</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">count</span> + <span class="hljs-number">1</span>);</code>
+<code>  }</code>
+<code>  <span class="hljs-title function_">incMut</span>(): <span class="hljs-built_in">void</span> {</code>
+<code>    <span class="hljs-comment">// @ts-expect-error: Cannot assign to 'count' because</span></code>
+<code>    <span class="hljs-comment">// it is a read-only property.</span></code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">count</span>++;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<h3 id="read-only-arrays"><a class="heading-id-link" href="#read-only-arrays">25.4 Read-only Arrays</a></h3>
+<p>There are two ways in which, e.g. an Array of strings can be declared to be read-only:</p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">ReadonlyArray</span>&lt;<span class="hljs-built_in">string</span>&gt;</code>
+<code><span class="hljs-keyword">readonly</span> <span class="hljs-built_in">string</span>[]</code>
+</pre>
+<p><code>ReadonlyArray</code> is only a type: In contrast to <code>Array</code>, it does not exist at runtime. This is how we can use this type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">arr</span>: <span class="hljs-title class_">ReadonlyArray</span>&lt;<span class="hljs-built_in">string</span>&gt; = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Index signature in type 'readonly string[]'</span></code>
+<code><span class="hljs-comment">// only permits reading.</span></code>
+<code>arr[<span class="hljs-number">0</span>] = <span class="hljs-string">'x'</span>;</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Cannot assign to 'length' because it is</span></code>
+<code><span class="hljs-comment">// a read-only property.</span></code>
+<code>arr.<span class="hljs-property">length</span> = <span class="hljs-number">1</span>;</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Property 'push' does not exist on</span></code>
+<code><span class="hljs-comment">// type 'readonly string[]'.</span></code>
+<code>arr.<span class="hljs-title function_">push</span>(<span class="hljs-string">'x'</span>);</code>
+</pre>
+<p>We create a normal Array and give it the type <code>ReadonlyArray&lt;string&gt;</code>. That’s how to make Arrays that are read-only at the type level.</p>
+<p>In the last line, we can see that type <code>ReadonlyArray</code> does not only make properties and the index signature <code>readonly</code> – it is also missing mutating methods:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ReadonlyArray</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">length</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-keyword">readonly</span> [<span class="hljs-attr">n</span>: <span class="hljs-built_in">number</span>]: T;</code>
+<code/>
+<code>  <span class="hljs-comment">// Included: non-destructive methods such as .map(), .filter(), etc.</span></code>
+<code>  <span class="hljs-comment">// Excluded: destructive methods such as .push(), .sort(), etc.</span></code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>If we wanted to create Arrays that are read-only at runtime, we could use the following approach:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">ImmutableArray</span>&lt;T&gt; {</code>
+<code>  #<span class="hljs-attr">arr</span>: <span class="hljs-title class_">Array</span>&lt;T&gt;;</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">arr: <span class="hljs-built_in">Array</span>&lt;T&gt;</span>) {</code>
+<code>    <span class="hljs-variable language_">this</span>.#arr = arr;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">length</span>(): <span class="hljs-built_in">number</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#arr.<span class="hljs-property">length</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-title function_">at</span>(<span class="hljs-attr">index</span>: <span class="hljs-built_in">number</span>): T | <span class="hljs-literal">undefined</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#arr.<span class="hljs-title function_">at</span>(index);</code>
+<code>  }</code>
+<code>  map&lt;U&gt;(</code>
+<code>    <span class="hljs-attr">callbackfn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, index: <span class="hljs-built_in">number</span>, array: <span class="hljs-keyword">readonly</span> T[]</span>) =&gt;</span> U,</code>
+<code>    thisArg?: <span class="hljs-built_in">any</span></code>
+<code>  ): U[] {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#arr.<span class="hljs-title function_">map</span>(callbackfn, thisArg);</code>
+<code>  }</code>
+<code>  <span class="hljs-comment">// (Many omitted methods)</span></code>
+<code>}</code>
+</pre>
+<p>We don’t implement <code>ReadonlyArray&lt;T&gt;</code> because we don’t provide indexed access via square brackets, only via <code>.at()</code>. The former could be done via <a href="https://exploringjs.com/deep-js/ch_proxies.html">Proxies</a> but that would lead to less elegant and performant code.</p>
+<h3 id="read-only-tuples"><a class="heading-id-link" href="#read-only-tuples">25.5 Read-only tuples</a></h3>
+<p>In normal tuples, we can assign different values to the elements, but not the length:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">tuple</span>: [<span class="hljs-built_in">string</span>, <span class="hljs-built_in">number</span>] = [<span class="hljs-string">'a'</span>, <span class="hljs-number">1</span>];</code>
+<code>tuple[<span class="hljs-number">0</span>] = <span class="hljs-string">'x'</span>; <span class="hljs-comment">// OK</span></code>
+<code/>
+<code>tuple.<span class="hljs-property">length</span> = <span class="hljs-number">2</span>; <span class="hljs-comment">// OK</span></code>
+<code><span class="hljs-comment">// @ts-expect-error: Type '1' is not assignable to type '2'.</span></code>
+<code>tuple.<span class="hljs-property">length</span> = <span class="hljs-number">1</span>;</code>
+<code><span class="hljs-comment">// The type of `.length` is 2 (not `number`)</span></code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  (<span class="hljs-keyword">typeof</span> tuple)[<span class="hljs-string">'length'</span>], <span class="hljs-number">2</span></code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-comment">// Interestingly, `.push()` is allowed:</span></code>
+<code>tuple.<span class="hljs-title function_">push</span>(<span class="hljs-string">'x'</span>); <span class="hljs-comment">// OK</span></code>
+</pre>
+<p>If a tuple is read-only, we can’t assign different values to either elements or <code>.length</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">tuple</span>: <span class="hljs-keyword">readonly</span> [<span class="hljs-built_in">string</span>, <span class="hljs-built_in">number</span>] = [<span class="hljs-string">'a'</span>, <span class="hljs-number">1</span>];</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Cannot assign to '0' because it is</span></code>
+<code><span class="hljs-comment">// a read-only property.</span></code>
+<code>tuple[<span class="hljs-number">0</span>] = <span class="hljs-string">'x'</span>;</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Cannot assign to 'length' because it is</span></code>
+<code><span class="hljs-comment">// a read-only property.</span></code>
+<code>tuple.<span class="hljs-property">length</span> = <span class="hljs-number">2</span>;</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Property 'push' does not exist on</span></code>
+<code><span class="hljs-comment">// type 'readonly [string, number]'.</span></code>
+<code>tuple.<span class="hljs-title function_">push</span>(<span class="hljs-string">'x'</span>);</code>
+</pre>
+<p>We set up the read-only tuple once (at the beginning) and can’t change it later. The type of a read-only tuple is a subtype of <code>ReadonlyArray</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Extends</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> tuple, <span class="hljs-title class_">ReadonlyArray</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>&gt;</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="readonlyset-and-readonlymap"><a class="heading-id-link" href="#readonlyset-and-readonlymap">25.6 <code>ReadonlySet</code> and <code>ReadonlyMap</code></a></h3>
+<p>Similar to type <code>ReadonlyArray</code> being a read-only version of <code>Array</code>, there are also read-only versions of <code>Set</code> and <code>Map</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// Not included here: methods defined in lib.es2015.iterable.d.ts</span></code>
+<code><span class="hljs-comment">// such as: .keys() and .[Symbol.iterator]()</span></code>
+<code/>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ReadonlySet</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-title function_">forEach</span>(</code>
+<code>    <span class="hljs-attr">callbackfn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, value2: T, set: ReadonlySet&lt;T&gt;</span>) =&gt;</span> <span class="hljs-built_in">void</span>,</code>
+<code>    thisArg?: <span class="hljs-built_in">any</span></code>
+<code>  ): <span class="hljs-built_in">void</span>;</code>
+<code>  <span class="hljs-title function_">has</span>(<span class="hljs-attr">value</span>: T): <span class="hljs-built_in">boolean</span>;</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">size</span>: <span class="hljs-built_in">number</span>;</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ReadonlyMap</span>&lt;K, V&gt; {</code>
+<code>  <span class="hljs-title function_">forEach</span>(</code>
+<code>    <span class="hljs-attr">callbackfn</span>: <span class="hljs-function">(<span class="hljs-params">value: V, key: K, map: ReadonlyMap&lt;K, V&gt;</span>) =&gt;</span> <span class="hljs-built_in">void</span>,</code>
+<code>    thisArg?: <span class="hljs-built_in">any</span></code>
+<code>  ): <span class="hljs-built_in">void</span>;</code>
+<code>  <span class="hljs-title function_">get</span>(<span class="hljs-attr">key</span>: K): V | <span class="hljs-literal">undefined</span>;</code>
+<code>  <span class="hljs-title function_">has</span>(<span class="hljs-attr">key</span>: K): <span class="hljs-built_in">boolean</span>;</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">size</span>: <span class="hljs-built_in">number</span>;</code>
+<code>}</code>
+</pre>
+<p>This is how we could use <code>ReadonlySet</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">COLORS</span>: <span class="hljs-title class_">ReadonlySet</span>&lt;<span class="hljs-built_in">string</span>&gt; = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-string">'red'</span>, <span class="hljs-string">'green'</span>]);</code>
+</pre>
+<p>This is a wrapper class that makes a Set read-only at runtime:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">ImmutableSet</span>&lt;T&gt; <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ReadonlySet</span>&lt;T&gt; {</code>
+<code>  #<span class="hljs-attr">set</span>: <span class="hljs-title class_">Set</span>&lt;T&gt;;</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">set: <span class="hljs-built_in">Set</span>&lt;T&gt;</span>) {</code>
+<code>    <span class="hljs-variable language_">this</span>.#set = set;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">size</span>(): <span class="hljs-built_in">number</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#set.<span class="hljs-property">size</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-title function_">forEach</span>(</code>
+<code>    <span class="hljs-attr">callbackfn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, value2: T, set: ReadonlySet&lt;T&gt;</span>) =&gt;</span> <span class="hljs-built_in">void</span>,</code>
+<code>    thisArg?: <span class="hljs-built_in">any</span></code>
+<code>  ): <span class="hljs-built_in">void</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#set.<span class="hljs-title function_">forEach</span>(callbackfn, thisArg);</code>
+<code>  }</code>
+<code>  <span class="hljs-comment">// Etc.</span></code>
+<code>}</code>
+</pre>
+<h3 id="const-assertions"><a class="heading-id-link" href="#const-assertions">25.7 Const assertions (<code>as const</code>)</a></h3>
+<p>The const assertion <code>as const</code> is an annotation for values that only affects their types. It can be applied to:</p>
+<ul>
+  <li>
+    References to enum members
+  </li>
+  <li>
+    Boolean literals
+  </li>
+  <li>
+    String literals
+  </li>
+  <li>
+    Object literals
+  </li>
+  <li>
+    Array literals
+  </li>
+</ul>
+<p>It has two effects:</p>
+<ul>
+  <li>
+    A value with a non-primitive type becomes read-only:
+    <ul>
+      <li>
+        Object: all properties become read-only
+      </li>
+      <li>
+        Array: becomes read-only tuple
+      </li>
+    </ul>
+  </li>
+  <li>
+    The inferred type become narrower – e.g. <code>'abc'</code> (not <code>string</code>)
+  </li>
+</ul>
+<p>This is how objects are affected – note the <code>readonly</code> and the narrower type (<code>123</code> vs. <code>number</code>):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> obj = { <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> };</code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> obj, { <span class="hljs-attr">prop</span>: <span class="hljs-built_in">number</span> }</code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> constObj = { <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> } <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> constObj, { <span class="hljs-keyword">readonly</span> <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>This is how Arrays are affected – note the <code>readonly</code> and the narrower types (<code>'a'</code> and <code>'b'</code> vs. <code>string</code>):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> arr, <span class="hljs-built_in">string</span>[]</code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> constTuple = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> constTuple, <span class="hljs-keyword">readonly</span> [<span class="hljs-string">"a"</span>, <span class="hljs-string">"b"</span>]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>Since primitive values are already immutable, <code>as const</code> only leads to a narrower type being inferred:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> str1 = <span class="hljs-string">'abc'</span>;</code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> str1, <span class="hljs-built_in">string</span></code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">let</span> str2 = <span class="hljs-string">'abc'</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> str2, <span class="hljs-string">'abc'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>Switching from <code>let</code> to <code>const</code> also narrows the type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> str3 = <span class="hljs-string">'abc'</span>;</code>
+<code><span class="hljs-keyword">type</span> _3 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> str3, <span class="hljs-string">'abc'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="usage-recommendations"><a class="heading-id-link" href="#usage-recommendations">25.8 Usage recommendations</a></h3>
+<h4 id="you-need-readonlyarray-if-you-want-to-accept-read-only-tuples"><a class="heading-id-link" href="#you-need-readonlyarray-if-you-want-to-accept-read-only-tuples">25.8.1 You need <code>ReadonlyArray</code> if you want to accept read-only tuples</a></h4>
+<p>Even though <code>readonly</code> does not affect assignability, read-only tuples are a subtype of <code>ReadonlyArray</code> and therefore not compatible with <code>Array</code> because the latter type has methods that the former doesn’t have. Let’s examine what that means for functions and generic types.</p>
+<h5 id="functions"><a class="heading-id-link" href="#functions">25.8.1.1 Functions</a></h5>
+<p>The following function <code>sum()</code> can’t be applied to read-only tuples:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">sum</span>(<span class="hljs-params">numbers: <span class="hljs-built_in">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;</span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-keyword">return</span> numbers.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">acc, x</span>) =&gt;</span> acc + x, <span class="hljs-number">0</span>);</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-title function_">sum</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>]); <span class="hljs-comment">// OK</span></code>
+<code/>
+<code><span class="hljs-keyword">const</span> readonlyTuple = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-comment">// @ts-expect-error: Argument of type 'readonly [1, 2, 3]'</span></code>
+<code><span class="hljs-comment">// is not assignable to parameter of type 'number[]'.</span></code>
+<code><span class="hljs-title function_">sum</span>(readonlyTuple);</code>
+</pre>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">sum</span>(<span class="hljs-params">numbers: ReadonlyArray&lt;<span class="hljs-built_in">number</span>&gt;</span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-keyword">return</span> numbers.<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">acc, x</span>) =&gt;</span> acc + x, <span class="hljs-number">0</span>);</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">const</span> readonlyTuple = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-title function_">sum</span>(readonlyTuple); <span class="hljs-comment">// OK</span></code>
+</pre>
+<h5 id="generic-types-1"><a class="heading-id-link" href="#generic-types-1">25.8.1.2 Generic types</a></h5>
+<p>If a type <code>T</code> is constrained to a normal array type then it doesn’t match the type of an <code>as const</code> literal:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Wrap</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">unknown</span>&gt;&gt; = <span class="hljs-title class_">Promise</span>&lt;T&gt;;</code>
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-comment">// @ts-expect-error: Type 'readonly ["a", "b"]' does not satisfy</span></code>
+<code><span class="hljs-comment">// the constraint 'unknown[]'.</span></code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Wrap</span>&lt;<span class="hljs-keyword">typeof</span> arr&gt;;</code>
+</pre>
+<p>We can change that by switching to <code>ReadonlyArray</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Wrap</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ReadonlyArray</span>&lt;<span class="hljs-built_in">unknown</span>&gt;&gt; = <span class="hljs-title class_">Promise</span>&lt;T&gt;;</code>
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Result</span> = <span class="hljs-title class_">Wrap</span>&lt;<span class="hljs-keyword">typeof</span> arr&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Result</span>, <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-keyword">readonly</span> [<span class="hljs-string">"a"</span>, <span class="hljs-string">"b"</span>]&gt;</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="a-downside-of-using-the-type-readonlyarray"><a class="heading-id-link" href="#a-downside-of-using-the-type-readonlyarray">25.8.2 A downside of using the type <code>ReadonlyArray</code></a></h4>
+<p>There is one downside of using the type <code>ReadonlyArray</code>: You can’t pass on the data to locations that do not use that type (of which there are many) – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">appFunc</span>(<span class="hljs-params">arr: ReadonlyArray&lt;<span class="hljs-built_in">string</span>&gt;</span>): <span class="hljs-built_in">void</span> {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Argument of type 'readonly string[]'</span></code>
+<code>  <span class="hljs-comment">// is not assignable to parameter of type 'string[]'.</span></code>
+<code>  <span class="hljs-title function_">libFunc</span>(arr);</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">libFunc</span>(<span class="hljs-params">arr: <span class="hljs-built_in">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;</span>): <span class="hljs-built_in">void</span> {}</code>
+</pre>
+<h3 id="further-reading-8"><a class="heading-id-link" href="#further-reading-8">25.9 Further reading</a></h3>
+<ul>
+  <li>
+    Chapter <a href="https://exploringjs.com/js/book/ch_objects.html#protecting-objects">“Protecting objects from being changed”</a> in “Exploring JavaScript”
+  </li>
+</ul>
+<h4 id="sources-of-this-chapter-3"><a class="heading-id-link" href="#sources-of-this-chapter-3">25.9.1 Sources of this chapter</a></h4>
+<p>The following sections of the official TypeScript Handbook were sources of this chapter:</p>
+<ul>
+  <li>
+    <a href="https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#readonly-and-const"><code>readonly</code> and <code>const</code></a>
+  </li>
+  <li>
+    <a href="https://www.typescriptlang.org/docs/handbook/utility-types.html#readonlytype">Utility Types &gt; <code>Readonly&lt;Type&gt;</code></a>
+  </li>
+  <li>
+    <a href="https://www.typescriptlang.org/docs/handbook/2/classes.html#readonly">Class Members &gt; Fields &gt; <code>readonly</code></a>
+  </li>
+  <li>
+    <a href="https://www.typescriptlang.org/docs/handbook/2/objects.html#readonly-properties">Object Types &gt; Property Modifiers &gt; <code>readonly</code> Properties</a>
+  </li>
+  <li>
+    <a href="https://www.typescriptlang.org/docs/handbook/2/objects.html#the-readonlyarray-type">The <code>ReadonlyArray</code> Type</a>
+  </li>
+  <li>
+    <a href="https://www.typescriptlang.org/docs/handbook/2/objects.html#readonly-tuple-types"><code>readonly</code> Tuple Types</a>
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

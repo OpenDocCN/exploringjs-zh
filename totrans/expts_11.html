@@ -1,0 +1,1307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>8 Guide to tsconfig.json</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>8 Guide to tsconfig.json</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_tsconfig-json.html">https://exploringjs.com/ts/book/ch_tsconfig-json.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#features-not-covered-by-this-chapter">8.1 Features not covered by this chapter</a>
+    </li>
+    <li>
+      <a href="#extending-base-files-via-extends">8.2 Extending base files via <code>extends</code></a>
+    </li>
+    <li>
+      <a href="#where-are-the-input-files">8.3 Where are the input files?</a>
+    </li>
+    <li>
+      <a href="#what-is-the-output">8.4 What is the output?</a>
+      <ol>
+        <li>
+          <a href="#where-are-the-output-files-written">8.4.1 Where are the output files written?</a>
+        </li>
+        <li>
+          <a href="#emitting-source-maps">8.4.2 Emitting source maps</a>
+        </li>
+        <li>
+          <a href="#emitting-d-ts-files-e-g-for-libraries">8.4.3 Emitting <code>.d.ts</code> files (e.g. for libraries)</a>
+        </li>
+        <li>
+          <a href="#fine-tuning-emitted-files">8.4.4 Fine-tuning emitted files</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#language-and-platform-features">8.5 Language and platform features</a>
+      <ol>
+        <li>
+          <a href="#target">8.5.1 <code>target</code></a>
+        </li>
+        <li>
+          <a href="#lib">8.5.2 <code>lib</code></a>
+        </li>
+        <li>
+          <a href="#skipLibCheck">8.5.3 <code>skipLibCheck</code></a>
+        </li>
+        <li>
+          <a href="#types-for-the-built-in-node-js-apis">8.5.4 Types for the built-in Node.js APIs</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#module-system">8.6 Module system</a>
+      <ol>
+        <li>
+          <a href="#how-does-typescript-look-for-imported-modules">8.6.1 How does TypeScript look for imported modules?</a>
+        </li>
+        <li>
+          <a href="#running-typescript-directly">8.6.2 Running TypeScript directly (without generating JS files)</a>
+        </li>
+        <li>
+          <a href="#importing-json">8.6.3 Importing JSON</a>
+        </li>
+        <li>
+          <a href="#importing-other-non-typescript-artifacts">8.6.4 Importing other non-TypeScript artifacts</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#type-checking">8.7 Type checking</a>
+      <ol>
+        <li>
+          <a href="#strict">8.7.1 <code>strict</code></a>
+        </li>
+        <li>
+          <a href="#exactOptionalPropertyTypes">8.7.2 <code>exactOptionalPropertyTypes</code></a>
+        </li>
+        <li>
+          <a href="#noFallthroughCasesInSwitch">8.7.3 <code>noFallthroughCasesInSwitch</code></a>
+        </li>
+        <li>
+          <a href="#noImplicitOverride">8.7.4 <code>noImplicitOverride</code></a>
+        </li>
+        <li>
+          <a href="#noImplicitReturns">8.7.5 <code>noImplicitReturns</code></a>
+        </li>
+        <li>
+          <a href="#noPropertyAccessFromIndexSignature">8.7.6 <code>noPropertyAccessFromIndexSignature</code></a>
+        </li>
+        <li>
+          <a href="#noUncheckedIndexedAccess">8.7.7 <code>noUncheckedIndexedAccess</code></a>
+        </li>
+        <li>
+          <a href="#type-checking-options-that-have-good-defaults">8.7.8 Type checking options that have good defaults</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#compiling-without-tsc">8.8 Compiling TypeScript with tools other than tsc</a>
+      <ol>
+        <li>
+          <a href="#noEmit">8.8.1 Using tsc only for type checking</a>
+        </li>
+        <li>
+          <a href="#type-stripping">8.8.2 Generating <code>.js</code> files via type stripping: <code>erasableSyntaxOnly</code> and <code>verbatimModuleSyntax</code></a>
+        </li>
+        <li>
+          <a href="#erasableSyntaxOnly">8.8.3 <code>erasableSyntaxOnly</code>: no transpiled language features</a>
+        </li>
+        <li>
+          <a href="#verbatimModuleSyntax">8.8.4 <code>verbatimModuleSyntax</code>: enforcing <code>type</code> in imports and exports</a>
+        </li>
+        <li>
+          <a href="#isolatedDeclarations">8.8.5 <code>isolatedDeclarations</code>: generating <code>.d.ts</code> files more efficiently</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#importing-commonjs-from-esm">8.9 Importing CommonJS from ESM</a>
+      <ol>
+        <li>
+          <a href="#allowSyntheticDefaultImports">8.9.1 <code>allowSyntheticDefaultImports</code>: type-checking default imports of CommonJS modules</a>
+        </li>
+        <li>
+          <a href="#esModuleInterop">8.9.2 <code>esModuleInterop</code>: better compilation of TypeScript to CommonJS code</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#one-more-option-with-a-good-default">8.10 One more option with a good default</a>
+    </li>
+    <li>
+      <a href="#visual-studio-code">8.11 Visual Studio Code</a>
+    </li>
+    <li>
+      <a href="#tsconfig-summary">8.12 Summary: Assemble your <code>tsconfig.json</code> by answering four questions</a>
+      <ol>
+        <li>
+          <a href="#do-you-want-to-transpile-new-javascript-to-older-javascript">8.12.1 Do you want to transpile new JavaScript to older JavaScript?</a>
+        </li>
+        <li>
+          <a href="#should-typescript-only-allow-javascript-features-at-the-non-type-level">8.12.2 Should TypeScript only allow JavaScript features at the non-type level?</a>
+        </li>
+        <li>
+          <a href="#which-filename-extension-do-you-want-to-use-in-local-imports">8.12.3 Which filename extension do you want to use in local imports?</a>
+        </li>
+        <li>
+          <a href="#what-files-should-tsc-emit">8.12.4 What files should tsc emit?</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#further-reading-2">8.13 Further reading</a>
+      <ol>
+        <li>
+          <a href="#tsconfig-recommendations">8.13.1 <code>tsconfig.json</code> recommendations by other people</a>
+        </li>
+        <li>
+          <a href="#sources-of-this-chapter">8.13.2 Sources of this chapter</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<div class="boxout">
+  <p><img src="../Images/837806d7ec89826c3784b2e685feb762.png" height="24" class="boxout-icon" alt="Icon “details”" data-original-src="https://exploringjs.com/ts/book/icon/details.svg"/> <strong>Version: TypeScript 5.8</strong></p>
+  <div class="boxout-vspace"/>
+  <p>This chapter covers <code>tsconfig.json</code> as supported by TypeScript 5.8.</p>
+</div>
+<p>This chapter documents all common options of the TypeScript configuration file <a href="https://www.typescriptlang.org/tsconfig/"><code>tsconfig.json</code></a>:</p>
+<ul>
+  <li>
+    <p>This knowledge will enable you to understand and simplify your <code>tsconfig.json</code>.</p>
+  </li>
+  <li>
+    <p>If you don’t have the time to read the chapter, you can jump to <a href="#tsconfig-summary">the summary</a> at the end where I show a starter <code>tsconfig.json</code> file with all settings – along with four questions to determine which settings you can delete.</p>
+  </li>
+  <li>
+    <p>I also link to <a href="#tsconfig-recommendations">the <code>tsconfig.json</code> recommendations</a> by several well-known TypeScript programmers. (I went through them when I researched this chapter.)</p>
+  </li>
+</ul>
+<h3 id="features-not-covered-by-this-chapter"><a class="heading-id-link" href="#features-not-covered-by-this-chapter">8.1 Features not covered by this chapter</a></h3>
+<p>This chapter only describes how to set up projects whose local modules are all ESM. It does give tips for importing CommonJS, though.</p>
+<p>Not explained here:</p>
+<ul>
+  <li>
+    Importing and type-checking plain JavaScript in your code base, namely the options <a href="https://www.typescriptlang.org/tsconfig/#allowJs"><code>allowJs</code></a> and <a href="https://www.typescriptlang.org/tsconfig/#checkJs"><code>checkJs</code></a>.
+  </li>
+  <li>
+    How to set up JSX. See <a href="https://www.typescriptlang.org/docs/handbook/jsx.html">“JSX”</a> in the TypeScript Handbook.
+  </li>
+  <li>
+    “Projects” (useful for monorepos): option <code>composite</code> etc. For more information on this topic, see:
+    <ul>
+      <li>
+        Chapter <a href="https://www.typescriptlang.org/docs/handbook/project-references.html">“Project References”</a> in the TypeScript Handbook
+      </li>
+      <li>
+        My blog post <a href="https://2ality.com/2021/07/simple-monorepos.html">“Simple monorepos via npm workspaces and TypeScript project references”</a>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="extending-base-files-via-extends"><a class="heading-id-link" href="#extending-base-files-via-extends">8.2 Extending base files via <code>extends</code></a></h3>
+<p>This option lets us refer to an existing <code>tsconfig.json</code> via a module specifier (as if we imported a JSON file). That file becomes the <em>base</em> that our tsconfig <em>extends</em>. That means that our tsconfig has all the option of the base, but can override any of them and can add options not mentioned in the base.</p>
+<p>The GitHub repository <a href="https://github.com/tsconfig/bases"><code>tsconfig/bases</code></a> lists bases that are available under the npm namespace <code>@tsconfig</code> and can be used like this (after they were installed locally via npm):</p>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"extends"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"@tsconfig/node-lts/tsconfig.json"</span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Alas, none of these files suit my needs. But they can serve as an inspiration for your tsconfig.</p>
+<h3 id="where-are-the-input-files"><a class="heading-id-link" href="#where-are-the-input-files">8.3 Where are the input files?</a></h3>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"src/**/*"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>On one hand, we have to tell TypeScript what the input files are. These are the available options:</p>
+<ul>
+  <li>
+    <code>files</code>: an exhaustive array of all input files
+  </li>
+  <li>
+    <code>include</code>: Specifies the input files via an array of patterns with wildcards that are interpreted as relative to <code>tsconfig.json</code>.
+  </li>
+  <li>
+    <code>exlude</code>: Specifies which files should be excluded from the <code>include</code> set of files – via an array of patterns.
+  </li>
+</ul>
+<h3 id="what-is-the-output"><a class="heading-id-link" href="#what-is-the-output">8.4 What is the output?</a></h3>
+<h4 id="where-are-the-output-files-written"><a class="heading-id-link" href="#where-are-the-output-files-written">8.4.1 Where are the output files written?</a></h4>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"rootDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"src"</span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>How TypeScript determines where to write an output file:</p>
+<ul>
+  <li>
+    It takes the input path (relative to <code>tsconfig.json</code>),
+  </li>
+  <li>
+    removes the prefix specified by <code>rootDir</code> and
+  </li>
+  <li>
+    “appends” the result to <code>outDir</code>.
+  </li>
+</ul>
+<p>As an example, consider the following <code>tsconfig.json</code>:</p>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"src/**/*"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>    <span class="hljs-comment">// Specify explicitly (don’t derive from source file paths):</span></code>
+<code>    <span class="hljs-attr">"rootDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"src"</span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  <span class="hljs-punctuation">}</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Consequences of these settings:</p>
+<ul>
+  <li>
+    Input: <code>src/util.ts</code>
+    <ul>
+      <li>
+        Output: <code>dist/util.js</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Input: <code>src/test/integration_test.ts</code>
+    <ul>
+      <li>
+        Output: <code>dist/test/integration_test.js</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h5 id="src-test-siblings"><a class="heading-id-link" href="#src-test-siblings">8.4.1.1 Putting <code>src/</code> and <code>test/</code> next to each other</a></h5>
+<p>I like the idea of having a separate directory <code>test/</code> that is a sibling of <code>src/</code>. However then the output files in <code>dist/</code> are more deeply nested inside the project’s directory than the input files in <code>src/</code> and <code>test/</code>. That means that we can’t access files such as <code>package.json</code> via relative module specifiers.</p>
+<p><code>tsconfig.json</code>:</p>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"src/**/*"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"test/**/*"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>    <span class="hljs-attr">"rootDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"."</span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-comment">// ···</span></code>
+<code>  <span class="hljs-punctuation">}</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Consequences of these settings:</p>
+<ul>
+  <li>
+    Input: <code>src/util.ts</code>
+    <ul>
+      <li>
+        Output: <code>dist/src/util.js</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Input: <code>test/integration_test.ts</code>
+    <ul>
+      <li>
+        Output: <code>dist/test/integration_test.js</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<h5 id="default-values-of-rootdir"><a class="heading-id-link" href="#default-values-of-rootdir">8.4.1.2 Default values of <code>rootDir</code></a></h5>
+<p>The default value of <code>rootDir</code> depends on the input file paths. I find that too unpredictable and always specify it explicitly. It is the longest common prefix of the input file paths.</p>
+<p><strong>Example 1:</strong> Default value is <code>'src'</code> (relative to the project directory)</p>
+<p><code>tsconfig.json</code>:</p>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"src/**/*"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Files:</p>
+<pre>
+<code>/tmp/my-proj/</code>
+<code>  tsconfig.json</code>
+<code>  src/</code>
+<code>    main.ts</code>
+<code>    test/</code>
+<code>      test.ts</code>
+<code>  dist/</code>
+<code>    main.js</code>
+<code>    test/</code>
+<code>      test.js</code>
+</pre>
+<p><strong>Example 2:</strong> Default value is <code>'src/core/cli'</code></p>
+<p><code>tsconfig.json</code>:</p>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"src/**/*"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Files:</p>
+<pre>
+<code>/tmp/my-proj/</code>
+<code>  tsconfig.json</code>
+<code>  src/</code>
+<code>    core/</code>
+<code>      cli/</code>
+<code>        main.ts</code>
+<code>        test/</code>
+<code>          test.ts</code>
+<code>  dist/</code>
+<code>    main.js</code>
+<code>    test/</code>
+<code>      test.js</code>
+</pre>
+<p><strong>Example 3:</strong></p>
+<p><code>tsconfig.json</code>: Default value is <code>'.'</code></p>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"src/**/*"</span><span class="hljs-punctuation">,</span> <span class="hljs-string">"test/**/*"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Files:</p>
+<pre>
+<code>/tmp/my-proj/</code>
+<code>  tsconfig.json</code>
+<code>  src/</code>
+<code>    main.ts</code>
+<code>  test/</code>
+<code>    test.ts</code>
+<code>  dist/</code>
+<code>    src/</code>
+<code>      main.js</code>
+<code>    test/</code>
+<code>      test.js</code>
+</pre>
+<h4 id="emitting-source-maps"><a class="heading-id-link" href="#emitting-source-maps">8.4.2 Emitting source maps</a></h4>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"sourceMap"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p><code>sourceMap</code> produces source map files that point from the transpiled JavaScript to the original TypeScript. That helps with debugging and is usually a good idea.</p>
+<h4 id="emitting-d-ts-files-e-g-for-libraries"><a class="heading-id-link" href="#emitting-d-ts-files-e-g-for-libraries">8.4.3 Emitting <code>.d.ts</code> files (e.g. for libraries)</a></h4>
+<p>If we want TypeScript code to consume our transpiled TypeScript code, we usually should include <code>.d.ts</code> files:</p>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"declaration"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"declarationMap"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// enables importers to jump to source</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Optionally, we can include the TypeScript source code in our npm package and activate <code>declarationMap</code>. Then importers can, e.g., click on types or go to the definition of a value and their editor will send them to the original source code.</p>
+<h5 id="option-declarationdir"><a class="heading-id-link" href="#option-declarationdir">8.4.3.1 Option <code>declarationDir</code></a></h5>
+<p>By default, each <code>.d.ts</code> file is put next to its <code>.js</code> file. If you want to change that, you can use option <a href="https://www.typescriptlang.org/tsconfig/#declarationDir"><code>declarationDir</code></a>.</p>
+<h4 id="fine-tuning-emitted-files"><a class="heading-id-link" href="#fine-tuning-emitted-files">8.4.4 Fine-tuning emitted files</a></h4>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"newLine"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"lf"</span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"removeComments"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>The values shown above are the defaults.</p>
+<ul>
+  <li>
+    <code>newLine</code> configures the line endings for emitted files. Allowed values are:
+    <ul>
+      <li>
+        <code>"lf"</code>: "n" (Unix)
+      </li>
+      <li>
+        <code>"crlf"</code>: "rn" (Windows)
+      </li>
+    </ul>
+  </li>
+  <li>
+    <code>removeComments</code>: If active, all comments in TypeScript files are omitted in transpiled JavaScript files. I’m weakly in favor of sticking with the default and not removing comments:
+    <ul>
+      <li>
+        It helps with reading transpiled JavaScript – especially if the TypeScript source code isn’t included.
+      </li>
+      <li>
+        Bundlers remove comments.
+      </li>
+      <li>
+        On Node.js, the added burden doesn’t matter much.
+      </li>
+    </ul>
+  </li>
+</ul>
+<h3 id="language-and-platform-features"><a class="heading-id-link" href="#language-and-platform-features">8.5 Language and platform features</a></h3>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"target"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ESNext"</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// sets up "lib" accordingly</span></code>
+<code>  <span class="hljs-attr">"skipLibCheck"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<h4 id="target"><a class="heading-id-link" href="#target">8.5.1 <code>target</code></a></h4>
+<p><code>target</code> determines which newer JavaScript syntax is transpiled to older syntax. For example, if the target is <code>"ES5"</code> then an arrow function <code>() =&gt; {}</code> is transpiled to a function expression <code>function () {}</code>. Values can be:</p>
+<ul>
+  <li>
+    <code>"ESNext"</code>
+  </li>
+  <li>
+    <code>"ES5"</code>
+  </li>
+  <li>
+    <code>"ES6"</code>
+  </li>
+  <li>
+    <code>"ES2015"</code> (same as <code>"ES6"</code>)
+  </li>
+  <li>
+    <code>"ES2016"</code>
+  </li>
+  <li>
+    Etc.
+  </li>
+</ul>
+<p><code>"ESNext"</code> means that nothing is ever transpiled. I find that setting easiest to deal with. It’s also the best setting if you don’t use <code>tsc</code> and use type stripping (which never transpiles anything either).</p>
+<h5 id="how-to-pick-a-good-es20yy-target"><a class="heading-id-link" href="#how-to-pick-a-good-es20yy-target">8.5.1.1 How to pick a good <code>"ES20YY"</code> target</a></h5>
+<p>If we want to transpile, we have to pick an ECMAScript version that works for our target platforms. There are two tables that provide good overviews:</p>
+<ul>
+  <li>
+    For browsers: <a href="https://compat-table.github.io/compat-table/es2016plus/"><code>compat-table.github.io</code></a>
+  </li>
+  <li>
+    For Node.js: <a href="https://node.green/"><code>node.green</code></a>
+  </li>
+</ul>
+<p>Additionally, <a href="https://github.com/tsconfig/bases">the official tsconfig bases</a> all provide values for <code>target</code>.</p>
+<h4 id="lib"><a class="heading-id-link" href="#lib">8.5.2 <code>lib</code></a></h4>
+<p><code>lib</code> determines which types for built-in APIs are available – e.g. <code>Math</code> or methods of built-in types:</p>
+<ul>
+  <li>
+    <p>There are categories such as <code>"ES2024"</code> and <code>"DOM"</code> and subcategories such as <code>"DOM.Iterable"</code> and <code>"ES2024.Promise"</code>.</p>
+  </li>
+  <li>
+    <p>Which values are available? We can look them up here:</p>
+    <ul>
+      <li>
+        Auto-completion (e.g. in Visual Studio Code)
+      </li>
+      <li>
+        <a href="https://www.typescriptlang.org/tsconfig/#lib">TypeScript documentation</a>
+      </li>
+      <li>
+        <a href="https://github.com/microsoft/TypeScript/tree/main/src/lib">TypeScript source code repository</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>The values are case-insensitive: Visual Studio Code’s autocompletion suggestions contain many capital letters; the filenames contain none. <code>lib</code> values can be written either way.</p>
+  </li>
+</ul>
+<p>When does TypeScript support a given API? It must be “available un-prefixed/flagged in at least 2 browser <em>engines</em> (i.e. not just 2 chromium browsers)” (<a href="https://github.com/microsoft/TypeScript/tree/main/src/lib">source</a>).</p>
+<h5 id="setting-up-lib-via-target"><a class="heading-id-link" href="#setting-up-lib-via-target">8.5.2.1 Setting up <code>lib</code> via <code>target</code></a></h5>
+<p><code>target</code> determines the default value of <code>lib</code>: If the latter is omitted and <code>target</code> is <code>"ES20YY"</code> then <code>"ES20YY.Full"</code> is used. However, that is not a value we can use ourselves. If we want to replicate what removing <code>lib</code> does, we have to enumerate the contents of (e.g.) <code>es2024.full.d.ts</code> in the <a href="https://github.com/microsoft/TypeScript/tree/main/src/lib">TypeScript source code repository</a> ourselves:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/// &lt;reference lib="es2024" /&gt;</span></code>
+<code><span class="hljs-comment">/// &lt;reference lib="dom" /&gt;</span></code>
+<code><span class="hljs-comment">/// &lt;reference lib="webworker.importscripts" /&gt;</span></code>
+<code><span class="hljs-comment">/// &lt;reference lib="scripthost" /&gt;</span></code>
+<code><span class="hljs-comment">/// &lt;reference lib="dom.iterable" /&gt;</span></code>
+<code><span class="hljs-comment">/// &lt;reference lib="dom.asynciterable" /&gt;</span></code>
+</pre>
+<p>In this file, we can observe an interesting phenomenon:</p>
+<ul>
+  <li>
+    Category <code>"ES20YY"</code> usually includes all of its subcategories.
+  </li>
+  <li>
+    Category <code>"DOM"</code> doesn’t – e.g., subcategory <code>"DOM.Iterable"</code> is not yet part of it.
+  </li>
+</ul>
+<p>Among other things, <code>"DOM.Iterable"</code> enables iteration over NodeLists – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">'div'</span>)) {}</code>
+</pre>
+<h4 id="skipLibCheck"><a class="heading-id-link" href="#skipLibCheck">8.5.3 <code>skipLibCheck</code></a></h4>
+<ul>
+  <li>
+    <p><code>skipLibCheck:false</code> – By default, TypeScript type-checks all <code>.d.ts</code> files. This is normally not necessary but helps when a project contains hand-written <code>.d.ts</code> files.</p>
+  </li>
+  <li>
+    <p><code>skipLibCheck:true</code> – If we switch it off, then TypeScript will only type-check library functionality we use in our code. That saves time – which is why I went with <code>true</code>.</p>
+  </li>
+</ul>
+<h4 id="types-for-the-built-in-node-js-apis"><a class="heading-id-link" href="#types-for-the-built-in-node-js-apis">8.5.4 Types for the built-in Node.js APIs</a></h4>
+<p>The types for the Node.js APIs must be installed via <a href="https://www.npmjs.com/package/@types/node">an npm package</a>:</p>
+<pre>
+<code>npm install @types/node</code>
+</pre>
+<h3 id="module-system"><a class="heading-id-link" href="#module-system">8.6 Module system</a></h3>
+<h4 id="how-does-typescript-look-for-imported-modules"><a class="heading-id-link" href="#how-does-typescript-look-for-imported-modules">8.6.1 How does TypeScript look for imported modules?</a></h4>
+<p>These options affect how TypeScript looks for imported modules:</p>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"NodeNext"</span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"noUncheckedSideEffectImports"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<h5 id="option-module"><a class="heading-id-link" href="#option-module">8.6.1.1 Option <code>module</code></a></h5>
+<p>With this option, we specify systems for handling modules. If we set it up correctly, we also take care of the related option <code>moduleResolution</code>, for which it provides good defaults. The TypeScript documentation recommends either of the following two values:</p>
+<ul>
+  <li>
+    Node.js: <code>"NodeNext"</code> supports both CommonJS and the latest ESM features.
+    <ul>
+      <li>
+        Implies <code>"moduleResolution": "NodeNext"</code>
+      </li>
+      <li>
+        Downside of <code>"NodeNext"</code>: It’s a moving target. But generally, functionality is only added.
+      </li>
+      <li>
+        Upside of <code>"NodeNext"</code>: It supports a good mix of features – for example (<a href="https://github.com/microsoft/TypeScript/pull/60761">source</a>):
+        <ul>
+          <li>
+            <code>"Node16"</code> does not support import attributes (which are needed for importing JSON files).
+          </li>
+          <li>
+            <code>"Node18"</code> and <code>"Node20"</code> support the outdated import assertions.
+          </li>
+          <li>
+            <code>require(esm)</code> (which is only relevant for CommonJS code, not for ESM code) is only supported by <code>"Node20"</code> and <code>"NodeNext"</code>.
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Bundlers: <code>"Preserve"</code> supports both CommonJS and the latest ESM features. It matches what most bundlers do.
+    <ul>
+      <li>
+        Implies <code>"moduleResolution": "bundler"</code>
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Given that bundlers mostly mimic what Node.js does, I’m always using <code>"NodeNext"</code> and haven’t encountered any issues.</p>
+<p>Note that in both cases, TypeScript forces us to mention the complete names of local modules we import. We can’t omit filename extensions as was frequent practice when Node.js was only compiled to CommonJS. The new approach mirrors how pure-JavaScript ESM works.</p>
+<p><code>module:NodeNext</code> implies <code>target:ESNext</code> but in this case, I prefer to manually set up <code>target</code> because <code>module</code> and <code>target</code> are not as closely related as <code>module</code> and <code>moduleResolution</code>. Furthermore, <code>module:Bundler</code> does not imply anything.</p>
+<h5 id="option-nouncheckedsideeffectimports"><a class="heading-id-link" href="#option-nouncheckedsideeffectimports">8.6.1.2 Option <code>noUncheckedSideEffectImports</code></a></h5>
+<p>By default, TypeScript does not complain if an empty import does not exist. The reason for this behavior is that this is a pattern supported by some bundlers to associate non-TypeScript artifacts with modules. And TypeScript only sees TypeScript files. This is what such an import looks like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> <span class="hljs-string">'./component-styles.css'</span>;</code>
+</pre>
+<p>Interestingly, TypeScript normally is also OK with emptily imported TypeScript files that don’t exist. It only complains if we import something from a non-existent file.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> <span class="hljs-string">'./does-not-exist.js'</span>; <span class="hljs-comment">// no error!</span></code>
+</pre>
+<p>Setting <code>noUncheckedSideEffectImports</code> to <code>true</code> changes that. I’m explaining an alternative for importing non-TypeScript artifacts <a href="#importing-other-non-typescript-artifacts">later</a>.</p>
+<h4 id="running-typescript-directly"><a class="heading-id-link" href="#running-typescript-directly">8.6.2 Running TypeScript directly (without generating JS files)</a></h4>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"allowImportingTsExtensions"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-comment">// Only needed if compiling to JavaScript:</span></code>
+<code>  <span class="hljs-attr">"rewriteRelativeImportExtensions"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Most non-browser JavaScript platforms now can run TypeScript code directly, without transpiling it.</p>
+<p>This mainly affects what filename extension we use when we import a local module. Traditionally, TypeScript does not change module specifiers and we have to use the filename extension <code>.js</code> in ESM modules (which is what works in the JavaScript that our TypeScript is compiled to):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> {someFunc} <span class="hljs-keyword">from</span> <span class="hljs-string">'./lib/utilities.js'</span>;</code>
+</pre>
+<p>If we run TypeScript directly, that import statement looks like this:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> {someFunc} <span class="hljs-keyword">from</span> <span class="hljs-string">'./lib/utilities.ts'</span>;</code>
+</pre>
+<p>This is enabled via the following settings:</p>
+<ul>
+  <li>
+    <p><code>allowImportingTsExtensions</code>: If this option is active, TypeScript won’t complain if we use the filename extension <code>.ts</code>.</p>
+  </li>
+  <li>
+    <p><code>rewriteRelativeImportExtensions</code>: With this option, we can also transpile TypeScript code that is meant to be run directly. By default, TypeScript does not change the module specifiers of imports. This option comes with a few caveats:</p>
+    <ul>
+      <li>
+        Only relative paths are rewritten.
+      </li>
+      <li>
+        They are rewritten “naively” – without taking the options <code>baseUrl</code> and <code>paths</code> into consideration (which are beyond the scope of this chapter).
+      </li>
+      <li>
+        Paths that are routed via the <code>"exports"</code> and <code>"imports"</code> properties in <code>package.json</code> don’t look like relative paths and are therefore not rewritten either.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Related option:</p>
+<ul>
+  <li>
+    If you want to use tsc only for type checking, then take a look at <a href="#noEmit">the <code>noEmit</code> option</a>.
+  </li>
+</ul>
+<h5 id="typescript-in-nodejs"><a class="heading-id-link" href="#typescript-in-nodejs">8.6.2.1 Node’s built-in support for TypeScript</a></h5>
+<p>Node.js now supports TypeScript via <em>type stripping</em>:</p>
+<ul>
+  <li>
+    <a href="#erasableSyntaxOnly">More information on type stripping and option <code>erasableSyntaxOnly</code> that helps with it</a>
+  </li>
+  <li>
+    <a href="https://nodejs.org/api/typescript.html">Node’s official documentation on its TypeScript support</a>
+  </li>
+</ul>
+<h4 id="importing-json"><a class="heading-id-link" href="#importing-json">8.6.3 Importing JSON</a></h4>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"resolveJsonModule"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>The option <code>resolveJsonModule</code> enables us to import JSON files:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> data <span class="hljs-keyword">from</span> <span class="hljs-string">'./data.json'</span> <span class="hljs-keyword">with</span> {<span class="hljs-attr">type</span>: <span class="hljs-string">'json'</span>};</code>
+<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(data.<span class="hljs-property">version</span>);</code>
+</pre>
+<h4 id="importing-other-non-typescript-artifacts"><a class="heading-id-link" href="#importing-other-non-typescript-artifacts">8.6.4 Importing other non-TypeScript artifacts</a></h4>
+<p>Whenever we import a file <code>basename.ext</code> whose extension <code>ext</code> TypeScript doesn’t know, it looks for a file <code>basename.d.ext.ts</code>. If it can’t find it, it raises an error. The TypeScript documentation has <a href="https://www.typescriptlang.org/tsconfig/#allowArbitraryExtensions">a good example</a> of what such a file can look like.</p>
+<p>There are two ways in which we can prevent TypeScript from raising errors for unknown imports.</p>
+<p>First, we can use option <code>allowArbitraryExtensions</code> to prevent any kind of error reporting in this case.</p>
+<p>Second, we can create an <em>ambient module declaration</em> with a wildcard specifier – a <code>.d.ts</code> file that has to be somewhere among the files that TypeScript is aware of. The following example suppresses errors for all imports with the filename extension <code>.css</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// ./src/globals.d.ts</span></code>
+<code><span class="hljs-keyword">declare</span> <span class="hljs-variable language_">module</span> <span class="hljs-string">"*.css"</span> {}</code>
+</pre>
+<h3 id="type-checking"><a class="heading-id-link" href="#type-checking">8.7 Type checking</a></h3>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"strict"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"exactOptionalPropertyTypes"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"noFallthroughCasesInSwitch"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"noImplicitOverride"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"noImplicitReturns"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"noPropertyAccessFromIndexSignature"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"noUncheckedIndexedAccess"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p><code>strict</code> is a must, in my opinion. With the remaining settings, you have to decide for yourself if you want the additional strictness for your code. You can start by adding all of them and see which ones cause too much trouble for your taste.</p>
+<h4 id="strict"><a class="heading-id-link" href="#strict">8.7.1 <code>strict</code></a></h4>
+<p>The compiler setting <code>strict</code> provides an important minimal setting for type checking. In principle, this setting would default to <code>true</code> but backward compatibility makes that impossible.</p>
+<div class="boxout">
+  <p><img src="../Images/0873709827ba4924e4afbb757e47a4df.png" height="24" class="boxout-icon" alt="Icon “tip”" data-original-src="https://exploringjs.com/ts/book/icon/tip.svg"/> <strong>The compiler option <code>strict</code> in a nutshell</strong></p>
+  <div class="boxout-vspace"/>
+  <p><code>strict</code> basically means: Type-check as much as possible, as correctly as possible.</p>
+</div>
+<p><code>strict</code> activates the following settings (which won’t be mentioned again in this chapter):</p>
+<ul>
+  <li>
+    <code>alwaysStrict</code>: always emit <code>"use strict"</code> in script files. That’s a legacy JavaScript feature that’s not needed in ECMAScript modules.
+  </li>
+  <li>
+    <code>noImplicitAny</code>: If <code>true</code>, we can omit types in some locations (mainly parameter definitions) and TypeScript will (implicitly) infer the type <code>any</code>. If <code>false</code>, we must provide explicit type annotations – which can use the type <code>any</code> (explicitly). For more information, see <a href="ch_any-unknown.html#noImplicitAny">“The compiler option <code>noImplicitAny</code>” (§14.2.3)</a>.
+  </li>
+  <li>
+    <code>noImplicitThis</code>: If we use <code>this</code> in ordinary functions, we must explicitly declare its type.
+  </li>
+  <li>
+    <code>strictBindCallApply</code>: If <code>true</code>, TypeScript will check that we pass correct arguments to <code>.call()</code>, <code>.apply()</code> and <code>.bind()</code>. If <code>false</code>, we can pass any arguments to those methods.
+  </li>
+  <li>
+    <code>strictBuiltinIteratorReturn</code>: If active, built-in iterators have the <code>TReturn</code> type <code>undefined</code> (instead of <code>any</code>).
+  </li>
+  <li>
+    <code>strictFunctionTypes</code>: If <code>true</code>, compatibility between function types is handled more correctly.
+  </li>
+  <li>
+    <code>strictNullChecks</code>: If <code>true</code>, the values <code>undefined</code> and <code>null</code> are not elements of normal types <code>T</code>. If we want to accept them, we have to use the type <code>undefined | T</code> or <code>null | T</code>, respectively.
+  </li>
+  <li>
+    <code>strictPropertyInitialization</code>: If <code>true</code>, TypeScript warns us if we don’t initialize a class instance property in the constructor. For more information, see <a href="ch_class-definitions.html#strictPropertyInitialization">“Strict property initialization” (§21.4.1)</a>.
+  </li>
+  <li>
+    <code>useUnknownInCatchVariables</code>: If <code>true</code>, TypeScript gives <code>catch</code> variables without type annotations the type <code>unknown</code> (instead of <code>any</code>).
+  </li>
+</ul>
+<h4 id="exactOptionalPropertyTypes"><a class="heading-id-link" href="#exactOptionalPropertyTypes">8.7.2 <code>exactOptionalPropertyTypes</code></a></h4>
+<p>If <code>true</code> then <code>.colorTheme</code> can only be omitted and not be set to <code>undefined</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Settings</span> {</code>
+<code>  <span class="hljs-comment">// Absent property means “system”</span></code>
+<code>  colorTheme?: <span class="hljs-string">'dark'</span> | <span class="hljs-string">'light'</span>;</code>
+<code>}</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj1</span>: <span class="hljs-title class_">Settings</span> = {}; <span class="hljs-comment">// allowed</span></code>
+<code><span class="hljs-comment">// @ts-expect-error: Type '{ colorTheme: undefined; }' is not</span></code>
+<code><span class="hljs-comment">// assignable to type 'Settings' with</span></code>
+<code><span class="hljs-comment">// 'exactOptionalPropertyTypes: true'. Consider adding 'undefined'</span></code>
+<code><span class="hljs-comment">// to the types of the target's properties.</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj2</span>: <span class="hljs-title class_">Settings</span> = { <span class="hljs-attr">colorTheme</span>: <span class="hljs-literal">undefined</span> };</code>
+</pre>
+<p>This option also prevents optional tuple elements being <code>undefined</code> (vs. missing):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">tuple1</span>: [<span class="hljs-built_in">number</span>, <span class="hljs-built_in">string</span>?] = [<span class="hljs-number">1</span>];</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">tuple2</span>: [<span class="hljs-built_in">number</span>, <span class="hljs-built_in">string</span>?] = [<span class="hljs-number">1</span>, <span class="hljs-string">'hello'</span>];</code>
+<code><span class="hljs-comment">// @ts-expect-error: Type '[number, undefined]' is not assignable to</span></code>
+<code><span class="hljs-comment">// type '[number, string?]'.</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">tuple3</span>: [<span class="hljs-built_in">number</span>, <span class="hljs-built_in">string</span>?] = [<span class="hljs-number">1</span>, <span class="hljs-literal">undefined</span>];</code>
+</pre>
+<h5 id="exactoptionalpropertytypes-prevents-useful-patterns"><a class="heading-id-link" href="#exactoptionalpropertytypes-prevents-useful-patterns">8.7.2.1 <code>exactOptionalPropertyTypes</code> prevents useful patterns</a></h5>
+<p>I’m ambivalent about this option: On one hand, enabling it prevents useful patterns such as:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  num?: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">createObj</span>(<span class="hljs-params">num?: <span class="hljs-built_in">number</span></span>): <span class="hljs-title class_">Obj</span> {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type '{ num: number | undefined; }' is not</span></code>
+<code>  <span class="hljs-comment">// assignable to type 'Obj' with</span></code>
+<code>  <span class="hljs-comment">// 'exactOptionalPropertyTypes: true'.</span></code>
+<code>  <span class="hljs-keyword">return</span> { num };</code>
+<code>} </code>
+</pre>
+<h5 id="exactoptionalpropertytypes-produces-better-types-spreading"><a class="heading-id-link" href="#exactoptionalpropertytypes-produces-better-types-spreading">8.7.2.2 <code>exactOptionalPropertyTypes</code> produces better types: spreading</a></h5>
+<p>On the other hand, it does better reflect how JavaScript works – e.g., spreading distinguishes missing properties and properties whose values are <code>undefined</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">optionDefaults</span>: { <span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span> } = { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> };</code>
+<code><span class="hljs-comment">// This assignment is an error with `exactOptionalPropertyTypes`</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">options</span>: { a?: <span class="hljs-built_in">number</span> } = { <span class="hljs-attr">a</span>: <span class="hljs-literal">undefined</span> }; <span class="hljs-comment">// (A)</span></code>
+<code/>
+<code><span class="hljs-keyword">const</span> result = { ...optionDefaults, ...options };</code>
+<code>assertType&lt;</code>
+<code>  { <span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span> }</code>
+<code>&gt;(result);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  result, { <span class="hljs-attr">a</span>: <span class="hljs-literal">undefined</span> }</code>
+<code>);</code>
+</pre>
+<p>If we had assigned an empty object in line A then the value of <code>result</code> would be <code>{a:1}</code> and match its type.</p>
+<p><code>Object.assign()</code> works similarly to spreading.</p>
+<h5 id="exactoptionalpropertytypes-produces-better-types-in-operator"><a class="heading-id-link" href="#exactoptionalpropertytypes-produces-better-types-in-operator">8.7.2.3 <code>exactOptionalPropertyTypes</code> produces better types: <code>in</code> operator</a></h5>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">obj: {prop?: <span class="hljs-built_in">number</span>}</span>): <span class="hljs-built_in">void</span> {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-string">'prop'</span> <span class="hljs-keyword">in</span> obj) {</code>
+<code>    <span class="hljs-comment">// Without `exactOptionalPropertyTypes`, the type would be:</span></code>
+<code>    <span class="hljs-comment">// number | undefined</span></code>
+<code>    assertType&lt;<span class="hljs-built_in">number</span>&gt;(obj.<span class="hljs-property">prop</span>);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<h4 id="noFallthroughCasesInSwitch"><a class="heading-id-link" href="#noFallthroughCasesInSwitch">8.7.3 <code>noFallthroughCasesInSwitch</code></a></h4>
+<p>If <code>true</code>, non-empty <code>switch</code> cases must end with <code>break</code>, <code>return</code> or <code>throw</code>.</p>
+<h4 id="noImplicitOverride"><a class="heading-id-link" href="#noImplicitOverride">8.7.4 <code>noImplicitOverride</code></a></h4>
+<p>If <code>true</code> then methods that override superclass methods must have the <code>override</code> modifier.</p>
+<h4 id="noImplicitReturns"><a class="heading-id-link" href="#noImplicitReturns">8.7.5 <code>noImplicitReturns</code></a></h4>
+<p>If <code>true</code> then an “implicit return” (the function or method ending) is only allowed if the return type is <code>void</code>.</p>
+<h4 id="noPropertyAccessFromIndexSignature"><a class="heading-id-link" href="#noPropertyAccessFromIndexSignature">8.7.6 <code>noPropertyAccessFromIndexSignature</code></a></h4>
+<p>If <code>true</code> then for types such as the following one, we cannot use the dot notation for unknown properties, only for known ones:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ObjectWithId</span> {</code>
+<code>  <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  [<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">string</span>;</code>
+<code>}</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">obj: ObjectWithId</span>) {</code>
+<code>  <span class="hljs-keyword">const</span> value1 = obj.<span class="hljs-property">id</span>; <span class="hljs-comment">// allowed</span></code>
+<code>  <span class="hljs-keyword">const</span> value2 = obj[<span class="hljs-string">'unknownProp'</span>]; <span class="hljs-comment">// allowed</span></code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Property 'unknownProp' comes from an index</span></code>
+<code>  <span class="hljs-comment">// signature, so it must be accessed with ['unknownProp'].</span></code>
+<code>  <span class="hljs-keyword">const</span> value3 = obj.<span class="hljs-property">unknownProp</span>;</code>
+<code>}</code>
+</pre>
+<h4 id="noUncheckedIndexedAccess"><a class="heading-id-link" href="#noUncheckedIndexedAccess">8.7.7 <code>noUncheckedIndexedAccess</code></a></h4>
+<h5 id="nouncheckedindexedaccess-and-objects"><a class="heading-id-link" href="#nouncheckedindexedaccess-and-objects">8.7.7.1 <code>noUncheckedIndexedAccess</code> and objects</a></h5>
+<p>If <code>noUncheckedIndexedAccess</code> is <code>true</code> then the type of an unknown property is the union of <code>undefined</code> and the type of the index signature:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ObjectWithId</span> {</code>
+<code>  <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  [<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">string</span>;</code>
+<code>}</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">obj: ObjectWithId</span>): <span class="hljs-built_in">void</span> {</code>
+<code>  assertType&lt;<span class="hljs-built_in">string</span>&gt;(obj.<span class="hljs-property">id</span>);</code>
+<code>  assertType&lt;<span class="hljs-literal">undefined</span> | <span class="hljs-built_in">string</span>&gt;(obj[<span class="hljs-string">'unknownProp'</span>]);</code>
+<code>}</code>
+</pre>
+<p><code>noUncheckedIndexedAccess</code> does the same for <code>Record</code> (which is a mapped type):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">obj: Record&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">number</span>&gt;</span>): <span class="hljs-built_in">void</span> {</code>
+<code>  <span class="hljs-comment">// Without `noUncheckedIndexedAccess`, this type would be:</span></code>
+<code>  <span class="hljs-comment">// number</span></code>
+<code>  assertType&lt;<span class="hljs-literal">undefined</span> | <span class="hljs-built_in">number</span>&gt;(obj[<span class="hljs-string">'hello'</span>]);</code>
+<code>}</code>
+</pre>
+<h5 id="nouncheckedindexedaccess-and-arrays"><a class="heading-id-link" href="#nouncheckedindexedaccess-and-arrays">8.7.7.2 <code>noUncheckedIndexedAccess</code> and Arrays</a></h5>
+<p>Option <code>noUncheckedIndexedAccess</code> also affects how Arrays are handled:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</code>
+<code><span class="hljs-keyword">const</span> elem = arr[<span class="hljs-number">0</span>];</code>
+<code><span class="hljs-comment">// Without `noUncheckedIndexedAccess`, this type would be:</span></code>
+<code><span class="hljs-comment">// string</span></code>
+<code>assertType&lt;<span class="hljs-literal">undefined</span> | <span class="hljs-built_in">string</span>&gt;(elem);</code>
+</pre>
+<p>One common pattern for Arrays is to check the length before accessing an element. However, that pattern becomes inconvenient with <code>noUncheckedIndexedAccess</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">logElemAt0</span>(<span class="hljs-params">arr: <span class="hljs-built_in">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;</span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-number">0</span> &lt; arr.<span class="hljs-property">length</span>) {</code>
+<code>    <span class="hljs-keyword">const</span> elem = arr[<span class="hljs-number">0</span>];</code>
+<code>    assertType&lt;<span class="hljs-literal">undefined</span> | <span class="hljs-built_in">string</span>&gt;(elem);</code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(elem);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Therefore, it makes more sense to use a different pattern:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">logElemAt0</span>(<span class="hljs-params">arr: <span class="hljs-built_in">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;</span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-number">0</span> <span class="hljs-keyword">in</span> arr) {</code>
+<code>    <span class="hljs-keyword">const</span> elem = arr[<span class="hljs-number">0</span>];</code>
+<code>    assertType&lt;<span class="hljs-built_in">string</span>&gt;(elem);</code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(elem);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<h4 id="type-checking-options-that-have-good-defaults"><a class="heading-id-link" href="#type-checking-options-that-have-good-defaults">8.7.8 Type checking options that have good defaults</a></h4>
+<p>By default, the following options produce warnings in editors, but we can also choose to produce compiler errors or ignore problems:</p>
+<ul>
+  <li>
+    <code>allowUnreachableCode</code>
+  </li>
+  <li>
+    <code>allowUnusedLabels</code>
+  </li>
+  <li>
+    <code>noUnusedLocals</code>
+  </li>
+  <li>
+    <code>noUnusedParameters</code>
+  </li>
+</ul>
+<h3 id="compiling-without-tsc"><a class="heading-id-link" href="#compiling-without-tsc">8.8 Compiling TypeScript with tools other than tsc</a></h3>
+<p>The TypeScript compiler tsc performs three tasks:</p>
+<ol>
+  <li>
+    Type checking
+  </li>
+  <li>
+    Emitting JavaScript files
+  </li>
+  <li>
+    Emitting declaration files
+  </li>
+</ol>
+<p>External tools have become popular that do #2 and #3 much faster. The following subsections describe configuration options that help those tools.</p>
+<h4 id="noEmit"><a class="heading-id-link" href="#noEmit">8.8.1 Using tsc only for type checking</a></h4>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"noEmit"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Sometimes, we want to use tsc only for type checking – e.g., if we run TypeScript directly or use external tools for compiling TypeScript files (to JavaScript files, declaration files, etc.):</p>
+<ul>
+  <li>
+    <code>noEmit</code>: If <code>true</code>, we can run tsc and it will only type-check the TypeScript code, it won’t emit any files.
+  </li>
+</ul>
+<p>In principle, you don’t have to provide output-related settings such as <code>rootDir</code> and <code>outDir</code> anymore. However, some external tools may need them.</p>
+<h4 id="type-stripping"><a class="heading-id-link" href="#type-stripping">8.8.2 Generating <code>.js</code> files via type stripping: <code>erasableSyntaxOnly</code> and <code>verbatimModuleSyntax</code></a></h4>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"erasableSyntaxOnly"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"verbatimModuleSyntax"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// implies "isolatedModules"</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p><em>Type stripping</em> is a simple and fast way of compiling TypeScript to JavaScript. It’s what Node.js uses when it runs TypeScript. Type stripping is fast because it only supports a subset of TypeScript where two things are possible:</p>
+<ol>
+  <li>
+    <p>Type syntax can be detected and removed by only parsing the syntax – without performing additional semantic analyses.</p>
+  </li>
+  <li>
+    <p>No non-type language features are transpiled. In other words: Removing the type syntax is enough to produce JavaScript.</p>
+  </li>
+</ol>
+<p>To help with type stripping, TypeScript has two compiler options that report errors if we use unsupported features:</p>
+<ul>
+  <li>
+    <code>verbatimModuleSyntax</code> forbids features that prevent #1.
+  </li>
+  <li>
+    <code>erasableSyntaxOnly</code> forbids features that are transpiled.
+  </li>
+</ul>
+<p>Note that these options don’t change what is emitted by tsc.</p>
+<p>Useful related knowledge: <a href="ch_typescript-workflows.html#ts-blank-space">“Type stripping technique: replacing types with spaces” (§6.5.1.1)</a>.</p>
+<h4 id="erasableSyntaxOnly"><a class="heading-id-link" href="#erasableSyntaxOnly">8.8.3 <code>erasableSyntaxOnly</code>: no transpiled language features</a></h4>
+<p>The compiler option <code>erasableSyntaxOnly</code> helps with <a href="#type-stripping">type stripping</a>. It forbids non-type TypeScript features that are not “current” JavaScript (as supported by the target platforms) and have to be transpiled. These are the most important ones:</p>
+<ul>
+  <li>
+    JSX
+  </li>
+  <li>
+    Enums 
+  </li>
+  <li>
+    <a href="https://www.typescriptlang.org/docs/handbook/2/classes.html#parameter-properties">Parameter properties</a> in class constructors.
+  </li>
+  <li>
+    Namespaces
+  </li>
+  <li>
+    Future JavaScript that is compiled to current JavaScript
+  </li>
+</ul>
+<p>Another feature that is forbidden by <code>erasableSyntaxOnly</code> is the legacy way of casting via angle brackets – because its syntax makes type stripping impossible in some cases (<a href="https://github.com/microsoft/TypeScript/pull/61244">source</a>):</p>
+<pre class="language-ts">
+<code>&lt;someType&gt;someValue <span class="hljs-comment">// not allowed</span></code>
+</pre>
+<p>However, the alternative <code>as</code> is always better anyway:</p>
+<pre class="language-ts">
+<code>someValue <span class="hljs-keyword">as</span> someType <span class="hljs-comment">// allowed</span></code>
+</pre>
+<h4 id="verbatimModuleSyntax"><a class="heading-id-link" href="#verbatimModuleSyntax">8.8.4 <code>verbatimModuleSyntax</code>: enforcing <code>type</code> in imports and exports</a></h4>
+<p>The compiler option <code>verbatimModuleSyntax</code> forces us to add the keyword <code>type</code> to type-only imports and exports.</p>
+<p>When compiling TypeScript to JavaScript via <a href="#type-stripping">type stripping</a>, we need to remove the TypeScript parts. Most of those parts are easy to detect. The exception are imports and exports – e.g., without semantic analysis, we don’t know if an import is a (TypeScript) type or a (JavaScript) value. If type-only imports and exports are marked with the keyword <code>type</code>, no such analysis is necessary.</p>
+<h5 id="importing-types"><a class="heading-id-link" href="#importing-types">8.8.4.1 Importing types</a></h5>
+<p>This is what the keyword <code>type</code> looks like in imports:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// Input: TypeScript</span></code>
+<code><span class="hljs-keyword">import</span> { <span class="hljs-keyword">type</span> <span class="hljs-title class_">SomeInterface</span>, <span class="hljs-title class_">SomeClass</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'./my-module.js'</span>;</code>
+<code/>
+<code><span class="hljs-comment">// Output: JavaScript</span></code>
+<code><span class="hljs-keyword">import</span> { <span class="hljs-title class_">SomeClass</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'./my-module.js'</span>;</code>
+</pre>
+<p>Note that a class is both a value and a type. In that case, no <code>type</code> keyword is needed because that part of the syntax can stay in plain JavaScript.</p>
+<p>We can also apply <code>type</code> to the whole import:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> { <span class="hljs-title class_">Type1</span>, <span class="hljs-title class_">Type2</span>, <span class="hljs-title class_">Type3</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'./types.js'</span>;</code>
+</pre>
+<h5 id="exporting-types"><a class="heading-id-link" href="#exporting-types">8.8.4.2 Exporting types</a></h5>
+<p>Inline type exports:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">MyType</span> = {};</code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">MyInterface</span> {}</code>
+</pre>
+<p>Export clauses:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Type1</span> = {};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Type2</span> = {};</code>
+<code><span class="hljs-keyword">export</span> {</code>
+<code>  <span class="hljs-keyword">type</span> <span class="hljs-title class_">Type1</span>,</code>
+<code>  <span class="hljs-keyword">type</span> <span class="hljs-title class_">Type2</span>,</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Type3</span> = {};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Type4</span> = {};</code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> {</code>
+<code>  <span class="hljs-title class_">Type3</span>,</code>
+<code>  <span class="hljs-title class_">Type4</span>,</code>
+<code>}</code>
+</pre>
+<p>Alas, default-exporting only works for interfaces:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">DefaultInterface</span> {} <span class="hljs-comment">// OK</span></code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">DefaultType</span> = {}</code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">DefaultType</span>; <span class="hljs-comment">// error</span></code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">DefaultType</span>; <span class="hljs-comment">// error</span></code>
+<code/>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">type</span> {} <span class="hljs-comment">// error</span></code>
+</pre>
+<p>We can use the following workaround:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">DefaultType</span> = {}</code>
+<code><span class="hljs-keyword">export</span> {</code>
+<code>  <span class="hljs-keyword">type</span> <span class="hljs-title class_">DefaultType</span> <span class="hljs-keyword">as</span> <span class="hljs-keyword">default</span>,</code>
+<code>}</code>
+</pre>
+<p>Why does this inconsistency exist? <code>type</code> is allowed as a (JavaScript-level) identifier after <code>export default</code>.</p>
+<h5 id="isolatedModules"><a class="heading-id-link" href="#isolatedModules">8.8.4.3 <code>isolatedModules</code></a></h5>
+<p>Activating <code>verbatimModuleSyntax</code> also activates <code>isolatedModules</code>, which is why we only need the former setting. The latter prevents us from using some relatively obscure features that are also problematic.</p>
+<p>As an aside, this option enables esbuild to compile TypeScript to JavaScript (<a href="https://esbuild.github.io/content-types/#isolated-modules">source</a>).</p>
+<h4 id="isolatedDeclarations"><a class="heading-id-link" href="#isolatedDeclarations">8.8.5 <code>isolatedDeclarations</code>: generating <code>.d.ts</code> files more efficiently</a></h4>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-comment">// Only allowed if `declaration` or `composite` are true</span></code>
+<code>  <span class="hljs-attr">"isolatedDeclarations"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<p>Option <code>isolatedDeclarations</code> helps external tools compile TypeScript files to declaration files, by forcing us to add more type annotations so that no type inference is needed for compilation (trivially simple type inference is still allowed – more on that soon). That has several benefits:</p>
+<ul>
+  <li>
+    The tools don’t need to know the logic of type inference – which makes them simpler. Extracting declarations becomes a syntactic operation and doesn’t really have to consider the type level.
+  </li>
+  <li>
+    Not having to run type inference saves time.
+  </li>
+  <li>
+    We can look at single files in isolation: Type inference sometimes has to visit other files to compute its results, which introduces dependencies on those files.
+    <ul>
+      <li>
+        Incidentally, that explains the name of the compiler option.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p><code>isolatedDeclarations</code> only produces compiler errors, it does not change what is emitted by tsc. It only affects constructs that are exported – because only those show up in declaration files. Module-internal code is not affected.</p>
+<p>Let’s look at three constructs affected by <code>isolatedDeclarations</code>.</p>
+<h5 id="return-types-of-top-level-functions"><a class="heading-id-link" href="#return-types-of-top-level-functions">8.8.5.1 Return types of top-level functions</a></h5>
+<p>For top-level functions, we should usually explicitly specify return types:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// OK: return type stated explicitly</span></code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params">): <span class="hljs-built_in">string</span> {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-number">123.</span>.<span class="hljs-title function_">toString</span>();</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-comment">// Error: return type requires inference</span></span></code>
+<code><span class="hljs-params"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f2</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-number">123.</span>.<span class="hljs-title function_">toString</span>();</span></code>
+<code><span class="hljs-params">}</span></code>
+<code><span class="hljs-params"><span class="hljs-comment">// OK: return type trivial to determine</span></span></code>
+<code><span class="hljs-params"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f3</span>(<span class="hljs-params"/>) {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-number">123</span>;</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<h5 id="types-of-variable-declarations"><a class="heading-id-link" href="#types-of-variable-declarations">8.8.5.2 Types of variable declarations</a></h5>
+<p>More complicated variable declarations must have type annotations. Note that this only affects top-level declarations – e.g.: Variable declarations inside functions don’t show up in declaration files and therefore don’t matter.</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// OK: type trivial to determine</span></code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> value1 = <span class="hljs-number">123</span>;</code>
+<code><span class="hljs-comment">// Error: type requires inference</span></code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> value2 = <span class="hljs-number">123.</span>.<span class="hljs-title function_">toString</span>();</code>
+<code><span class="hljs-comment">// OK: type stated explicitly</span></code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-attr">value3</span>: <span class="hljs-built_in">string</span> = <span class="hljs-number">123.</span>.<span class="hljs-title function_">toString</span>();</code>
+</pre>
+<h5 id="types-of-class-instance-fields"><a class="heading-id-link" href="#types-of-class-instance-fields">8.8.5.3 Types of class instance fields</a></h5>
+<p>Class instance fields must have type annotations (even though <code>tsc</code> can infer their types if there is an assignment in the constructor):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">C</span> {</code>
+<code>  <span class="hljs-attr">str</span>: <span class="hljs-built_in">string</span>; <span class="hljs-comment">// required</span></code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">str: <span class="hljs-built_in">string</span></span>) {</code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">str</span> = str;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<h5 id="isolateddeclarations-requires-declaration-or-composite"><a class="heading-id-link" href="#isolateddeclarations-requires-declaration-or-composite">8.8.5.4 <code>isolatedDeclarations</code> requires <code>declaration</code> or <code>composite</code></a></h5>
+<p>I’d love to always use <code>isolatedDeclarations</code>, but TypeScript only allows it if option <code>declaration</code> or option <code>composite</code> are active. <a href="https://github.com/microsoft/TypeScript/issues/58262#issuecomment-2597014286">Jake Bailey explains why that is</a>:</p>
+<blockquote>
+  <p>At the implementation level, <code>isolatedDeclarations</code> diagnostics are extra declaration diagnostics produced by the declaration transformer, which we only run when <code>declaration</code> is enabled.</p>
+  <p>Theoretically it could be implemented such that <code>isolatedDeclarations</code> enables those checks (the diagnostics actually come from us running the transformer and then throwing away the resulting AST), but it is a change from the original design.</p>
+</blockquote>
+<h5 id="further-reading-1"><a class="heading-id-link" href="#further-reading-1">8.8.5.5 Further reading</a></h5>
+<p>The TypeScript 5.5 release notes have <a href="https://devblogs.microsoft.com/typescript/announcing-typescript-5-5/#isolated-declarations">a comprehensive section</a> on isolated declarations.</p>
+<h3 id="importing-commonjs-from-esm"><a class="heading-id-link" href="#importing-commonjs-from-esm">8.9 Importing CommonJS from ESM</a></h3>
+<p>One key issue affects importing a CommonJS module from an ESM module:</p>
+<ul>
+  <li>
+    In ESM, the default export is the property <code>.default</code> of the module namespace object.
+  </li>
+  <li>
+    In CommonJS, the module object <em>is</em> the default export – e.g., there are many CommonJS modules that set <code>module.exports</code> to a function.
+  </li>
+</ul>
+<p>Let’s look at two options that help.</p>
+<h4 id="allowSyntheticDefaultImports"><a class="heading-id-link" href="#allowSyntheticDefaultImports">8.9.1 <code>allowSyntheticDefaultImports</code>: type-checking default imports of CommonJS modules</a></h4>
+<p>This option only affects type checking, not the JavaScript code emitted by TypeScript: If active, a default import of a CommonJS module refers to <code>module.exports</code> (not <code>module.exports.default</code>) – but only if there is no <code>module.exports.default</code>.</p>
+<p>This reflects how Node.js handles default imports of CommonJS modules (<a href="https://nodejs.org/api/esm.html#interoperability-with-commonjs">source</a>): “When importing CommonJS modules, the <code>module.exports</code> object is provided as the default export. Named exports may be available, provided by static analysis as a convenience for better ecosystem compatibility.”</p>
+<p><strong>Do we need this option?</strong> Yes, but it’s automatically activated if <code>moduleResolution</code> is <code>"bundler"</code> or if <code>module</code> is <code>"NodeNext"</code> (which activates <code>esModuleInterop</code> which activates <code>allowSyntheticDefaultImports</code>).</p>
+<h4 id="esModuleInterop"><a class="heading-id-link" href="#esModuleInterop">8.9.2 <code>esModuleInterop</code>: better compilation of TypeScript to CommonJS code</a></h4>
+<p>This option affects emitted CommonJS code:</p>
+<ul>
+  <li>
+    If <code>false</code>:
+    <ul>
+      <li>
+        <code>import * as m from 'm'</code> is compiled to <code>const m = require('m')</code>.
+      </li>
+      <li>
+        <code>import m from 'm'</code> is (roughly) compiled to <code>const m = require('m')</code> and every access of <code>m</code> is compiled to <code>m.default</code>.
+      </li>
+    </ul>
+  </li>
+  <li>
+    If <code>true</code>:
+    <ul>
+      <li>
+        <code>import * as m from 'm'</code> assigns a new object to <code>m</code> that has the same properties as <code>module.exports</code> plus a property <code>.default</code> that refers to <code>module.exports</code>.
+      </li>
+      <li>
+        <code>import m from 'm'</code> assigns a new object to <code>m</code> that has a single property <code>.default</code> that refers to <code>module.exports</code>. Every access of <code>m</code> is compiled to <code>m.default</code>.
+      </li>
+    </ul>
+  </li>
+  <li>
+    If a CommonJS module has the marker property <code>.__esModule</code> then it is always imported as if <code>esModuleInterop</code> were switched off.
+  </li>
+</ul>
+<p><strong>Do we need this option?</strong> No, since we only author ESM modules.</p>
+<h3 id="one-more-option-with-a-good-default"><a class="heading-id-link" href="#one-more-option-with-a-good-default">8.10 One more option with a good default</a></h3>
+<p>We can usually ignore this option:</p>
+<ul>
+  <li>
+    <code>moduleDetection</code>: This option configures how TypeScript determines whether a file is a script or a module. It can usually be omitted because its default <code>"auto"</code> works well in most cases. You only need to explicitly set it to <code>"force"</code> if your codebase has a module that has neither imports nor exports. If <code>module</code> is <code>"NodeNext"</code> and <code>package.json</code> has <code>"type":"module"</code> then even those files are interpreted as modules.
+  </li>
+</ul>
+<h3 id="visual-studio-code"><a class="heading-id-link" href="#visual-studio-code">8.11 Visual Studio Code</a></h3>
+<p>If you are unhappy with the module specifiers for local imports in automatically created imports then you can take a look at the following two settings:</p>
+<pre>
+<code>javascript.preferences.importModuleSpecifierEnding</code>
+<code>typescript.preferences.importModuleSpecifierEnding</code>
+</pre>
+<p>By default, VSC should now be smart enough to add filename extensions where necessary.</p>
+<h3 id="tsconfig-summary"><a class="heading-id-link" href="#tsconfig-summary">8.12 Summary: Assemble your <code>tsconfig.json</code> by answering four questions</a></h3>
+<p>This is a starter <code>tsconfig.json</code> file with all settings. The following subsections explain which parts to remove – depending on your needs.</p>
+<p>Alternatively, you can use my interactive <a href="https://github.com/rauschma/tsconfigurator">tsconfig configurator</a> via the command line or online.</p>
+<pre class="language-json">
+<code><span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"include"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><span class="hljs-string">"src/**/*"</span><span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>    <span class="hljs-comment">// Specified explicitly (not derived from source file paths)</span></code>
+<code>    <span class="hljs-attr">"rootDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"src"</span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-attr">"outDir"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"dist"</span><span class="hljs-punctuation">,</span></code>
+<code/>
+<code>    <span class="hljs-comment">//========== Target and module ==========</span></code>
+<code>    <span class="hljs-comment">// Nothing is ever transpiled</span></code>
+<code>    <span class="hljs-attr">"target"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ESNext"</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// sets up "lib" accordingly</span></code>
+<code>    <span class="hljs-attr">"module"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"NodeNext"</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// sets up "moduleResolution"</span></code>
+<code>    <span class="hljs-comment">// Don’t check .d.ts files</span></code>
+<code>    <span class="hljs-attr">"skipLibCheck"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-comment">// Emptily imported modules must exist</span></code>
+<code>    <span class="hljs-attr">"noUncheckedSideEffectImports"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-comment">// Allow importing JSON</span></code>
+<code>    <span class="hljs-attr">"resolveJsonModule"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code/>
+<code>    <span class="hljs-comment">//========== Type checking ==========</span></code>
+<code>    <span class="hljs-comment">// Essential: activates several useful options</span></code>
+<code>    <span class="hljs-attr">"strict"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-comment">// Beyond "strict": less important</span></code>
+<code>    <span class="hljs-attr">"exactOptionalPropertyTypes"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-attr">"noFallthroughCasesInSwitch"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-attr">"noImplicitOverride"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-attr">"noImplicitReturns"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-attr">"noPropertyAccessFromIndexSignature"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-attr">"noUncheckedIndexedAccess"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code/>
+<code>    <span class="hljs-comment">//========== Only JS at non-type level (type stripping etc.) ==========</span></code>
+<code>    <span class="hljs-comment">// Forbid non-JavaScript language constructs such as:</span></code>
+<code>    <span class="hljs-comment">// JSX, enums, constructor parameter properties, namespaces</span></code>
+<code>    <span class="hljs-attr">"erasableSyntaxOnly"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-comment">// Enforce keyword `type` for type imports etc.</span></code>
+<code>    <span class="hljs-attr">"verbatimModuleSyntax"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// implies "isolatedModules"</span></code>
+<code/>
+<code>    <span class="hljs-comment">//========== Use filename extension .ts in imports ==========</span></code>
+<code>    <span class="hljs-attr">"allowImportingTsExtensions"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-comment">// Only needed if compiling to JavaScript</span></code>
+<code>    <span class="hljs-attr">"rewriteRelativeImportExtensions"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// from .ts to .js</span></code>
+<code/>
+<code>    <span class="hljs-comment">//========== Emitted files ==========</span></code>
+<code>    <span class="hljs-comment">// tsc only type-checks, doesn’t emit any files</span></code>
+<code>    <span class="hljs-attr">"noEmit"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>    <span class="hljs-comment">//----- Output: .js -----</span></code>
+<code>    <span class="hljs-attr">"sourceMap"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// .js.map files</span></code>
+<code>    <span class="hljs-comment">//----- Output: .d.ts -----</span></code>
+<code>    <span class="hljs-attr">"declaration"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// .d.ts files</span></code>
+<code>    <span class="hljs-comment">// “Go to definition” jumps to TS source etc.</span></code>
+<code>    <span class="hljs-attr">"declarationMap"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// .d.ts.map files</span></code>
+<code>    <span class="hljs-comment">// - Enforces constraints that enable efficient .d.ts generation:</span></code>
+<code>    <span class="hljs-comment">//   no inferred return types for exported functions etc.</span></code>
+<code>    <span class="hljs-comment">// - Even though this option would be generally useful, it requires</span></code>
+<code>    <span class="hljs-comment">//   that `declaration` and/or `composite` are true.</span></code>
+<code>    <span class="hljs-attr">"isolatedDeclarations"</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">true</span></span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-punctuation">}</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<h4 id="do-you-want-to-transpile-new-javascript-to-older-javascript"><a class="heading-id-link" href="#do-you-want-to-transpile-new-javascript-to-older-javascript">8.12.1 Do you want to transpile new JavaScript to older JavaScript?</a></h4>
+<p>TypeScript can transpile new JavaScript features to code that only uses older “target” features. That can help support older JavaScript engines. If that’s what you want, you must change <code>"target"</code>:</p>
+<pre class="language-json">
+<code><span class="hljs-attr">"compilerOptions"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-comment">// Transpile new JavaScript to old JavaScript</span></code>
+<code>  <span class="hljs-attr">"target"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"ES20YY"</span><span class="hljs-punctuation">,</span> <span class="hljs-comment">// sets up "lib" accordingly</span></code>
+<code><span class="hljs-punctuation">}</span></code>
+</pre>
+<h4 id="should-typescript-only-allow-javascript-features-at-the-non-type-level"><a class="heading-id-link" href="#should-typescript-only-allow-javascript-features-at-the-non-type-level">8.12.2 Should TypeScript only allow JavaScript features at the non-type level?</a></h4>
+<p>In other words: Should all non-JavaScript syntax be erasable? If yes, then these are the main features that are forbidden: JSX, enums, constructor parameter properties, and namespaces.</p>
+<p>The starter tsconfig only allows erasable syntax. If you want to use any of the aforementioned features, then remove section “Only JS at non-type level”.</p>
+<h4 id="which-filename-extension-do-you-want-to-use-in-local-imports"><a class="heading-id-link" href="#which-filename-extension-do-you-want-to-use-in-local-imports">8.12.3 Which filename extension do you want to use in local imports?</a></h4>
+<p>The starter tsconfig enables <code>.ts</code> in imports. If you want to use <code>.js</code>, you can remove section “Use filename extension .ts in imports”.</p>
+<h4 id="what-files-should-tsc-emit"><a class="heading-id-link" href="#what-files-should-tsc-emit">8.12.4 What files should tsc emit?</a></h4>
+<ul>
+  <li>
+    If <code>tsc</code> should emit <em>some</em> files, remove property <code>"noEmit"</code>.
+  </li>
+  <li>
+    If <code>tsc</code> should <em>not</em> emit JavaScript, remove subsection “Output: .js”.
+  </li>
+  <li>
+    If <code>tsc</code> should <em>not</em> emit declarations, remove subsection “Output: .d.ts”.
+  </li>
+</ul>
+<p>If no files are emitted, you can remove the following properties:</p>
+<ul>
+  <li>
+    <code>"rootDir"</code>
+  </li>
+  <li>
+    <code>"outDir"</code>
+  </li>
+</ul>
+<p>Emitted files:</p>
+<table class="framed">
+  <style>
+    th:nth-child(1), td:nth-child(1) {
+      text-align: left;
+    }
+    th:nth-child(2), td:nth-child(2) {
+      text-align: left;
+    }
+  </style>
+  <thead>
+    <tr>
+      <th>File</th><th><code>tsconfig.json</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>*.js</code></td><td>Default (deactivated via <code>"noEmit": true</code>)</td>
+    </tr>
+    <tr>
+      <td><code>*.js.map</code></td><td><code>"sourceMap": true</code></td>
+    </tr>
+    <tr>
+      <td><code>*.d.ts</code></td><td><code>"declaration": true</code></td>
+    </tr>
+    <tr>
+      <td><code>*.d.ts.map</code></td><td><code>"declarationMap": true</code></td>
+    </tr>
+  </tbody>
+</table>
+<p>Source maps (<code>.map</code>) are only emitted if their source files are emitted.</p>
+<h3 id="further-reading-2"><a class="heading-id-link" href="#further-reading-2">8.13 Further reading</a></h3>
+<h4 id="tsconfig-recommendations"><a class="heading-id-link" href="#tsconfig-recommendations">8.13.1 <code>tsconfig.json</code> recommendations by other people</a></h4>
+<ul>
+  <li>
+    Matt Pocock’s <a href="https://www.totaltypescript.com/tsconfig-cheat-sheet">“The TSConfig Cheat Sheet”</a>
+  </li>
+  <li>
+    Pelle Wessman’s <a href="https://github.com/voxpelli/tsconfig/blob/main/base.json"><code>base.json</code></a>
+  </li>
+  <li>
+    Sindre Sorhus’ <a href="https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json"><code>tsconfig.json</code></a>
+  </li>
+</ul>
+<h4 id="sources-of-this-chapter"><a class="heading-id-link" href="#sources-of-this-chapter">8.13.2 Sources of this chapter</a></h4>
+<p>Some of the sources were already mentioned earlier. These are additional sources I used:</p>
+<ul>
+  <li>
+    <a href="https://www.typescriptlang.org/tsconfig/">The official TSConfig documentation</a>
+  </li>
+  <li>
+    <a href="https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/#path-rewriting-for-relative-paths">Section “Path Rewriting for Relative Paths”</a> in the TypeScript 5.7 announcement.
+  </li>
+  <li>
+    The esbuild documentation makes <a href="https://esbuild.github.io/content-types/#typescript">interesting observations</a> about compiling TypeScript.
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>5 Notation used in this book</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>5 Notation used in this book</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_book-notation.html">https://exploringjs.com/ts/book/ch_book-notation.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#javascript-level-assert">5.1 JavaScript level: <code>assert.*</code></a>
+    </li>
+    <li>
+      <a href="#notation-assertType">5.2 Type level: <code>assertType&lt;T&gt;(v)</code></a>
+    </li>
+    <li>
+      <a href="#notation-generic-type-Assert">5.3 Type level: <code>Assert&lt;B&gt;</code></a>
+    </li>
+    <li>
+      <a href="#notation-ts-expect-error">5.4 Type level: <code>@ts-expect-error</code></a>
+    </li>
+    <li>
+      <a href="#isn-t-this-book-s-notation-kind-of-ugly">5.5 Isn’t this book’s notation kind of ugly?</a>
+    </li>
+  </ol>
+</nav>
+<p>This chapter explains functionality that is used in the code examples to explain results and errors. We have to consider two levels:</p>
+<ul>
+  <li>
+    JavaScript level: values (e.g. returned by functions) and exceptions
+  </li>
+  <li>
+    Type level: types (e.g. constructed by generic types) and compiler errors
+  </li>
+</ul>
+<p>The functions and generic types that help us, have to be imported: The import statements to do so are shown in this chapter, but omitted elsewhere in this book.</p>
+<h3 id="javascript-level-assert"><a class="heading-id-link" href="#javascript-level-assert">5.1 JavaScript level: <code>assert.*</code></a></h3>
+<p>Expected results are checked via the following assertion functions from <a href="https://nodejs.org/api/assert.html">the Node.js module <code>node:assert</code></a>:</p>
+<ul>
+  <li>
+    <code>assert.equal()</code> tests equality via <code>===</code>
+  </li>
+  <li>
+    <code>assert.deepEqual()</code> tests equality by deeply comparing nested objects (incl. Arrays).
+  </li>
+  <li>
+    <code>assert.throws()</code> complains if the callback parameter does <em>not</em> throw an exception.
+  </li>
+</ul>
+<p>This is an example of using these assertions:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">import</span> assert <span class="hljs-keyword">from</span> <span class="hljs-string">'node:assert/strict'</span>;</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-number">3</span> + <span class="hljs-string">' apples'</span>,</code>
+<code>  <span class="hljs-string">'3 apples'</span></code>
+<code>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  [...[<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>], ...[<span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]],</code>
+<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]</code>
+<code>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">freeze</span>({}).<span class="hljs-property">prop</span> = <span class="hljs-literal">true</span>,</code>
+<code>  <span class="hljs-regexp">/^TypeError: Cannot add property prop, object is not extensible/</span></code>
+<code>);</code>
+</pre>
+<p>In the first line, the specifier of the imported module has the suffix <code>/strict</code>. That enables <a href="https://nodejs.org/api/assert.html#assert_strict_assertion_mode">strict assertion mode</a>, which uses <code>===</code> and not <code>==</code> for comparisons.</p>
+<h3 id="notation-assertType"><a class="heading-id-link" href="#notation-assertType">5.2 Type level: <code>assertType&lt;T&gt;(v)</code></a></h3>
+<p>Function <code>assertType()</code> is provided by the TypeScript library <a href="https://github.com/rauschma/asserttt"><code>asserttt</code></a>.</p>
+<p>The function call <code>assertType&lt;T&gt;(v)</code> asserts that the (dynamic) value <code>v</code> has the (static) type <code>T</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> { assertType } <span class="hljs-keyword">from</span> <span class="hljs-string">'asserttt'</span>;</code>
+<code/>
+<code><span class="hljs-keyword">let</span> value = <span class="hljs-number">123</span>;</code>
+<code>assertType&lt;<span class="hljs-built_in">number</span>&gt;(value);</code>
+</pre>
+<h3 id="notation-generic-type-Assert"><a class="heading-id-link" href="#notation-generic-type-Assert">5.3 Type level: <code>Assert&lt;B&gt;</code></a></h3>
+<p><code>asserttt</code> also provides the utility type <code>Assert&lt;B&gt;</code>, which asserts that the type <code>B</code> (usually an instantiated generic type) is <code>true</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> { <span class="hljs-keyword">type</span> <span class="hljs-title class_">Assert</span>, <span class="hljs-keyword">type</span> <span class="hljs-title class_">Equal</span>, <span class="hljs-keyword">type</span> <span class="hljs-title class_">Not</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">'asserttt'</span>;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Pair</span>&lt;X&gt; = [X, X];</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Pair</span>&lt;<span class="hljs-string">'a'</span>&gt;, [<span class="hljs-string">'a'</span>, <span class="hljs-string">'a'</span>]</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Not</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Pair</span>&lt;<span class="hljs-string">'a'</span>&gt;, [<span class="hljs-string">'x'</span>, <span class="hljs-string">'x'</span>]</code>
+<code>  &gt;&gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p><code>asserttt</code> has several <em>predicates</em> (generic types that construct booleans) that we can use with <code>Assert&lt;&gt;</code>. In the previous example, we have used:</p>
+<ul>
+  <li>
+    <code>Equal&lt;T1, T2&gt;</code>
+  </li>
+  <li>
+    <code>Not&lt;B&gt;</code>
+  </li>
+</ul>
+<h3 id="notation-ts-expect-error"><a class="heading-id-link" href="#notation-ts-expect-error">5.4 Type level: <code>@ts-expect-error</code></a></h3>
+<p>In this book, <code>@ts-expect-error</code> is used to show TypeScript compiler errors:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: The value 'null' cannot be used here.</span></code>
+<code><span class="hljs-keyword">const</span> value = <span class="hljs-literal">null</span>.<span class="hljs-property">myProp</span>;</code>
+</pre>
+<p>How does TypeScript handle such a directive?</p>
+<ul>
+  <li>
+    <p>If there is an error in a line after a <code>@ts-expect-error</code> comment then that error is ignored and compilation succeeds.</p>
+  </li>
+  <li>
+    <p>If there is no error then TypeScript complains:</p>
+<pre>
+<code>Unused '@ts-expect-error' directive.</code>
+</pre>
+  </li>
+</ul>
+<p>In other words: TypeScript checks that there is an error but not what error it is. All text after <code>@ts-expect-error</code> is ignored (including the colon).</p>
+<p>To get more thorough checks, I use the tool <a href="https://www.npmjs.com/package/ts-expect-error"><code>ts-expect-error</code></a> which checks if the suppressed error messages match the texts after <code>@ts-expect-error:</code>.</p>
+<h3 id="isn-t-this-book-s-notation-kind-of-ugly"><a class="heading-id-link" href="#isn-t-this-book-s-notation-kind-of-ugly">5.5 Isn’t this book’s notation kind of ugly?</a></h3>
+<p>When it comes to displaying type information for TypeScript code, there are some very pretty approaches out there – e.g. <a href="https://shikijs.github.io/twoslash/">Shiki Twoslash</a> which uses the <a href="https://github.com/microsoft/TypeScript-Website/tree/v2/packages/ts-twoslasher">twoslash syntax</a>.</p>
+<p>This book uses in-code checks (as described above) even though that doesn’t look as nice. Why?</p>
+<ul>
+  <li>
+    <p>This notation makes you think about types in terms of tests. That prepares you for <a href="ch_computing-with-types-overview.html#ch_computing-with-types-overview">computed types</a> and for <a href="ch_resources-on-typescript.html#coding-exercises">coding exercises</a> – whose notation is similar.</p>
+  </li>
+  <li>
+    <p>The notation makes it possible to test the code examples automatically, via the <a href="https://github.com/rauschma/markcheck">Markcheck</a> tool for Markdown. That ensures that they don’t contain errors. Twoslash only specifies which types to display; it does not check that those types are as expected.</p>
+  </li>
+  <li>
+    <p>For printed books, HTML still isn’t where I’d like it to be. Thus, I can’t use Shiki Twoslash there.</p>
+  </li>
+  <li>
+    <p>Minor downside of Shiki Twoslash: You need to run the TypeScript type checker in order to render a book. With my notation, I only need to run it when I check the code examples.</p>
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

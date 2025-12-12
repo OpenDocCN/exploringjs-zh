@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>26 Enums and enum patterns</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>26 Enums and enum patterns</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_enums.html">https://exploringjs.com/ts/book/ch_enums.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#making-sense-of-enums">26.1 Making sense of enums</a>
+      <ol>
+        <li>
+          <a href="#use-case-1-namespace-for-constants-with-primitive-values">26.1.1 Use case 1: namespace for constants with primitive values</a>
+        </li>
+        <li>
+          <a href="#use-case-2-custom-type-with-unique-values">26.1.2 Use case 2: custom type with unique values</a>
+        </li>
+        <li>
+          <a href="#use-case-3-namespace-for-constants-with-object-values">26.1.3 Use case 3: namespace for constants with object values</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#typescript-enums">26.2 TypeScript enums</a>
+      <ol>
+        <li>
+          <a href="#number-enums">26.2.1 Number enums</a>
+        </li>
+        <li>
+          <a href="#string-enums">26.2.2 String enums</a>
+        </li>
+        <li>
+          <a href="#heterogeneous-enums">26.2.3 Heterogeneous enums</a>
+        </li>
+        <li>
+          <a href="#omitting-initializers">26.2.4 Omitting initializers</a>
+        </li>
+        <li>
+          <a href="#quoting-enum-member-names">26.2.5 Quoting enum member names</a>
+        </li>
+        <li>
+          <a href="#casing-of-enum-member-names">26.2.6 Casing of enum member names</a>
+        </li>
+        <li>
+          <a href="#an-enum-defines-a-value-and-a-type">26.2.7 An enum defines a value and a type</a>
+        </li>
+        <li>
+          <a href="#values-accepted-by-enum-types">26.2.8 Values accepted by enum types</a>
+        </li>
+        <li>
+          <a href="#enums-at-runtime">26.2.9 Enums at runtime</a>
+        </li>
+        <li>
+          <a href="#handling-the-enum-use-cases-with-enums">26.2.10 Handling the enum use cases with enums</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#typescript-const-enums">26.3 TypeScript const enums</a>
+      <ol>
+        <li>
+          <a href="#const-enums-at-runtime">26.3.1 Const enums at runtime</a>
+        </li>
+        <li>
+          <a href="#downsides-of-const-enums">26.3.2 Downsides of const enums</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#enum-pattern-enum-objects">26.4 Enum pattern: enum objects</a>
+      <ol>
+        <li>
+          <a href="#ways-of-improving-object-literals">26.4.1 Ways of improving object literals</a>
+        </li>
+        <li>
+          <a href="#a-helper-function-for-creating-enum-objects">26.4.2 A helper function for creating enum objects</a>
+        </li>
+        <li>
+          <a href="#handling-the-enum-use-cases-with-enum-objects">26.4.3 Handling the enum use cases with enum objects</a>
+        </li>
+        <li>
+          <a href="#using-the-members-of-enum-objects-at-the-type-level">26.4.4 Using the members of enum objects at the type level</a>
+        </li>
+        <li>
+          <a href="#enum-object-with-symbols">26.4.5 Symbols as property values</a>
+        </li>
+        <li>
+          <a href="#use-case-an-enum-as-a-namespace-for-constants-with-object-values">26.4.6 Use case: an enum as a namespace for constants with object values</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#enum-pattern-enum-classes">26.5 Enum pattern: enum classes</a>
+    </li>
+    <li>
+      <a href="#enum-pattern-string-literal-unions">26.6 Enum pattern: string literal unions</a>
+      <ol>
+        <li>
+          <a href="#reifying-string-literal-unions">26.6.1 Reifying string literal unions</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#more-things-we-can-do-with-enums">26.7 More things we can do with enums</a>
+      <ol>
+        <li>
+          <a href="#enum-values-as-keys-in-maps">26.7.1 Enum values as keys in Maps</a>
+        </li>
+        <li>
+          <a href="#mapping-between-keys-strings-of-enum-members-and-their-values">26.7.2 Mapping between keys (strings) of enum members and their values</a>
+        </li>
+        <li>
+          <a href="#iterating-over-enum-members">26.7.3 Iterating over enum members</a>
+        </li>
+        <li>
+          <a href="#specifying-bit-vectors">26.7.4 Specifying bit vectors</a>
+        </li>
+        <li>
+          <a href="#type-validation-for-enums-via-zod">26.7.5 Type validation for enums via Zod</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#recommendations">26.8 Recommendations</a>
+    </li>
+  </ol>
+</nav>
+<p>TypeScript has built-in support for <em>enums</em> which are basically namespaces for constants. In this chapter we explore how they work, what patterns we can use instead and how to choose between them.</p>
+<h3 id="making-sense-of-enums"><a class="heading-id-link" href="#making-sense-of-enums">26.1 Making sense of enums</a></h3>
+<p>For TypeScript, it has become desirable to only use JavaScript at the non-type level because that makes compilation easier to understand and faster (thanks to a technique called <a href="ch_tsconfig-json.html#type-stripping"><em>type stripping</em></a>). That coding style can be enforced via the compiler option <a href="ch_tsconfig-json.html#erasableSyntaxOnly"><code>erasableSyntaxOnly</code></a>).</p>
+<p><em>Enums</em> are one of the few non-type features that are not JavaScript. That’s why, after examining how they work, we’ll also look into JavaScript alternatives: patterns that we can use instead of enums. In order to find them, we’ll focus on three use cases.</p>
+<h4 id="use-case-1-namespace-for-constants-with-primitive-values"><a class="heading-id-link" href="#use-case-1-namespace-for-constants-with-primitive-values">26.1.1 Use case 1: namespace for constants with primitive values</a></h4>
+<p>This use case is about grouping related constants – think lookup table – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Color</span>_Red = <span class="hljs-string">'#FF0000'</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Color</span>_Green = <span class="hljs-string">'#00FF00'</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Color</span>_Blue = <span class="hljs-string">'#0000FF'</span>;</code>
+</pre>
+<p>We’d like to have a namespace for these constants and access them via <code>Color.Red</code> etc.</p>
+<h4 id="use-case-2-custom-type-with-unique-values"><a class="heading-id-link" href="#use-case-2-custom-type-with-unique-values">26.1.2 Use case 2: custom type with unique values</a></h4>
+<p>Sometimes, we want to define a custom type that has a limited set of values – e.g. to express program states:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Status</span>_Pending = <span class="hljs-string">'Pending'</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Status</span>_Ongoing = <span class="hljs-string">'Ongoing'</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Status</span>_Finished = <span class="hljs-string">'Finished'</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Status</span> =</code>
+<code>  | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Status</span>_Pending</code>
+<code>  | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Status</span>_Ongoing</code>
+<code>  | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Status</span>_Finished</code>
+<code>;</code>
+</pre>
+<p>For this use case, we want to be able to <a href="ch_never.html#exhaustiveness-checks">check exhaustiveness</a>: When we handle cases (e.g. via <code>switch</code>), TypeScript should warn us during type checking if we forget a case:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">describeStatus</span>(<span class="hljs-params">status: Status</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">switch</span> (status) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span><span class="hljs-attr">_Pending</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Not yet'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span><span class="hljs-attr">_Ongoing</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Working on it...'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span><span class="hljs-attr">_Finished</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'We are done'</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(status);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>This is a simple version of <code>UnexpectedValueError</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">UnexpectedValueError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">value: <span class="hljs-built_in">never</span></span>) {</code>
+<code>    <span class="hljs-comment">// Only solution that can stringify undefined, null, symbols, and</span></code>
+<code>    <span class="hljs-comment">// objects without prototypes</span></code>
+<code>    <span class="hljs-variable language_">super</span>(<span class="hljs-string">'Unexpected value: '</span> + {}.<span class="hljs-property">toString</span>.<span class="hljs-title function_">call</span>(value));</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>How does it work? TypeScript infers the type <code>never</code> if there are no more values a variable can have. So that’s the type of <code>status</code> after <code>switch</code> checked all values it can have. The constructor <code>UnexpectedValueError</code> produces a type error if its parameter does <em>not</em> have the type <code>never</code>. For more information and a more sophisticated version of <code>UnexpectedValueError</code>, see <a href="ch_never.html#exhaustiveness-checks">“Use case for <code>never</code>: exhaustiveness checks at compile time” (§15.4)</a>.</p>
+<h4 id="use-case-3-namespace-for-constants-with-object-values"><a class="heading-id-link" href="#use-case-3-namespace-for-constants-with-object-values">26.1.3 Use case 3: namespace for constants with object values</a></h4>
+<p>This is an example of such constants:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">TextStyle</span>_Bold = {</code>
+<code>  <span class="hljs-attr">key</span>: <span class="hljs-string">'Bold'</span>,</code>
+<code>  <span class="hljs-attr">html</span>: <span class="hljs-string">'b'</span>,</code>
+<code>  <span class="hljs-attr">latex</span>: <span class="hljs-string">'textbf'</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">TextStyle</span>_Italics = {</code>
+<code>  <span class="hljs-attr">key</span>: <span class="hljs-string">'Italics'</span>,</code>
+<code>  <span class="hljs-attr">html</span>: <span class="hljs-string">'i'</span>,</code>
+<code>  <span class="hljs-attr">latex</span>: <span class="hljs-string">'textit'</span>,</code>
+<code>};</code>
+</pre>
+<p>Interestingly, this use case expands both use case 1 and use case 2:</p>
+<ul>
+  <li>
+    <p>On one hand, we can look up more values.</p>
+  </li>
+  <li>
+    <p>On the other hand, we can define a type for the constants and then get type members with more information:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TextStyle</span> = <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TextStyle</span>_Bold | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TextStyle</span>_Italics;</code>
+</pre>
+  </li>
+</ul>
+<p>TypeScript enums do not support this use case. But there are enum patterns that do.</p>
+<h3 id="typescript-enums"><a class="heading-id-link" href="#typescript-enums">26.2 TypeScript enums</a></h3>
+<h4 id="number-enums"><a class="heading-id-link" href="#number-enums">26.2.1 Number enums</a></h4>
+<p>This is a numeric enum:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">NoYes</span> {</code>
+<code>  <span class="hljs-title class_">No</span> = <span class="hljs-number">0</span>,</code>
+<code>  <span class="hljs-title class_">Yes</span> = <span class="hljs-number">1</span>, <span class="hljs-comment">// trailing comma</span></code>
+<code>}</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">No</span>, <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">Yes</span>, <span class="hljs-number">1</span>);</code>
+</pre>
+<p>This enum looks and works similarly to an object literal:</p>
+<ul>
+  <li>
+    <p>It has the <em>members</em> <code>No</code> and <code>Yes</code>.</p>
+  </li>
+  <li>
+    <p>Each member has a name and (in this case) is explicitly assigned a value via an <em>initializer</em>: an equal sign followed by a value. We access those values via the dot operator:</p>
+<pre class="language-ts">
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">No</span>, <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">Yes</span>, <span class="hljs-number">1</span>);</code>
+</pre>
+  </li>
+  <li>
+    <p>As in object literals, trailing commas are allowed and ignored.</p>
+  </li>
+</ul>
+<p>This is how <code>NoYes</code> is used:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">toGerman</span>(<span class="hljs-params">value: NoYes</span>) {</code>
+<code>  <span class="hljs-keyword">switch</span> (value) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">NoYes</span>.<span class="hljs-property">No</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Nein'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">NoYes</span>.<span class="hljs-property">Yes</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Ja'</span>;</code>
+<code>  }</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">toGerman</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">No</span>), <span class="hljs-string">'Nein'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title function_">toGerman</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">Yes</span>), <span class="hljs-string">'Ja'</span>);</code>
+</pre>
+<h4 id="string-enums"><a class="heading-id-link" href="#string-enums">26.2.2 String enums</a></h4>
+<p>Instead of numbers, we can also use strings as enum member values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">NoYes</span> {</code>
+<code>  <span class="hljs-title class_">No</span> = <span class="hljs-string">'No'</span>,</code>
+<code>  <span class="hljs-title class_">Yes</span> = <span class="hljs-string">'Yes'</span>,</code>
+<code>}</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">No</span>, <span class="hljs-string">'No'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">Yes</span>, <span class="hljs-string">'Yes'</span>);</code>
+</pre>
+<h4 id="heterogeneous-enums"><a class="heading-id-link" href="#heterogeneous-enums">26.2.3 Heterogeneous enums</a></h4>
+<p>The last kind of enum is called <em>heterogeneous</em>. The member values of a heterogeneous enum are a mix of numbers and strings:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Enum</span> {</code>
+<code>  <span class="hljs-title class_">One</span> = <span class="hljs-string">'One'</span>,</code>
+<code>  <span class="hljs-title class_">Two</span> = <span class="hljs-string">'Two'</span>,</code>
+<code>  <span class="hljs-title class_">Three</span> = <span class="hljs-number">3</span>,</code>
+<code>  <span class="hljs-title class_">Four</span> = <span class="hljs-number">4</span>,</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  [<span class="hljs-title class_">Enum</span>.<span class="hljs-property">One</span>, <span class="hljs-title class_">Enum</span>.<span class="hljs-property">Two</span>, <span class="hljs-title class_">Enum</span>.<span class="hljs-property">Three</span>, <span class="hljs-title class_">Enum</span>.<span class="hljs-property">Four</span>],</code>
+<code>  [<span class="hljs-string">'One'</span>, <span class="hljs-string">'Two'</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>]</code>
+<code>);</code>
+</pre>
+<p>Heterogeneous enums are not used often because they have few applications.</p>
+<p>Alas, TypeScript only supports numbers and strings as enum member values. Other values, such as symbols, are not allowed.</p>
+<h4 id="omitting-initializers"><a class="heading-id-link" href="#omitting-initializers">26.2.4 Omitting initializers</a></h4>
+<p>We can also completely omit initializers – in which case TypeScript automatically assigns numbers:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">NoYes</span> {</code>
+<code>  <span class="hljs-title class_">No</span>,</code>
+<code>  <span class="hljs-title class_">Yes</span>,</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">No</span>, <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">NoYes</span>.<span class="hljs-property">Yes</span>, <span class="hljs-number">1</span>);</code>
+</pre>
+<p>It’s also possible to only omit some of the initializers. However, my recommendation is to avoid that and either omit none or all. We won’t go into the details of how exactly partial omissions work, but this is a quick example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Omissions</span> {</code>
+<code>  A,</code>
+<code>  B,</code>
+<code>  C = <span class="hljs-string">'C'</span>,</code>
+<code>  D = <span class="hljs-string">'D'</span>,</code>
+<code>  E = <span class="hljs-number">8</span>,</code>
+<code>  <span class="hljs-comment">// We can only omit the initializer</span></code>
+<code>  <span class="hljs-comment">// at the beginning or after a number</span></code>
+<code>  F,</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">Omissions</span>.<span class="hljs-property">A</span>, <span class="hljs-number">0</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">Omissions</span>.<span class="hljs-property">B</span>, <span class="hljs-number">1</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">Omissions</span>.<span class="hljs-property">C</span>, <span class="hljs-string">'C'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">Omissions</span>.<span class="hljs-property">D</span>, <span class="hljs-string">'D'</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">Omissions</span>.<span class="hljs-property">E</span>, <span class="hljs-number">8</span>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">Omissions</span>.<span class="hljs-property">F</span>, <span class="hljs-number">9</span>);</code>
+</pre>
+<h4 id="quoting-enum-member-names"><a class="heading-id-link" href="#quoting-enum-member-names">26.2.5 Quoting enum member names</a></h4>
+<p>Similar to JavaScript objects, we can quote the names of enum members:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">HttpRequestField</span> {</code>
+<code>  <span class="hljs-string">'Accept'</span>,</code>
+<code>  <span class="hljs-string">'Accept-Charset'</span>,</code>
+<code>  <span class="hljs-string">'Accept-Datetime'</span>,</code>
+<code>  <span class="hljs-string">'Accept-Encoding'</span>,</code>
+<code>  <span class="hljs-string">'Accept-Language'</span>,</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-title class_">HttpRequestField</span>[<span class="hljs-string">'Accept-Charset'</span>], <span class="hljs-number">1</span>);</code>
+</pre>
+<p>There is no way to compute the names of enum members. Object literals support computed property keys via square brackets.</p>
+<h4 id="casing-of-enum-member-names"><a class="heading-id-link" href="#casing-of-enum-member-names">26.2.6 Casing of enum member names</a></h4>
+<p>There are several precedents for naming constants (in enums or elsewhere):</p>
+<ul>
+  <li>
+    Traditionally, JavaScript has used all-caps names, which is a convention it inherited from Java and C:
+    <ul>
+      <li>
+        <code>Number.MAX_VALUE</code>
+      </li>
+      <li>
+        <code>Math.SQRT2</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Well-known symbols are camel-cased and start with lowercase letters because they are related to property names:
+    <ul>
+      <li>
+        <code>Symbol.asyncIterator</code>
+      </li>
+    </ul>
+  </li>
+  <li>
+    The TypeScript manual uses camel-cased names that start with uppercase letters. This is the standard TypeScript style and we used it for the <code>NoYes</code> enum.
+  </li>
+</ul>
+<h4 id="an-enum-defines-a-value-and-a-type"><a class="heading-id-link" href="#an-enum-defines-a-value-and-a-type">26.2.7 An enum defines a value and a type</a></h4>
+<p>Consider the following enum:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">ShapeKind</span> { <span class="hljs-title class_">Circle</span>, <span class="hljs-title class_">Rectangle</span> }</code>
+</pre>
+<h5 id="the-enum-shapekind-as-a-value"><a class="heading-id-link" href="#the-enum-shapekind-as-a-value">26.2.7.1 The enum <code>ShapeKind</code> as a value</a></h5>
+<p>On one hand, <code>ShapeKind</code> is a value:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> value = <span class="hljs-title class_">ShapeKind</span>.<span class="hljs-property">Circle</span>;</code>
+<code>assert.<span class="hljs-title function_">equal</span>(value, <span class="hljs-number">0</span>);</code>
+</pre>
+<h5 id="the-enum-shapekind-as-a-type"><a class="heading-id-link" href="#the-enum-shapekind-as-a-type">26.2.7.2 The enum <code>ShapeKind</code> as a type</a></h5>
+<p>On the other hand, <code>ShapeKind</code> is also a type – whose structure is quite different from its value:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-comment">// Type `ShapeKind` is assignable to and from</span></code>
+<code>  <span class="hljs-comment">// a union of number literal types</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Assignable</span>&lt;</code>
+<code>    <span class="hljs-number">0</span> | <span class="hljs-number">1</span>, <span class="hljs-title class_">ShapeKind</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Assignable</span>&lt;</code>
+<code>    <span class="hljs-title class_">ShapeKind</span>, <span class="hljs-number">0</span> | <span class="hljs-number">1</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-comment">// Accordingly, the keys of type `ShapeKind` are</span></code>
+<code>  <span class="hljs-comment">// equal to the keys of type `number`</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    keyof <span class="hljs-title class_">ShapeKind</span>,</code>
+<code>    keyof <span class="hljs-built_in">number</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>In other words: Even though the value of an enum is similar to an object, its type is quite different from an object type (whose keys are the types of the property keys, etc.).</p>
+<h5 id="shapekind-as-a-namespace-for-enum-member-types"><a class="heading-id-link" href="#shapekind-as-a-namespace-for-enum-member-types">26.2.7.3 <code>ShapeKind</code> as a namespace for enum member types</a></h5>
+<p>Even though <code>ShapeKind</code> is basically a union type, it is additionally a namespace for the types of its members – e.g., the type <code>ShapeKind.Circle</code> is assignable to and from the literal number type <code>0</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Assignable</span>&lt;</code>
+<code>    <span class="hljs-number">0</span>, <span class="hljs-title class_">ShapeKind</span>.<span class="hljs-property">Circle</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Assignable</span>&lt;</code>
+<code>    <span class="hljs-title class_">ShapeKind</span>.<span class="hljs-property">Circle</span>, <span class="hljs-number">0</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>That means we can use enum member types at the type level – e.g. for parameters:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">describeCircle</span>(<span class="hljs-params">circle: ShapeKind.Circle</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>Or for discriminants in discriminated unions:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Shape</span> =</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">kind</span>: <span class="hljs-title class_">ShapeKind</span>.<span class="hljs-property">Circle</span>,</code>
+<code>    <span class="hljs-attr">center</span>: <span class="hljs-title class_">Point</span>,</code>
+<code>  }</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">kind</span>: <span class="hljs-title class_">ShapeKind</span>.<span class="hljs-property">Rectangle</span>,</code>
+<code>    <span class="hljs-attr">corner1</span>: <span class="hljs-title class_">Point</span>,</code>
+<code>    <span class="hljs-attr">corner2</span>: <span class="hljs-title class_">Point</span>,</code>
+<code>  }</code>
+<code>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Point</span> = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>}</code>
+</pre>
+<h4 id="values-accepted-by-enum-types"><a class="heading-id-link" href="#values-accepted-by-enum-types">26.2.8 Values accepted by enum types</a></h4>
+<h5 id="values-accepted-by-number-enum-types"><a class="heading-id-link" href="#values-accepted-by-number-enum-types">26.2.8.1 Values accepted by number enum types</a></h5>
+<p>If a parameter has a number enum type, it accepts both enum member values and numbers:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Fruit</span> { <span class="hljs-title class_">Apple</span>, <span class="hljs-title class_">Strawberry</span> }</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">check</span>(<span class="hljs-params">_animal: Fruit</span>) {}</code>
+<code/>
+<code><span class="hljs-title function_">check</span>(<span class="hljs-title class_">Fruit</span>.<span class="hljs-property">Apple</span>);</code>
+<code><span class="hljs-title function_">check</span>(<span class="hljs-number">0</span>);</code>
+</pre>
+<p>However, we can only use numbers that are values of enum members:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: Argument of type '2' is not assignable to parameter of type 'Fruit'.</span></code>
+<code><span class="hljs-title function_">check</span>(<span class="hljs-number">2</span>);</code>
+</pre>
+<h5 id="values-accepted-by-string-enum-types"><a class="heading-id-link" href="#values-accepted-by-string-enum-types">26.2.8.2 Values accepted by string enum types</a></h5>
+<p>If a parameter has a string enum type, member values are considered to be unique – it does not accept strings:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Fruit</span> { <span class="hljs-title class_">Apple</span>=<span class="hljs-string">'Apple'</span>, <span class="hljs-title class_">Strawberry</span>=<span class="hljs-string">'Strawberry'</span> }</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">check</span>(<span class="hljs-params">_animal: Fruit</span>) {}</code>
+<code/>
+<code><span class="hljs-title function_">check</span>(<span class="hljs-title class_">Fruit</span>.<span class="hljs-property">Apple</span>);</code>
+<code><span class="hljs-comment">// @ts-expect-error: Argument of type '"Apple"' is not assignable to parameter of type 'Fruit'.</span></code>
+<code><span class="hljs-title function_">check</span>(<span class="hljs-string">'Apple'</span>);</code>
+</pre>
+<h4 id="enums-at-runtime"><a class="heading-id-link" href="#enums-at-runtime">26.2.9 Enums at runtime</a></h4>
+<p>TypeScript compiles enums to JavaScript objects.</p>
+<h5 id="number-enums-at-runtime"><a class="heading-id-link" href="#number-enums-at-runtime">26.2.9.1 Number enums at runtime</a></h5>
+<p>As an example, take the following enum:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Animal</span> { <span class="hljs-title class_">Dog</span>, <span class="hljs-title class_">Cat</span> }</code>
+</pre>
+<p>TypeScript compiles this enum to:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">var</span> <span class="hljs-title class_">Animal</span>;</code>
+<code>(<span class="hljs-keyword">function</span> (<span class="hljs-params">Animal</span>) {</code>
+<code>    <span class="hljs-title class_">Animal</span>[<span class="hljs-title class_">Animal</span>[<span class="hljs-string">"Dog"</span>] = <span class="hljs-number">0</span>] = <span class="hljs-string">"Dog"</span>;</code>
+<code>    <span class="hljs-title class_">Animal</span>[<span class="hljs-title class_">Animal</span>[<span class="hljs-string">"Cat"</span>] = <span class="hljs-number">1</span>] = <span class="hljs-string">"Cat"</span>;</code>
+<code>})(<span class="hljs-title class_">Animal</span> || (<span class="hljs-title class_">Animal</span> = {}));</code>
+</pre>
+<p>In this code, the following assignments are made:</p>
+<pre class="language-js">
+<code><span class="hljs-title class_">Animal</span>[<span class="hljs-string">"Dog"</span>] = <span class="hljs-number">0</span>;</code>
+<code><span class="hljs-title class_">Animal</span>[<span class="hljs-string">"Cat"</span>] = <span class="hljs-number">1</span>;</code>
+<code/>
+<code><span class="hljs-title class_">Animal</span>[<span class="hljs-number">0</span>] = <span class="hljs-string">"Dog"</span>;</code>
+<code><span class="hljs-title class_">Animal</span>[<span class="hljs-number">1</span>] = <span class="hljs-string">"Cat"</span>;</code>
+</pre>
+<p>There are two groups of assignments:</p>
+<ul>
+  <li>
+    Mappings: The first two assignments map enum member names to values.
+  </li>
+  <li>
+    Reverse mappings: The second two assignments map values to names.
+  </li>
+</ul>
+<p>TypeScript lets us use the reverse mappings to look up an enum key, given an enum value:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Animal</span> { <span class="hljs-title class_">Dog</span>, <span class="hljs-title class_">Cat</span> }</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title class_">Animal</span>[<span class="hljs-number">0</span>], <span class="hljs-string">'Dog'</span></code>
+<code>);</code>
+</pre>
+<h5 id="string-enums-at-runtime"><a class="heading-id-link" href="#string-enums-at-runtime">26.2.9.2 String enums at runtime</a></h5>
+<p>String-based enums have a simpler representation at runtime.</p>
+<p>Consider the following enum.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Animal</span> {</code>
+<code>  <span class="hljs-title class_">Dog</span> = <span class="hljs-string">'DOG!'</span>,</code>
+<code>  <span class="hljs-title class_">Cat</span> = <span class="hljs-string">'CAT!'</span>,</code>
+<code>}</code>
+</pre>
+<p>It is compiled to this JavaScript code:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">var</span> <span class="hljs-title class_">Animal</span>;</code>
+<code>(<span class="hljs-keyword">function</span> (<span class="hljs-params">Animal</span>) {</code>
+<code>    <span class="hljs-title class_">Animal</span>[<span class="hljs-string">"Dog"</span>] = <span class="hljs-string">"DOG!"</span>;</code>
+<code>    <span class="hljs-title class_">Animal</span>[<span class="hljs-string">"Cat"</span>] = <span class="hljs-string">"CAT!"</span>;</code>
+<code>})(<span class="hljs-title class_">Animal</span> || (<span class="hljs-title class_">Animal</span> = {}));</code>
+</pre>
+<p>TypeScript does not support reverse mappings for string-based enums.</p>
+<h4 id="handling-the-enum-use-cases-with-enums"><a class="heading-id-link" href="#handling-the-enum-use-cases-with-enums">26.2.10 Handling the enum use cases with enums</a></h4>
+<p>Let’s get back to the use cases mentioned at the beginning of this chapter.</p>
+<h5 id="use-case-namespace-for-constants-with-primitive-values"><a class="heading-id-link" href="#use-case-namespace-for-constants-with-primitive-values">26.2.10.1 Use case: namespace for constants with primitive values</a></h5>
+<p>We can use an enum as a namespace for constants with primitive values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Color</span> {</code>
+<code>  <span class="hljs-title class_">Red</span> = <span class="hljs-string">'#FF0000'</span>,</code>
+<code>  <span class="hljs-title class_">Green</span> = <span class="hljs-string">'#00FF00'</span>,</code>
+<code>  <span class="hljs-title class_">Blue</span> = <span class="hljs-string">'#0000FF'</span>,</code>
+<code>}</code>
+</pre>
+<p>Enums work well for this use case – but their values can only be numbers or strings.</p>
+<h5 id="use-case-custom-type-with-unique-values"><a class="heading-id-link" href="#use-case-custom-type-with-unique-values">26.2.10.2 Use case: custom type with unique values</a></h5>
+<p>The following enum defines a custom type with unique values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Status</span> {</code>
+<code>  <span class="hljs-title class_">Pending</span> = <span class="hljs-string">'Pending'</span>,</code>
+<code>  <span class="hljs-title class_">Ongoing</span> = <span class="hljs-string">'Ongoing'</span>,</code>
+<code>  <span class="hljs-title class_">Finished</span> = <span class="hljs-string">'Finished'</span>,</code>
+<code>}</code>
+</pre>
+<p>Benefit of explicitly specify string values via <code>=</code>: We get more type safety and can’t accidentally use string equal to enum values where a <code>Status</code> is expected.</p>
+<p>Note that we don’t need to explicitly define a type – <code>Status</code> is already a type.</p>
+<p>Exhaustiveness checks for enums are supported:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">describeStatus</span>(<span class="hljs-params">status: Status</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">switch</span> (status) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span>.<span class="hljs-property">Pending</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Not yet'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span>.<span class="hljs-property">Ongoing</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Working on it...'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span>.<span class="hljs-property">Finished</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'We are done'</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(status);</code>
+<code>  }</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">describeStatus</span>(<span class="hljs-title class_">Status</span>.<span class="hljs-property">Pending</span>),</code>
+<code>  <span class="hljs-string">'Not yet'</span></code>
+<code>);</code>
+</pre>
+<h3 id="typescript-const-enums"><a class="heading-id-link" href="#typescript-const-enums">26.3 TypeScript const enums</a></h3>
+<p>If an enum is prefixed with the keyword <code>const</code>, it doesn’t have a representation at runtime. Instead, the values of its member are used directly.</p>
+<h4 id="const-enums-at-runtime"><a class="heading-id-link" href="#const-enums-at-runtime">26.3.1 Const enums at runtime</a></h4>
+<p>Consider the following const enum:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-keyword">enum</span> <span class="hljs-title class_">Vegetable</span> {</code>
+<code>  <span class="hljs-title class_">Carrot</span> = <span class="hljs-string">'Carrot'</span>,</code>
+<code>  <span class="hljs-title class_">Onion</span> = <span class="hljs-string">'Onion'</span>,</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">toGerman</span>(<span class="hljs-params">vegetable: Vegetable</span>) {</code>
+<code>  <span class="hljs-keyword">switch</span> (vegetable) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Vegetable</span>.<span class="hljs-property">Carrot</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Karotte'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Vegetable</span>.<span class="hljs-property">Onion</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Zwiebel'</span>;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>If we compile it, the const enum is not represented at runtime. Only the values of its members remain:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">toGerman</span>(<span class="hljs-params">vegetable</span>) {</code>
+<code>  <span class="hljs-keyword">switch</span> (vegetable) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-string">"Carrot"</span> <span class="hljs-comment">/* Vegetable.Carrot */</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Karotte'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-string">"Onion"</span> <span class="hljs-comment">/* Vegetable.Onion */</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Zwiebel'</span>;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Compare that to the compilation output of a normal enum <code>Vegetable</code>:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">var</span> <span class="hljs-title class_">Vegetable</span>;</code>
+<code>(<span class="hljs-keyword">function</span> (<span class="hljs-params">Vegetable</span>) {</code>
+<code>  <span class="hljs-title class_">Vegetable</span>[<span class="hljs-string">"Carrot"</span>] = <span class="hljs-string">"Carrot"</span>;</code>
+<code>  <span class="hljs-title class_">Vegetable</span>[<span class="hljs-string">"Onion"</span>] = <span class="hljs-string">"Onion"</span>;</code>
+<code>})(<span class="hljs-title class_">Vegetable</span> || (<span class="hljs-title class_">Vegetable</span> = {}));</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">toGerman</span>(<span class="hljs-params">vegetable</span>) {</code>
+<code>  <span class="hljs-keyword">switch</span> (vegetable) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Vegetable</span>.<span class="hljs-property">Carrot</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Karotte'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Vegetable</span>.<span class="hljs-property">Onion</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Zwiebel'</span>;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<h4 id="downsides-of-const-enums"><a class="heading-id-link" href="#downsides-of-const-enums">26.3.2 Downsides of const enums</a></h4>
+<p>For most projects, it is better to avoid const enums:</p>
+<ul>
+  <li>
+    Similarly to normal enums, they are not allowed if the compiler option <a href="ch_tsconfig-json.html#erasableSyntaxOnly"><code>erasableSyntaxOnly</code></a> is active.
+  </li>
+  <li>
+    If a library package exports a const enum, clients won’t be able to use the compiler option <a href="ch_tsconfig-json.html#isolatedModules"><code>isolatedModules</code></a>.
+  </li>
+  <li>
+    Enum values at compile time can differ from enum values at runtime – which can lead to surprising bugs.
+  </li>
+</ul>
+<p><a href="https://www.typescriptlang.org/docs/handbook/enums.html#const-enum-pitfalls">The TypeScript handbook</a> describes these and other pitfalls in more detail.</p>
+<h3 id="enum-pattern-enum-objects"><a class="heading-id-link" href="#enum-pattern-enum-objects">26.4 Enum pattern: enum objects</a></h3>
+<p>It’s time to look at plain JavaScript patterns that we can use instead of enums. One common pattern is to define “enum objects” via object literals:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Tree</span> = {</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>};</code>
+</pre>
+<h4 id="ways-of-improving-object-literals"><a class="heading-id-link" href="#ways-of-improving-object-literals">26.4.1 Ways of improving object literals</a></h4>
+<p>We have just seen the basic form of enum objects. There are several ways in which we can improve that pattern:</p>
+<ol>
+  <li>
+    Const object via <code>{} as const</code>
+  </li>
+  <li>
+    Frozen object via <code>Object.freeze({})</code>
+  </li>
+  <li>
+    <code>null</code> prototype via <code>{__proto__: null}</code>
+  </li>
+</ol>
+<p>#1 is required if we want to derive a type from an enum object. The other two improvements are optional. They produce better results but also add visual clutter.</p>
+<h5 id="as-const-object-literal-deriving-a-type-for-enum-values-and-keys"><a class="heading-id-link" href="#as-const-object-literal-deriving-a-type-for-enum-values-and-keys">26.4.1.1 <code>as const</code> object literal: deriving a type for enum values and keys</a></h5>
+<p>If we apply <code>as const</code> to an object literal, we get more specific property values at the type level:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Tree</span> = {</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Tree</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-title class_">Maple</span>: <span class="hljs-built_in">string</span>,</code>
+<code>    <span class="hljs-title class_">Oak</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">TreeAsConst</span> = {</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TreeAsConst</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p><strong>Deriving a type for the property values.</strong> How is that useful? It enables us to create a type for the property values of <code>Tree</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Tree</span>&gt;,</code>
+<code>    <span class="hljs-built_in">string</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TreeAsConst</span>&gt;,</code>
+<code>    <span class="hljs-string">'MAPLE'</span> | <span class="hljs-string">'OAK'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Being able to create a type for enum object values will help us with the use case “custom type with unique values”.</p>
+<p>The helper type <span id="enums-ValueOf"><code>ValueOf</code></span> looks like this:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = <span class="hljs-title class_">Obj</span>[keyof <span class="hljs-title class_">Obj</span>];</code>
+</pre>
+<p>The <a href="ch_computing-with-types-overview.html#indexed-access-types"><em>indexed access type</em> <code>Obj[K]</code></a> contains the values of all properties whose keys are in <code>K</code>.</p>
+<p><strong>Deriving a type for the property keys.</strong> We can also derive a type for the keys of <code>Tree</code>. But for that, we don’t need <code>as const</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _3 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof (<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Tree</span>),</code>
+<code>  <span class="hljs-string">'Maple'</span> | <span class="hljs-string">'Oak'</span></code>
+<code>&gt;&gt;;</code>
+<code><span class="hljs-keyword">type</span> _4 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof (<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TreeAsConst</span>),</code>
+<code>  <span class="hljs-string">'Maple'</span> | <span class="hljs-string">'Oak'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h5 id="frozen-object-literal-no-modifications-at-runtime"><a class="heading-id-link" href="#frozen-object-literal-no-modifications-at-runtime">26.4.1.2 Frozen object literal: no modifications at runtime</a></h5>
+<p>At the JavaScript level, we can freeze objects:</p>
+<pre class="language-js">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">TreeFrozen</span> = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">freeze</span>({</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>});</code>
+</pre>
+<p>That helps us at runtime because <code>TreeFrozen</code> can’t be changed:</p>
+<pre class="language-js">
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">TreeFrozen</span>.<span class="hljs-property">newProp</span> = <span class="hljs-literal">true</span>,</code>
+<code>  <span class="hljs-regexp">/^TypeError: Cannot add property newProp, object is not extensible$/</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">TreeFrozen</span>.<span class="hljs-property">Maple</span> = <span class="hljs-string">'Ash'</span>,</code>
+<code>  <span class="hljs-regexp">/^TypeError: Cannot assign to read only property 'Maple'/</span></code>
+<code>);</code>
+</pre>
+<p>At the type level, <code>Object.freeze()</code> has the same effect as <code>as const</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> frozenObject = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">freeze</span>({</code>
+<code>  <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span></code>
+<code>});</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> frozenObject,</code>
+<code>  {</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h5 id="object-literal-with-null-prototype-no-inherited-properties"><a class="heading-id-link" href="#object-literal-with-null-prototype-no-inherited-properties">26.4.1.3 Object literal with <code>null</code> prototype: no inherited properties</a></h5>
+<p>We can use the pseudo property key <code>__proto__</code> to set the prototype of <code>constants</code> to <code>null</code>. That is a good practice because then we don’t have to deal with inherited properties:</p>
+<p>Consider the following two versions of <code>Tree</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Tree</span> = {</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">TreeProtoNull</span> = {</code>
+<code>  <span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>,</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>};</code>
+</pre>
+<p>We can’t use the <code>in</code> operator to check if the enum <code>Tree</code> has a given key because it also considers inherited properties – which are not enum members:</p>
+<pre class="language-ts">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-string">'toString'</span> <span class="hljs-keyword">in</span> <span class="hljs-title class_">Tree</span>,</code>
+<code>  <span class="hljs-literal">true</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-string">'toString'</span> <span class="hljs-keyword">in</span> <span class="hljs-title class_">TreeProtoNull</span>,</code>
+<code>  <span class="hljs-literal">false</span></code>
+<code>);</code>
+</pre>
+<p>We can also read inherited properties and that looks like as if the enum <code>Tree</code> has more members than it does:</p>
+<pre class="language-ts">
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Tree</span>.<span class="hljs-property">toString</span>,</code>
+<code>  <span class="hljs-string">'function'</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title class_">TreeProtoNull</span>.<span class="hljs-property">toString</span>,</code>
+<code>  <span class="hljs-literal">undefined</span></code>
+<code>);</code>
+</pre>
+<p>However, <code>Object.keys()</code> and <code>Object.values()</code> are safe to use – they only consider own (non-inherited) properties:</p>
+<pre class="language-ts">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(<span class="hljs-title class_">Tree</span>),</code>
+<code>  [<span class="hljs-string">'Maple'</span>, <span class="hljs-string">'Oak'</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(<span class="hljs-title class_">TreeProtoNull</span>),</code>
+<code>  [<span class="hljs-string">'Maple'</span>, <span class="hljs-string">'Oak'</span>]</code>
+<code>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">values</span>(<span class="hljs-title class_">Tree</span>),</code>
+<code>  [<span class="hljs-string">'MAPLE'</span>, <span class="hljs-string">'OAK'</span>]</code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">values</span>(<span class="hljs-title class_">TreeProtoNull</span>),</code>
+<code>  [<span class="hljs-string">'MAPLE'</span>, <span class="hljs-string">'OAK'</span>]</code>
+<code>);</code>
+</pre>
+<h5 id="isn-t-proto-deprecated"><a class="heading-id-link" href="#isn-t-proto-deprecated">26.4.1.4 Isn’t <code>__proto__</code> deprecated?</a></h5>
+<p>Note that <code>__proto__</code> also exists as a getter and a setter in <code>Object.prototype</code>. This feature is deprecated in favor of <code>Object.getPrototypeOf()</code> and <code>Object.setPrototypeOf()</code>. However, that is different from using this name in an object literal – which is not deprecated.</p>
+<p>For more information, check out these sections of “Exploring JavaScript”:</p>
+<ul>
+  <li>
+    <a href="https://exploringjs.com/js/book/ch_objects.html#the-pitfalls-of-using-an-object-as-a-dictionary">“The pitfalls of using an object as a dictionary”</a>
+  </li>
+  <li>
+    <a href="https://exploringjs.com/js/book/ch_objects.html#tips-for-working-with-prototypes">“Tips for working with prototypes”</a>
+  </li>
+  <li>
+    <a href="https://exploringjs.com/js/book/ch_classes.html#Object.prototype.__proto__">“<code>Object.prototype.__proto__</code> (accessor)”</a>
+  </li>
+</ul>
+<h5 id="caveat-of-proto-additional-property-at-type-level"><a class="heading-id-link" href="#caveat-of-proto-additional-property-at-type-level">26.4.1.5 Caveat of <code>{__proto__}</code>: additional property at type level</a></h5>
+<p>If an object literal uses <code>.__proto__</code> then TypeScript includes that property at the type level:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">TreeProtoNull</span> = {</code>
+<code>  <span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>,</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TreeProtoNull</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>;</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>;</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>;</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>I’d prefer that weren’t the case – given that <code>.__proto__</code> is not a real property (<a href="https://github.com/microsoft/TypeScript/issues/38385">related GitHub issue</a>).</p>
+<p>As a consequence, we have to manually exclude the key <code>'__proto__'</code> when deriving a type from <code>TreeProtoNull</code> via <code>ValueOf</code> (line A):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TreeProtoNullType</span> = <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TreeProtoNull</span>&gt;;</code>
+<code><span class="hljs-comment">// 123 | null</span></code>
+<code/>
+<code><span class="hljs-keyword">type</span> _Y = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TreeProtoNull</span>&gt;,</code>
+<code>    <span class="hljs-string">'MAPLE'</span> | <span class="hljs-string">'OAK'</span> | <span class="hljs-literal">null</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-title class_">Omit</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TreeProtoNull</span>, <span class="hljs-string">'__proto__'</span>&gt;&gt;, <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-string">'MAPLE'</span> | <span class="hljs-string">'OAK'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Another workaround is to create a helper function for creating enums that sets the prototype to null at runtime but doesn’t use expose <code>.__proto__</code> at the type level. We’ll do that next.</p>
+<h4 id="a-helper-function-for-creating-enum-objects"><a class="heading-id-link" href="#a-helper-function-for-creating-enum-objects">26.4.2 A helper function for creating enum objects</a></h4>
+<p>This is what the enum object pattern looks like if we use all of the improvements mentioned in the previous subsections:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Tree</span> = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">freeze</span>({</code>
+<code>  <span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>,</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>});</code>
+</pre>
+<p>Note that we don’t need <code>as const</code> because <code>Object.freeze()</code> has the same effect.</p>
+<p>A helper function can make this code slightly less verbose. The result has a type with specific property value types, from which we can derive a type for <code>Tree</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Tree</span> = <span class="hljs-title function_">createEnum</span>({</code>
+<code>  <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>,</code>
+<code>  <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>,</code>
+<code>});</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Tree</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-title class_">Maple</span>: <span class="hljs-string">'MAPLE'</span>;</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-title class_">Oak</span>: <span class="hljs-string">'OAK'</span>;</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>This is the helper function:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Returns an enum object. Adds the following improvements:</span></code>
+<code><span class="hljs-comment"> * - Sets the prototype to `null`.</span></code>
+<code><span class="hljs-comment"> * - Freezes the object.</span></code>
+<code><span class="hljs-comment"> * - The result has the same type as if `as const` had been applied.</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">function</span> createEnum&lt;</code>
+<code>  <span class="hljs-comment">// The two type variables are necessary so that the result has specific</span></code>
+<code>  <span class="hljs-comment">// property value types.</span></code>
+<code>  T <span class="hljs-keyword">extends</span> { [<span class="hljs-attr">idx</span>: <span class="hljs-built_in">string</span>]: V },</code>
+<code>  V <span class="hljs-keyword">extends</span></code>
+<code>    | <span class="hljs-literal">undefined</span> | <span class="hljs-literal">null</span> | <span class="hljs-built_in">boolean</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">bigint</span> | <span class="hljs-built_in">string</span> | <span class="hljs-built_in">symbol</span> </code>
+<code>    | <span class="hljs-built_in">object</span></code>
+<code>&gt;(<span class="hljs-attr">enumObj</span>: T): <span class="hljs-title class_">Readonly</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-comment">// Copying `enumObj` is better for performance than Object.setPrototypeOf()</span></code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">freeze</span>({</code>
+<code>    <span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>,</code>
+<code>    ...enumObj,</code>
+<code>  });</code>
+<code>}</code>
+</pre>
+<h4 id="handling-the-enum-use-cases-with-enum-objects"><a class="heading-id-link" href="#handling-the-enum-use-cases-with-enum-objects">26.4.3 Handling the enum use cases with enum objects</a></h4>
+<h5 id="use-case-namespace-for-constants-with-primitive-values-1"><a class="heading-id-link" href="#use-case-namespace-for-constants-with-primitive-values-1">26.4.3.1 Use case: namespace for constants with primitive values</a></h5>
+<p>For this use case, an object literal is a very good alternative:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Color</span> = {</code>
+<code>  <span class="hljs-title class_">Red</span>: <span class="hljs-string">'#FF0000'</span>,</code>
+<code>  <span class="hljs-title class_">Green</span>: <span class="hljs-string">'#00FF00'</span>,</code>
+<code>  <span class="hljs-title class_">Blue</span>: <span class="hljs-string">'#0000FF'</span>,</code>
+<code>};</code>
+</pre>
+<p>We can use a <code>null</code> prototype and freezing but they are not required in this case.</p>
+<h5 id="use-case-custom-type-with-unique-values-1"><a class="heading-id-link" href="#use-case-custom-type-with-unique-values-1">26.4.3.2 Use case: custom type with unique values</a></h5>
+<p>Let’s use an object literal to define the value part of an enum (we’ll get to the type part next):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Status</span> = {</code>
+<code>  <span class="hljs-title class_">Pending</span>: <span class="hljs-string">'Pending'</span>,</code>
+<code>  <span class="hljs-title class_">Ongoing</span>: <span class="hljs-string">'Ongoing'</span>,</code>
+<code>  <span class="hljs-title class_">Finished</span>: <span class="hljs-string">'Finished'</span>,</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>; <span class="hljs-comment">// (A)</span></code>
+</pre>
+<p>Thanks to <code>as const</code> in line A, we can derive a type from <code>Status</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StatusType</span> = <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Status</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">StatusType</span>, <span class="hljs-string">'Pending'</span> | <span class="hljs-string">'Ongoing'</span> | <span class="hljs-string">'Finished'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The utility type <code>ValueOf</code> was defined <a href="#enums-ValueOf">previously</a>.</p>
+<p>Why is this type called <code>StatusType</code> and not <code>Status</code>? Since the namespaces of values and types are separate in TypeScript, we could indeed use the same name. However, I’ve had issues when using Visual Studio Code to rename value and type: You can’t do both at the same time and VSC gets confused because importing <code>Status</code> imports both value and type.</p>
+<p>A benefit of using the name <code>StatusType</code> and not <code>TStatus</code> is that the former shows up in auto-completions for <code>Status</code>.</p>
+<h5 id="exhaustiveness-checks-1"><a class="heading-id-link" href="#exhaustiveness-checks-1">26.4.3.3 Exhaustiveness checks</a></h5>
+<p>TypeScript supports exhaustiveness checks for unions of literal types. And that’s what <code>StatusType</code> is. Therefore, we can use the same pattern as we did with enums:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">describeStatus</span>(<span class="hljs-params">status: StatusType</span>): <span class="hljs-built_in">string</span> { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-keyword">switch</span> (status) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span>.<span class="hljs-property">Pending</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Not yet'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span>.<span class="hljs-property">Ongoing</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Working on it...'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Status</span>.<span class="hljs-property">Finished</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'We are done'</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(status);</code>
+<code>  }</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">describeStatus</span>(<span class="hljs-title class_">Status</span>.<span class="hljs-property">Pending</span>),</code>
+<code>  <span class="hljs-string">'Not yet'</span></code>
+<code>);</code>
+</pre>
+<p>Note that in line A, the type of <code>status</code> is <code>StatusType</code>, not <code>Status</code> (which is a value).</p>
+<h4 id="using-the-members-of-enum-objects-at-the-type-level"><a class="heading-id-link" href="#using-the-members-of-enum-objects-at-the-type-level">26.4.4 Using the members of enum objects at the type level</a></h4>
+<p>An enum defines a value, a type and types for members. For enum objects, we have to create the latter two manually. We have already derived a type from an enum object. How about the types for members? Consider the following enum object:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">ShapeKind</span> = {</code>
+<code>  <span class="hljs-title class_">Circle</span>: <span class="hljs-number">0</span>,</code>
+<code>  <span class="hljs-title class_">Rectangle</span>: <span class="hljs-number">1</span>,</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+</pre>
+<p>The members <code>ShapeKind.Circle</code> and <code>ShapeKind.Rectangle</code> only exist as values, not as types:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// @ts-expect-error: Cannot find namespace 'ShapeKind'.</span></code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">ShapeKind</span>.<span class="hljs-property">Circle</span>;</code>
+</pre>
+<p>Therefore, if we want to use those values at the type level, we have to apply <code>typeof</code> to them (line A and line B):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Shape</span> =</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">key</span>: <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">ShapeKind</span>.<span class="hljs-property">Circle</span>, <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-attr">center</span>: <span class="hljs-title class_">Point</span>,</code>
+<code>  }</code>
+<code>  | {</code>
+<code>    <span class="hljs-attr">key</span>: <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">ShapeKind</span>.<span class="hljs-property">Rectangle</span>, <span class="hljs-comment">// (B)</span></code>
+<code>    <span class="hljs-attr">corner1</span>: <span class="hljs-title class_">Point</span>,</code>
+<code>    <span class="hljs-attr">corner2</span>: <span class="hljs-title class_">Point</span>,</code>
+<code>  }</code>
+<code>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Point</span> = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>}</code>
+</pre>
+<h4 id="enum-object-with-symbols"><a class="heading-id-link" href="#enum-object-with-symbols">26.4.5 Symbols as property values</a></h4>
+<p>One downside of using strings as the property values of an enum object is that they are not unique: A derived type accepts both the property values and strings created via string literals (if they are equal to them). We can get more type safety if we use symbols:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Pending</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Pending'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Ongoing</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Ongoing'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Finished</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Finished'</span>);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Status</span> = {</code>
+<code>  <span class="hljs-title class_">Pending</span>,</code>
+<code>  <span class="hljs-title class_">Ongoing</span>,</code>
+<code>  <span class="hljs-title class_">Finished</span>,</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code/>
+<code>assertType&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Pending</span>&gt;(<span class="hljs-title class_">Status</span>.<span class="hljs-property">Pending</span>);</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StatusType</span> = <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Status</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">StatusType</span>,</code>
+<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Pending</span> | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Ongoing</span> | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Finished</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The utility type <code>ValueOf</code> was defined <a href="#enums-ValueOf">previously</a>.</p>
+<p>This seems overly complicated: Why the intermediate step of first declaring variables for the symbols before using them? Why not create the symbols inside the object literal? Alas, that’s a current limitation of symbols in <code>as const</code> objects – they don’t produce unique types (<a href="https://github.com/microsoft/TypeScript/issues/54100">related GitHub issue</a>):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Status</span> = {</code>
+<code>  <span class="hljs-title class_">Pending</span>: <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Pending'</span>),</code>
+<code>  <span class="hljs-title class_">Ongoing</span>: <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Ongoing'</span>),</code>
+<code>  <span class="hljs-title class_">Finished</span>: <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Finished'</span>),</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code/>
+<code><span class="hljs-comment">// Alas, the type of Status.Pending is not `typeof Pending`</span></code>
+<code>assertType&lt;<span class="hljs-built_in">symbol</span>&gt;(<span class="hljs-title class_">Status</span>.<span class="hljs-property">Pending</span>);</code>
+<code/>
+<code><span class="hljs-comment">// The derived type is `symbol`, not a union type</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StatusType</span> = <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Status</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">StatusType</span>,</code>
+<code>  <span class="hljs-built_in">symbol</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="use-case-an-enum-as-a-namespace-for-constants-with-object-values"><a class="heading-id-link" href="#use-case-an-enum-as-a-namespace-for-constants-with-object-values">26.4.6 Use case: an enum as a namespace for constants with object values</a></h4>
+<p>Sometimes, it’s useful to have an enum-like construct for looking up richer data – stored in objects. That’s something enums can’t do, but it is possible via enum objects:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// This type is optional: It constrains the property values</span></code>
+<code><span class="hljs-comment">// of `TextStyle` but has no other use.</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TextStyleProp</span> = {</code>
+<code>  <span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">html</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">latex</span>: <span class="hljs-built_in">string</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">TextStyle</span> = {</code>
+<code>  <span class="hljs-title class_">Bold</span>: {</code>
+<code>    <span class="hljs-attr">key</span>: <span class="hljs-string">'Bold'</span>,</code>
+<code>    <span class="hljs-attr">html</span>: <span class="hljs-string">'b'</span>,</code>
+<code>    <span class="hljs-attr">latex</span>: <span class="hljs-string">'textbf'</span>,</code>
+<code>  },</code>
+<code>  <span class="hljs-title class_">Italics</span>: {</code>
+<code>    <span class="hljs-attr">key</span>: <span class="hljs-string">'Italics'</span>,</code>
+<code>    <span class="hljs-attr">html</span>: <span class="hljs-string">'i'</span>,</code>
+<code>    <span class="hljs-attr">latex</span>: <span class="hljs-string">'textit'</span>,</code>
+<code>  },</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span> satisfies <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-title class_">TextStyleProp</span>&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TextStyleType</span> = <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TextStyle</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = <span class="hljs-title class_">Obj</span>[keyof <span class="hljs-title class_">Obj</span>];</code>
+</pre>
+<p>Because each property value of <code>TextStyle</code> has the property <code>.key</code> with a unique value, <code>TextStyleType</code> is a <a href="ch_unions-object-types.html#discriminated-unions">discriminated union</a>.</p>
+<h5 id="exhaustiveness-check"><a class="heading-id-link" href="#exhaustiveness-check">26.4.6.1 Exhaustiveness check</a></h5>
+<p>Due to <code>TextStyleType</code> being a discriminated union, we can do an exhaustiveness check:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">describeTextStyle</span>(<span class="hljs-params">textStyle: TextStyleType</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">switch</span> (textStyle.<span class="hljs-property">key</span>) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">TextStyle</span>.<span class="hljs-property">Bold</span>.<span class="hljs-property">key</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Bold text'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">TextStyle</span>.<span class="hljs-property">Italics</span>.<span class="hljs-property">key</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'Text in italics'</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(textStyle); <span class="hljs-comment">// No `.key`!</span></code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>In the <code>default</code> case, after we have checked all values that <code>textStyle.key</code> can have, <code>textStyle</code> itself has the type <code>never</code>.</p>
+<h3 id="enum-pattern-enum-classes"><a class="heading-id-link" href="#enum-pattern-enum-classes">26.5 Enum pattern: enum classes</a></h3>
+<p>We can also use a class as an enum – a pattern that is borrowed from Java:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">TextStyle</span> {</code>
+<code>  <span class="hljs-keyword">static</span> <span class="hljs-title class_">Bold</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TextStyle</span>({</code>
+<code>    <span class="hljs-attr">html</span>: <span class="hljs-string">'b'</span>,</code>
+<code>    <span class="hljs-attr">latex</span>: <span class="hljs-string">'textbf'</span>,</code>
+<code>  });</code>
+<code>  <span class="hljs-keyword">static</span> <span class="hljs-title class_">Italics</span> = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TextStyle</span>({</code>
+<code>    <span class="hljs-attr">html</span>: <span class="hljs-string">'i'</span>,</code>
+<code>    <span class="hljs-attr">latex</span>: <span class="hljs-string">'textit'</span>,</code>
+<code>  });</code>
+<code>  <span class="hljs-attr">html</span>: <span class="hljs-built_in">string</span>;</code>
+<code>  <span class="hljs-attr">latex</span>: <span class="hljs-built_in">string</span>;</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">props: TextStyleProps</span>) {</code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">html</span> = props.<span class="hljs-property">html</span>;</code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">latex</span> = props.<span class="hljs-property">latex</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-title function_">wrapHtml</span>(<span class="hljs-attr">html</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span> {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-string">`&lt;<span class="hljs-subst">${<span class="hljs-variable language_">this</span>.html}</span>&gt;<span class="hljs-subst">${html}</span>&lt;/<span class="hljs-subst">${<span class="hljs-variable language_">this</span>.html}</span>&gt;`</span>;</code>
+<code>  }</code>
+<code>}</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TextStyleProps</span> = {</code>
+<code>  <span class="hljs-attr">html</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">latex</span>: <span class="hljs-built_in">string</span>,</code>
+<code>};</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title class_">TextStyle</span>.<span class="hljs-property">Bold</span>.<span class="hljs-title function_">wrapHtml</span>(<span class="hljs-string">'Hello!'</span>),</code>
+<code>  <span class="hljs-string">'&lt;b&gt;Hello!&lt;/b&gt;'</span></code>
+<code>);</code>
+</pre>
+<p>We can create a type with the static properties of <code>TextStyle</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">TextStyleKeys</span> = <span class="hljs-title class_">EnumKeys</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TextStyle</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">TextStyleKeys</span>, <span class="hljs-string">'Bold'</span> | <span class="hljs-string">'Italics'</span></code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">EnumKeys</span>&lt;T&gt; = <span class="hljs-title class_">Exclude</span>&lt;keyof T, <span class="hljs-string">'prototype'</span>&gt;;</code>
+<code/>
+<code><span class="hljs-comment">// Why exclude 'prototype'?</span></code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">TextStyle</span>,</code>
+<code>  <span class="hljs-string">'prototype'</span> | <span class="hljs-string">'Bold'</span> | <span class="hljs-string">'Italics'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>An upside of enum classes is that we can use methods to add behavior to enum values. A downside is that there is no simple way to get an exhaustiveness check: With an <code>as const</code> enum object whose property values are objects, we can create a discriminated union as an associated type – where we can check exhaustiveness. However, each static property of class <code>TextStyle</code> simply has the type <code>TextStyle</code> (the type of the instances of <code>TextStyle</code>) and that prevents us from creating a discriminated union.</p>
+<p><code>Object.keys()</code> and <code>Object.values()</code> ignore non-enumerable properties of <code>TextStyle</code> such as <code>.prototype</code> – which is why we can use them to enumerate keys and values – e.g.:</p>
+<pre class="language-ts">
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  <span class="hljs-comment">// TextStyle.prototype is non-enumerable</span></code>
+<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(<span class="hljs-title class_">TextStyle</span>),</code>
+<code>  [<span class="hljs-string">'Bold'</span>, <span class="hljs-string">'Italics'</span>]</code>
+<code>);</code>
+</pre>
+<h3 id="enum-pattern-string-literal-unions"><a class="heading-id-link" href="#enum-pattern-string-literal-unions">26.6 Enum pattern: string literal unions</a></h3>
+<p>A union of string literal types is an interesting alternative to an enum when it comes to defining a type with a fixed set of members:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Activation</span> = <span class="hljs-string">'Active'</span> | <span class="hljs-string">'Inactive'</span>;</code>
+</pre>
+<p>What are the pros and cons of this pattern?</p>
+<p>Pros:</p>
+<ul>
+  <li>
+    It’s a concise and simple solution.
+  </li>
+  <li>
+    It supports exhaustiveness checks.
+  </li>
+  <li>
+    Renaming members works reasonably well in Visual Studio Code.
+  </li>
+</ul>
+<p>Cons:</p>
+<ul>
+  <li>
+    The type members are not unique. We could change that by using symbols but then we’d lose much of the convenience of string literal union types – e.g., we’d have to import the values.
+  </li>
+  <li>
+    We can’t use JSDoc comments for the elements of the union. That means we can’t <code>@deprecate</code> them either.
+  </li>
+</ul>
+<h4 id="reifying-string-literal-unions"><a class="heading-id-link" href="#reifying-string-literal-unions">26.6.1 Reifying string literal unions</a></h4>
+<p><em>Reification</em> means creating an entity at the object level (think JavaScript values) for an entity that exists at the meta level (think TypeScript types). We need to do that for string literal unions if, e.g., we want to iterate over their elements (which don’t exist at runtime). Other enum patterns support that out of the box.</p>
+<h5 id="deriving-a-string-literal-union-from-a-set"><a class="heading-id-link" href="#deriving-a-string-literal-union-from-a-set">26.6.1.1 Deriving a string literal union from a Set</a></h5>
+<p>We can use a Set to reify a string literal union type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> activation = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([</code>
+<code>  <span class="hljs-string">'Active'</span>,</code>
+<code>  <span class="hljs-string">'Inactive'</span>,</code>
+<code>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>);</code>
+<code>assertType&lt;<span class="hljs-title class_">Set</span>&lt;<span class="hljs-string">'Active'</span> | <span class="hljs-string">'Inactive'</span>&gt;&gt;(activation);</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Argument of type '"abc"' is not assignable to</span></code>
+<code><span class="hljs-comment">// parameter of type '"Active" | "Inactive"'.</span></code>
+<code>activation.<span class="hljs-title function_">has</span>(<span class="hljs-string">'abc'</span>);</code>
+<code>  <span class="hljs-comment">// Auto-completion works for arguments of .has(), .delete() etc.</span></code>
+<code/>
+<code><span class="hljs-comment">// Let’s turn the Set into a string literal union</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Activation</span> = <span class="hljs-title class_">SetElementType</span>&lt;<span class="hljs-keyword">typeof</span> activation&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Activation</span>, <span class="hljs-string">'Active'</span> | <span class="hljs-string">'Inactive'</span></code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">SetElementType</span>&lt;S <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Set</span>&lt;<span class="hljs-built_in">any</span>&gt;&gt; =</code>
+<code>  S <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Set</span>&lt;infer <span class="hljs-title class_">Elem</span>&gt; ? <span class="hljs-title class_">Elem</span> : <span class="hljs-built_in">never</span>;</code>
+</pre>
+<h5 id="deriving-a-string-literal-union-from-an-array"><a class="heading-id-link" href="#deriving-a-string-literal-union-from-an-array">26.6.1.2 Deriving a string literal union from an Array</a></h5>
+<p>When it comes to reifying a string literal union, a Set is often the best choice because we can check at runtime if a given string is a member. However, we can also use an Array to do so:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> activation = [</code>
+<code>  <span class="hljs-string">'Active'</span>,</code>
+<code>  <span class="hljs-string">'Inactive'</span>,</code>
+<code>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Activation</span> = (<span class="hljs-keyword">typeof</span> activation)[<span class="hljs-built_in">number</span>];</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Activation</span>,</code>
+<code>  <span class="hljs-string">'Active'</span> | <span class="hljs-string">'Inactive'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="more-things-we-can-do-with-enums"><a class="heading-id-link" href="#more-things-we-can-do-with-enums">26.7 More things we can do with enums</a></h3>
+<p>In this section, we explore more things we can do with enums. We’ll mostly use enum objects but enums and other enum patterns will also be mentioned occasionally.</p>
+<h4 id="enum-values-as-keys-in-maps"><a class="heading-id-link" href="#enum-values-as-keys-in-maps">26.7.1 Enum values as keys in Maps</a></h4>
+<p>Sometimes we want use enum values to look up other values. Let’s explore how that works for the following enum object:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Pending</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Pending'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Ongoing</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Ongoing'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Finished</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Finished'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Status</span> = {</code>
+<code>  <span class="hljs-title class_">Pending</span>,</code>
+<code>  <span class="hljs-title class_">Ongoing</span>,</code>
+<code>  <span class="hljs-title class_">Finished</span>,</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StatusType</span> = <span class="hljs-title class_">ValueOf</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Status</span>&gt;;</code>
+</pre>
+<p>The utility type <code>ValueOf</code> was defined <a href="#enums-ValueOf">previously</a>.</p>
+<p>The following Map uses the values of <code>Status</code> as keys:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> statusPairs = [</code>
+<code>  [<span class="hljs-title class_">Status</span>.<span class="hljs-property">Pending</span>, <span class="hljs-string">'not yet'</span>],</code>
+<code>  [<span class="hljs-title class_">Status</span>.<span class="hljs-property">Ongoing</span>, <span class="hljs-string">'working on it'</span>],</code>
+<code>  [<span class="hljs-title class_">Status</span>.<span class="hljs-property">Finished</span>, <span class="hljs-string">'finished'</span>],</code>
+<code>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StatusMapKey</span> = (<span class="hljs-keyword">typeof</span> statusPairs)[<span class="hljs-built_in">number</span>][<span class="hljs-number">0</span>];</code>
+<code><span class="hljs-keyword">const</span> statusMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-title class_">StatusMapKey</span>, <span class="hljs-built_in">string</span>&gt;(statusPairs);</code>
+<code>assertType&lt;</code>
+<code>  <span class="hljs-title class_">Map</span>&lt;</code>
+<code>    <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Pending</span> | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Ongoing</span> | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Finished</span>,</code>
+<code>    <span class="hljs-built_in">string</span></code>
+<code>  &gt;</code>
+<code>&gt;(statusMap);</code>
+</pre>
+<p>If you are wondering why we didn’t directly use the value of <code>statusPairs</code> as the argument of <code>new Map()</code> and omit the type parameters: TypeScript isn’t able to infer the type parameters if the keys are symbols and reports a compile-time error. With strings, the code would be simpler:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> statusMap2 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([ <span class="hljs-comment">// no type parameters!</span></code>
+<code>  [<span class="hljs-string">'Pending'</span>, <span class="hljs-string">'not yet'</span>],</code>
+<code>  [<span class="hljs-string">'Ongoing'</span>, <span class="hljs-string">'working on it'</span>],</code>
+<code>  [<span class="hljs-string">'Finished'</span>, <span class="hljs-string">'finished'</span>],</code>
+<code>] <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>);</code>
+<code>assertType&lt;</code>
+<code>  <span class="hljs-title class_">Map</span>&lt;</code>
+<code>    <span class="hljs-string">'Pending'</span> | <span class="hljs-string">'Ongoing'</span> | <span class="hljs-string">'Finished'</span>,</code>
+<code>    <span class="hljs-string">'not yet'</span> | <span class="hljs-string">'working on it'</span> | <span class="hljs-string">'finished'</span></code>
+<code>  &gt;</code>
+<code>&gt;(statusMap2);</code>
+</pre>
+<p>As a final step, check manually if we used all enum values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">MapKey</span>&lt;<span class="hljs-keyword">typeof</span> statusMap&gt;, <span class="hljs-title class_">StatusType</span> <span class="hljs-comment">// (A)</span></code>
+<code>&gt;&gt;;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">MapKey</span>&lt;M <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">any</span>, <span class="hljs-built_in">any</span>&gt;&gt; =</code>
+<code>  M <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Map</span>&lt;infer K, <span class="hljs-built_in">any</span>&gt; ? K : <span class="hljs-built_in">never</span>;</code>
+</pre>
+<p>In line A, we extract the type of the keys from <code>statusMap</code> and demand that it be equal to <code>StatusType</code>.</p>
+<h5 id="exhaustiveness-checks-via-record"><a class="heading-id-link" href="#exhaustiveness-checks-via-record">26.7.1.1 Exhaustiveness checks via <code>Record</code></a></h5>
+<p>TypeScript can check if a union type is used exhaustively if we use <code>Record</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">UnionType</span>, T&gt;</code>
+</pre>
+<p>However, such a union type can only have elements that are subtypes of <code>string</code>, <code>number</code> or <code>symbol</code>. That means that <code>Record</code> works well for unions of string literal types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Status</span> = <span class="hljs-string">'Pending'</span> | <span class="hljs-string">'Ongoing'</span> | <span class="hljs-string">'Finished'</span>;</code>
+<code><span class="hljs-keyword">const</span> statusMap = {</code>
+<code>  <span class="hljs-string">'Pending'</span>: <span class="hljs-string">'not yet'</span>,</code>
+<code>  <span class="hljs-string">'Ongoing'</span>: <span class="hljs-string">'working on it'</span>,</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type '{ Pending: string; Ongoing: string; }' does</span></code>
+<code>  <span class="hljs-comment">// not satisfy the expected type 'Record&lt;Status, string&gt;'. Property</span></code>
+<code>  <span class="hljs-comment">// 'Finished' is missing in type '{ Pending: string; Ongoing: string; }'</span></code>
+<code>  <span class="hljs-comment">// but required in type 'Record&lt;Status, string&gt;'.</span></code>
+<code>} satisfies <span class="hljs-title class_">Record</span>&lt;<span class="hljs-title class_">Status</span>, <span class="hljs-built_in">string</span>&gt;;</code>
+</pre>
+<h4 id="mapping-between-keys-strings-of-enum-members-and-their-values"><a class="heading-id-link" href="#mapping-between-keys-strings-of-enum-members-and-their-values">26.7.2 Mapping between keys (strings) of enum members and their values</a></h4>
+<p>Sometimes it’s useful to map enum keys to values or vice versa. One important use case for that is deserializing enums of symbols or objects from JSON and serializing them to JSON.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Pending</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Pending'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Ongoing</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Ongoing'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Finished</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Finished'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Status</span> = {</code>
+<code>  <span class="hljs-title class_">Pending</span>,</code>
+<code>  <span class="hljs-title class_">Ongoing</span>,</code>
+<code>  <span class="hljs-title class_">Finished</span>,</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+</pre>
+<h5 id="from-enum-key-to-enum-value"><a class="heading-id-link" href="#from-enum-key-to-enum-value">26.7.2.1 From enum key to enum value</a></h5>
+<p>One use case for mapping from the key of an enum member to its value, is parsing JSON data:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> parseEnumKey&lt;</code>
+<code>  E <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">unknown</span>&gt;</code>
+<code>&gt;(<span class="hljs-attr">enumObject</span>: E, <span class="hljs-attr">enumKey</span>: <span class="hljs-built_in">string</span>): E[keyof E] {</code>
+<code>  <span class="hljs-keyword">if</span> (!<span class="hljs-title class_">Object</span>.<span class="hljs-title function_">hasOwn</span>(enumObject, enumKey)) {</code>
+<code>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>(<span class="hljs-string">'Unknown key: '</span> + {}.<span class="hljs-property">toString</span>.<span class="hljs-title function_">call</span>(enumKey));</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> enumObject[enumKey] <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>;</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">parseEnumKey</span>(<span class="hljs-title class_">Status</span>, <span class="hljs-string">'Ongoing'</span>),</code>
+<code>  <span class="hljs-title class_">Status</span>.<span class="hljs-property">Ongoing</span></code>
+<code>);</code>
+</pre>
+<p>It is possible to make both the type of <code>enumKey</code> and the return type more specific (see next subsection) but then we couldn’t parse values of type <code>string</code> anymore.</p>
+<h5 id="from-enum-value-to-enum-key"><a class="heading-id-link" href="#from-enum-value-to-enum-key">26.7.2.2 From enum value to enum key</a></h5>
+<p>One use case for mapping from the value of an enum member to its key, is creating JSON data:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> stringifyEnumValue&lt;</code>
+<code>  E <span class="hljs-keyword">extends</span> <span class="hljs-built_in">object</span>,</code>
+<code>  V <span class="hljs-keyword">extends</span> E[keyof E]</code>
+<code>&gt;(<span class="hljs-attr">enumObject</span>: E, <span class="hljs-attr">enumValue</span>: V): keyof E {</code>
+<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> [key, value] <span class="hljs-keyword">of</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(enumObject)) {</code>
+<code>    <span class="hljs-keyword">if</span> (enumValue === value) {</code>
+<code>      <span class="hljs-keyword">return</span> key <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>;</code>
+<code>    }</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>(<span class="hljs-string">'Unknown value: '</span> + {}.<span class="hljs-property">toString</span>.<span class="hljs-title function_">call</span>(enumValue));</code>
+<code>}</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">stringifyEnumValue</span>(<span class="hljs-title class_">Status</span>, <span class="hljs-title class_">Status</span>.<span class="hljs-property">Ongoing</span>),</code>
+<code>  <span class="hljs-string">'Ongoing'</span></code>
+<code>);</code>
+</pre>
+<h4 id="iterating-over-enum-members"><a class="heading-id-link" href="#iterating-over-enum-members">26.7.3 Iterating over enum members</a></h4>
+<p>One use case for iterating over enum members is creating a user interface that lists options collected in an enum. Which enum patterns do support iteration?</p>
+<ul>
+  <li>
+    We can only iterate over string enums – due to enums with number members having reverse mappings.
+  </li>
+  <li>
+    For an enum object <code>enumObj</code>, we can use <code>Object.keys(enumObj)</code> and <code>Object.values(enumObj)</code>.
+  </li>
+  <li>
+    For an enum class <code>enumClass</code>, we can use <code>Object.keys(enumClass)</code> and <code>Object.values(enumClass)</code>. The own property <code>enumClass.prototype</code> is not enumerable and therefore ignored by both methods.
+  </li>
+  <li>
+    If we want to iterate over the values of a string literal union, we have to <a href="#reifying-string-literal-unions">reify it via a Set or an Array</a>.
+  </li>
+</ul>
+<h4 id="specifying-bit-vectors"><a class="heading-id-link" href="#specifying-bit-vectors">26.7.4 Specifying bit vectors</a></h4>
+<p>One use case for enums is specifying bit vectors (multiple independent bit flags).</p>
+<h5 id="specifying-bit-vectors-via-bit-masks"><a class="heading-id-link" href="#specifying-bit-vectors-via-bit-masks">26.7.4.1 Specifying bit vectors via bit masks</a></h5>
+<p>The traditional way of specifying bit vectors is via bit masks:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Permission</span> = {</code>
+<code>  <span class="hljs-title class_">Read</span>:    <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">2</span>, <span class="hljs-comment">// bit 2</span></code>
+<code>  <span class="hljs-title class_">Write</span>:   <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">1</span>, <span class="hljs-comment">// bit 1</span></code>
+<code>  <span class="hljs-title class_">Execute</span>: <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">0</span>, <span class="hljs-comment">// bit 0</span></code>
+<code>}</code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">setPermission</span>(<span class="hljs-params">filePath: <span class="hljs-built_in">string</span>, permission: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">void</span> {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+<code><span class="hljs-title function_">setPermission</span>(</code>
+<code>  <span class="hljs-string">'read-and-write.txt'</span>,</code>
+<code>  <span class="hljs-title class_">Permission</span>.<span class="hljs-property">Read</span> | <span class="hljs-title class_">Permission</span>.<span class="hljs-property">Write</span></code>
+<code>);</code>
+</pre>
+<p>For more information on this kind of bit manipulation, see section <a href="https://exploringjs.com/js/book/ch_numbers.html#bitwise-operators">“Bitwise operators”</a> in “Exploring JavaScript”.</p>
+<h5 id="specifying-bit-vectors-via-sets"><a class="heading-id-link" href="#specifying-bit-vectors-via-sets">26.7.4.2 Specifying bit vectors via Sets</a></h5>
+<p>Another option for specifying bit vectors is via Sets. I often prefer that option.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Read</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Read'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Write</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Write'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Execute</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Execute'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Permission</span> = {</code>
+<code>  <span class="hljs-title class_">Read</span>, <span class="hljs-title class_">Write</span>, <span class="hljs-title class_">Execute</span></code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">PermissionType</span> = (<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Permission</span>)[keyof <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Permission</span>];</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">setPermission</span>(<span class="hljs-params">filePath: <span class="hljs-built_in">string</span>, permission: <span class="hljs-built_in">Set</span>&lt;PermissionType&gt;</span>): <span class="hljs-built_in">void</span> {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+<code><span class="hljs-title function_">setPermission</span>(</code>
+<code>  <span class="hljs-string">'read-and-write.txt'</span>,</code>
+<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-title class_">Permission</span>.<span class="hljs-property">Read</span>, <span class="hljs-title class_">Permission</span>.<span class="hljs-property">Write</span>])</code>
+<code>);</code>
+</pre>
+<h4 id="type-validation-for-enums-via-zod"><a class="heading-id-link" href="#type-validation-for-enums-via-zod">26.7.5 Type validation for enums via Zod</a></h4>
+<p><a href="https://zod.dev/">Zod</a> is a tool for <em>validating</em> parsed data (often JSON) – checking if the runtime data matches an expected type. That increases type safety when working with untyped data.</p>
+<p>Zod also supports enums, but the recommendation is to use string literal unions. They have to be defined via Arrays of strings because Zod needs data that it can use at runtime.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">import</span> { z } <span class="hljs-keyword">from</span> <span class="hljs-string">'zod'</span>;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">ActivationSchema</span> = z.<span class="hljs-title function_">enum</span>([<span class="hljs-string">'Active'</span>, <span class="hljs-string">'Inactive'</span>]);</code>
+<code/>
+<code><span class="hljs-comment">// Derive a type from the schema</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Activation</span> = z.<span class="hljs-property">infer</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">ActivationSchema</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Activation</span>,</code>
+<code>  <span class="hljs-string">'Active'</span> | <span class="hljs-string">'Inactive'</span></code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-comment">// Use the schema to “parse” data at runtime</span></code>
+<code><span class="hljs-comment">// (check that it has the correct type)</span></code>
+<code><span class="hljs-keyword">const</span> activation = <span class="hljs-title class_">ActivationSchema</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-string">'Inactive'</span>);</code>
+<code>assertType&lt;<span class="hljs-title class_">Activation</span>&gt;(activation);</code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-function">() =&gt;</span> <span class="hljs-title class_">ActivationSchema</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-string">'HELLO'</span>)</code>
+<code>);</code>
+</pre>
+<h3 id="recommendations"><a class="heading-id-link" href="#recommendations">26.8 Recommendations</a></h3>
+<p>How should we choose between enums and various enum patterns?</p>
+<p>Let’s go through the use cases:</p>
+<ul>
+  <li>
+    Namespace for constants with primitive values:
+    <ul>
+      <li>
+        For this use case, enum objects are the best choice.
+      </li>
+      <li>
+        We can also use enums, as long as the primitive values are strings or numbers.
+      </li>
+    </ul>
+  </li>
+  <li>
+    Custom type with unique values:
+    <ul>
+      <li>
+        I like enum objects with symbols for this use case. However, they are slightly verbose.
+      </li>
+      <li>
+        One more lightweight alternative are string literal unions.
+      </li>
+      <li>
+        Enums are also an option but it should be string enums because those are more type safe and logging their values (e.g. for debugging) works better.
+      </li>
+    </ul>
+  </li>
+  <li>
+    Namespace for constants with object values:
+    <ul>
+      <li>
+        Use an enum object if you want exhaustiveness checks.
+      </li>
+      <li>
+        Use an enum class if you want enum values to have methods.
+      </li>
+      <li>
+        We can’t use enums for this use case.
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>Various considerations:</p>
+<ul>
+  <li>
+    <p>As mentioned at the beginning of this chapter, with type stripping and <code>erasableSyntaxOnly</code>, we can’t use enums. Additionally, the code that enums are transpiled to is a bit difficult to read – especially if an enum has number members.</p>
+  </li>
+  <li>
+    <p>With string literal unions, there is no way to provide JSDoc comments for the members – which enables deprecation via <code>@deprecated</code>.</p>
+  </li>
+  <li>
+    <p>If enum values are strings then comparing can be slower. However, that should only matter if your code does many comparisons.</p>
+    <ul>
+      <li>
+        (I have heard of a TypeScript project where a switch away from strings improved performance significantly. Alas, I can’t find the link anymore – tips appreciated!)
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Enums with strings, symbols and objects are easier to work with than those with numbers – because you see names when you log enum values.</p>
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

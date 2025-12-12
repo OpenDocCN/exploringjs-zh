@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>17 Adding special values to types</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>17 Adding special values to types</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_special-values.html">https://exploringjs.com/ts/book/ch_special-values.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#adding-special-values-in-band">17.1 Adding special values in band</a>
+      <ol>
+        <li>
+          <a href="#adding-null-or-undefined-to-a-type">17.1.1 Adding <code>null</code> or <code>undefined</code> to a type</a>
+        </li>
+        <li>
+          <a href="#adding-symbol-to-type">17.1.2 Adding a symbol to a type</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#adding-special-values-out-of-band">17.2 Adding special values out of band</a>
+      <ol>
+        <li>
+          <a href="#discriminated-unions-1">17.2.1 Discriminated unions</a>
+        </li>
+        <li>
+          <a href="#other-kinds-of-union-types">17.2.2 Other kinds of union types</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p>One way of understanding types is as sets of values. Sometimes there are two levels of values:</p>
+<ul>
+  <li>
+    Base level: normal values
+  </li>
+  <li>
+    Meta level: special values
+  </li>
+</ul>
+<p>In this chapter, we examine how we can add special values to base-level types.</p>
+<h3 id="adding-special-values-in-band"><a class="heading-id-link" href="#adding-special-values-in-band">17.1 Adding special values in band</a></h3>
+<p>One way of adding special values is to create a new type which is a superset of the base type where some values are special. These special values are called <a href="https://en.wikipedia.org/wiki/Sentinel_value"><em>sentinels</em></a>. They exist <a href="https://en.wikipedia.org/wiki/In-band_signaling"><em>in band</em></a> (think inside the same channel) and are siblings of normal values.</p>
+<p>As an example, consider the following interface for a stream of text lines:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">LineStream</span> {</code>
+<code>  <span class="hljs-title function_">getNextLine</span>(): <span class="hljs-built_in">string</span>;</code>
+<code>}</code>
+</pre>
+<p>At the moment, <code>.getNextLine()</code> only handles text lines, but not ends of files (EOFs). How could we add support for EOF?</p>
+<p>Possibilities include:</p>
+<ul>
+  <li>
+    An additional method <code>.isEof()</code> that needs to be called before calling <code>.getNextLine()</code>.
+  </li>
+  <li>
+    <code>.getNextLine()</code> throws an exception when it reaches an EOF.
+  </li>
+  <li>
+    A sentinel value for EOF.
+  </li>
+</ul>
+<p>The next two subsections describe two ways in which we can introduce sentinel values.</p>
+<h4 id="adding-null-or-undefined-to-a-type"><a class="heading-id-link" href="#adding-null-or-undefined-to-a-type">17.1.1 Adding <code>null</code> or <code>undefined</code> to a type</a></h4>
+<p>When using strict TypeScript, no simple object type (defined via interfaces, object patterns, classes, etc.) includes <code>null</code>. That makes it a good sentinel value that we can add to the base type <code>string</code> via a union type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StreamValue</span> = <span class="hljs-literal">null</span> | <span class="hljs-built_in">string</span>;</code>
+<code/>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">LineStream</span> {</code>
+<code>  <span class="hljs-title function_">getNextLine</span>(): <span class="hljs-title class_">StreamValue</span>;</code>
+<code>}</code>
+</pre>
+<p>Now, whenever we are using the value returned by <code>.getNextLine()</code>, TypeScript forces us to consider both possibilities: strings and <code>null</code> – for example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">countComments</span>(<span class="hljs-params">ls: LineStream</span>) {</code>
+<code>  <span class="hljs-keyword">let</span> commentCount = <span class="hljs-number">0</span>;</code>
+<code>  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {</code>
+<code>    <span class="hljs-keyword">const</span> line = ls.<span class="hljs-title function_">getNextLine</span>();</code>
+<code>    <span class="hljs-comment">// @ts-expect-error: 'line' is possibly 'null'.</span></code>
+<code>    <span class="hljs-keyword">if</span> (line.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'#'</span>)) { <span class="hljs-comment">// (A)</span></code>
+<code>      commentCount++;</code>
+<code>    }</code>
+<code>    <span class="hljs-keyword">if</span> (line === <span class="hljs-literal">null</span>) <span class="hljs-keyword">break</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> commentCount;</code>
+<code>}</code>
+</pre>
+<p>In line A, we can’t use the string method <code>.startsWith()</code> because <code>line</code> might be <code>null</code>. We can fix this as follows:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">countComments</span>(<span class="hljs-params">ls: LineStream</span>) {</code>
+<code>  <span class="hljs-keyword">let</span> commentCount = <span class="hljs-number">0</span>;</code>
+<code>  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {</code>
+<code>    <span class="hljs-keyword">const</span> line = ls.<span class="hljs-title function_">getNextLine</span>();</code>
+<code>    <span class="hljs-keyword">if</span> (line === <span class="hljs-literal">null</span>) <span class="hljs-keyword">break</span>;</code>
+<code>    <span class="hljs-keyword">if</span> (line.<span class="hljs-title function_">startsWith</span>(<span class="hljs-string">'#'</span>)) { <span class="hljs-comment">// (A)</span></code>
+<code>      commentCount++;</code>
+<code>    }</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> commentCount;</code>
+<code>}</code>
+</pre>
+<p>Now, when execution reaches line A, we can be sure that <code>line</code> is not <code>null</code>.</p>
+<h4 id="adding-symbol-to-type"><a class="heading-id-link" href="#adding-symbol-to-type">17.1.2 Adding a symbol to a type</a></h4>
+<p>We can also use values other than <code>null</code> as sentinels. Symbols are best suited for this task because each one of them has a unique identity and no other value can be mistaken for it.</p>
+<p>This is how to use a symbol to represent EOF:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">EOF</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'EOF'</span>);</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StreamValue</span> = <span class="hljs-keyword">typeof</span> <span class="hljs-variable constant_">EOF</span> | <span class="hljs-built_in">string</span>;</code>
+</pre>
+<p>Why do we need <code>typeof</code> and can’t use <code>EOF</code> directly? That’s because <code>EOF</code> is a value, not a type. The type operator <code>typeof</code> converts <code>EOF</code> to a type.</p>
+<h5 id="example-a-symbol-as-an-error-value"><a class="heading-id-link" href="#example-a-symbol-as-an-error-value">17.1.2.1 Example: a symbol as an error value</a></h5>
+<p>The following function <code>parseNumber()</code> uses the symbol <code>couldNotParseNumber</code> as an error value:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> couldNotParseNumber = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'couldNotParseNumber'</span>);</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">parseNumber</span>(<span class="hljs-params">str: <span class="hljs-built_in">string</span></span>)</code>
+<code>  : <span class="hljs-built_in">number</span> | <span class="hljs-keyword">typeof</span> couldNotParseNumber</code>
+<code>{</code>
+<code>  <span class="hljs-keyword">const</span> result = <span class="hljs-title class_">Number</span>(str);</code>
+<code>  <span class="hljs-keyword">if</span> (!<span class="hljs-title class_">Number</span>.<span class="hljs-built_in">isNaN</span>(result)) {</code>
+<code>    <span class="hljs-keyword">return</span> result;</code>
+<code>  } <span class="hljs-keyword">else</span> {</code>
+<code>    <span class="hljs-keyword">return</span> couldNotParseNumber;</code>
+<code>  }</code>
+<code>}</code>
+<code/>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">parseNumber</span>(<span class="hljs-string">'123'</span>), <span class="hljs-number">123</span></code>
+<code>);</code>
+<code>assert.<span class="hljs-title function_">equal</span>(</code>
+<code>  <span class="hljs-title function_">parseNumber</span>(<span class="hljs-string">'hello'</span>), couldNotParseNumber</code>
+<code>);</code>
+</pre>
+<h3 id="adding-special-values-out-of-band"><a class="heading-id-link" href="#adding-special-values-out-of-band">17.2 Adding special values out of band</a></h3>
+<p>What do we do if potentially <em>any</em> value can be returned by a method? How do we ensure that base values and meta values don’t get mixed up? This is an example where that might happen:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ValueStream</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-title function_">getNextValue</span>(): T;</code>
+<code>}</code>
+</pre>
+<p>Whatever value we pick for <code>EOF</code>, there is a risk of someone creating an <code>ValueStream&lt;typeof EOF&gt;</code> and adding that value to the stream.</p>
+<p>The solution is to keep normal values and special values separate, so that they can’t be mixed up. Special values existing separately is called <a href="https://en.wikipedia.org/wiki/Out-of-band_data"><em>out of band</em></a> (think different channel).</p>
+<h4 id="discriminated-unions-1"><a class="heading-id-link" href="#discriminated-unions-1">17.2.1 Discriminated unions</a></h4>
+<p>A <a href="ch_unions-object-types.html#discriminated-unions"><em>discriminated union</em></a> is a union of several object types that all have at least one property in common, the so-called <em>discriminant</em>. The discriminant must have a different value for each object type – we can think of it as the ID of the object type.</p>
+<h5 id="example-valuestreamvalue"><a class="heading-id-link" href="#example-valuestreamvalue">17.2.1.1 Example: <code>ValueStreamValue</code></a></h5>
+<p>In the following example, <code>ValueStreamValue&lt;T&gt;</code> is a discriminated union and its discriminant is <code>.type</code>.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">NormalValue</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-attr">type</span>: <span class="hljs-string">'normal'</span>; <span class="hljs-comment">// string literal type</span></code>
+<code>  <span class="hljs-attr">data</span>: T;</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Eof</span> {</code>
+<code>  <span class="hljs-attr">type</span>: <span class="hljs-string">'eof'</span>; <span class="hljs-comment">// string literal type</span></code>
+<code>}</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ValueStreamValue</span>&lt;T&gt; = <span class="hljs-title class_">Eof</span> | <span class="hljs-title class_">NormalValue</span>&lt;T&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">ValueStream</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-title function_">getNextValue</span>(): <span class="hljs-title class_">ValueStreamValue</span>&lt;T&gt;;</code>
+<code>}</code>
+</pre>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> countValues&lt;T&gt;(<span class="hljs-attr">vs</span>: <span class="hljs-title class_">ValueStream</span>&lt;T&gt;, <span class="hljs-attr">data</span>: T) {</code>
+<code>  <span class="hljs-keyword">let</span> valueCount = <span class="hljs-number">0</span>;</code>
+<code>  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {</code>
+<code>    <span class="hljs-keyword">const</span> value = vs.<span class="hljs-title function_">getNextValue</span>(); <span class="hljs-comment">// (A)</span></code>
+<code>    assertType&lt;<span class="hljs-title class_">Eof</span> | <span class="hljs-title class_">NormalValue</span>&lt;T&gt;&gt;(value);</code>
+<code/>
+<code>    <span class="hljs-keyword">if</span> (value.<span class="hljs-property">type</span> === <span class="hljs-string">'eof'</span>) <span class="hljs-keyword">break</span>;</code>
+<code>    assertType&lt;<span class="hljs-title class_">NormalValue</span>&lt;T&gt;&gt;(value); <span class="hljs-comment">// (B)</span></code>
+<code/>
+<code>    <span class="hljs-keyword">if</span> (value.<span class="hljs-property">data</span> === data) { <span class="hljs-comment">// (C)</span></code>
+<code>      valueCount++;</code>
+<code>    }</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> valueCount;</code>
+<code>}</code>
+</pre>
+<p>Initially, the type of <code>value</code> is <code>ValueStreamValue&lt;T&gt;</code> (line A). Then we exclude the value <code>'eof'</code> for the discriminant <code>.type</code> and its type is narrowed to <code>NormalValue&lt;T&gt;</code> (line B). That’s why we can access property <code>.data</code> in line C.</p>
+<h5 id="example-iteratorresult"><a class="heading-id-link" href="#example-iteratorresult">17.2.1.2 Example: <code>IteratorResult</code></a></h5>
+<p>When deciding how to implement <a href="https://exploringjs.com/js/book/ch_sync-iteration.html">iterators</a>, TC39 didn’t want to use a fixed sentinel value. Otherwise, code would break if that value appeared in an iterable. One solution would have been to pick a sentinel value when starting an iteration. TC39 instead opted for a discriminated union with the common property <code>.done</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">IteratorYieldResult</span>&lt;<span class="hljs-title class_">TYield</span>&gt; {</code>
+<code>  done?: <span class="hljs-literal">false</span>; <span class="hljs-comment">// boolean literal type</span></code>
+<code>  <span class="hljs-attr">value</span>: <span class="hljs-title class_">TYield</span>;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">IteratorReturnResult</span>&lt;<span class="hljs-title class_">TReturn</span>&gt; {</code>
+<code>  <span class="hljs-attr">done</span>: <span class="hljs-literal">true</span>; <span class="hljs-comment">// boolean literal type</span></code>
+<code>  <span class="hljs-attr">value</span>: <span class="hljs-title class_">TReturn</span>;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IteratorResult</span>&lt;T, <span class="hljs-title class_">TReturn</span> = <span class="hljs-built_in">any</span>&gt; =</code>
+<code>  | <span class="hljs-title class_">IteratorYieldResult</span>&lt;T&gt;</code>
+<code>  | <span class="hljs-title class_">IteratorReturnResult</span>&lt;<span class="hljs-title class_">TReturn</span>&gt;;</code>
+</pre>
+<h4 id="other-kinds-of-union-types"><a class="heading-id-link" href="#other-kinds-of-union-types">17.2.2 Other kinds of union types</a></h4>
+<p>Other kinds of union types can be as convenient as discriminated unions, as long as we have the means to distinguish the member types of the union.</p>
+<p>One possibility is to distinguish the member types via unique properties:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> A {</code>
+<code>  <span class="hljs-attr">one</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-attr">two</span>: <span class="hljs-built_in">number</span>;</code>
+<code>}</code>
+<code><span class="hljs-keyword">interface</span> B {</code>
+<code>  <span class="hljs-attr">three</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-attr">four</span>: <span class="hljs-built_in">number</span>;</code>
+<code>}</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union</span> = A | B;</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">func</span>(<span class="hljs-params">x: Union</span>) {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Property 'two' does not exist on type 'Union'.</span></code>
+<code>  <span class="hljs-comment">// Property 'two' does not exist on type 'B'.(2339)</span></code>
+<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x.<span class="hljs-property">two</span>); <span class="hljs-comment">// error</span></code>
+<code>  </code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-string">'one'</span> <span class="hljs-keyword">in</span> x) { <span class="hljs-comment">// discriminating check</span></code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x.<span class="hljs-property">two</span>); <span class="hljs-comment">// OK</span></code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Another possibility is to distinguish the member types via <code>typeof</code> and/or instance checks:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union</span> = [<span class="hljs-built_in">string</span>] | <span class="hljs-built_in">number</span>;</code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">logHexValue</span>(<span class="hljs-params">x: Union</span>) {</code>
+<code>  <span class="hljs-keyword">if</span> (<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(x)) { <span class="hljs-comment">// discriminating check</span></code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x[<span class="hljs-number">0</span>]); <span class="hljs-comment">// OK</span></code>
+<code>  } <span class="hljs-keyword">else</span> {</code>
+<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x.<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)); <span class="hljs-comment">// OK</span></code>
+<code>  }</code>
+<code>}</code>
+</pre>
+
+    
+      
+</body>
+</html>

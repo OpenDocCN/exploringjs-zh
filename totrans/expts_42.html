@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>34 Conditional types (C ? T : F)</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>34 Conditional types (C ? T : F)</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_conditional-types.html">https://exploringjs.com/ts/book/ch_conditional-types.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#syntax-and-first-examples">34.1 Syntax and first examples</a>
+      <ol>
+        <li>
+          <a href="#chaining-conditional-types">34.1.1 Chaining conditional types</a>
+        </li>
+        <li>
+          <a href="#nesting-conditional-types">34.1.2 Nesting conditional types</a>
+        </li>
+        <li>
+          <a href="#example-only-wrapping-types-that-have-the-property-length">34.1.3 Example: only wrapping types that have the property <code>.length</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#distributivity-of-conditional-types">34.2 Conditional types are distributive over union types</a>
+      <ol>
+        <li>
+          <a href="#only-the-left-hand-side-of-extends-is-distributed">34.2.1 Only the left-hand side of <code>extends</code> is distributed</a>
+        </li>
+        <li>
+          <a href="#only-type-variables-trigger-distribution">34.2.2 Only type variables trigger distribution</a>
+        </li>
+        <li>
+          <a href="#preventing-distributivity">34.2.3 Preventing distributivity</a>
+        </li>
+        <li>
+          <a href="#unconditional-mapping">34.2.4 Technique: always applying</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#filtering-union-types">34.3 Filtering union types by conditionally returning <code>never</code></a>
+      <ol>
+        <li>
+          <a href="#the-built-in-utility-type-exclude-t-u">34.3.1 The built-in utility type <code>Exclude&lt;T, U&gt;</code></a>
+        </li>
+        <li>
+          <a href="#the-built-in-utility-type-extract-t-u">34.3.2 The built-in utility type <code>Extract&lt;T, U&gt;</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#extracting-parts-of-composite-types-via-infer-in-conditional-types">34.4 Extracting parts of composite types via <code>infer</code> in conditional types</a>
+    </li>
+    <li>
+      <a href="#writing-conditions-for-conditional-types">34.5 Writing conditions for conditional types</a>
+      <ol>
+        <li>
+          <a href="#checking-assignability">34.5.1 Is one type assignable to another one?</a>
+        </li>
+        <li>
+          <a href="#checking-if-a-generic-type-returns-a-particular-value">34.5.2 Checking if a generic type returns a particular value</a>
+        </li>
+        <li>
+          <a href="#checking-if-two-types-are-equal">34.5.3 Checking if two types are equal</a>
+        </li>
+        <li>
+          <a href="#logical-or">34.5.4 Logical Or</a>
+        </li>
+        <li>
+          <a href="#logical-and">34.5.5 Logical And</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#deferred-conditional-types">34.6 Deferred conditional types</a>
+    </li>
+    <li>
+      <a href="#sources-of-this-chapter-4">34.7 Sources of this chapter</a>
+    </li>
+  </ol>
+</nav>
+<p>A conditional type in TypeScript is an if-then-else expression: Its result is either one of two branches – which one depends on a condition. That is especially useful in generic types. Conditional types are also an essential tool for working with union types because they let us “loop” over them. Read on if you want to know how all of that works.</p>
+<h3 id="syntax-and-first-examples"><a class="heading-id-link" href="#syntax-and-first-examples">34.1 Syntax and first examples</a></h3>
+<p>A <em>conditional type</em> has the following syntax:</p>
+<pre class="language-ts">
+<code>«<span class="hljs-title class_">Sub</span>» <span class="hljs-keyword">extends</span> «<span class="hljs-title class_">Super</span>» ? «<span class="hljs-title class_">TrueBranch</span>» : «<span class="hljs-title class_">FalseBranch</span>»</code>
+</pre>
+<p>A conditional type has three parts:</p>
+<ul>
+  <li>
+    If <code>Sub</code> is assignable to <code>Super</code>… (condition)
+  </li>
+  <li>
+    …then the result of this type expression is <code>TrueBranch</code>.
+  </li>
+  <li>
+    Otherwise, the result is <code>FalseBranch</code>.
+  </li>
+</ul>
+<p>I like to format longer conditional types like this:</p>
+<pre class="language-ts">
+<code>«<span class="hljs-title class_">Sub</span>» <span class="hljs-keyword">extends</span> «<span class="hljs-title class_">Super</span>»</code>
+<code>  ? «<span class="hljs-title class_">TrueBranch</span>»</code>
+<code>  : «<span class="hljs-title class_">FalseBranch</span>»</code>
+</pre>
+<p>This is a first example of using conditional types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsNumber</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsNumber</span>&lt;<span class="hljs-number">123</span>&gt;, <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsNumber</span>&lt;<span class="hljs-built_in">number</span>&gt;, <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsNumber</span>&lt;<span class="hljs-string">'abc'</span>&gt;, <span class="hljs-literal">false</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h4 id="chaining-conditional-types"><a class="heading-id-link" href="#chaining-conditional-types">34.1.1 Chaining conditional types</a></h4>
+<p>Similarly to JavaScript’s ternary operator, we can also chain TypeScript’s conditional type operator:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">PrimitiveTypeName</span>&lt;T&gt; =</code>
+<code>  T <span class="hljs-keyword">extends</span> <span class="hljs-literal">undefined</span> ? <span class="hljs-string">'undefined'</span> :</code>
+<code>  T <span class="hljs-keyword">extends</span> <span class="hljs-literal">null</span> ? <span class="hljs-string">'null'</span> :</code>
+<code>  T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">boolean</span> ? <span class="hljs-string">'boolean'</span> :</code>
+<code>  T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> ? <span class="hljs-string">'number'</span> :</code>
+<code>  T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">bigint</span> ? <span class="hljs-string">'bigint'</span> :</code>
+<code>  T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span> ? <span class="hljs-string">'string'</span> :</code>
+<code>  <span class="hljs-built_in">never</span>;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">PrimitiveTypeName</span>&lt;<span class="hljs-number">123n</span>&gt;,</code>
+<code>    <span class="hljs-string">'bigint'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">PrimitiveTypeName</span>&lt;<span class="hljs-built_in">bigint</span>&gt;,</code>
+<code>    <span class="hljs-string">'bigint'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h4 id="nesting-conditional-types"><a class="heading-id-link" href="#nesting-conditional-types">34.1.2 Nesting conditional types</a></h4>
+<p>In the previous example, the true branch was always short and the false branch contained the next (nested) conditional type. That’s why each conditional type has the same indentation.</p>
+<p>However, if a nested conditional type appears in a true branch, then indentation helps humans read the code – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">RemoveEmptyStrings</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt; =</code>
+<code>  T <span class="hljs-keyword">extends</span> [</code>
+<code>    infer <span class="hljs-title class_">First</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>,</code>
+<code>    ...infer <span class="hljs-title class_">Rest</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;</code>
+<code>  ]</code>
+<code>    ? <span class="hljs-title class_">First</span> <span class="hljs-keyword">extends</span> <span class="hljs-string">''</span></code>
+<code>      ? <span class="hljs-title class_">RemoveEmptyStrings</span>&lt;<span class="hljs-title class_">Rest</span>&gt;</code>
+<code>      : [<span class="hljs-title class_">First</span>, ...<span class="hljs-title class_">RemoveEmptyStrings</span>&lt;<span class="hljs-title class_">Rest</span>&gt;]</code>
+<code>    : []</code>
+<code>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">RemoveEmptyStrings</span>&lt;[<span class="hljs-string">''</span>, <span class="hljs-string">'a'</span>, <span class="hljs-string">''</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">''</span>]&gt;,</code>
+<code>  [<span class="hljs-string">"a"</span>, <span class="hljs-string">"b"</span>]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>For more information on this code, see the <a href="ch_computing-with-tuple-types.html#filtering-tuples">“Filtering a tuple” (§37.6.4.2)</a> – from which this example was taken.</p>
+<h4 id="example-only-wrapping-types-that-have-the-property-length"><a class="heading-id-link" href="#example-only-wrapping-types-that-have-the-property-length">34.1.3 Example: only wrapping types that have the property <code>.length</code></a></h4>
+<p>In the following example, <code>Wrap&lt;&gt;</code> only wraps types in Promises if they have the property <code>.length</code> whose values are numbers:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">WrapLen</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> { <span class="hljs-attr">length</span>: <span class="hljs-built_in">number</span> } ? <span class="hljs-title class_">Promise</span>&lt;T&gt; : T;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapLen</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>    <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapLen</span>&lt;<span class="hljs-built_in">boolean</span>&gt;,</code>
+<code>    <span class="hljs-built_in">boolean</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h3 id="distributivity-of-conditional-types"><a class="heading-id-link" href="#distributivity-of-conditional-types">34.2 Conditional types are distributive over union types</a></h3>
+<p>Conditional types are <a href="https://en.wikipedia.org/wiki/Distributive_property"><em>distributive</em></a> over union types: Applying a conditional type <code>C</code> to a union type <code>U</code> is the same as the union of applying <code>C</code> to each element of <code>U</code>. This is an example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">WrapLen</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> { <span class="hljs-attr">length</span>: <span class="hljs-built_in">number</span> } ? <span class="hljs-title class_">Promise</span>&lt;T&gt; : T;</code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">WrapLen</span>&lt;<span class="hljs-string">'hello'</span> | <span class="hljs-built_in">boolean</span> | <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;&gt;, <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'hello'</span>&gt; | <span class="hljs-built_in">boolean</span> | <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;&gt;</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>Distributivity enables us to “loop” over the elements of the union type in line A: <code>WrapLen&lt;T&gt;</code> is applied to each element and only wraps values that have a property <code>.length</code> whose value is a number.</p>
+<p>For comparison, this is what happens with non-union types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _2 = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapLen</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>    <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapLen</span>&lt;<span class="hljs-built_in">boolean</span>&gt;,</code>
+<code>    <span class="hljs-built_in">boolean</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h4 id="only-the-left-hand-side-of-extends-is-distributed"><a class="heading-id-link" href="#only-the-left-hand-side-of-extends-is-distributed">34.2.1 Only the left-hand side of <code>extends</code> is distributed</a></h4>
+<p>We have already seen that conditional types are distributed over the left-hand side of <code>extends</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Left</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">any</span> ? <span class="hljs-title class_">Promise</span>&lt;T&gt; : <span class="hljs-built_in">never</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Left</span>&lt;<span class="hljs-string">'a'</span>|<span class="hljs-string">'b'</span>&gt;,</code>
+<code>  <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'a'</span>&gt; | <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'b'</span>&gt;</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>What about the right-hand side, though? There, no distribution occurs:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Right</span>&lt;T&gt; = <span class="hljs-built_in">any</span> <span class="hljs-keyword">extends</span> T ? <span class="hljs-title class_">Promise</span>&lt;T&gt; : <span class="hljs-built_in">never</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Right</span>&lt;<span class="hljs-string">'a'</span>|<span class="hljs-string">'b'</span>&gt;,</code>
+<code>  <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span>&gt;</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="only-type-variables-trigger-distribution"><a class="heading-id-link" href="#only-type-variables-trigger-distribution">34.2.2 Only type variables trigger distribution</a></h4>
+<p>If we directly mention a union type in the condition of a conditional type then no distribution happens:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsTrue</span> = <span class="hljs-literal">false</span> | <span class="hljs-literal">true</span> <span class="hljs-keyword">extends</span> <span class="hljs-literal">true</span> ? <span class="hljs-string">'yes'</span> : <span class="hljs-string">'no'</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">IsTrue</span>,</code>
+<code>  <span class="hljs-string">'no'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>Compare that with using the type variable <code>T</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsTrue</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-literal">true</span> ? <span class="hljs-string">'yes'</span> : <span class="hljs-string">'no'</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">IsTrue</span>&lt;<span class="hljs-literal">false</span> | <span class="hljs-literal">true</span>&gt;,</code>
+<code>  <span class="hljs-string">'no'</span> | <span class="hljs-string">'yes'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="preventing-distributivity"><a class="heading-id-link" href="#preventing-distributivity">34.2.3 Preventing distributivity</a></h4>
+<p>Consider the following generic type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsString</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span> ? <span class="hljs-string">'yes'</span> : <span class="hljs-string">'no'</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsString</span>&lt;<span class="hljs-built_in">string</span>&gt;, <span class="hljs-string">'yes'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsString</span>&lt;<span class="hljs-built_in">number</span>&gt;, <span class="hljs-string">'no'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsString</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>&gt;, <span class="hljs-string">'yes'</span> | <span class="hljs-string">'no'</span> <span class="hljs-comment">// (A)</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>In line A, we can see that <code>IsString</code> is distributive – which makes sense since we have used a conditional type to define it. But that is not what we want in this case: We’d like <code>IsString</code> to tell us that the complete type <code>string|number</code> is <em>not</em> assignable to <code>string</code>. This is how we can prevent distributivity:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsString</span>&lt;T&gt; = [T] <span class="hljs-keyword">extends</span> [<span class="hljs-built_in">string</span>] ? <span class="hljs-string">'yes'</span> : <span class="hljs-string">'no'</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsString</span>&lt;<span class="hljs-built_in">string</span>&gt;, <span class="hljs-string">'yes'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsString</span>&lt;<span class="hljs-built_in">number</span>&gt;, <span class="hljs-string">'no'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsString</span>&lt;<span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>&gt;, <span class="hljs-string">'no'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>A conditional type is only distributive if the left-hand side of <code>extends</code> is a bare type variable. By wrapping both the left-hand side and the right-hand side of <code>extends</code>, the intended check still happens but there is no distribution.</p>
+<h4 id="unconditional-mapping"><a class="heading-id-link" href="#unconditional-mapping">34.2.4 Technique: always applying</a></h4>
+<p>Conditional types are an important tool for working with union types because they enable us to loop over them. Sometimes, we simply want to unconditionally map each union element to a new type. Then we can use the following technique:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">AlwaysWrap</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">any</span> ? [T] : <span class="hljs-built_in">never</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">AlwaysWrap</span>&lt;<span class="hljs-built_in">boolean</span>&gt;,</code>
+<code>  [<span class="hljs-literal">false</span>] | [<span class="hljs-literal">true</span>]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>Note how type <code>boolean</code> really is just the union <code>false | true</code>.</p>
+<p>The following (seemingly simpler) approach does <em>not</em> work – <code>T</code> needs to be part of the condition. Otherwise, the conditional type is not distributive.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">AlwaysWrap</span>&lt;T&gt; = <span class="hljs-literal">true</span> <span class="hljs-keyword">extends</span> <span class="hljs-literal">true</span> ? [T] : <span class="hljs-built_in">never</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">AlwaysWrap</span>&lt;<span class="hljs-built_in">boolean</span>&gt;,</code>
+<code>  [<span class="hljs-built_in">boolean</span>]</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="filtering-union-types"><a class="heading-id-link" href="#filtering-union-types">34.3 Filtering union types by conditionally returning <code>never</code></a></h3>
+<p>Interpreted as a set, type <code>never</code> is empty. Therefore, if it appears in a union type, it is ignored:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-built_in">never</span>,</code>
+<code>  <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>That means we can use <code>never</code> to ignore components of a union type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">DropNumber</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> ? <span class="hljs-built_in">never</span> : T;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">DropNumber</span>&lt;<span class="hljs-number">1</span> | <span class="hljs-string">'a'</span> | <span class="hljs-number">2</span> | <span class="hljs-string">'b'</span>&gt;,</code>
+<code>  <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>This is what happens if we swap the type expressions of the true branch and the false branch:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">KeepNumber</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> ? T : <span class="hljs-built_in">never</span>;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">KeepNumber</span>&lt;<span class="hljs-number">1</span> | <span class="hljs-string">'a'</span> | <span class="hljs-number">2</span> | <span class="hljs-string">'b'</span>&gt;,</code>
+<code>  <span class="hljs-number">1</span> | <span class="hljs-number">2</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="the-built-in-utility-type-exclude-t-u"><a class="heading-id-link" href="#the-built-in-utility-type-exclude-t-u">34.3.1 The built-in utility type <code>Exclude&lt;T, U&gt;</code></a></h4>
+<p>Excluding types from a union is such a common operation that TypeScript provides the built-in utility type <code>Exclude&lt;T, U&gt;</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Exclude from T those types that are assignable to U</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Exclude</span>&lt;T, U&gt; = T <span class="hljs-keyword">extends</span> U ? <span class="hljs-built_in">never</span> : T;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union</span> = <span class="hljs-number">1</span> | <span class="hljs-string">'a'</span> | <span class="hljs-number">2</span> | <span class="hljs-string">'b'</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Exclude</span>&lt;<span class="hljs-title class_">Union</span>, <span class="hljs-built_in">number</span>&gt;,</code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Exclude</span>&lt;<span class="hljs-title class_">Union</span>, <span class="hljs-number">1</span> | <span class="hljs-string">'a'</span> | <span class="hljs-string">'x'</span>&gt;,</code>
+<code>    <span class="hljs-number">2</span> | <span class="hljs-string">'b'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Interpreted as a set operation, <code>Exclude&lt;T, U&gt;</code> is <code>T − U</code>.</p>
+<p>To see an interesting use case for <code>Exclude</code>, check out <a href="ch_unions-object-types.html#extracting-subtype-of-discriminated-union">“Extracting a subtype of a discriminated union” (§19.2.3)</a>.</p>
+<h4 id="the-built-in-utility-type-extract-t-u"><a class="heading-id-link" href="#the-built-in-utility-type-extract-t-u">34.3.2 The built-in utility type <code>Extract&lt;T, U&gt;</code></a></h4>
+<p>The inverse of <code>Exclude&lt;T, U&gt;</code> is <code>Extract&lt;T, U&gt;</code> (which is also built into TypeScript):</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Extract from T those types that are assignable to U</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Extract</span>&lt;T, U&gt; = T <span class="hljs-keyword">extends</span> U ? T : <span class="hljs-built_in">never</span>;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Union</span> = <span class="hljs-number">1</span> | <span class="hljs-string">'a'</span> | <span class="hljs-number">2</span> | <span class="hljs-string">'b'</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Extract</span>&lt;<span class="hljs-title class_">Union</span>, <span class="hljs-built_in">number</span>&gt;,</code>
+<code>    <span class="hljs-number">1</span> | <span class="hljs-number">2</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Extract</span>&lt;<span class="hljs-title class_">Union</span>, <span class="hljs-number">1</span> | <span class="hljs-string">'a'</span> | <span class="hljs-string">'x'</span>&gt;,</code>
+<code>    <span class="hljs-number">1</span> | <span class="hljs-string">'a'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Interpreted as a set operation, <code>Extract&lt;T, U&gt;</code> is <code>T ∩ U</code>.</p>
+<h3 id="extracting-parts-of-composite-types-via-infer-in-conditional-types"><a class="heading-id-link" href="#extracting-parts-of-composite-types-via-infer-in-conditional-types">34.4 Extracting parts of composite types via <code>infer</code> in conditional types</a></h3>
+<p><code>infer</code> lets us extract parts of compound types and can only be used inside the <code>extends</code> clause of a conditional type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ElemType</span>&lt;<span class="hljs-title class_">Arr</span>&gt; = <span class="hljs-title class_">Arr</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Array</span>&lt;infer <span class="hljs-title class_">Elem</span>&gt; ? <span class="hljs-title class_">Elem</span> : <span class="hljs-built_in">never</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">ElemType</span>&lt;<span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;, <span class="hljs-built_in">string</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>For more information, see <a href="ch_infer-keyword.html#ch_infer-keyword">“Extracting parts of compound types via <code>infer</code>” (§35)</a>.</p>
+<h3 id="writing-conditions-for-conditional-types"><a class="heading-id-link" href="#writing-conditions-for-conditional-types">34.5 Writing conditions for conditional types</a></h3>
+<h4 id="checking-assignability"><a class="heading-id-link" href="#checking-assignability">34.5.1 Is one type assignable to another one?</a></h4>
+<p>We can use a conditional type to implement an assignability check:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsAssignableFrom</span>&lt;A, B&gt; = B <span class="hljs-keyword">extends</span> A ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-comment">// Type `123` is assignable to type `number`</span></code>
+<code>    <span class="hljs-title class_">IsAssignableFrom</span>&lt;<span class="hljs-built_in">number</span>, <span class="hljs-number">123</span>&gt;,</code>
+<code>    <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-comment">// Type `'abc'` is not assignable to type `number`</span></code>
+<code>    <span class="hljs-title class_">IsAssignableFrom</span>&lt;<span class="hljs-built_in">number</span>, <span class="hljs-string">'abc'</span>&gt;,</code>
+<code>    <span class="hljs-literal">false</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Why is this correct? Recall that, in the condition of a conditional type, <code>A extends B</code> checks if <code>A</code> is assignable to <code>B</code>.</p>
+<h4 id="checking-if-a-generic-type-returns-a-particular-value"><a class="heading-id-link" href="#checking-if-a-generic-type-returns-a-particular-value">34.5.2 Checking if a generic type returns a particular value</a></h4>
+<p>In the following code, we check if <code>Str</code> is equal to <code>Uppercase&lt;Str&gt;</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsUppercase</span>&lt;<span class="hljs-title class_">Str</span> <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span>&gt; = <span class="hljs-title class_">Str</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Uppercase</span>&lt;<span class="hljs-title class_">Str</span>&gt;</code>
+<code>  ? <span class="hljs-literal">true</span></code>
+<code>  : <span class="hljs-literal">false</span>;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsUppercase</span>&lt;<span class="hljs-string">'SUNSHINE'</span>&gt;, <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsUppercase</span>&lt;<span class="hljs-string">'SUNSHINe'</span>&gt;, <span class="hljs-literal">false</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>We don’t really check equality, we only check if <code>Str</code> is assignable to <code>Uppercase&lt;Str&gt;</code> – via <code>extends</code>.</p>
+<p>There is one thing to watch out for – <code>never</code> is assignable to all types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-built_in">never</span> <span class="hljs-keyword">extends</span> <span class="hljs-literal">true</span> ? <span class="hljs-string">'yes'</span> : <span class="hljs-string">'no'</span>,</code>
+<code>    <span class="hljs-string">'yes'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-built_in">never</span> <span class="hljs-keyword">extends</span> <span class="hljs-literal">false</span> ? <span class="hljs-string">'yes'</span> : <span class="hljs-string">'no'</span>,</code>
+<code>    <span class="hljs-string">'yes'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>For more information on <code>Uppercase</code>, see <a href="ch_template-literal-types.html#utility-types-for-strings">“Utility types for string manipulation” (§38.3)</a>.</p>
+<h4 id="checking-if-two-types-are-equal"><a class="heading-id-link" href="#checking-if-two-types-are-equal">34.5.3 Checking if two types are equal</a></h4>
+<p>In the next example, we use the generic utility type <code>Equal</code> from <a href="ch_book-notation.html#notation-generic-type-Assert"><code>asserttt</code></a> to check if two types are equal (line A):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">SimplifyTuple</span>&lt;<span class="hljs-title class_">Tup</span>&gt; =</code>
+<code>  <span class="hljs-title class_">Tup</span> <span class="hljs-keyword">extends</span> [infer A, infer B]</code>
+<code>  ? (<span class="hljs-title class_">Equal</span>&lt;A, B&gt; <span class="hljs-keyword">extends</span> <span class="hljs-literal">true</span> ? [A] : [A, B]) <span class="hljs-comment">// (A)</span></code>
+<code>  : <span class="hljs-built_in">never</span></code>
+<code>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">SimplifyTuple</span>&lt;[<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]&gt;,</code>
+<code>    [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">SimplifyTuple</span>&lt;[<span class="hljs-string">'a'</span>, <span class="hljs-string">'a'</span>]&gt;,</code>
+<code>    [<span class="hljs-string">'a'</span>]</code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Note that we check if the result of <code>Equal&lt;A, B&gt;</code> is assignable to <code>true</code>.</p>
+<h4 id="logical-or"><a class="heading-id-link" href="#logical-or">34.5.4 Logical Or</a></h4>
+<p>To check if <code>X || Y</code>, we check:</p>
+<pre class="language-ts">
+<code>X ? <span class="hljs-literal">true</span></code>
+<code>: Y ? <span class="hljs-literal">true</span></code>
+<code>: <span class="hljs-literal">false</span></code>
+</pre>
+<p>Example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ContainsNumber</span>&lt;<span class="hljs-title class_">Tup</span>&gt; =</code>
+<code>  <span class="hljs-title class_">Tup</span> <span class="hljs-keyword">extends</span> [infer A, infer B]</code>
+<code>  ? A <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> ? <span class="hljs-literal">true</span></code>
+<code>    : B <span class="hljs-keyword">extends</span> <span class="hljs-built_in">number</span> ? <span class="hljs-literal">true</span></code>
+<code>    : <span class="hljs-literal">false</span></code>
+<code>  : <span class="hljs-built_in">never</span></code>
+<code>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">ContainsNumber</span>&lt;[<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]&gt;,</code>
+<code>    <span class="hljs-literal">false</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">ContainsNumber</span>&lt;[<span class="hljs-number">1</span>, <span class="hljs-string">'a'</span>]&gt;,</code>
+<code>    <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">ContainsNumber</span>&lt;[<span class="hljs-built_in">number</span>, <span class="hljs-string">'a'</span>]&gt;,</code>
+<code>    <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h4 id="logical-and"><a class="heading-id-link" href="#logical-and">34.5.5 Logical And</a></h4>
+<p>To check if <code>X &amp;&amp; Y</code>, we can use a trick and check <code>[X, Y]</code> via <code>extends</code> – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">type</span> <span class="hljs-title class_">TEqual</span>&lt;X, Y&gt; =</code>
+<code>  [<span class="hljs-title class_">IsAny</span>&lt;X&gt;, <span class="hljs-title class_">IsAny</span>&lt;Y&gt;] <span class="hljs-keyword">extends</span> [<span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>] ? <span class="hljs-literal">true</span></code>
+<code>  : [<span class="hljs-title class_">IsAny</span>&lt;X&gt;, <span class="hljs-title class_">IsAny</span>&lt;Y&gt;] <span class="hljs-keyword">extends</span> [<span class="hljs-literal">false</span>, <span class="hljs-literal">false</span>] ? <span class="hljs-title class_">MutuallyAssignable</span>&lt;X, Y&gt;</code>
+<code>  : <span class="hljs-literal">false</span></code>
+</pre>
+<p>For more information on this code, see <a href="ch_testing-types.html#TEqual">“Ensuring the <code>any</code> is only equal to itself” (§39.3.3)</a>.</p>
+<h3 id="deferred-conditional-types"><a class="heading-id-link" href="#deferred-conditional-types">34.6 Deferred conditional types</a></h3>
+<p>To conclude, let’s look at an interesting phenomenon: Normally, the result of a conditional type is either its true branch or its false branch. However, if its condition contains one or more type variables that don’t have a value yet then it is <em>deferred</em> and not turned into a simpler value – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StringOrNumber</span>&lt;<span class="hljs-title class_">Kind</span> <span class="hljs-keyword">extends</span> <span class="hljs-string">'string'</span> | <span class="hljs-string">'number'</span>&gt; =</code>
+<code>  <span class="hljs-title class_">Kind</span> <span class="hljs-keyword">extends</span> <span class="hljs-string">'string'</span> ? <span class="hljs-built_in">string</span> : <span class="hljs-built_in">number</span></code>
+<code>;</code>
+<code/>
+<code><span class="hljs-keyword">function</span> randomValue&lt;K <span class="hljs-keyword">extends</span> <span class="hljs-string">'string'</span> | <span class="hljs-string">'number'</span>&gt;(<span class="hljs-attr">kind</span>: K) {</code>
+<code>  <span class="hljs-keyword">type</span> <span class="hljs-title class_">Result</span> = <span class="hljs-title class_">StringOrNumber</span>&lt;K&gt;;</code>
+<code>  <span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Result</span>,</code>
+<code>    K <span class="hljs-keyword">extends</span> <span class="hljs-string">'string'</span> ? <span class="hljs-built_in">string</span> : <span class="hljs-built_in">number</span> <span class="hljs-comment">// (A)</span></code>
+<code>  &gt;&gt;;</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>In line A, we can see that <code>Result</code> is neither <code>string</code> nor <code>number</code>, but a deferred conditional type.</p>
+<h3 id="sources-of-this-chapter-4"><a class="heading-id-link" href="#sources-of-this-chapter-4">34.7 Sources of this chapter</a></h3>
+<ul>
+  <li>
+    Chapter <a href="https://www.typescriptlang.org/docs/handbook/2/conditional-types.html">“Conditional Types”</a> in the TypeScript Handbook
+  </li>
+  <li>
+    Section <a href="https://www.typescriptlang.org/docs/handbook/advanced-types.html#conditional-types">“Conditional Types”</a> in the TypeScript Handbook (version 1)
+    <ul>
+      <li>
+        Describes deferred conditional types.
+      </li>
+    </ul>
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

@@ -1,0 +1,927 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>36 Mapped types {[K in U]: X}</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>36 Mapped types {[K in U]: X}</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_mapped-types.html">https://exploringjs.com/ts/book/ch_mapped-types.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#basic-mapped-types">36.1 Basic mapped types</a>
+      <ol>
+        <li>
+          <a href="#example-finite-set-of-keys">36.1.1 Example: finite set of keys</a>
+        </li>
+        <li>
+          <a href="#index-signature-vs-mapped-type">36.1.2 Index signature vs. mapped type</a>
+        </li>
+        <li>
+          <a href="#transforming-an-object-type-via-a-mapped-type">36.1.3 Transforming an object type via a mapped type</a>
+        </li>
+        <li>
+          <a href="#mapping-preserves-the-kind-of-type-tuple-array-object-etc">36.1.4 Mapping preserves the kind of type (tuple, array, object, etc.)</a>
+        </li>
+        <li>
+          <a href="#example-making-an-interface-asynchronous">36.1.5 Example: making an interface asynchronous</a>
+        </li>
+        <li>
+          <a href="#example-adding-keys-to-an-enum-object">36.1.6 Example: adding keys to an enum object</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#key-remapping">36.2 Changing property keys via key remapping (<code>as</code>)</a>
+      <ol>
+        <li>
+          <a href="#if-we-use-key-remapping-the-result-is-always-an-object-literal-type">36.2.1 If we use key remapping, the result is always an object literal type</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#filtering-properties">36.3 Filtering properties</a>
+      <ol>
+        <li>
+          <a href="#filtering-properties-via-key-remapping-as">36.3.1 Filtering properties via key remapping (<code>as</code>)</a>
+        </li>
+        <li>
+          <a href="#filtering-properties-by-filtering-key-unions">36.3.2 Filtering properties by filtering key unions</a>
+        </li>
+        <li>
+          <a href="#built-in-utility-type-for-keeping-properties-pick-t-keystokeep">36.3.3 Built-in utility type for keeping properties: <code>Pick&lt;T, KeysToKeep&gt;</code></a>
+        </li>
+        <li>
+          <a href="#built-in-utility-type-for-filtering-out-properties-omit-t-keys-to-fil-ter-out">36.3.4 Built-in utility type for filtering out properties: <code>Omit&lt;T, KeysToFilterOut&gt;</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#changing-modifiers-via-mapped-types">36.4 Adding and removing modifiers via mapped types</a>
+      <ol>
+        <li>
+          <a href="#example-adding-the-optional-modifier">36.4.1 Example: adding the optional modifier (<code>?</code>)</a>
+        </li>
+        <li>
+          <a href="#example-removing-the-optional-modifier">36.4.2 Example: removing the optional modifier (<code>?</code>)</a>
+        </li>
+        <li>
+          <a href="#example-adding-the-readonly-modifier">36.4.3 Example: adding the <code>readonly</code> modifier</a>
+        </li>
+        <li>
+          <a href="#example-removing-the-readonly-modifier">36.4.4 Example: removing the <code>readonly</code> modifier</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#detecting-the-property-modifiers-readonly-and-optional">36.5 Detecting the property modifiers <code>readonly</code> and <code>?</code> (optional)</a>
+      <ol>
+        <li>
+          <a href="#detecting-if-a-property-is-read-only">36.5.1 Detecting if a property is read-only</a>
+        </li>
+        <li>
+          <a href="#detecting-if-a-property-is-optional">36.5.2 Detecting if a property is optional</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#utility-type-record">36.6 <code>Record</code> is a mapped type</a>
+    </li>
+    <li>
+      <a href="#source-of-this-chapter">36.7 Source of this chapter</a>
+    </li>
+  </ol>
+</nav>
+<p>The most common way of using a mapped type is to produce a new version of an input type (usually an object type or a tuple type) by looping over its keys.</p>
+<h3 id="basic-mapped-types"><a class="heading-id-link" href="#basic-mapped-types">36.1 Basic mapped types</a></h3>
+<p>A basic mapped type looks like this (the name <code>Key</code> is just an example; we can use any identifier):</p>
+<pre class="language-ts">
+<code>{</code>
+<code>  [<span class="hljs-title class_">Key</span> <span class="hljs-keyword">in</span> «<span class="hljs-title class_">KeySet</span>»]: «<span class="hljs-title class_">PropValue</span>»</code>
+<code>}</code>
+</pre>
+<p>A mapped type creates an object type. It loops over the elements of <code>«KeySet»</code> and creates one property per iteration:</p>
+<ul>
+  <li>
+    <code>Key</code> is the current element of <code>«KeySet»</code>. It determines the property key. (There are ways to use a different key or to skip a property. We’ll explore those later.)
+  </li>
+  <li>
+    The expression after the colon determines the property value and can use <code>Key</code>.
+  </li>
+</ul>
+<h4 id="example-finite-set-of-keys"><a class="heading-id-link" href="#example-finite-set-of-keys">36.1.1 Example: finite set of keys</a></h4>
+<p>The following mapped type loops over a finite set of keys:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  [K <span class="hljs-keyword">in</span> <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span>]: <span class="hljs-built_in">number</span></code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Obj</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">b</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">c</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="index-signature-vs-mapped-type"><a class="heading-id-link" href="#index-signature-vs-mapped-type">36.1.2 Index signature vs. mapped type</a></h4>
+<p>To understand how an index signature is different from a mapped type, let’s first review what an index signature is.</p>
+<h5 id="an-index-signature-represents-a-potentially-infinite-set-of-properties"><a class="heading-id-link" href="#an-index-signature-represents-a-potentially-infinite-set-of-properties">36.1.2.1 An index signature represents a potentially infinite set of properties</a></h5>
+<p>This is an example of an index signature:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StrToNum</span> = {</code>
+<code>  [<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">number</span>, <span class="hljs-comment">// index signature</span></code>
+<code>};</code>
+</pre>
+<p>An index signature represents a potentially infinite set of properties. In this case:</p>
+<ul>
+  <li>
+    <p>The <em>binding identifier</em> <code>key</code> is ignored and can be any identifier. It distinguishes an index signature from <a href="ch_typing-objects.html#computed-property-keys">a property with a computed key</a>.</p>
+  </li>
+  <li>
+    <p>Each property has a <code>string</code> key. The property type must be infinite – e.g.: <code>string</code>, <code>number</code>, <code>symbol</code>, a template string literal with an infinite primitive type (such as <code>`${bigint}`</code>)</p>
+  </li>
+  <li>
+    <p>Each property has a value of type <code>number</code>.</p>
+  </li>
+</ul>
+<p>In other words: <code>StrToNum</code> is the type of objects, used as dictionaries from strings to numbers – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj1</span>: <span class="hljs-title class_">StrToNum</span> = {};</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj2</span>: <span class="hljs-title class_">StrToNum</span> = { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span> };</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj3</span>: <span class="hljs-title class_">StrToNum</span> = { <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">hello</span>: <span class="hljs-number">3</span> };</code>
+</pre>
+<p>More information: <a href="ch_typing-objects.html#index-signatures">“Index signatures: objects as dictionaries” (§18.7)</a>.</p>
+<h5 id="a-mapped-type-is-a-type-level-function"><a class="heading-id-link" href="#a-mapped-type-is-a-type-level-function">36.1.2.2 A mapped type is a type-level function</a></h5>
+<p>In contrast, a mapped type is a type-level function. It maps property keys to an object literal type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-comment">// Type-level function applied to a finite type</span></code>
+<code>    {</code>
+<code>      [K <span class="hljs-keyword">in</span> <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-string">'c'</span>]: <span class="hljs-built_in">number</span></code>
+<code>    },</code>
+<code>    <span class="hljs-comment">// Result: object literal type with normal properties</span></code>
+<code>    {</code>
+<code>      <span class="hljs-attr">a</span>: <span class="hljs-built_in">number</span>,</code>
+<code>      <span class="hljs-attr">b</span>: <span class="hljs-built_in">number</span>,</code>
+<code>      <span class="hljs-attr">c</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    }</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-comment">// Type-level function applied to an infinite type</span></code>
+<code>    {</code>
+<code>      [K <span class="hljs-keyword">in</span> <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">number</span></code>
+<code>    },</code>
+<code>    <span class="hljs-comment">// Result: object literal type with index signature</span></code>
+<code>    {</code>
+<code>      [<span class="hljs-attr">x</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">number</span></code>
+<code>    }</code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Note an important difference:</p>
+<ul>
+  <li>
+    <code>[K in string]</code>: <code>K</code> is a type variable that can be used after the colon.
+  </li>
+  <li>
+    <code>[x: string]</code>: <code>x</code> doesn’t provide any functionality (it only serves as a syntactic marker), but it is similar to a normal variable.
+  </li>
+</ul>
+<h4 id="transforming-an-object-type-via-a-mapped-type"><a class="heading-id-link" href="#transforming-an-object-type-via-a-mapped-type">36.1.3 Transforming an object type via a mapped type</a></h4>
+<p>The most common use case for a mapped type is transforming an object type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Arrayify</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof <span class="hljs-title class_">Obj</span>]: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">Obj</span>[K]&gt; <span class="hljs-comment">// (A)</span></code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">InputObj</span> = {</code>
+<code>  <span class="hljs-attr">str</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">num</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Arrayify</span>&lt;<span class="hljs-title class_">InputObj</span>&gt;,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">str</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>    <span class="hljs-attr">num</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>In line A, we used <code>keyof Obj</code> to compute the keys of <code>Obj</code> and iterate over them. We used the <a href="ch_computing-with-types-overview.html#indexed-access-types">indexed access type</a> <code>Obj[K]</code> and the generic type <code>Array</code> to define the property values.</p>
+<h4 id="mapping-preserves-the-kind-of-type-tuple-array-object-etc"><a class="heading-id-link" href="#mapping-preserves-the-kind-of-type-tuple-array-object-etc">36.1.4 Mapping preserves the kind of type (tuple, array, object, etc.)</a></h4>
+<p>The input of a mapped type (tuple, array, object, etc.) determines what the output looks like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">WrapValues</span>&lt;T&gt; = {</code>
+<code>  [<span class="hljs-title class_">Key</span> <span class="hljs-keyword">in</span> keyof T]: <span class="hljs-title class_">Promise</span>&lt;T[<span class="hljs-title class_">Key</span>]&gt;</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-comment">// Read-only tuple in, read-only tuple out</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapValues</span>&lt;<span class="hljs-keyword">readonly</span> [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]&gt;,</code>
+<code>    <span class="hljs-keyword">readonly</span> [<span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'a'</span>&gt;, <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'b'</span>&gt;]</code>
+<code>  &gt;&gt;,</code>
+<code/>
+<code>  <span class="hljs-comment">// Tuple labels are preserved</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapValues</span>&lt;[<span class="hljs-attr">labelA</span>: <span class="hljs-string">'a'</span>, <span class="hljs-attr">labelB</span>: <span class="hljs-string">'b'</span>]&gt;,</code>
+<code>    [<span class="hljs-attr">labelA</span>: <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'a'</span>&gt;, <span class="hljs-attr">labelB</span>: <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-string">'b'</span>&gt;]</code>
+<code>  &gt;&gt;,</code>
+<code/>
+<code>  <span class="hljs-comment">// Array in, Array out</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapValues</span>&lt;<span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;,</code>
+<code>    <span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;</code>
+<code>  &gt;&gt;,</code>
+<code/>
+<code>  <span class="hljs-comment">// ReadonlyArray in, ReadonlyArray out</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapValues</span>&lt;<span class="hljs-title class_">ReadonlyArray</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;,</code>
+<code>    <span class="hljs-title class_">ReadonlyArray</span>&lt;<span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;&gt;</code>
+<code>  &gt;&gt;,</code>
+<code/>
+<code>  <span class="hljs-comment">// Object in, object out</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapValues</span>&lt;{ <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> }&gt;,</code>
+<code>    { <span class="hljs-attr">a</span>: <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-number">1</span>&gt;, <span class="hljs-attr">b</span>: <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-number">2</span>&gt; }</code>
+<code>  &gt;&gt;,</code>
+<code/>
+<code>  <span class="hljs-comment">// Read-only properties are preserved</span></code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">WrapValues</span>&lt;{ <span class="hljs-keyword">readonly</span> <span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-keyword">readonly</span> <span class="hljs-attr">b</span>: <span class="hljs-number">2</span> }&gt;,</code>
+<code>    { <span class="hljs-keyword">readonly</span> <span class="hljs-attr">a</span>: <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-number">1</span>&gt;, <span class="hljs-keyword">readonly</span> <span class="hljs-attr">b</span>: <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-number">2</span>&gt; }</code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h4 id="example-making-an-interface-asynchronous"><a class="heading-id-link" href="#example-making-an-interface-asynchronous">36.1.5 Example: making an interface asynchronous</a></h4>
+<p>The generic type <code>Asyncify&lt;Intf&gt;</code> converts the synchronous interface <code>Intf</code> into an asynchronous interface: </p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">SyncService</span> {</code>
+<code>  <span class="hljs-title function_">factorize</span>(<span class="hljs-attr">num</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;;</code>
+<code>  <span class="hljs-title function_">createDigest</span>(<span class="hljs-attr">text</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">string</span>;</code>
+<code>}</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">AsyncService</span> = <span class="hljs-title class_">Asyncify</span>&lt;<span class="hljs-title class_">SyncService</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">AsyncService</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">factorize</span>: <span class="hljs-function">(<span class="hljs-params">num: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">number</span>&gt;&gt;,</code>
+<code>    <span class="hljs-attr">createDigest</span>: <span class="hljs-function">(<span class="hljs-params">text: <span class="hljs-built_in">string</span></span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>This is the definition of <code>Asyncify</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Asyncify</span>&lt;<span class="hljs-title class_">Intf</span>&gt; = {</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof <span class="hljs-title class_">Intf</span>]: <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-title class_">Intf</span>[K] <span class="hljs-keyword">extends</span> (...<span class="hljs-attr">args</span>: infer A) =&gt; infer R <span class="hljs-comment">// (B)</span></code>
+<code>      ? <span class="hljs-function">(<span class="hljs-params">...args: A</span>) =&gt;</span> <span class="hljs-title class_">Promise</span>&lt;R&gt; <span class="hljs-comment">// (C)</span></code>
+<code>      : <span class="hljs-title class_">Intf</span>[K] <span class="hljs-comment">// (D)</span></code>
+<code>};</code>
+</pre>
+<ul>
+  <li>
+    We use a mapped type to iterate over the properties of <code>Intf</code> (line A).
+  </li>
+  <li>
+    Per property with key <code>K</code> we check if the property value <code>Intf[K]</code> is a function or method (line B).
+    <ul>
+      <li>
+        If yes then we use <a href="ch_infer-keyword.html#ch_infer-keyword">the <code>infer</code> keyword</a> to extract the arguments into the type variable <code>A</code> and the return type into the type variable <code>R</code>. We use those variables to create a new property value where the return type <code>R</code> is wrapped in a Promise (line C).
+      </li>
+      <li>
+        If no, then the property value is not changed (line D).
+      </li>
+    </ul>
+  </li>
+</ul>
+<h4 id="example-adding-keys-to-an-enum-object"><a class="heading-id-link" href="#example-adding-keys-to-an-enum-object">36.1.6 Example: adding keys to an enum object</a></h4>
+<p>Consider the following enum object:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> tokenDefs = {</code>
+<code>  <span class="hljs-attr">number</span>: {</code>
+<code>    <span class="hljs-attr">key</span>: <span class="hljs-string">'number'</span>,</code>
+<code>    <span class="hljs-attr">re</span>: <span class="hljs-regexp">/[0-9]+/</span>,</code>
+<code>    <span class="hljs-attr">description</span>: <span class="hljs-string">'integer number'</span>,</code>
+<code>  },</code>
+<code>  <span class="hljs-attr">identifier</span>: {</code>
+<code>    <span class="hljs-attr">key</span>: <span class="hljs-string">'identifier'</span>,</code>
+<code>    <span class="hljs-attr">re</span>: <span class="hljs-regexp">/[a-z]+/</span>,</code>
+<code>  },</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+</pre>
+<p>We’d like to avoid having to redundantly mention <code>.key</code>. This is what adding them via a function <code>addKey()</code> would look like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> tokenDefs = <span class="hljs-title function_">addKeys</span>({</code>
+<code>  <span class="hljs-attr">number</span>: {</code>
+<code>    <span class="hljs-attr">re</span>: <span class="hljs-regexp">/[0-9]+/</span>,</code>
+<code>    <span class="hljs-attr">description</span>: <span class="hljs-string">'integer number'</span>,</code>
+<code>  },</code>
+<code>  <span class="hljs-attr">identifier</span>: {</code>
+<code>    <span class="hljs-attr">re</span>: <span class="hljs-regexp">/[a-z]+/</span>,</code>
+<code>  },</code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>);</code>
+<code/>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  tokenDefs,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">number</span>: {</code>
+<code>      <span class="hljs-attr">key</span>: <span class="hljs-string">'number'</span>,</code>
+<code>      <span class="hljs-attr">re</span>: <span class="hljs-regexp">/[0-9]+/</span>,</code>
+<code>      <span class="hljs-attr">description</span>: <span class="hljs-string">'integer number'</span>,</code>
+<code>    },</code>
+<code>    <span class="hljs-attr">identifier</span>: {</code>
+<code>      <span class="hljs-attr">key</span>: <span class="hljs-string">'identifier'</span>,</code>
+<code>      <span class="hljs-attr">re</span>: <span class="hljs-regexp">/[a-z]+/</span>,</code>
+<code>    },</code>
+<code>  }</code>
+<code>);</code>
+<code/>
+<code>assertType&lt;</code>
+<code>  {</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">number</span>: {</code>
+<code>      <span class="hljs-keyword">readonly</span> <span class="hljs-attr">re</span>: <span class="hljs-title class_">RegExp</span>,</code>
+<code>      <span class="hljs-keyword">readonly</span> <span class="hljs-attr">description</span>: <span class="hljs-string">'integer number'</span>,</code>
+<code>      <span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>,</code>
+<code>    },</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">identifier</span>: {</code>
+<code>      <span class="hljs-keyword">readonly</span> <span class="hljs-attr">re</span>: <span class="hljs-title class_">RegExp</span>,</code>
+<code>      <span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>,</code>
+<code>    },</code>
+<code>  }</code>
+<code>&gt;(tokenDefs);</code>
+</pre>
+<p>It’s very useful that <code>addKeys()</code> does not lose type information: The computed type of <code>tokenDefs</code> correctly records where property <code>.description</code> exists and where it doesn’t: TypeScript lets us use <code>tokenDefs.number.description</code> (which exists) but not <code>tokenDefs.identifier.description</code> (which does not exist).</p>
+<p>This is an implementation of <code>addKeys()</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> addKeys&lt;</code>
+<code>  T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-title class_">InputTokenDef</span>&gt;</code>
+<code>&gt;(<span class="hljs-attr">tokenDefs</span>: T)</code>
+<code>: {[K <span class="hljs-keyword">in</span> keyof T]: T[K] &amp; {<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>}} <span class="hljs-comment">// (A)</span></code>
+<code>{</code>
+<code>  <span class="hljs-keyword">const</span> entries = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(tokenDefs);</code>
+<code>  <span class="hljs-keyword">const</span> pairs = entries.<span class="hljs-title function_">map</span>(</code>
+<code>    <span class="hljs-function">(<span class="hljs-params">[key, def]</span>) =&gt;</span> [key, {key, ...def}]</code>
+<code>  );</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(pairs);</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-comment">// Information we have to provide</span></code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">InputTokenDef</span> {</code>
+<code>  <span class="hljs-attr">re</span>: <span class="hljs-title class_">RegExp</span>,</code>
+<code>  description?: <span class="hljs-built_in">string</span>,</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-comment">// Information addKeys() adds for us</span></code>
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">TokenDef</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">InputTokenDef</span> {</code>
+<code>  <span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>,</code>
+<code>}</code>
+</pre>
+<p>In line A, we use <code>&amp;</code> to create an intersection type that has both the properties of <code>T[K]</code> and <code>{key: string}</code>.</p>
+<h3 id="key-remapping"><a class="heading-id-link" href="#key-remapping">36.2 Changing property keys via key remapping (<code>as</code>)</a></h3>
+<p>In the key part of a mapped type we can use <code>as</code> to change the property key of the current property:</p>
+<pre class="language-ts">
+<code>{ [P <span class="hljs-keyword">in</span> K <span class="hljs-keyword">as</span> N]: X }</code>
+</pre>
+<p>In the following example, we use <code>as</code> to add an underscore before each property name:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Point</span> = {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">PrefixUnderscore</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof <span class="hljs-title class_">Obj</span> &amp; <span class="hljs-built_in">string</span> <span class="hljs-keyword">as</span> <span class="hljs-string">`_<span class="hljs-subst">${K}</span>`</span>]: <span class="hljs-title class_">Obj</span>[K] <span class="hljs-comment">// (A)</span></code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> X = <span class="hljs-title class_">PrefixUnderscore</span>&lt;<span class="hljs-title class_">Point</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">PrefixUnderscore</span>&lt;<span class="hljs-title class_">Point</span>&gt;,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">_x</span>: <span class="hljs-built_in">number</span>,</code>
+<code>    <span class="hljs-attr">_y</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>In line A, the template literal type <code>`_${K}`</code> does not work if <code>K</code> is a symbol. That’s why we intersect <code>keyof Obj</code> with <code>string</code> and only loop over the keys of <code>Obj</code> that are strings.</p>
+<h4 id="if-we-use-key-remapping-the-result-is-always-an-object-literal-type"><a class="heading-id-link" href="#if-we-use-key-remapping-the-result-is-always-an-object-literal-type">36.2.1 If we use key remapping, the result is always an object literal type</a></h4>
+<p>We have previously seen that applying a simple mapped type to a tuple produces a tuple. That changes if we do key remapping. Then the result is always an object literal type – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">KeyAsKeyToKey</span>&lt;T&gt; = {</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof T <span class="hljs-keyword">as</span> K]: K</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-comment">// Use Pick&lt;&gt; because result of KeyAsKeyToKey&lt;&gt; is large</span></code>
+<code>  <span class="hljs-title class_">Pick</span>&lt;</code>
+<code>    <span class="hljs-title class_">KeyAsKeyToKey</span>&lt;[<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]&gt;,</code>
+<code>    <span class="hljs-string">'0'</span> | <span class="hljs-string">'1'</span> | <span class="hljs-string">'length'</span> | <span class="hljs-string">'push'</span> | <span class="hljs-string">'join'</span></code>
+<code>  &gt;,</code>
+<code>  <span class="hljs-comment">// Result is an object, not a tuple</span></code>
+<code>  {</code>
+<code>    <span class="hljs-attr">length</span>: <span class="hljs-string">'length'</span>;</code>
+<code>    <span class="hljs-attr">push</span>: <span class="hljs-string">'push'</span>;</code>
+<code>    <span class="hljs-attr">join</span>: <span class="hljs-string">'join'</span>;</code>
+<code>    <span class="hljs-number">0</span>: <span class="hljs-string">'0'</span>;</code>
+<code>    <span class="hljs-number">1</span>: <span class="hljs-string">'1'</span>;</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>This result reflects the actual keys of tuples. Simple map types implicitly filter those keys. For more information, see <a href="ch_computing-with-tuple-types.html#mapped-types-over-tuples">“Mapping tuples via mapped types” (§37.4)</a>.</p>
+<h3 id="filtering-properties"><a class="heading-id-link" href="#filtering-properties">36.3 Filtering properties</a></h3>
+<p>So far, we have only changed property keys or values of object types. In this section, we look at filtering properties.</p>
+<h4 id="filtering-properties-via-key-remapping-as"><a class="heading-id-link" href="#filtering-properties-via-key-remapping-as">36.3.1 Filtering properties via key remapping (<code>as</code>)</a></h4>
+<p>The easiest way to filter is via <code>as</code>: If we use <code>never</code> as a property key then the property is omitted from the result.</p>
+<p>In the following example, we remove all properties whose values are not strings:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">KeepStrProps</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  [</code>
+<code>    <span class="hljs-title class_">Key</span> <span class="hljs-keyword">in</span> keyof <span class="hljs-title class_">Obj</span></code>
+<code>      <span class="hljs-keyword">as</span> <span class="hljs-title class_">Obj</span>[<span class="hljs-title class_">Key</span>] <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span> ? <span class="hljs-title class_">Key</span> : <span class="hljs-built_in">never</span></code>
+<code>  ]: <span class="hljs-title class_">Obj</span>[<span class="hljs-title class_">Key</span>]</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  <span class="hljs-attr">strPropA</span>: <span class="hljs-string">'A'</span>,</code>
+<code>  <span class="hljs-attr">strPropB</span>: <span class="hljs-string">'B'</span>,</code>
+<code>  <span class="hljs-attr">numProp1</span>: <span class="hljs-number">1</span>,</code>
+<code>  <span class="hljs-attr">numProp2</span>: <span class="hljs-number">2</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">KeepStrProps</span>&lt;<span class="hljs-title class_">Obj</span>&gt;,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">strPropA</span>: <span class="hljs-string">'A'</span>,</code>
+<code>    <span class="hljs-attr">strPropB</span>: <span class="hljs-string">'B'</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="filtering-properties-by-filtering-key-unions"><a class="heading-id-link" href="#filtering-properties-by-filtering-key-unions">36.3.2 Filtering properties by filtering key unions</a></h4>
+<p>Before TypeScript had key remapping via via <code>as</code>, we had to filter the union with property keys before iterating over it with a mapped type.</p>
+<p>Let’s redo the previous example without <code>as</code>: We want to only keep properties of the following type <code>Obj</code> whose values are strings.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  <span class="hljs-attr">strPropA</span>: <span class="hljs-string">'A'</span>,</code>
+<code>  <span class="hljs-attr">strPropB</span>: <span class="hljs-string">'B'</span>,</code>
+<code>  <span class="hljs-attr">numProp1</span>: <span class="hljs-number">1</span>,</code>
+<code>  <span class="hljs-attr">numProp2</span>: <span class="hljs-number">2</span>,</code>
+<code>};</code>
+</pre>
+<p>The following generic helper type collects the keys of all properties whose values are strings:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">KeysOfStrProps</span>&lt;T&gt; = {</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof T]: T[K] <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span> ? K : <span class="hljs-built_in">never</span> <span class="hljs-comment">// (A)</span></code>
+<code>}[keyof T]; <span class="hljs-comment">// (B)</span></code>
+<code/>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">KeysOfStrProps</span>&lt;<span class="hljs-title class_">Obj</span>&gt;,</code>
+<code>  <span class="hljs-string">'strPropA'</span> | <span class="hljs-string">'strPropB'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>We compute the result in two steps:</p>
+<ul>
+  <li>
+    Line A: First, we create an object where each property key <code>K</code> is mapped to:
+    <ul>
+      <li>
+        <code>K</code> – if the property value <code>T[K]</code> is a string
+      </li>
+      <li>
+        <code>never</code> – otherwise
+      </li>
+    </ul>
+  </li>
+  <li>
+    Line B: Then we extract all property values of the object we just created. The type <code>never</code> disappears when we do that.
+  </li>
+</ul>
+<p>With <code>KeysOfStrProps</code>, it’s now easy to implement <code>KeepStrProps</code> without <code>as</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">KeepStrProps</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  [<span class="hljs-title class_">Key</span> <span class="hljs-keyword">in</span> <span class="hljs-title class_">KeysOfStrProps</span>&lt;<span class="hljs-title class_">Obj</span>&gt;]: <span class="hljs-title class_">Obj</span>[<span class="hljs-title class_">Key</span>]</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">KeepStrProps</span>&lt;<span class="hljs-title class_">Obj</span>&gt;,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">strPropA</span>: <span class="hljs-string">'A'</span>,</code>
+<code>    <span class="hljs-attr">strPropB</span>: <span class="hljs-string">'B'</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="built-in-utility-type-for-keeping-properties-pick-t-keystokeep"><a class="heading-id-link" href="#built-in-utility-type-for-keeping-properties-pick-t-keystokeep">36.3.3 Built-in utility type for keeping properties: <code>Pick&lt;T, KeysToKeep&gt;</code></a></h4>
+<p>The following <a href="https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts">built-in utility type</a> lets us create a new object by specifying which properties of an existing object type we want to keep:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * From T, pick a set of properties whose keys are in the union K</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Pick</span>&lt;T, K <span class="hljs-keyword">extends</span> keyof T&gt; = {</code>
+<code>  [P <span class="hljs-keyword">in</span> K]: T[P];</code>
+<code>};</code>
+</pre>
+<p>We keep a subset of the properties of <code>T</code> by iterating over a subset <code>K</code> of its property keys (<code>keyof T</code>).</p>
+<p><code>Pick</code> is used as follows:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ObjectLiteralType</span> = {</code>
+<code>  <span class="hljs-attr">eeny</span>: <span class="hljs-number">1</span>,</code>
+<code>  <span class="hljs-attr">meeny</span>: <span class="hljs-number">2</span>,</code>
+<code>  <span class="hljs-attr">miny</span>: <span class="hljs-number">3</span>,</code>
+<code>  <span class="hljs-attr">moe</span>: <span class="hljs-number">4</span>,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Pick</span>&lt;<span class="hljs-title class_">ObjectLiteralType</span>, <span class="hljs-string">'eeny'</span> | <span class="hljs-string">'miny'</span>&gt;,</code>
+<code>  { <span class="hljs-attr">eeny</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">miny</span>: <span class="hljs-number">3</span> }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h5 id="typing-a-function-via-pick"><a class="heading-id-link" href="#typing-a-function-via-pick">36.3.3.1 Typing a function via <code>Pick&lt;&gt;</code></a></h5>
+<p>We can implement property picking at the JavaScript level (as provided by <a href="https://underscorejs.org/#pick">the Underscore library</a>). Then the utility type <code>Pick&lt;&gt;</code> helps us with the return type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> pick&lt;</code>
+<code>  O <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">unknown</span>&gt;,</code>
+<code>  K <span class="hljs-keyword">extends</span> keyof O</code>
+<code>&gt;(</code>
+<code>  <span class="hljs-attr">object</span>: O,</code>
+<code>  ...<span class="hljs-attr">keys</span>: <span class="hljs-title class_">Array</span>&lt;K&gt;</code>
+<code>): <span class="hljs-title class_">Pick</span>&lt;O, K&gt; {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(</code>
+<code>    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">entries</span>(<span class="hljs-built_in">object</span>)</code>
+<code>    .<span class="hljs-title function_">filter</span>(</code>
+<code>      <span class="hljs-function">(<span class="hljs-params">[key, _value]</span>) =&gt;</span> keys.<span class="hljs-title function_">includes</span>(key <span class="hljs-keyword">as</span> K)</code>
+<code>    )</code>
+<code>  ) <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">const</span> address = {</code>
+<code>  <span class="hljs-attr">street</span>: <span class="hljs-string">'Evergreen Terrace'</span>,</code>
+<code>  <span class="hljs-attr">number</span>: <span class="hljs-string">'742'</span>,</code>
+<code>  <span class="hljs-attr">city</span>: <span class="hljs-string">'Springfield'</span>,</code>
+<code>  <span class="hljs-attr">state</span>: <span class="hljs-string">'NT'</span>,</code>
+<code>  <span class="hljs-attr">zip</span>: <span class="hljs-string">'49007'</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">const</span> result = <span class="hljs-title function_">pick</span>(address, <span class="hljs-string">'street'</span>, <span class="hljs-string">'number'</span>);</code>
+<code/>
+<code><span class="hljs-comment">// Correct value?</span></code>
+<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>  result,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">street</span>: <span class="hljs-string">'Evergreen Terrace'</span>,</code>
+<code>    <span class="hljs-attr">number</span>: <span class="hljs-string">'742'</span>,</code>
+<code>  }</code>
+<code>);</code>
+<code/>
+<code><span class="hljs-comment">// Correct type?</span></code>
+<code>assertType&lt;</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">street</span>: <span class="hljs-built_in">string</span>,</code>
+<code>    <span class="hljs-attr">number</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  }</code>
+<code>&gt;(result);</code>
+</pre>
+<h5 id="PickFreely"><a class="heading-id-link" href="#PickFreely">36.3.3.2 Example: removing the constraint of parameter <code>K</code> of <code>Pick&lt;T, K&gt;</code></a></h5>
+<p>As we have seen, the parameter <code>K</code> of <code>Pick&lt;T, K&gt;</code> is constrained to keys of <code>T</code>. That prevents some useful applications – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  <span class="hljs-string">'0'</span>: <span class="hljs-string">'a'</span>,</code>
+<code>  <span class="hljs-string">'1'</span>: <span class="hljs-string">'b'</span>,</code>
+<code>  <span class="hljs-attr">length</span>: <span class="hljs-number">2</span>,</code>
+<code>};</code>
+<code><span class="hljs-comment">// @ts-expect-error: Type '`${number}`' does not satisfy the constraint</span></code>
+<code><span class="hljs-comment">// 'keyof Obj'.</span></code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Pick</span>&lt;<span class="hljs-title class_">Obj</span>, <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">number</span>}</span>`</span>&gt;</code>
+</pre>
+<p><code>`${number}`</code> is the type of all stringified numbers (see <a href="ch_template-literal-types.html#interpolating-primitive-types-into-template-literals">“Interpolating primitive types into template literals” (§38.2.5)</a>). We’d like to extract all properties whose keys are elements of that type. Alas we can’t use <code>Pick</code> to do so. This is a version of <code>Pick</code> whose parameter <code>K</code> is not constrained:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">PickFreely</span>&lt;T, K&gt; = {</code>
+<code>  [P <span class="hljs-keyword">in</span> K &amp; keyof T]: T[P];</code>
+<code>};</code>
+</pre>
+<p>Note that the operation <code>T[P]</code> only works if <code>P</code> is a key of <code>T</code>. Therefore, the set after <code>in</code> must be a subset of <code>keyof T</code>. That’s why we used <code>K &amp; keyof T</code> and not <code>K</code>.</p>
+<p>With <code>PickFreely</code>, we can extract the properties:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">PickFreely</span>&lt;<span class="hljs-title class_">Obj</span>, <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-built_in">number</span>}</span>`</span>&gt;,</code>
+<code>  {</code>
+<code>    <span class="hljs-string">'0'</span>: <span class="hljs-string">'a'</span>,</code>
+<code>    <span class="hljs-string">'1'</span>: <span class="hljs-string">'b'</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="built-in-utility-type-for-filtering-out-properties-omit-t-keys-to-fil-ter-out"><a class="heading-id-link" href="#built-in-utility-type-for-filtering-out-properties-omit-t-keys-to-fil-ter-out">36.3.4 Built-in utility type for filtering out properties: <code>Omit&lt;T, KeysToFilterOut&gt;</code></a></h4>
+<p>The following <a href="https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts">built-in utility type</a> lets us create a new object type by specifying which properties of an existing object type we want to omit:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Construct a type with the properties of T except for those in</span></code>
+<code><span class="hljs-comment"> * type K.</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Omit</span>&lt;T, K <span class="hljs-keyword">extends</span> keyof <span class="hljs-built_in">any</span>&gt; = <span class="hljs-title class_">Pick</span>&lt;T, <span class="hljs-title class_">Exclude</span>&lt;keyof T, K&gt;&gt;;</code>
+</pre>
+<p>Explanations:</p>
+<ul>
+  <li>
+    <p><code>K extends keyof any</code> means <code>K</code> must be a subset of all possible property keys:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof <span class="hljs-built_in">any</span>,</code>
+<code>  <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">symbol</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+  </li>
+  <li>
+    <p><code>Exclude&lt;keyof T, K&gt;&gt;</code> means: take the keys of <code>T</code> and remove all “values” mentioned in <code>K</code>.</p>
+  </li>
+</ul>
+<p><code>Omit&lt;&gt;</code> is used as follows:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ObjectLiteralType</span> = {</code>
+<code>  <span class="hljs-attr">eeny</span>: <span class="hljs-number">1</span>,</code>
+<code>  <span class="hljs-attr">meeny</span>: <span class="hljs-number">2</span>,</code>
+<code>  <span class="hljs-attr">miny</span>: <span class="hljs-number">3</span>,</code>
+<code>  <span class="hljs-attr">moe</span>: <span class="hljs-number">4</span>,</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">Omit</span>&lt;<span class="hljs-title class_">ObjectLiteralType</span>, <span class="hljs-string">'eeny'</span> | <span class="hljs-string">'miny'</span>&gt;,</code>
+<code>  { <span class="hljs-attr">meeny</span>: <span class="hljs-number">2</span>; <span class="hljs-attr">moe</span>: <span class="hljs-number">4</span>; }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="changing-modifiers-via-mapped-types"><a class="heading-id-link" href="#changing-modifiers-via-mapped-types">36.4 Adding and removing modifiers via mapped types</a></h3>
+<p>In TypeScript, properties can have to kinds of <em>modifiers</em>:</p>
+<ul>
+  <li>
+    A property can be optional: modifier <code>?</code>
+  </li>
+  <li>
+    A property can be read-only: modifier <code>readonly</code>
+  </li>
+</ul>
+<p>We can add or remove these modifiers via mapped types.</p>
+<h4 id="example-adding-the-optional-modifier"><a class="heading-id-link" href="#example-adding-the-optional-modifier">36.4.1 Example: adding the optional modifier (<code>?</code>)</a></h4>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">AddOptional</span>&lt;T&gt; = {</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof T]+?: T[K]</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">RequiredArticle</span> = {</code>
+<code>  <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">tags</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>  <span class="hljs-attr">score</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">OptionalArticle</span> = <span class="hljs-title class_">AddOptional</span>&lt;<span class="hljs-title class_">RequiredArticle</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">OptionalArticle</span>,</code>
+<code>  {</code>
+<code>    title?: <span class="hljs-built_in">string</span> | <span class="hljs-literal">undefined</span>;</code>
+<code>    tags?: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt; | <span class="hljs-literal">undefined</span>;</code>
+<code>    score?: <span class="hljs-built_in">number</span> | <span class="hljs-literal">undefined</span>;</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The notation <code>+?</code> means: make the current property optional. We can omit the <code>+</code> but I find it easier to understand what’s going on if it’s there.</p>
+<p>The built-in utility type <a href="https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts"><code>Partial&lt;T&gt;</code></a> is equivalent to our generic type <code>AddOptional</code> above.</p>
+<h4 id="example-removing-the-optional-modifier"><a class="heading-id-link" href="#example-removing-the-optional-modifier">36.4.2 Example: removing the optional modifier (<code>?</code>)</a></h4>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">RemoveOptional</span>&lt;T&gt; = {</code>
+<code>  [K <span class="hljs-keyword">in</span> keyof T]-?: T[K]</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">OptionalArticle</span> = {</code>
+<code>  title?: <span class="hljs-built_in">string</span>,</code>
+<code>  tags?: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>  <span class="hljs-attr">score</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">RequiredArticle</span> = <span class="hljs-title class_">RemoveOptional</span>&lt;<span class="hljs-title class_">OptionalArticle</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">RequiredArticle</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>,</code>
+<code>    <span class="hljs-attr">tags</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>    <span class="hljs-attr">score</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The notation <code>-?</code> means: make the current property required (non-optional).</p>
+<p>The built-in utility type <a href="https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts"><code>Required&lt;T&gt;</code></a> is equivalent to our generic type <code>RemoveOptional</code> above.</p>
+<h4 id="example-adding-the-readonly-modifier"><a class="heading-id-link" href="#example-adding-the-readonly-modifier">36.4.3 Example: adding the <code>readonly</code> modifier</a></h4>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">AddReadonly</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  +<span class="hljs-keyword">readonly</span> [K <span class="hljs-keyword">in</span> keyof <span class="hljs-title class_">Obj</span>]: <span class="hljs-title class_">Obj</span>[K]</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">MutableArticle</span> = {</code>
+<code>  <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-attr">tags</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>  <span class="hljs-attr">score</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ImmutableArticle</span> = <span class="hljs-title class_">AddReadonly</span>&lt;<span class="hljs-title class_">MutableArticle</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">ImmutableArticle</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>,</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">tags</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>    <span class="hljs-keyword">readonly</span> <span class="hljs-attr">score</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The notation <code>+readonly</code> means: make the current property read-only. We can omit the <code>+</code> but I find it easier to understand what’s going on if it’s there.</p>
+<p>The built-in utility type <a href="https://github.com/Microsoft/TypeScript/blob/main/src/lib/es5.d.ts"><code>Readonly&lt;T&gt;</code></a> is equivalent to our generic type <code>AddReadonly</code> above.</p>
+<h4 id="example-removing-the-readonly-modifier"><a class="heading-id-link" href="#example-removing-the-readonly-modifier">36.4.4 Example: removing the <code>readonly</code> modifier</a></h4>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">RemoveReadonly</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = {</code>
+<code>  -<span class="hljs-keyword">readonly</span> [K <span class="hljs-keyword">in</span> keyof <span class="hljs-title class_">Obj</span>]: <span class="hljs-title class_">Obj</span>[K]</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ImmutableArticle</span> = {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>,</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">tags</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>  <span class="hljs-attr">score</span>: <span class="hljs-built_in">number</span>,</code>
+<code>};</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">MutableArticle</span> = <span class="hljs-title class_">RemoveReadonly</span>&lt;<span class="hljs-title class_">ImmutableArticle</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">MutableArticle</span>,</code>
+<code>  {</code>
+<code>    <span class="hljs-attr">title</span>: <span class="hljs-built_in">string</span>,</code>
+<code>    <span class="hljs-attr">tags</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">string</span>&gt;,</code>
+<code>    <span class="hljs-attr">score</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  }</code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The notation <code>-readonly</code> means: make the current property mutable (non-read-only).</p>
+<p>There is no built-in utility type that removes <code>readonly</code> modifiers.</p>
+<h3 id="detecting-the-property-modifiers-readonly-and-optional"><a class="heading-id-link" href="#detecting-the-property-modifiers-readonly-and-optional">36.5 Detecting the property modifiers <code>readonly</code> and <code>?</code> (optional)</a></h3>
+<h4 id="detecting-if-a-property-is-read-only"><a class="heading-id-link" href="#detecting-if-a-property-is-read-only">36.5.1 Detecting if a property is read-only</a></h4>
+<p>This is what using a utility type <code>IsReadonly</code> would look like:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Car</span> {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>,</code>
+<code>  <span class="hljs-keyword">get</span> <span class="hljs-title function_">maker</span>(): <span class="hljs-built_in">string</span>, <span class="hljs-comment">// technically `readonly`</span></code>
+<code>  <span class="hljs-attr">owner</span>: <span class="hljs-built_in">string</span>,</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _1 = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsReadonly</span>&lt;<span class="hljs-title class_">Car</span>, <span class="hljs-string">'year'</span>&gt;, <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsReadonly</span>&lt;<span class="hljs-title class_">Car</span>, <span class="hljs-string">'maker'</span>&gt;, <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsReadonly</span>&lt;<span class="hljs-title class_">Car</span>, <span class="hljs-string">'owner'</span>&gt;, <span class="hljs-literal">false</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Alas, implementing <code>IsReadonly</code> is complicated: <code>readonly</code> currently does not affect assignability and cannot be detected via <code>extends</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">SimpleEqual</span>&lt;<span class="hljs-variable constant_">T1</span>, <span class="hljs-variable constant_">T2</span>&gt; =</code>
+<code>  [<span class="hljs-variable constant_">T1</span>] <span class="hljs-keyword">extends</span> [<span class="hljs-variable constant_">T2</span>]</code>
+<code>    ? [<span class="hljs-variable constant_">T2</span>] <span class="hljs-keyword">extends</span> [<span class="hljs-variable constant_">T1</span>] ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span></code>
+<code>    : <span class="hljs-literal">false</span></code>
+<code>;</code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">SimpleEqual</span>&lt;</code>
+<code>    {<span class="hljs-keyword">readonly</span> <span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>},</code>
+<code>    {<span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>}</code>
+<code>  &gt;,</code>
+<code>  <span class="hljs-literal">true</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>The brackets around <code>T1</code> and <code>T2</code> are needed to <a href="ch_conditional-types.html#preventing-distributivity">prevent distributivity</a>.</p>
+<p>That means that we need a stricter equality check:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StrictEqual</span>&lt;X, Y&gt; =</code>
+<code>  (&lt;T&gt;<span class="hljs-function">() =&gt;</span> T <span class="hljs-keyword">extends</span> X ? <span class="hljs-number">1</span> : <span class="hljs-number">2</span>) <span class="hljs-keyword">extends</span></code>
+<code>  (&lt;T&gt;<span class="hljs-function">() =&gt;</span> T <span class="hljs-keyword">extends</span> Y ? <span class="hljs-number">1</span> : <span class="hljs-number">2</span>) ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span></code>
+<code>;</code>
+<code><span class="hljs-keyword">type</span> _3 = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">StrictEqual</span>&lt;</code>
+<code>      {<span class="hljs-keyword">readonly</span> <span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>},</code>
+<code>      {<span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>}</code>
+<code>    &gt;,</code>
+<code>    <span class="hljs-literal">false</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">StrictEqual</span>&lt;</code>
+<code>      {<span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>},</code>
+<code>      {<span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>}</code>
+<code>    &gt;,</code>
+<code>    <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">StrictEqual</span>&lt;</code>
+<code>      {<span class="hljs-keyword">readonly</span> <span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>},</code>
+<code>      {<span class="hljs-keyword">readonly</span> <span class="hljs-attr">year</span>: <span class="hljs-built_in">number</span>}</code>
+<code>    &gt;,</code>
+<code>    <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>The helper type <code>StrictEqual</code> is a hack but currently the best technique for strictly comparing types. How it works is explained in <a href="ch_testing-types.html#checking-type-equality">“How to check if two types are equal?” (§39.3)</a>.</p>
+<p>Now we can implement <code>IsReadonly</code> (based on <a href="https://github.com/microsoft/TypeScript/issues/31581">code</a> by GitHub user <code>inad9300</code>):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsReadonly</span>&lt;T, K <span class="hljs-keyword">extends</span> keyof T&gt; =</code>
+<code>  <span class="hljs-title class_">StrictEqual</span>&lt;</code>
+<code>    <span class="hljs-title class_">Pick</span>&lt;T, K&gt;, <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-title class_">Readonly</span>&lt;<span class="hljs-title class_">Pick</span>&lt;T, K&gt;&gt; <span class="hljs-comment">// (B)</span></code>
+<code>  &gt;</code>
+<code>;</code>
+</pre>
+<p>We compare two objects:</p>
+<ul>
+  <li>
+    An object that only contains property <code>K</code> of <code>T</code> (line A)
+  </li>
+  <li>
+    The same object, with all properties made <code>readonly</code> (line B)
+  </li>
+</ul>
+<p>If the two objects are equal, then making property <code>K</code> <code>readonly</code> didn’t change anything – which means that it is already <code>readonly</code>.</p>
+<p>Related GitHub issue: <a href="https://github.com/microsoft/TypeScript/issues/31581">“Allow identifying readonly properties in mapped types”</a></p>
+<h4 id="detecting-if-a-property-is-optional"><a class="heading-id-link" href="#detecting-if-a-property-is-optional">36.5.2 Detecting if a property is optional</a></h4>
+<p>This is what it looks like to use a helper type <code>IsOptional</code> that detects if a property is optional:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Person</span> {</code>
+<code>  <span class="hljs-attr">name</span>: <span class="hljs-literal">undefined</span> | <span class="hljs-built_in">string</span>;</code>
+<code>  age?: <span class="hljs-built_in">number</span>;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">type</span> _1 = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsOptional</span>&lt;<span class="hljs-title class_">Person</span>, <span class="hljs-string">'name'</span>&gt;, <span class="hljs-literal">false</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">IsOptional</span>&lt;<span class="hljs-title class_">Person</span>, <span class="hljs-string">'age'</span>&gt;, <span class="hljs-literal">true</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p><code>IsOptional</code> is easier to implement than <code>IsReadonly</code> because optional properties are easier to detect:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">IsOptional</span>&lt;T <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">any</span>, <span class="hljs-built_in">any</span>&gt;, K <span class="hljs-keyword">extends</span> keyof T&gt; =</code>
+<code>  {} <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Pick</span>&lt;T, K&gt; ? <span class="hljs-literal">true</span> : <span class="hljs-literal">false</span></code>
+<code>;</code>
+</pre>
+<p>How does that work? Let’s look at the results produced by <code>Pick</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _2 = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Pick</span>&lt;<span class="hljs-title class_">Person</span>, <span class="hljs-string">'name'</span>&gt;,</code>
+<code>    { <span class="hljs-attr">name</span>: <span class="hljs-literal">undefined</span> | <span class="hljs-built_in">string</span> }</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">Pick</span>&lt;<span class="hljs-title class_">Person</span>, <span class="hljs-string">'age'</span>&gt;,</code>
+<code>    { age?: <span class="hljs-built_in">number</span> | <span class="hljs-literal">undefined</span> }</code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Only the latter object is assignable to the empty object <code>{}</code>.</p>
+<h3 id="utility-type-record"><a class="heading-id-link" href="#utility-type-record">36.6 <code>Record</code> is a mapped type</a></h3>
+<p>The built-in utility type <code>Record</code> is simply an alias for a mapped type:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Construct a type with a set of properties K of type T</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Record</span>&lt;K <span class="hljs-keyword">extends</span> keyof <span class="hljs-built_in">any</span>, T&gt; = {</code>
+<code>  [P <span class="hljs-keyword">in</span> K]: T;</code>
+<code>};</code>
+</pre>
+<p>Once again, <code>keyof any</code> means “valid property key”:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  keyof <span class="hljs-built_in">any</span>,</code>
+<code>  <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span> | <span class="hljs-built_in">symbol</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>These are results produced by <code>Record</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-comment">// Finite key type</span></code>
+<code>    <span class="hljs-title class_">Record</span>&lt;<span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span>, <span class="hljs-title class_">RegExp</span>&gt;,</code>
+<code>    {</code>
+<code>      <span class="hljs-attr">a</span>: <span class="hljs-title class_">RegExp</span>,</code>
+<code>      <span class="hljs-attr">b</span>: <span class="hljs-title class_">RegExp</span>,</code>
+<code>    }</code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-comment">// Infinite key type</span></code>
+<code>    <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">boolean</span>&gt;,</code>
+<code>    {</code>
+<code>      [<span class="hljs-attr">x</span>: <span class="hljs-built_in">string</span>]: <span class="hljs-built_in">boolean</span> <span class="hljs-comment">// index signature</span></code>
+<code>    }</code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<h3 id="source-of-this-chapter"><a class="heading-id-link" href="#source-of-this-chapter">36.7 Source of this chapter</a></h3>
+<ul>
+  <li>
+    Chapter <a href="https://www.typescriptlang.org/docs/handbook/2/mapped-types.html">“Mapped Types”</a> in the official TypeScript handbook.
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

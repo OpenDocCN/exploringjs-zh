@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>23 Types for classes as values</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>23 Types for classes as values</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_classes-as-values.html">https://exploringjs.com/ts/book/ch_classes-as-values.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#question-which-type-for-a-class-as-a-value">23.1 Question: Which type for a class as a value?</a>
+    </li>
+    <li>
+      <a href="#answer-types-for-classes-as-values">23.2 Answer: types for classes as values</a>
+      <ol>
+        <li>
+          <a href="#type-operator-typeof">23.2.1 The type operator <code>typeof</code></a>
+        </li>
+        <li>
+          <a href="#constructor-type-literals">23.2.2 Constructor type literals</a>
+        </li>
+        <li>
+          <a href="#construct-signatures">23.2.3 Object type literals with construct signatures</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#generic-type-class">23.3 A generic type for constructors: <code>Class&lt;T&gt;</code></a>
+      <ol>
+        <li>
+          <a href="#example-creating-instances">23.3.1 Example: creating instances</a>
+        </li>
+        <li>
+          <a href="#example-type-narrowing-via-instanceof">23.3.2 Example: type-narrowing via <code>instanceof</code></a>
+        </li>
+        <li>
+          <a href="#example-casting-with-runtime-checks">23.3.3 Example: casting with runtime checks</a>
+        </li>
+        <li>
+          <a href="#example-an-assertion-function">23.3.4 Example: an assertion function</a>
+        </li>
+        <li>
+          <a href="#example-maps-that-are-type-safe-at-runtime">23.3.5 Example: Maps that are type-safe at runtime</a>
+        </li>
+        <li>
+          <a href="#pitfall-class-t-does-not-match-abstract-classes">23.3.6 Pitfall: <code>Class&lt;T&gt;</code> does not match abstract classes</a>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</nav>
+<p>In this chapter, we explore classes as values:</p>
+<ul>
+  <li>
+    What types should we use for such values?
+  </li>
+  <li>
+    What are the use cases for these types?
+  </li>
+</ul>
+<h3 id="question-which-type-for-a-class-as-a-value"><a class="heading-id-link" href="#question-which-type-for-a-class-as-a-value">23.1 Question: Which type for a class as a value?</a></h3>
+<p>Consider the following class:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Point</span> {</code>
+<code>  <span class="hljs-attr">x</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-attr">y</span>: <span class="hljs-built_in">number</span>;</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span></span>) {</code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">x</span> = x;</code>
+<code>    <span class="hljs-variable language_">this</span>.<span class="hljs-property">y</span> = y;</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>This function accepts a class and creates an instance of it:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">createPoint</span>(<span class="hljs-params">PointClass: C, x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span></span>): <span class="hljs-title class_">Point</span> {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PointClass</span>(x, y);</code>
+<code>}</code>
+</pre>
+<p>What type <code>C</code> should we use for the parameter <code>PointClass</code> if we want the function to return an instance of <code>Point</code>?</p>
+<h3 id="answer-types-for-classes-as-values"><a class="heading-id-link" href="#answer-types-for-classes-as-values">23.2 Answer: types for classes as values</a></h3>
+<h4 id="type-operator-typeof"><a class="heading-id-link" href="#type-operator-typeof">23.2.1 The type operator <code>typeof</code></a></h4>
+<p>In <a href="ch_typescript-essentials.html#language-levels">“TypeScript’s two language levels” (§4.4)</a>, we explored the two language levels of TypeScript:</p>
+<ul>
+  <li>
+    Dynamic level: JavaScript (code and values)
+  </li>
+  <li>
+    Static level: TypeScript (static types)
+  </li>
+</ul>
+<p>The class <code>Point</code> creates two things:</p>
+<ul>
+  <li>
+    The constructor function <code>Point</code>
+  </li>
+  <li>
+    The interface <code>Point</code> for instances of <code>Point</code>
+  </li>
+</ul>
+<p>Depending on where we mention <code>Point</code>, it means different things. That’s why we can’t use the type <code>Point</code> for <code>PointClass</code>: It matches <em>instances</em> of class <code>Point</code>, not class <code>Point</code> itself.</p>
+<p>Instead, we need to use the type operator <code>typeof</code> (which has the same name as a JavaScript operator). <code>typeof v</code> stands for the type of the value <code>v</code>.</p>
+<p>Let’s omit the return type of <code>createPoint()</code> and see what TypeScript infers:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">createPoint</span>(<span class="hljs-params">PointClass: <span class="hljs-keyword">typeof</span> Point, x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span></span>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PointClass</span>(x, y);</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">const</span> point = <span class="hljs-title function_">createPoint</span>(<span class="hljs-title class_">Point</span>, <span class="hljs-number">3</span>, <span class="hljs-number">6</span>);</code>
+<code>assertType&lt;<span class="hljs-title class_">Point</span>&gt;(point); <span class="hljs-comment">// (A)</span></code>
+<code>assert.<span class="hljs-title function_">ok</span>(point <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Point</span>);</code>
+</pre>
+<p>As expected, <code>createPoint()</code> creates values of type <code>Point</code> (line A).</p>
+<h4 id="constructor-type-literals"><a class="heading-id-link" href="#constructor-type-literals">23.2.2 Constructor type literals</a></h4>
+<p>A <em>constructor type literal</em> is a literal for constructor types: <code>new</code> followed by a function type literal (line A):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">createPoint</span>(</code>
+<code><span class="hljs-params">  PointClass: <span class="hljs-keyword">new</span> (x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span>) =&gt; Point, <span class="hljs-comment">// (A)</span></span></code>
+<code><span class="hljs-params">  x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span></span></code>
+<code>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PointClass</span>(x, y);</code>
+<code>}</code>
+</pre>
+<p>The prefix <code>new</code> of its type indicates that <code>PointClass</code> is a function that must be invoked via <code>new</code>.</p>
+<p>Constructor type literals are quite versatile – e.g., we can demand that a constructor function (such as a class):</p>
+<ul>
+  <li>
+    Have particular parameters.
+  </li>
+  <li>
+    Return instances with a particular interface (see code below)
+  </li>
+</ul>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(</code>
+<code><span class="hljs-params">  ClassThatImplementsInterf: <span class="hljs-keyword">new</span> () =&gt; Interf</span></code>
+<code>) {}</code>
+</pre>
+<h4 id="construct-signatures"><a class="heading-id-link" href="#construct-signatures">23.2.3 Object type literals with construct signatures</a></h4>
+<p><span id="index-entry-construct-signature"/><span id="index-entry-signature--construct"/></p>
+<p>Recall that <a href="ch_typing-objects.html#members-of-object-literal-types">members of interfaces and object literal types (OLTs)</a> include method signatures and call signatures. Call signatures enable interfaces and OLTs to describe functions.</p>
+<p>Similarly, <em>construct signatures</em> enable interfaces and OLTs to describe constructor functions. They look like call signatures with the added prefix <code>new</code>. In the next example, <code>PointClass</code> has an object literal type with a construct signature:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">createPoint</span>(</code>
+<code><span class="hljs-params">  PointClass: {<span class="hljs-keyword">new</span> (x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span>): Point},</span></code>
+<code><span class="hljs-params">  x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span></span></code>
+<code>) {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">PointClass</span>(x, y);</code>
+<code>}</code>
+</pre>
+<h3 id="generic-type-class"><a class="heading-id-link" href="#generic-type-class">23.3 A generic type for constructors: <code>Class&lt;T&gt;</code></a></h3>
+<p>With the knowledge we have acquired, we can now create a generic type for classes as values – by introducing a type parameter <code>T</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Class</span>&lt;T&gt; = <span class="hljs-keyword">new</span> (...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]) =&gt; T;</code>
+</pre>
+<p>Instead of a type alias, we can also use an interface:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Class</span>&lt;T&gt; {</code>
+<code>  <span class="hljs-title function_">new</span>(...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]): T;</code>
+<code>}</code>
+</pre>
+<p><code>Class&lt;T&gt;</code> is a type for classes whose instances match type <code>T</code>.</p>
+<h4 id="example-creating-instances"><a class="heading-id-link" href="#example-creating-instances">23.3.1 Example: creating instances</a></h4>
+<p><code>Class&lt;T&gt;</code> enables us to write a generic version of <code>createPoint()</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> createInstance&lt;T&gt;(<span class="hljs-title class_">TheClass</span>: <span class="hljs-title class_">Class</span>&lt;T&gt;, ...<span class="hljs-attr">args</span>: <span class="hljs-built_in">unknown</span>[]): T {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TheClass</span>(...args);</code>
+<code>}</code>
+</pre>
+<p><code>createInstance()</code> is used as follows:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Person</span> {</code>
+<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">public</span> name: <span class="hljs-built_in">string</span></span>) {}</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">const</span> jane = <span class="hljs-title function_">createInstance</span>(<span class="hljs-title class_">Person</span>, <span class="hljs-string">'Jane'</span>);</code>
+<code>assertType&lt;<span class="hljs-title class_">Person</span>&gt;(jane);</code>
+</pre>
+<p><code>createInstance()</code> is the <code>new</code> operator, implemented via a function.</p>
+<h4 id="example-type-narrowing-via-instanceof"><a class="heading-id-link" href="#example-type-narrowing-via-instanceof">23.3.2 Example: type-narrowing via <code>instanceof</code></a></h4>
+<p>In line A, <code>instanceof</code> narrows the type of <code>arg</code>: Before, it is <code>unknown</code>. After, it is <code>T</code>.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> isInstance&lt;T&gt;(<span class="hljs-title class_">TheClass</span>: <span class="hljs-title class_">Class</span>&lt;T&gt;, <span class="hljs-attr">arg</span>: <span class="hljs-built_in">unknown</span>): <span class="hljs-built_in">boolean</span> {</code>
+<code>  <span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-keyword">typeof</span> arg, <span class="hljs-built_in">unknown</span></code>
+<code>  &gt;&gt;;</code>
+<code>  <span class="hljs-keyword">if</span> (arg <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">TheClass</span>) { <span class="hljs-comment">// (A)</span></code>
+<code>    <span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>      <span class="hljs-keyword">typeof</span> arg, T</code>
+<code>    &gt;&gt;;</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;</code>
+<code>}</code>
+</pre>
+<h4 id="example-casting-with-runtime-checks"><a class="heading-id-link" href="#example-casting-with-runtime-checks">23.3.3 Example: casting with runtime checks</a></h4>
+<p>We can use <code>Class&lt;T&gt;</code> to implement casting:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> cast&lt;T&gt;(<span class="hljs-title class_">TheClass</span>: <span class="hljs-title class_">Class</span>&lt;T&gt;, <span class="hljs-attr">value</span>: <span class="hljs-built_in">unknown</span>): T {</code>
+<code>  <span class="hljs-keyword">if</span> (!(value <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">TheClass</span>)) {</code>
+<code>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`Not an instance of <span class="hljs-subst">${TheClass.name}</span>: <span class="hljs-subst">${value}</span>`</span>)</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> value;</code>
+<code>}</code>
+</pre>
+<p>With <code>cast()</code>, we can change the type of a value to something more specific. This is also safe at runtime, because we both statically change the type and perform a dynamic check. The following code provides an example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">parseObject</span>(<span class="hljs-params">jsonObjectStr: <span class="hljs-built_in">string</span></span>): <span class="hljs-title class_">Object</span> {</code>
+<code>  <span class="hljs-keyword">const</span> parsed = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(jsonObjectStr);</code>
+<code>  <span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-keyword">typeof</span> parsed, <span class="hljs-built_in">any</span></code>
+<code>  &gt;&gt;;</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">cast</span>(<span class="hljs-title class_">Object</span>, parsed);</code>
+<code>}</code>
+</pre>
+<h4 id="example-an-assertion-function"><a class="heading-id-link" href="#example-an-assertion-function">23.3.4 Example: an assertion function</a></h4>
+<p>We can turn function <code>cast()</code> from the previous subsection into an <a href="ch_assertion-functions.html#ch_assertion-functions">assertion function</a>:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * After invoking this function, the inferred type of `value` is `T`.</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> throwIfNotInstance&lt;T&gt;(</code>
+<code>  <span class="hljs-title class_">TheClass</span>: <span class="hljs-title class_">Class</span>&lt;T&gt;, <span class="hljs-attr">value</span>: <span class="hljs-built_in">unknown</span></code>
+<code>): asserts value is T { <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-keyword">if</span> (!(value <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">TheClass</span>)) {</code>
+<code>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">`Not an instance of <span class="hljs-subst">${TheClass}</span>: <span class="hljs-subst">${value}</span>`</span>);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>The return type (line A) makes <code>throwIfNotInstance()</code> an assertion function that narrows types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> parsed = <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(<span class="hljs-string">'[1, 2]'</span>);</code>
+<code><span class="hljs-keyword">type</span> _1 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> parsed, <span class="hljs-built_in">any</span></code>
+<code>&gt;&gt;;</code>
+<code><span class="hljs-title function_">throwIfNotInstance</span>(<span class="hljs-title class_">Array</span>, parsed);</code>
+<code><span class="hljs-keyword">type</span> _2 = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-keyword">typeof</span> parsed, <span class="hljs-title class_">Array</span>&lt;<span class="hljs-built_in">unknown</span>&gt;</code>
+<code>&gt;&gt;;</code>
+</pre>
+<h4 id="example-maps-that-are-type-safe-at-runtime"><a class="heading-id-link" href="#example-maps-that-are-type-safe-at-runtime">23.3.5 Example: Maps that are type-safe at runtime</a></h4>
+<p>One use case for <code>Class&lt;T&gt;</code> and <code>cast()</code> is type-safe Maps:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">TypeSafeMap</span> {</code>
+<code>  #data = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>&lt;<span class="hljs-built_in">unknown</span>, <span class="hljs-built_in">unknown</span>&gt;();</code>
+<code>  get&lt;T&gt;(<span class="hljs-attr">key</span>: <span class="hljs-title class_">Class</span>&lt;T&gt;) {</code>
+<code>    <span class="hljs-keyword">const</span> value = <span class="hljs-variable language_">this</span>.#data.<span class="hljs-title function_">get</span>(key);</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-title function_">cast</span>(key, value);</code>
+<code>  }</code>
+<code>  set&lt;T&gt;(<span class="hljs-attr">key</span>: <span class="hljs-title class_">Class</span>&lt;T&gt;, <span class="hljs-attr">value</span>: T): <span class="hljs-variable language_">this</span> {</code>
+<code>    <span class="hljs-title function_">cast</span>(key, value); <span class="hljs-comment">// runtime check</span></code>
+<code>    <span class="hljs-variable language_">this</span>.#data.<span class="hljs-title function_">set</span>(key, value);</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-title function_">has</span>(<span class="hljs-params">key: <span class="hljs-built_in">unknown</span></span>) {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.#data.<span class="hljs-title function_">has</span>(key);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>The key of each entry in a <code>TypeSafeMap</code> is a class. That class determines the static type of the entry’s value and is also used for checks at runtime.</p>
+<p>This is <code>TypeSafeMap</code> in action:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeSafeMap</span>();</code>
+<code/>
+<code>map.<span class="hljs-title function_">set</span>(<span class="hljs-title class_">RegExp</span>, <span class="hljs-regexp">/abc/</span>);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> re = map.<span class="hljs-title function_">get</span>(<span class="hljs-title class_">RegExp</span>);</code>
+<code>assertType&lt;<span class="hljs-title class_">RegExp</span>&gt;(re);</code>
+<code/>
+<code><span class="hljs-comment">// Static and dynamic error!</span></code>
+<code>assert.<span class="hljs-title function_">throws</span>(</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Argument of type 'string' is not assignable</span></code>
+<code>  <span class="hljs-comment">// to parameter of type 'Date'.</span></code>
+<code>  <span class="hljs-function">() =&gt;</span> map.<span class="hljs-title function_">set</span>(<span class="hljs-title class_">Date</span>, <span class="hljs-string">'abc'</span>)</code>
+<code>);</code>
+</pre>
+<h4 id="pitfall-class-t-does-not-match-abstract-classes"><a class="heading-id-link" href="#pitfall-class-t-does-not-match-abstract-classes">23.3.6 Pitfall: <code>Class&lt;T&gt;</code> does not match abstract classes</a></h4>
+<p>Consider the following classes:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Shape</span> {</code>
+<code>}</code>
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Circle</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Shape</span> {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p><code>Class&lt;T&gt;</code> does not match the abstract class <code>Shape</code> (last line):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Class</span>&lt;T&gt; = <span class="hljs-keyword">new</span> (...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]) =&gt; T;</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Type 'typeof Shape' is not assignable to</span></code>
+<code><span class="hljs-comment">// type 'Class&lt;Shape&gt;'. Cannot assign an abstract constructor type</span></code>
+<code><span class="hljs-comment">// to a non-abstract constructor type.</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">shapeClasses1</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">Class</span>&lt;<span class="hljs-title class_">Shape</span>&gt;&gt; = [<span class="hljs-title class_">Circle</span>, <span class="hljs-title class_">Shape</span>];</code>
+</pre>
+<p>Why is that? The rationale is that constructor type literals and construct signatures should only be used for values that can actually be <code>new</code>-invoked.</p>
+<p>If we want to <code>Class&lt;T&gt;</code> to match both abstract and concrete classes, we can use an <em>abstract construct signature</em>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Class</span>&lt;T&gt; = <span class="hljs-keyword">abstract</span> <span class="hljs-keyword">new</span> (...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]) =&gt; T;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">shapeClasses</span>: <span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">Class</span>&lt;<span class="hljs-title class_">Shape</span>&gt;&gt; = [<span class="hljs-title class_">Circle</span>, <span class="hljs-title class_">Shape</span>];</code>
+</pre>
+<p>There is once caveat – this type cannot be <code>new</code>-invoked:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> createInstance&lt;T&gt;(<span class="hljs-title class_">TheClass</span>: <span class="hljs-title class_">Class</span>&lt;T&gt;, ...<span class="hljs-attr">args</span>: <span class="hljs-built_in">unknown</span>[]): T {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Cannot create an instance of an abstract class.</span></code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TheClass</span>(...args);</code>
+<code>}</code>
+</pre>
+<p>However, the new <code>Class&lt;T&gt;</code> works well for all other use cases, including <code>instanceof</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> isInstance&lt;T&gt;(<span class="hljs-title class_">TheClass</span>: <span class="hljs-title class_">Class</span>&lt;T&gt;, <span class="hljs-attr">arg</span>: <span class="hljs-built_in">unknown</span>): <span class="hljs-built_in">boolean</span> {</code>
+<code>  <span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-keyword">typeof</span> arg, <span class="hljs-built_in">unknown</span></code>
+<code>  &gt;&gt;;</code>
+<code>  <span class="hljs-keyword">if</span> (arg <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">TheClass</span>) {</code>
+<code>    <span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>      <span class="hljs-keyword">typeof</span> arg, T</code>
+<code>    &gt;&gt;;</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;</code>
+<code>}</code>
+</pre>
+<p>Therefore, we can rename the old type for classes to <code>NewableClass&lt;T&gt;</code> – in case we need a class to be <code>new</code>-invokable:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">NewableClass</span>&lt;T&gt; = <span class="hljs-keyword">new</span> (...<span class="hljs-attr">args</span>: <span class="hljs-built_in">any</span>[]) =&gt; T;</code>
+<code><span class="hljs-keyword">function</span> createInstance&lt;T&gt;(<span class="hljs-title class_">TheClass</span>: <span class="hljs-title class_">NewableClass</span>&lt;T&gt;, ...<span class="hljs-attr">args</span>: <span class="hljs-built_in">unknown</span>[]): T {</code>
+<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TheClass</span>(...args);</code>
+<code>}</code>
+</pre>
+
+    
+      
+</body>
+</html>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>11 Documenting TypeScript APIs via doc comments and TypeDoc</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>11 Documenting TypeScript APIs via doc comments and TypeDoc</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_jsdoc.html">https://exploringjs.com/ts/book/ch_jsdoc.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#doc-comments">11.1 Doc comments</a>
+      <ol>
+        <li>
+          <a href="#jsdoc-comments">11.1.1 JSDoc comments</a>
+        </li>
+        <li>
+          <a href="#tsdoc-comments">11.1.2 TSDoc comments</a>
+        </li>
+        <li>
+          <a href="#typedoc">11.1.3 TypeDoc</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#generating-documentation">11.2 Generating documentation</a>
+    </li>
+    <li>
+      <a href="#referring-to-parts-of-files-from-doc-comments">11.3 Referring to parts of files from doc comments</a>
+      <ol>
+        <li>
+          <a href="#why-is-that-useful">11.3.1 Why is that useful?</a>
+        </li>
+        <li>
+          <a href="#real-world-example">11.3.2 Real-world example</a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#further-reading-4">11.4 Further reading</a>
+    </li>
+  </ol>
+</nav>
+<p>This chapter describes how to document TypeScript APIs via <em>doc comments</em> (multi-line comments whose contents follow a standard format). We will use the npm-installable command line tool <a href="https://typedoc.org">TypeDoc</a> for this task.</p>
+<h3 id="doc-comments"><a class="heading-id-link" href="#doc-comments">11.1 Doc comments</a></h3>
+<h4 id="jsdoc-comments"><a class="heading-id-link" href="#jsdoc-comments">11.1.1 JSDoc comments</a></h4>
+<p>The de-facto standard for documenting APIs in JavaScript are <a href="https://jsdoc.app">JSDoc comments</a> (which were inspired by <a href="https://en.wikipedia.org/wiki/Javadoc">Javadoc comments</a>). They are multi-line comments where the opening delimiter is followed by a second asterisk:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Adds two numbers</span></code>
+<code><span class="hljs-comment"> * </span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">number</span>} <span class="hljs-variable">x</span> - The first operand</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> {<span class="hljs-type">number</span>} <span class="hljs-variable">y</span> - The second operand</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> {<span class="hljs-type">number</span>} The sum of both operands</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-keyword">return</span> x + y;</code>
+<code>}</code>
+</pre>
+<p>The hyphen after parameter names such as <code>x</code> is optional.</p>
+<p>TypeScript itself supports JSDoc comments as a way to specify types in plain JavaScript code (<a href="https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html">more information</a>).</p>
+<h4 id="tsdoc-comments"><a class="heading-id-link" href="#tsdoc-comments">11.1.2 TSDoc comments</a></h4>
+<p><a href="https://tsdoc.org">TSDoc</a> adapts JSDoc comments so that they are a better fit for TypeScript – e.g., types in comments are not allowed and the hyphen is mandatory:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Adds two numbers</span></code>
+<code><span class="hljs-comment"> * </span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">x</span> - The first operand</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> <span class="hljs-variable">y</span> - The second operand</span></code>
+<code><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> The sum of both operands</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">add</span>(<span class="hljs-params">x: <span class="hljs-built_in">number</span>, y: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">number</span> {</code>
+<code>  <span class="hljs-keyword">return</span> x + y;</code>
+<code>}</code>
+</pre>
+<h4 id="typedoc"><a class="heading-id-link" href="#typedoc">11.1.3 TypeDoc</a></h4>
+<p>The API documentation generator <a href="https://typedoc.org">TypeDoc</a> uses doc comments to generate HTML API documentation. TSDoc comments are preferred, but JSDoc comments are supported, too. TypeDoc’s features include:</p>
+<ul>
+  <li>
+    Support for Markdown in doc comments, including syntax highlighting for code blocks.
+  </li>
+  <li>
+    Doc comments can refer to code fragments in external files – which can be tested more easily.
+  </li>
+  <li>
+    Web pages generated from files written in Markdown (<a href="https://typedoc.org/documents/External_Documents.html">“external documents”</a>).
+  </li>
+</ul>
+<h3 id="generating-documentation"><a class="heading-id-link" href="#generating-documentation">11.2 Generating documentation</a></h3>
+<p>We can use the following <code>package.json</code> script to convert TSDoc comments to API documentation:</p>
+<pre class="language-json">
+<code><span class="hljs-attr">"scripts"</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">{</span></code>
+<code>  <span class="hljs-attr">"\n========== TypeDoc =========="</span><span class="hljs-punctuation">:</span> <span class="hljs-string">""</span><span class="hljs-punctuation">,</span></code>
+<code>  <span class="hljs-attr">"api"</span><span class="hljs-punctuation">:</span> <span class="hljs-string">"shx rm -rf docs/api/ &amp;&amp; typedoc --out docs/api/ --readme none</span></code>
+<code><span class="hljs-string">  --entryPoints src --entryPointStrategy expand --exclude '**/*_test.ts'"</span><span class="hljs-punctuation">,</span></code>
+<code><span class="hljs-punctuation">}</span><span class="hljs-punctuation">,</span></code>
+</pre>
+<p>The entry for <code>"api"</code> is a single line; I have broken it up so that it can be displayed better.</p>
+<p>As a complementary measure, we can serve <a href="https://docs.github.com/en/pages">GitHub pages</a> from <code>docs/</code>:</p>
+<ul>
+  <li>
+    File in repository: <code>my-package/docs/api/index.html</code>
+  </li>
+  <li>
+    File online (user <code>robin</code>): <code>https://robin.github.io/my-package/api/index.html</code>
+  </li>
+</ul>
+<p>You can check out <a href="https://rauschma.github.io/helpers/api/">the API docs for <code>@rauschma/helpers</code></a> online (warning: still underdocumented).</p>
+<h3 id="referring-to-parts-of-files-from-doc-comments"><a class="heading-id-link" href="#referring-to-parts-of-files-from-doc-comments">11.3 Referring to parts of files from doc comments</a></h3>
+<p>Since version 0.27.7, TypeDoc lets us refer to parts of external files via the doc tag <code>{@includeCode}</code>:</p>
+<p>File <code>util.ts</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * {<span class="hljs-doctag">@includeCode</span> ./util_test.ts#utilFunc}</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">utilFunc</span>(<span class="hljs-params">): <span class="hljs-built_in">void</span> {}</span></code>
+</pre>
+<p>Note the hash (<code>#</code>) and the name <code>utilFunc</code> after the path of the file: It refers to a <em>region</em> inside <code>util_test.ts</code>. A region is a way to mark sequences of lines in a source file via comments. Regions are also supported by Visual Studio Code where they can be folded (<a href="https://code.visualstudio.com/docs/editor/codebasics#_folding">documentation</a>).</p>
+<p>This is what the region inside <code>util_test.ts</code> looks like:</p>
+<pre class="language-ts">
+<code><span class="hljs-title function_">test</span>(<span class="hljs-string">'utilFunc'</span>, <span class="hljs-function">() =&gt;</span> {</code>
+<code>  <span class="hljs-comment">//#region utilFunc</span></code>
+<code>  <span class="hljs-comment">// ...</span></code>
+<code>  <span class="hljs-comment">//#endregion utilFunc</span></code>
+<code>});</code>
+</pre>
+<h4 id="why-is-that-useful"><a class="heading-id-link" href="#why-is-that-useful">11.3.1 Why is that useful?</a></h4>
+<p>The file names already suggest the use case for this feature: It enables us to publish documentation where all code examples (such as region <code>utilFunc</code>) are tested.</p>
+<p>In the past, TypeDoc only let us include full files, which meant one file per example – with test boilerplate showing up in the documentation.</p>
+<h4 id="real-world-example"><a class="heading-id-link" href="#real-world-example">11.3.2 Real-world example</a></h4>
+<ul>
+  <li>
+    The following files are an excerpt from real-world code.
+  </li>
+  <li>
+    Check out the result online: <a href="https://rauschma.github.io/helpers/api/functions/collection_array.arrayToChunks.html">Function arrayToChunks</a>
+    <ul>
+      <li>
+        Another example: <a href="https://rauschma.github.io/helpers/api/classes/typescript_error.UnexpectedValueError.html">Class UnexpectedValueError</a>
+      </li>
+    </ul>
+  </li>
+</ul>
+<p>File <code>array.ts</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">/**</span></code>
+<code><span class="hljs-comment"> * Split `arr` into chunks with length `chunkLen` and return them</span></code>
+<code><span class="hljs-comment"> * in an Array.</span></code>
+<code><span class="hljs-comment"> * {<span class="hljs-doctag">@includeCode</span> ./array_test.ts#arrayToChunks}</span></code>
+<code><span class="hljs-comment"> */</span></code>
+<code><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> arrayToChunks&lt;T&gt;(</code>
+<code>  <span class="hljs-attr">arr</span>: <span class="hljs-title class_">Array</span>&lt;T&gt;, <span class="hljs-attr">chunkLen</span>: <span class="hljs-built_in">number</span></code>
+<code>): <span class="hljs-title class_">Array</span>&lt;<span class="hljs-title class_">Array</span>&lt;T&gt;&gt; {</code>
+<code>  <span class="hljs-comment">// ···</span></code>
+<code>}</code>
+</pre>
+<p>File <code>array_test.ts</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-comment">// ···</span></code>
+<code><span class="hljs-title function_">test</span>(<span class="hljs-string">'arrayToChunks'</span>, <span class="hljs-function">() =&gt;</span> {</code>
+<code>  <span class="hljs-comment">//#region arrayToChunks</span></code>
+<code>  <span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>];</code>
+<code>  assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    <span class="hljs-title function_">arrayToChunks</span>(arr, <span class="hljs-number">1</span>),</code>
+<code>    [[<span class="hljs-string">'a'</span>], [<span class="hljs-string">'b'</span>], [<span class="hljs-string">'c'</span>], [<span class="hljs-string">'d'</span>]],</code>
+<code>  );</code>
+<code>  <span class="hljs-comment">//#endregion arrayToChunks</span></code>
+<code/>
+<code>  assert.<span class="hljs-title function_">deepEqual</span>(</code>
+<code>    <span class="hljs-title function_">arrayToChunks</span>(arr, <span class="hljs-number">2</span>),</code>
+<code>    [[<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>], [<span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]],</code>
+<code>  );</code>
+<code>});</code>
+</pre>
+<h3 id="further-reading-4"><a class="heading-id-link" href="#further-reading-4">11.4 Further reading</a></h3>
+<ul>
+  <li>
+    <a href="https://typedoc.org/documents/Tags.__include_.html">Documentation for <code>{@includeCode}</code></a>
+  </li>
+  <li>
+    Related tools:
+    <ul>
+      <li>
+        <a href="https://github.com/rauschma/markcheck">Markcheck</a> checks code example in Markdown files.
+      </li>
+      <li>
+        <a href="https://github.com/yamadapc/jsdoctest">jsdoctest</a> runs JSDoc examples (written in JavaScript) as doctests.
+      </li>
+    </ul>
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

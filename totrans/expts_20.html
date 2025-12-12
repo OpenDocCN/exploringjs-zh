@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>16 Symbols in TypeScript</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>16 Symbols in TypeScript</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_symbols.html">https://exploringjs.com/ts/book/ch_symbols.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#types-for-symbols">16.1 Types for symbols</a>
+      <ol>
+        <li>
+          <a href="#symbol-and-typeof-my-symbol">16.1.1 <code>symbol</code> and <code>typeof MY_SYMBOL</code></a>
+        </li>
+        <li>
+          <a href="#the-type-unique-symbol">16.1.2 The type <code>unique symbol</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#unions-of-symbol-types">16.2 Unions of symbol types</a>
+    </li>
+    <li>
+      <a href="#symbols-as-special-values">16.3 Symbols as special values</a>
+    </li>
+    <li>
+      <a href="#symbols-as-enum-values">16.4 Symbols as enum values</a>
+    </li>
+    <li>
+      <a href="#further-reading-6">16.5 Further reading</a>
+    </li>
+  </ol>
+</nav>
+<p>In this chapter, we examine how TypeScript handles JavaScript symbols at the type level.</p>
+<p>If you want to refresh your knowledge of JavaScript symbols, you can check out chapter <a href="https://exploringjs.com/js/book/ch_symbols.html">“Symbols”</a> of “Exploring JavaScript”.</p>
+<h3 id="types-for-symbols"><a class="heading-id-link" href="#types-for-symbols">16.1 Types for symbols</a></h3>
+<h4 id="symbol-and-typeof-my-symbol"><a class="heading-id-link" href="#symbol-and-typeof-my-symbol">16.1.1 <code>symbol</code> and <code>typeof MY_SYMBOL</code></a></h4>
+<p>Type inference usually gives us:</p>
+<ul>
+  <li>
+    broader, more general types for <code>let</code>
+  </li>
+  <li>
+    narrower, more specific types for <code>const</code>
+  </li>
+</ul>
+<p>For example:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> value1 = <span class="hljs-number">123</span>;</code>
+<code>assertType&lt;<span class="hljs-built_in">number</span>&gt;(value1);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> value2 = <span class="hljs-number">123</span>;</code>
+<code>assertType&lt;<span class="hljs-number">123</span>&gt;(value2);</code>
+</pre>
+<p>That is also true for symbols:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">let</span> <span class="hljs-title class_">SYM1</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM1'</span>);</code>
+<code>assertType&lt;<span class="hljs-built_in">symbol</span>&gt;(<span class="hljs-title class_">SYM1</span>);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">SYM2</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM2'</span>);</code>
+<code>assertType&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">SYM2</span>&gt;(<span class="hljs-title class_">SYM2</span>);</code>
+</pre>
+<p><code>symbol</code> is the type of all symbols. <code>typeof SYM2</code> is the type of one specific symbol. There is no way for us to create another value that matches <code>typeof SYM2</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">_sym: <span class="hljs-keyword">typeof</span> SYM2</span>) {}</code>
+<code/>
+<code><span class="hljs-title function_">f</span>(<span class="hljs-title class_">SYM2</span>); <span class="hljs-comment">// OK</span></code>
+<code><span class="hljs-comment">// @ts-expect-error: Argument of type 'symbol' is not assignable to</span></code>
+<code><span class="hljs-comment">// parameter of type 'unique symbol'.</span></code>
+<code><span class="hljs-title function_">f</span>(<span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM2'</span>)); <span class="hljs-comment">// new, different value!</span></code>
+</pre>
+<p>Note the type <code>unique symbol</code> in the error message. We’ll get to what it is soon.</p>
+<p>Out inability to create a new symbol that is equal to the original <code>SYM2</code> is a JavaScript phenomenon:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Symbol</span>() === <span class="hljs-title class_">Symbol</span>()</span></code>
+<code>false</code>
+</pre>
+<p>Symbols are similar to object literals in this regard:</p>
+<pre class="language-node-repl">
+<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">{} === {}</span></code>
+<code>false</code>
+</pre>
+<h5 id="pitfall-assignment-broadens-the-type-of-a-symbol"><a class="heading-id-link" href="#pitfall-assignment-broadens-the-type-of-a-symbol">16.1.1.1 Pitfall: assignment broadens the type of a symbol</a></h5>
+<p>If we assign a variable <code>SYM</code> with the type <code>typeof SYM</code> to another variable <code>X</code>, then the type of the latter is broadened to <code>symbol</code> – even when we declare it with <code>const</code>.</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">SYM</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM'</span>); <span class="hljs-comment">// typeof SYM</span></code>
+<code/>
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">getSym</span>(<span class="hljs-params">): <span class="hljs-keyword">typeof</span> <span class="hljs-variable constant_">SYM</span> {</span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">const</span> X = <span class="hljs-variable constant_">SYM</span>; <span class="hljs-comment">// symbol</span></span></code>
+<code/>
+<code><span class="hljs-params">  <span class="hljs-comment">// @ts-expect-error: Type 'symbol' is not assignable to</span></span></code>
+<code><span class="hljs-params">  <span class="hljs-comment">// type 'unique symbol'.</span></span></code>
+<code><span class="hljs-params">  <span class="hljs-keyword">return</span> X;</span></code>
+<code><span class="hljs-params">}</span></code>
+</pre>
+<p>Related GitHub issue: <a href="https://github.com/microsoft/TypeScript/issues/55901"><code>“unique symbol</code> lost on assignment to <code>const</code> despite type assertion”</a></p>
+<h4 id="the-type-unique-symbol"><a class="heading-id-link" href="#the-type-unique-symbol">16.1.2 The type <code>unique symbol</code></a></h4>
+<p>The type <code>unique symbol</code> is a subtype of <code>symbol</code>. It means that this particular location holds a symbol with a particular type. It is very similar to <code>typeof SOME_SYMBOL</code> but does not name the particular symbol. Each location of <code>unique symbol</code> is different and incompatible with all other locations (similar to <code>typeof SOME_SYMBOL</code>).</p>
+<p><code>unique symbol</code> can be used in <code>const</code> variable declaration and <code>static readonly</code> properties. If we want to express uniqueness elsewhere, we have to use <code>typeof S</code> – as we have done previously. Given that <code>unique symbol</code> is basically another way of expressing <code>typeof S</code>, it’s not very useful </p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">SYM</span>: unique <span class="hljs-built_in">symbol</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM'</span>);</code>
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyClass</span> {</code>
+<code>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">readonly</span> <span class="hljs-attr">SYM</span>: unique <span class="hljs-built_in">symbol</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM'</span>);</code>
+<code>}</code>
+</pre>
+<p>The previous code is completely equivalent to:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">SYM</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM'</span>);</code>
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyClass</span> {</code>
+<code>  <span class="hljs-keyword">static</span> <span class="hljs-keyword">readonly</span> <span class="hljs-variable constant_">SYM</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM'</span>);</code>
+<code>}</code>
+</pre>
+<p>There is one more location where we can use <code>unique symbol</code> – as the type of a read-only property. That is done to declare the types of well-known symbols such as <code>Symbol.iterator</code> (file <code>lib.es2015.iterable.d.ts</code>):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">SymbolConstructor</span> {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">iterator</span>: unique <span class="hljs-built_in">symbol</span>;</code>
+<code>}</code>
+</pre>
+<p>Why is the name of the interface <code>SymbolConstructor</code>? That’s due to how symbols are set up in file <code>lib.es2015.symbol.d.ts</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">SymbolConstructor</span> {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">prototype</span>: <span class="hljs-title class_">Symbol</span>;</code>
+<code>  (description?: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">number</span>): <span class="hljs-built_in">symbol</span>;</code>
+<code>  <span class="hljs-keyword">for</span>(<span class="hljs-attr">key</span>: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">symbol</span>;</code>
+<code>  <span class="hljs-title function_">keyFor</span>(<span class="hljs-attr">sym</span>: <span class="hljs-built_in">symbol</span>): <span class="hljs-built_in">string</span> | <span class="hljs-literal">undefined</span>;</code>
+<code>}</code>
+<code/>
+<code><span class="hljs-keyword">declare</span> <span class="hljs-keyword">var</span> <span class="hljs-title class_">Symbol</span>: <span class="hljs-title class_">SymbolConstructor</span>;</code>
+</pre>
+<h5 id="assignable-to-unique-symbol-property"><a class="heading-id-link" href="#assignable-to-unique-symbol-property">16.1.2.1 We can’t create properties whose type is <code>unique symbol</code></a></h5>
+<p>Consider the following type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">Obj</span> = {</code>
+<code>  <span class="hljs-keyword">readonly</span> <span class="hljs-attr">sym</span>: unique <span class="hljs-built_in">symbol</span>,</code>
+<code>};</code>
+</pre>
+<p>We can’t create an object that is assignable to <code>Obj</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj1</span>: <span class="hljs-title class_">Obj</span> = {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type 'symbol' is not assignable to</span></code>
+<code>  <span class="hljs-comment">// type 'unique symbol'.</span></code>
+<code>  <span class="hljs-attr">sym</span>: <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM'</span>),</code>
+<code>};</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">SYM</span>: unique <span class="hljs-built_in">symbol</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'SYM'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj2</span>: <span class="hljs-title class_">Obj</span> = {</code>
+<code>  <span class="hljs-comment">// @ts-expect-error: Type 'typeof SYM' is not assignable to</span></code>
+<code>  <span class="hljs-comment">// type 'typeof sym'.</span></code>
+<code>  <span class="hljs-attr">sym</span>: <span class="hljs-variable constant_">SYM</span>,</code>
+<code>};</code>
+</pre>
+<p>In the previous subsection <code>SymbolConstructor.iterator</code> was not meant for yet-to-be-created objects. It was meant for a single global value that already existed.</p>
+<h3 id="unions-of-symbol-types"><a class="heading-id-link" href="#unions-of-symbol-types">16.2 Unions of symbol types</a></h3>
+<p>We can use symbols to define union types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ACTIVE</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'ACTIVE'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">INACTIVE</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'INACTIVE'</span>);</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ActSym</span> = <span class="hljs-keyword">typeof</span> <span class="hljs-variable constant_">ACTIVE</span> | <span class="hljs-keyword">typeof</span> <span class="hljs-variable constant_">INACTIVE</span>;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">activation1</span>: <span class="hljs-title class_">ActSym</span> = <span class="hljs-variable constant_">ACTIVE</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">activation2</span>: <span class="hljs-title class_">ActSym</span> = <span class="hljs-variable constant_">INACTIVE</span>;</code>
+<code><span class="hljs-comment">// @ts-expect-error: Type 'unique symbol' is not assignable to</span></code>
+<code><span class="hljs-comment">// type 'ActSym'.</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">activation3</span>: <span class="hljs-title class_">ActSym</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'ACTIVE'</span>);</code>
+</pre>
+<p>We have to use <code>typeof</code> to go from program level to type level:</p>
+<ul>
+  <li>
+    Program level: <code>ACTIVE</code>
+  </li>
+  <li>
+    Type level: <code>typeof ACTIVE</code>
+  </li>
+</ul>
+<p>How does a symbol-based union type compare to a string-based union type such as the one below?</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ActStr</span> = <span class="hljs-string">'ACTIVE'</span> | <span class="hljs-string">'INACTIVE'</span>;</code>
+</pre>
+<p>To make it easier to compare <code>ActSym</code> with <code>ActStr</code>, let’s define the latter in a more complicated way (which we normally wouldn’t do):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">ACTIVE</span> = <span class="hljs-string">'ACTIVE'</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">INACTIVE</span> = <span class="hljs-string">'INACTIVE'</span>;</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ActStr</span> = <span class="hljs-keyword">typeof</span> <span class="hljs-variable constant_">ACTIVE</span> | <span class="hljs-keyword">typeof</span> <span class="hljs-variable constant_">INACTIVE</span>;</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">activation1</span>: <span class="hljs-title class_">ActStr</span> = <span class="hljs-variable constant_">ACTIVE</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">activation2</span>: <span class="hljs-title class_">ActStr</span> = <span class="hljs-variable constant_">INACTIVE</span>;</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">activation3</span>: <span class="hljs-title class_">ActStr</span> = <span class="hljs-string">'ACTIVE'</span>; <span class="hljs-comment">// OK!</span></code>
+</pre>
+<p>What are the pros and cons of a string-based union type?</p>
+<ul>
+  <li>
+    <p>Pro: No need to import constants, we can simply mention the strings (see last line above).</p>
+  </li>
+  <li>
+    <p>Con: The union values are not type-safe. Strings are compared by value (not by identity), which is why a value can be mistaken to be a member of <code>ActStr</code> when it actually isn’t. That kind of mistake cannot happen with symbol-based type unions.</p>
+  </li>
+</ul>
+<h3 id="symbols-as-special-values"><a class="heading-id-link" href="#symbols-as-special-values">16.3 Symbols as special values</a></h3>
+<p><code>undefined</code> and <code>null</code> are often used as special “non-values” that are different from the actual values of a type:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StreamValue</span> =</code>
+<code>  | <span class="hljs-literal">null</span> <span class="hljs-comment">// end of file</span></code>
+<code>  | <span class="hljs-built_in">string</span></code>
+<code>;</code>
+</pre>
+<p>However, a symbol can be a better, more self-explanatory alternative:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-variable constant_">EOF</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'EOF'</span>);</code>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">StreamValue</span> =</code>
+<code>  | <span class="hljs-keyword">typeof</span> <span class="hljs-variable constant_">EOF</span></code>
+<code>  | <span class="hljs-built_in">string</span></code>
+<code>;</code>
+</pre>
+<p>For more information on this topic, see <a href="ch_special-values.html#ch_special-values">“Adding special values to types” (§17)</a>.</p>
+<h3 id="symbols-as-enum-values"><a class="heading-id-link" href="#symbols-as-enum-values">16.4 Symbols as enum values</a></h3>
+<p>Symbols also work well if we want to create an enum with new, unique values:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Active</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Active'</span>);</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Inactive</span> = <span class="hljs-title class_">Symbol</span>(<span class="hljs-string">'Inactive'</span>);</code>
+<code/>
+<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">Activation</span> = {</code>
+<code>  <span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>,</code>
+<code>  <span class="hljs-title class_">Active</span>, <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-title class_">Inactive</span>, <span class="hljs-comment">// (B)</span></code>
+<code>} <span class="hljs-keyword">as</span> <span class="hljs-keyword">const</span>;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">ActivationType</span> = <span class="hljs-title class_">PropertyValues</span>&lt;<span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Activation</span>&gt;;</code>
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-title class_">ActivationType</span>, <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Active</span> | <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Inactive</span></code>
+<code>&gt;&gt;;</code>
+<code/>
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">PropertyValues</span>&lt;<span class="hljs-title class_">Obj</span>&gt; = <span class="hljs-title class_">Obj</span>[<span class="hljs-title class_">Exclude</span>&lt;keyof <span class="hljs-title class_">Obj</span>, <span class="hljs-string">'__proto__'</span>&gt;];</code>
+</pre>
+<p>Why the intermediate step of declaring the variables <code>Active</code> and <code>Inactive</code> in the first two lines? Why don’t we create the symbols in line A and line B?</p>
+<p>If we do that then:</p>
+<ul>
+  <li>
+    <code>Activation.Active</code> will have the type <code>symbol</code>, not the type <code>typeof Active</code>.
+  </li>
+  <li>
+    <code>Activation.Inactive</code> will have the type <code>symbol</code>, not the type <code>typeof Inactive</code>.
+  </li>
+</ul>
+<p>As a result, <code>ActivationType</code> will be <code>symbol</code>. For a longer explanation, see <a href="ch_enums.html#enum-object-with-symbols">“Symbols as property values” (§26.4.5)</a>.</p>
+<h3 id="further-reading-6"><a class="heading-id-link" href="#further-reading-6">16.5 Further reading</a></h3>
+<ul>
+  <li>
+    TypeScript: chapter <a href="https://www.typescriptlang.org/docs/handbook/symbols.html">“Symbols”</a> in the TypeScript Handbook
+  </li>
+  <li>
+    JavaScript: chapter <a href="https://exploringjs.com/js/book/ch_symbols.html">“Symbols”</a> in “Exploring JavaScript”
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>

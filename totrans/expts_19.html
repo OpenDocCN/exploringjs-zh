@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>15 The bottom type never</title>
+<link href="../Styles/Style.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<h1>15 The bottom type never</h1>
+<blockquote>原文：<a href="https://exploringjs.com/ts/book/ch_never.html">https://exploringjs.com/ts/book/ch_never.html</a></blockquote>
+
+    
+        <div id="adbox">
+      <div id="adbox-explain">(Ad, please don’t block.)</div>
+              
+          </div>
+    
+    
+<nav class="local-toc">
+  <ol>
+    <li>
+      <a href="#never-is-a-bottom-type">15.1 <code>never</code> is a bottom type</a>
+    </li>
+    <li>
+      <a href="#never-is-the-empty-set">15.2 <code>never</code> is the empty set</a>
+    </li>
+    <li>
+      <a href="#use-case-for-never-filtering-union-types">15.3 Use case for <code>never</code>: filtering union types</a>
+    </li>
+    <li>
+      <a href="#exhaustiveness-checks">15.4 Use case for <code>never</code>: exhaustiveness checks at compile time</a>
+      <ol>
+        <li>
+          <a href="#exhaustiveness-checks-and-if">15.4.1 Exhaustiveness checks and <code>if</code></a>
+        </li>
+      </ol>
+    </li>
+    <li>
+      <a href="#use-case-for-never-forbidding-properties">15.5 Use case for <code>never</code>: forbidding properties</a>
+    </li>
+    <li>
+      <a href="#functions-that-return-never">15.6 Functions that return <code>never</code></a>
+    </li>
+    <li>
+      <a href="#sources-of-this-chapter-1">15.7 Sources of this chapter</a>
+    </li>
+  </ol>
+</nav>
+<p>In this chapter, we look at the special TypeScript type <code>never</code> which, roughly, is the type of things that never happen. As we’ll see, it has a surprising number of applications.</p>
+<h3 id="never-is-a-bottom-type"><a class="heading-id-link" href="#never-is-a-bottom-type">15.1 <code>never</code> is a bottom type</a></h3>
+<p>If we interpret types as sets of values then:</p>
+<ul>
+  <li>
+    Type <code>Sub</code> is a subtype of type <code>Sup</code> (<code>Sub &lt;: Sup</code>)
+  </li>
+  <li>
+    if <code>Sub</code> is a subset of <code>Sup</code> (<code>Sub ⊂ Sup</code>).
+  </li>
+</ul>
+<p>Two kinds of types are special:</p>
+<ul>
+  <li>
+    A top type <code>T</code> includes all values and all types are subtypes of <code>T</code>.
+  </li>
+  <li>
+    A bottom type <code>B</code> is the empty set and a subtype of all types.
+  </li>
+</ul>
+<p>In TypeScript:</p>
+<ul>
+  <li>
+    <code>any</code> and <code>unknown</code> are top types and explained in <a href="ch_any-unknown.html#ch_any-unknown">“The top types <code>any</code> and <code>unknown</code>” (§14)</a>.
+  </li>
+  <li>
+    <code>never</code> is a bottom type.
+  </li>
+</ul>
+<h3 id="never-is-the-empty-set"><a class="heading-id-link" href="#never-is-the-empty-set">15.2 <code>never</code> is the empty set</a></h3>
+<p>When computing with types, type unions are sometimes used to represent sets of (type-level) values. Then the empty set is represented by <code>never</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    keyof {<span class="hljs-attr">a</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">b</span>: <span class="hljs-number">2</span>},</code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> <span class="hljs-comment">// set of types</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    keyof {},</code>
+<code>    <span class="hljs-built_in">never</span> <span class="hljs-comment">// empty set</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>Similarly, if we use the type operator <code>&amp;</code> to intersect two types that have no elements in common, we get the empty set:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-built_in">boolean</span> &amp; <span class="hljs-built_in">symbol</span>,</code>
+<code>  <span class="hljs-built_in">never</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<p>If we use the type operator <code>|</code> to compute the union of a type <code>T</code> and <code>never</code> then the result is <code>T</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> _ = <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>  <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-built_in">never</span>,</code>
+<code>  <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>&gt;&gt;;</code>
+</pre>
+<h3 id="use-case-for-never-filtering-union-types"><a class="heading-id-link" href="#use-case-for-never-filtering-union-types">15.3 Use case for <code>never</code>: filtering union types</a></h3>
+<p>We can use conditional types to filter union types:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">KeepStrings</span>&lt;T&gt; = T <span class="hljs-keyword">extends</span> <span class="hljs-built_in">string</span> ? T : <span class="hljs-built_in">never</span>;</code>
+<code><span class="hljs-keyword">type</span> _ = [</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">KeepStrings</span>&lt;<span class="hljs-string">'abc'</span>&gt;, <span class="hljs-comment">// normal instantiation</span></code>
+<code>    <span class="hljs-string">'abc'</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">KeepStrings</span>&lt;<span class="hljs-number">123</span>&gt;, <span class="hljs-comment">// normal instantiation</span></code>
+<code>    <span class="hljs-built_in">never</span></code>
+<code>  &gt;&gt;,</code>
+<code>  <span class="hljs-title class_">Assert</span>&lt;<span class="hljs-title class_">Equal</span>&lt;</code>
+<code>    <span class="hljs-title class_">KeepStrings</span>&lt;<span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span> | <span class="hljs-number">0</span> | <span class="hljs-number">1</span>&gt;, <span class="hljs-comment">// distributed instantiation</span></code>
+<code>    <span class="hljs-string">'a'</span> | <span class="hljs-string">'b'</span></code>
+<code>  &gt;&gt;,</code>
+<code>];</code>
+</pre>
+<p>We use two phenomena to make this work:</p>
+<ul>
+  <li>
+    When we apply a conditional type to a union type, it is <em>distributed</em> – applied to each element of the union.
+  </li>
+  <li>
+    In the resulting union of types, the <code>never</code> types returned in the false branch of <code>KeepStrings</code> disappear (see previous section).
+  </li>
+</ul>
+<p>More information: <a href="ch_conditional-types.html#filtering-union-types">“Filtering union types by conditionally returning <code>never</code>” (§34.3)</a></p>
+<h3 id="exhaustiveness-checks"><a class="heading-id-link" href="#exhaustiveness-checks">15.4 Use case for <code>never</code>: exhaustiveness checks at compile time</a></h3>
+<p>With type inference, TypeScript keeps track of what values a variable still can have – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">x: <span class="hljs-built_in">boolean</span></span>): <span class="hljs-built_in">void</span> {</code>
+<code>  assertType&lt;<span class="hljs-literal">false</span> | <span class="hljs-literal">true</span>&gt;(x); <span class="hljs-comment">// (A)</span></code>
+<code>  <span class="hljs-keyword">if</span> (x === <span class="hljs-literal">true</span>) {</code>
+<code>    <span class="hljs-keyword">return</span>;</code>
+<code>  }</code>
+<code>  assertType&lt;<span class="hljs-literal">false</span>&gt;(x); <span class="hljs-comment">// (B)</span></code>
+<code>  <span class="hljs-keyword">if</span> (x === <span class="hljs-literal">false</span>) {</code>
+<code>    <span class="hljs-keyword">return</span>;</code>
+<code>  }</code>
+<code>  assertType&lt;<span class="hljs-built_in">never</span>&gt;(x); <span class="hljs-comment">// (C)</span></code>
+<code>}</code>
+</pre>
+<p>In line A, <code>x</code> can still have the value <code>false</code> and <code>true</code>. After we return if <code>x</code> has the value <code>true</code>, it can still have the value <code>false</code> (line B). After we return if <code>x</code> has the value <code>false</code>, there are no more values this variable can have, which is why it has the type <code>never</code> (line C).</p>
+<p>This behavior is especially useful for enums and unions used like enums because it enables <em>exhaustiveness checks</em> (checking if we have exhaustively handled all cases):</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">enum</span> <span class="hljs-title class_">Color</span> { <span class="hljs-title class_">Red</span>, <span class="hljs-title class_">Green</span> }</code>
+</pre>
+<p>The following pattern works well for JavaScript because it checks at runtime if <code>color</code> has an unexpected value:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">colorToString</span>(<span class="hljs-params">color: Color</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">switch</span> (color) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Color</span>.<span class="hljs-property">Red</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'RED'</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'GREEN'</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(color);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>How can we support this pattern at the type level so that we get a warning if we accidentally don’t consider all member of the enum <code>Color</code>? (The return type <code>string</code> also keeps us safe but with the technique we are about to see, we even get protection if there is no return time. Additionally, we are also protected from illegal values at runtime.)</p>
+<p>Let’s first examine how the inferred value of <code>color</code> changes as we add cases:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">exploreSwitch</span>(<span class="hljs-params">color: Color</span>) {</code>
+<code>  <span class="hljs-keyword">switch</span> (color) {</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      assertType&lt;<span class="hljs-title class_">Color</span>.<span class="hljs-property">Red</span> | <span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>&gt;(color);</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">switch</span> (color) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Color</span>.<span class="hljs-property">Red</span>:</code>
+<code>      <span class="hljs-keyword">break</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      assertType&lt;<span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>&gt;(color);</code>
+<code>  }</code>
+<code>  <span class="hljs-keyword">switch</span> (color) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Color</span>.<span class="hljs-property">Red</span>:</code>
+<code>      <span class="hljs-keyword">break</span>;</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>:</code>
+<code>      <span class="hljs-keyword">break</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      assertType&lt;<span class="hljs-built_in">never</span>&gt;(color);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Once again, the type records what values <code>color</code> still can have.</p>
+<p>The following implementation of the class <code>UnexpectedValueError</code> requires that the type of its actual argument be <code>never</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">UnexpectedValueError</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Error</span> {</code>
+<code>  <span class="hljs-title function_">constructor</span>(</code>
+<code><span class="hljs-params">    <span class="hljs-comment">// Type enables type checking</span></span></code>
+<code><span class="hljs-params">    value: <span class="hljs-built_in">never</span>,</span></code>
+<code><span class="hljs-params">    <span class="hljs-comment">// Only solution that can stringify undefined, null, symbols, and</span></span></code>
+<code><span class="hljs-params">    <span class="hljs-comment">// objects without prototypes</span></span></code>
+<code><span class="hljs-params">    message = <span class="hljs-string">`Unexpected value: <span class="hljs-subst">${{}.toString.call(value)}</span>`</span></span></code>
+<code><span class="hljs-params">  </span>) {</code>
+<code>    <span class="hljs-variable language_">super</span>(message)</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<p>Now we get a compile-time warning if we forget a case because we have not eliminated all values that <code>color</code> can have:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">colorToString</span>(<span class="hljs-params">color: Color</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  <span class="hljs-keyword">switch</span> (color) {</code>
+<code>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">Color</span>.<span class="hljs-property">Red</span>:</code>
+<code>      <span class="hljs-keyword">return</span> <span class="hljs-string">'RED'</span>;</code>
+<code>    <span class="hljs-attr">default</span>:</code>
+<code>      assertType&lt;<span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>&gt;(color);</code>
+<code>      <span class="hljs-comment">// @ts-expect-error: Argument of type 'Color.Green' is not</span></code>
+<code>      <span class="hljs-comment">// assignable to parameter of type 'never'.</span></code>
+<code>      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(color);</code>
+<code>  }</code>
+<code>}</code>
+</pre>
+<h4 id="exhaustiveness-checks-and-if"><a class="heading-id-link" href="#exhaustiveness-checks-and-if">15.4.1 Exhaustiveness checks and <code>if</code></a></h4>
+<p>The exhaustiveness check also works if we handle cases via <code>if</code>:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">colorToString</span>(<span class="hljs-params">color: Color</span>): <span class="hljs-built_in">string</span> {</code>
+<code>  assertType&lt;<span class="hljs-title class_">Color</span>.<span class="hljs-property">Red</span> | <span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>&gt;(color);</code>
+<code>  <span class="hljs-keyword">if</span> (color === <span class="hljs-title class_">Color</span>.<span class="hljs-property">Red</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-string">'RED'</span>;</code>
+<code>  }</code>
+<code>  assertType&lt;<span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>&gt;(color);</code>
+<code>  <span class="hljs-keyword">if</span> (color === <span class="hljs-title class_">Color</span>.<span class="hljs-property">Green</span>) {</code>
+<code>    <span class="hljs-keyword">return</span> <span class="hljs-string">'GREEN'</span>;</code>
+<code>  }</code>
+<code>  assertType&lt;<span class="hljs-built_in">never</span>&gt;(color);</code>
+<code>  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">UnexpectedValueError</span>(color);</code>
+<code>}</code>
+</pre>
+<h3 id="use-case-for-never-forbidding-properties"><a class="heading-id-link" href="#use-case-for-never-forbidding-properties">15.5 Use case for <code>never</code>: forbidding properties</a></h3>
+<p>Given that no other type is assignable to <code>never</code>, we can use it to forbid properties – e.g. those with string keys:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">type</span> <span class="hljs-title class_">EmptyObject</span> = <span class="hljs-title class_">Record</span>&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">never</span>&gt;;</code>
+<code/>
+<code><span class="hljs-comment">// @ts-expect-error: Type 'number' is not assignable to type 'never'.</span></code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj1</span>: <span class="hljs-title class_">EmptyObject</span> = { <span class="hljs-attr">prop</span>: <span class="hljs-number">123</span> };</code>
+<code><span class="hljs-keyword">const</span> <span class="hljs-attr">obj2</span>: <span class="hljs-title class_">EmptyObject</span> = {}; <span class="hljs-comment">// OK</span></code>
+</pre>
+<p>For more information, see <a href="ch_typing-objects.html#forbidding-properties-via-never">“Forbidding properties via <code>never</code>” (§18.6)</a>.</p>
+<h3 id="functions-that-return-never"><a class="heading-id-link" href="#functions-that-return-never">15.6 Functions that return <code>never</code></a></h3>
+<p><code>never</code> also serves as a marker for functions that never return – e.g.:</p>
+<pre class="language-ts">
+<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">throwError</span>(<span class="hljs-params">message: <span class="hljs-built_in">string</span></span>): <span class="hljs-built_in">never</span> {</code>
+<code>  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(message);</code>
+<code>}</code>
+</pre>
+<p>If we call such functions, TypeScript knows that execution ends and adjusts inferred types accordingly. For more information, see <a href="ch_typing-functions.html#return-type-never">“Return type <code>never</code>: functions that don’t return” (§27.4)</a>.</p>
+<h3 id="sources-of-this-chapter-1"><a class="heading-id-link" href="#sources-of-this-chapter-1">15.7 Sources of this chapter</a></h3>
+<ul>
+  <li>
+    <p>Section <a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#better-support-for-never-returning-functions">“Better Support for <code>never</code>-Returning Functions”</a> in “Announcing TypeScript 3.7” by Daniel Rosenwasser for Microsoft</p>
+  </li>
+  <li>
+    <p>Blog post <a href="https://oida.dev/typescript-never-and-error-handling/">“The <code>never</code> type and error handling in TypeScript”</a> by Stefan Baumgartner</p>
+  </li>
+</ul>
+
+    
+      
+</body>
+</html>
