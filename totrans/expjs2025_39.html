@@ -197,18 +197,18 @@
 </figure>
 <p>These are type definitions (in TypeScript’s notation) for the interfaces of the iteration protocol:</p>
 <pre class="language-ts">
-<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">Iterable</span>&lt;T&gt; {</code>
-<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() : <span class="hljs-title class_">Iterator</span>&lt;T&gt;;</code>
-<code>}</code>
+<span class="hljs-keyword">interface</span> <span class="hljs-title class_">Iterable</span>&lt;T&gt; {
+  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() : <span class="hljs-title class_">Iterator</span>&lt;T&gt;;
+}
 <code/>
-<code><span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Iterator</span>&lt;T&gt; {</code>
-<code>  <span class="hljs-keyword">abstract</span> <span class="hljs-title function_">next</span>() : <span class="hljs-title class_">IteratorResult</span>&lt;T&gt;;</code>
-<code>}</code>
+<span class="hljs-keyword">abstract</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Iterator</span>&lt;T&gt; {
+  <span class="hljs-keyword">abstract</span> <span class="hljs-title function_">next</span>() : <span class="hljs-title class_">IteratorResult</span>&lt;T&gt;;
+}
 <code/>
-<code><span class="hljs-keyword">interface</span> <span class="hljs-title class_">IteratorResult</span>&lt;T&gt; {</code>
-<code>  <span class="hljs-attr">value</span>: T;</code>
-<code>  <span class="hljs-attr">done</span>: <span class="hljs-built_in">boolean</span>;</code>
-<code>}</code>
+<span class="hljs-keyword">interface</span> <span class="hljs-title class_">IteratorResult</span>&lt;T&gt; {
+  <span class="hljs-attr">value</span>: T;
+  <span class="hljs-attr">done</span>: <span class="hljs-built_in">boolean</span>;
+}
 </pre>
 <p>The interfaces are used as follows:</p>
 <ul>
@@ -239,39 +239,39 @@
 <h4 id="manually-iterating-over-data"><a class="heading-id-link" href="#manually-iterating-over-data">32.3.1 Manually iterating over data</a></h4>
 <p>This is an example of using the iteration protocol:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> iterable = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</code>
+<span class="hljs-keyword">const</span> iterable = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];
 <code/>
-<code><span class="hljs-comment">// The iterable is a factory for iterators:</span></code>
-<code><span class="hljs-keyword">const</span> iterator = iterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]();</code>
+<span class="hljs-comment">// The iterable is a factory for iterators:</span>
+<span class="hljs-keyword">const</span> iterator = iterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]();
 <code/>
-<code><span class="hljs-comment">// Call .next() until .done is true:</span></code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  iterator.<span class="hljs-title function_">next</span>(), { <span class="hljs-attr">value</span>: <span class="hljs-string">'a'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> }</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  iterator.<span class="hljs-title function_">next</span>(), { <span class="hljs-attr">value</span>: <span class="hljs-string">'b'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> }</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  iterator.<span class="hljs-title function_">next</span>(), { <span class="hljs-attr">value</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">true</span> }</code>
-<code>);</code>
+<span class="hljs-comment">// Call .next() until .done is true:</span>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  iterator.<span class="hljs-title function_">next</span>(), { <span class="hljs-attr">value</span>: <span class="hljs-string">'a'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> }
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  iterator.<span class="hljs-title function_">next</span>(), { <span class="hljs-attr">value</span>: <span class="hljs-string">'b'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> }
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  iterator.<span class="hljs-title function_">next</span>(), { <span class="hljs-attr">value</span>: <span class="hljs-literal">undefined</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">true</span> }
+);
 </pre>
 <h4 id="using-while-to-iterate-manually"><a class="heading-id-link" href="#using-while-to-iterate-manually">32.3.2 Using <code>while</code> to iterate manually</a></h4>
 <p>The following code demonstrates how to use a <code>while</code> loop to iterate over an iterable:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">logAll</span>(<span class="hljs-params">iterable</span>) {</code>
-<code>  <span class="hljs-keyword">const</span> iterator = iterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]();</code>
-<code>  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {</code>
-<code>    <span class="hljs-keyword">const</span> {value, done} = iterator.<span class="hljs-title function_">next</span>();</code>
-<code>    <span class="hljs-keyword">if</span> (done) <span class="hljs-keyword">break</span>;</code>
-<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(value);</code>
-<code>  }</code>
-<code>}</code>
-<code><span class="hljs-title function_">logAll</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]);</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">logAll</span>(<span class="hljs-params">iterable</span>) {
+  <span class="hljs-keyword">const</span> iterator = iterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]();
+  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+    <span class="hljs-keyword">const</span> {value, done} = iterator.<span class="hljs-title function_">next</span>();
+    <span class="hljs-keyword">if</span> (done) <span class="hljs-keyword">break</span>;
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(value);
+  }
+}
+<span class="hljs-title function_">logAll</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]);
 </pre>
 <p>Output:</p>
 <pre>
-<code>a</code>
-<code>b</code>
+a
+b
 </pre>
 <div class="boxout">
   <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Using sync iteration manually</strong></p>
@@ -281,118 +281,118 @@
 <h4 id="retrieving-an-iterator-via-iteratorfrom-es2024"><a class="heading-id-link" href="#retrieving-an-iterator-via-iteratorfrom-es2024">32.3.3 Retrieving an iterator via <code>Iterator.from()</code><span> <sup>ES2024</sup></span></a></h4>
 <p>The built-in static method <code>Iterator.from()</code> provides us with a more elegant way of retrieving iterators:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> iterable = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</span></code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span></span></code>
-<code>true</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>(iterable) <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span></span></code>
-<code>true</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> iterable = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>];</span>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span></span>
+true
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>(iterable) <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span></span>
+true
 </pre>
 <h4 id="iterating-via-iterationbased-language-constructs"><a class="heading-id-link" href="#iterating-via-iterationbased-language-constructs">32.3.4 Iterating via iteration-based language constructs</a></h4>
 <p>We have seen how to use the iteration protocol manually and it is relatively cumbersome. But the protocol is not meant to be used directly – it is meant to be used via higher-level language constructs built on top of it. We’ll notice that we never see iterators when we do so. They are only used internally.</p>
 <h5 id="iterating-over-arrays"><a class="heading-id-link" href="#iterating-over-arrays">32.3.4.1 Iterating over Arrays</a></h5>
 <p>The most important iteration-based language construct is the <code>for-of</code> loop:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> iterable = [<span class="hljs-string">'hello'</span>, <span class="hljs-string">'beautiful'</span>, <span class="hljs-string">'world'</span>];</code>
-<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {</code>
-<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x);</code>
-<code>}</code>
+<span class="hljs-keyword">const</span> iterable = [<span class="hljs-string">'hello'</span>, <span class="hljs-string">'beautiful'</span>, <span class="hljs-string">'world'</span>];
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x);
+}
 </pre>
 <p>Output:</p>
 <pre>
-<code>hello</code>
-<code>beautiful</code>
-<code>world</code>
+hello
+beautiful
+world
 </pre>
 <p>Another iteration-based construct is spreading into Array literals:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [<span class="hljs-string">'BEFORE'</span>, ...iterable, <span class="hljs-string">'AFTER'</span>],</code>
-<code>  [<span class="hljs-string">'BEFORE'</span>, <span class="hljs-string">'hello'</span>, <span class="hljs-string">'beautiful'</span>, <span class="hljs-string">'world'</span>, <span class="hljs-string">'AFTER'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [<span class="hljs-string">'BEFORE'</span>, ...iterable, <span class="hljs-string">'AFTER'</span>],
+  [<span class="hljs-string">'BEFORE'</span>, <span class="hljs-string">'hello'</span>, <span class="hljs-string">'beautiful'</span>, <span class="hljs-string">'world'</span>, <span class="hljs-string">'AFTER'</span>]
+);
 </pre>
 <p><a href="ch_destructuring.html#ch_destructuring">Destructuring</a> via Array patterns also uses iteration under the hood:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> [first, second] = iterable;</code>
-<code>assert.<span class="hljs-title function_">equal</span>(first, <span class="hljs-string">'hello'</span>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(second, <span class="hljs-string">'beautiful'</span>);</code>
+<span class="hljs-keyword">const</span> [first, second] = iterable;
+assert.<span class="hljs-title function_">equal</span>(first, <span class="hljs-string">'hello'</span>);
+assert.<span class="hljs-title function_">equal</span>(second, <span class="hljs-string">'beautiful'</span>);
 </pre>
 <h5 id="iterating-over-sets"><a class="heading-id-link" href="#iterating-over-sets">32.3.4.2 Iterating over Sets</a></h5>
 <p>Sets are also iterable. Note that the iterating code is the same: It sees neither Arrays nor Sets, only iterables.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> iterable = [<span class="hljs-string">'hello'</span>, <span class="hljs-string">'beautiful'</span>, <span class="hljs-string">'world'</span>];</code>
+<span class="hljs-keyword">const</span> iterable = [<span class="hljs-string">'hello'</span>, <span class="hljs-string">'beautiful'</span>, <span class="hljs-string">'world'</span>];
 <code/>
-<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {</code>
-<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x);</code>
-<code>}</code>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(x);
+}
 <code/>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [<span class="hljs-string">'BEFORE'</span>, ...iterable, <span class="hljs-string">'AFTER'</span>],</code>
-<code>  [<span class="hljs-string">'BEFORE'</span>, <span class="hljs-string">'hello'</span>, <span class="hljs-string">'beautiful'</span>, <span class="hljs-string">'world'</span>, <span class="hljs-string">'AFTER'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [<span class="hljs-string">'BEFORE'</span>, ...iterable, <span class="hljs-string">'AFTER'</span>],
+  [<span class="hljs-string">'BEFORE'</span>, <span class="hljs-string">'hello'</span>, <span class="hljs-string">'beautiful'</span>, <span class="hljs-string">'world'</span>, <span class="hljs-string">'AFTER'</span>]
+);
 <code/>
-<code><span class="hljs-keyword">const</span> [first, second] = iterable;</code>
-<code>assert.<span class="hljs-title function_">equal</span>(first, <span class="hljs-string">'hello'</span>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(second, <span class="hljs-string">'beautiful'</span>);</code>
+<span class="hljs-keyword">const</span> [first, second] = iterable;
+assert.<span class="hljs-title function_">equal</span>(first, <span class="hljs-string">'hello'</span>);
+assert.<span class="hljs-title function_">equal</span>(second, <span class="hljs-string">'beautiful'</span>);
 </pre>
 <h4 id="converting-iterables-to-arrays-i-and-arrayfromi"><a class="heading-id-link" href="#converting-iterables-to-arrays-i-and-arrayfromi">32.3.5 Converting iterables to Arrays: <code>[...i]</code> and <code>Array.from(i)</code></a></h4>
 <p>These are ways of converting iterables to Arrays:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> iterable = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>().<span class="hljs-title function_">add</span>(<span class="hljs-string">'a'</span>).<span class="hljs-title function_">add</span>(<span class="hljs-string">'b'</span>).<span class="hljs-title function_">add</span>(<span class="hljs-string">'c'</span>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [...iterable],</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(iterable),</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> iterable = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>().<span class="hljs-title function_">add</span>(<span class="hljs-string">'a'</span>).<span class="hljs-title function_">add</span>(<span class="hljs-string">'b'</span>).<span class="hljs-title function_">add</span>(<span class="hljs-string">'c'</span>);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [...iterable],
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(iterable),
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
 </pre>
 <p>I tend to prefer <code>Array.from()</code> because it’s more self-descriptive.</p>
 <p>More information: <a href="ch_arrays.html#converting-to-array">“Converting iterables, iterators and Array-like values to Arrays” (§34.6)</a></p>
 <p>We can also create an iterator and use an iterator method to create an Array. Iterator methods are explained later.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>(iterable).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>(iterable).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
 </pre>
 <h3 id="processing-iterables-via-generators"><a class="heading-id-link" href="#processing-iterables-via-generators">32.4 Processing iterables via generators</a></h3>
 <p>Synchronous generator functions and methods expose their yielded values via iterators (that are also iterable) that they return:</p>
 <pre class="language-js">
-<code><span class="hljs-comment">/** Synchronous generator function */</span></code>
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">createSyncIterable</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'c'</span>;</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-comment">/** Synchronous generator function */</span>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">createSyncIterable</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'c'</span>;</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>Generators produce iterables, but they can also consume them. That makes them a versatile tool for transforming iterables:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">map</span>(<span class="hljs-params">iterable, callback</span>) {</code>
-<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {</code>
-<code>    <span class="hljs-keyword">yield</span> <span class="hljs-title function_">callback</span>(x);</code>
-<code>  }</code>
-<code>}</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(</code>
-<code>    <span class="hljs-title function_">map</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x ** <span class="hljs-number">2</span>)</code>
-<code>  ),</code>
-<code>  [<span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">16</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">map</span>(<span class="hljs-params">iterable, callback</span>) {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {
+    <span class="hljs-keyword">yield</span> <span class="hljs-title function_">callback</span>(x);
+  }
+}
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(
+    <span class="hljs-title function_">map</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x ** <span class="hljs-number">2</span>)
+  ),
+  [<span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">16</span>]
+);
 <code/>
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">filter</span>(<span class="hljs-params">iterable, callback</span>) {</code>
-<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {</code>
-<code>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">callback</span>(x)) {</code>
-<code>      <span class="hljs-keyword">yield</span> x;</code>
-<code>    }</code>
-<code>  }</code>
-<code>}</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(</code>
-<code>    <span class="hljs-title function_">filter</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> (x % <span class="hljs-number">2</span>) === <span class="hljs-number">0</span></code>
-<code>  )),</code>
-<code>  [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">filter</span>(<span class="hljs-params">iterable, callback</span>) {
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">callback</span>(x)) {
+      <span class="hljs-keyword">yield</span> x;
+    }
+  }
+}
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(
+    <span class="hljs-title function_">filter</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> (x % <span class="hljs-number">2</span>) === <span class="hljs-number">0</span>
+  )),
+  [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>]
+);
 </pre>
 <p>More information: <a href="ch_sync-generators.html#ch_sync-generators">“Synchronous generators<span> <sup>ES6</sup> (advanced)</span>” (§33)</a></p>
 <h3 id="the-inheritance-of-the-iteration-api-advanced"><a class="heading-id-link" href="#the-inheritance-of-the-iteration-api-advanced">32.5 The inheritance of the iteration API<span> (advanced)</span></a></h3>
@@ -400,41 +400,41 @@
 <h4 id="array-iterators"><a class="heading-id-link" href="#array-iterators">32.5.1 Array iterators</a></h4>
 <p>We create an Array iterator like this:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> arrayIterator = [][<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]();</code>
+<span class="hljs-keyword">const</span> arrayIterator = [][<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]();
 </pre>
 <p>This object has a prototype with two properties. Let’s call it <code>ArrayIteratorPrototype</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">ArrayIteratorPrototype</span> = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getPrototypeOf</span>(arrayIterator);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">ownKeys</span>(<span class="hljs-title class_">ArrayIteratorPrototype</span>),</code>
-<code>  [ <span class="hljs-string">'next'</span>, <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">toStringTag</span> ]</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">ArrayIteratorPrototype</span>[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">toStringTag</span>],</code>
-<code>  <span class="hljs-string">'Array Iterator'</span></code>
-<code>);</code>
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">ArrayIteratorPrototype</span> = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getPrototypeOf</span>(arrayIterator);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">ownKeys</span>(<span class="hljs-title class_">ArrayIteratorPrototype</span>),
+  [ <span class="hljs-string">'next'</span>, <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">toStringTag</span> ]
+);
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">ArrayIteratorPrototype</span>[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">toStringTag</span>],
+  <span class="hljs-string">'Array Iterator'</span>
+);
 </pre>
 <p>The prototype of <code>ArrayIteratorPrototype</code> is <code>%IteratorPrototype%</code>. This object has a method whose key is <code>Symbol.iterator</code>. Therefore, all built-in iterators are iterable.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> <span class="hljs-title class_">IteratorPrototype</span> = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getPrototypeOf</span>(<span class="hljs-title class_">ArrayIteratorPrototype</span>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">IteratorPrototype</span>, <span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span></code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">hasOwn</span>(<span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>),</code>
-<code>  <span class="hljs-literal">true</span></code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>],</code>
-<code>  <span class="hljs-string">'function'</span></code>
-<code>);</code>
+<span class="hljs-keyword">const</span> <span class="hljs-title class_">IteratorPrototype</span> = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getPrototypeOf</span>(<span class="hljs-title class_">ArrayIteratorPrototype</span>);
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">IteratorPrototype</span>, <span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>
+);
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">hasOwn</span>(<span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>, <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>),
+  <span class="hljs-literal">true</span>
+);
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-keyword">typeof</span> <span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>],
+  <span class="hljs-string">'function'</span>
+);
 </pre>
 <p>The prototype of <code>Iterator.prototype</code> is <code>Object.prototype</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getPrototypeOf</span>(<span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>) === <span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>,</code>
-<code>  <span class="hljs-literal">true</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">getPrototypeOf</span>(<span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>) === <span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>,
+  <span class="hljs-literal">true</span>
+);
 </pre>
 <p><a href="#fig:inheritance-array-iterator">Figure 32.3</a> contains a diagram for this chain of prototypes.</p>
 <figure id="fig:inheritance-array-iterator" class="float">
@@ -460,95 +460,95 @@
 <h4 id="generator-objects"><a class="heading-id-link" href="#generator-objects">32.5.2 Generator objects</a></h4>
 <p>Roughly, a generator object is an iterator for the values yielded by a generator function <code>genFunc()</code>. We create it by calling <code>genFunc()</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">genFunc</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> genObj = <span class="hljs-title function_">genFunc</span>();</span></code>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">genFunc</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> genObj = <span class="hljs-title function_">genFunc</span>();</span>
 </pre>
 <p>A generator object is an iterator:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  genObj.<span class="hljs-title function_">next</span>(),</code>
-<code>  { <span class="hljs-attr">value</span>: <span class="hljs-string">'a'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> }</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  genObj <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>,</code>
-<code>  <span class="hljs-literal">true</span></code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">isPrototypeOf</span>(genObj),</code>
-<code>  <span class="hljs-literal">true</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  genObj.<span class="hljs-title function_">next</span>(),
+  { <span class="hljs-attr">value</span>: <span class="hljs-string">'a'</span>, <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span> }
+);
+assert.<span class="hljs-title function_">equal</span>(
+  genObj <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>,
+  <span class="hljs-literal">true</span>
+);
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">isPrototypeOf</span>(genObj),
+  <span class="hljs-literal">true</span>
+);
 </pre>
 <h3 id="iterable-iterators"><a class="heading-id-link" href="#iterable-iterators">32.6 Iterable iterators</a></h3>
 <h4 id="why-are-the-builtin-iterators-iterable"><a class="heading-id-link" href="#why-are-the-builtin-iterators-iterable">32.6.1 Why are the built-in iterators iterable?</a></h4>
 <p>As we have seen, all built-in iterators are iterable:</p>
 <pre class="language-js">
-<code><span class="hljs-comment">// Array iterator</span></code>
-<code><span class="hljs-keyword">const</span> arrayIterator = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>].<span class="hljs-title function_">values</span>();</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-comment">// arrayIterator is a built-in iterator</span></code>
-<code>  arrayIterator <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>, <span class="hljs-literal">true</span></code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-comment">// arrayIterator is iterable</span></code>
-<code>  <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span> <span class="hljs-keyword">in</span> arrayIterator, <span class="hljs-literal">true</span></code>
-<code>);</code>
+<span class="hljs-comment">// Array iterator</span>
+<span class="hljs-keyword">const</span> arrayIterator = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>].<span class="hljs-title function_">values</span>();
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-comment">// arrayIterator is a built-in iterator</span>
+  arrayIterator <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>, <span class="hljs-literal">true</span>
+);
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-comment">// arrayIterator is iterable</span>
+  <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span> <span class="hljs-keyword">in</span> arrayIterator, <span class="hljs-literal">true</span>
+);
 <code/>
-<code><span class="hljs-comment">// Generator object</span></code>
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">gen</span>(<span class="hljs-params">) { <span class="hljs-keyword">yield</span> <span class="hljs-string">'hello'</span> }</span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> genObj = <span class="hljs-title function_">gen</span>();</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
-<code><span class="hljs-params">  genObj <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>, <span class="hljs-literal">true</span></span></code>
-<code><span class="hljs-params">);</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span> <span class="hljs-keyword">in</span> genObj, <span class="hljs-literal">true</span></span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-comment">// Generator object</span>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">gen</span>(<span class="hljs-params">) { <span class="hljs-keyword">yield</span> <span class="hljs-string">'hello'</span> }</span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> genObj = <span class="hljs-title function_">gen</span>();</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span>
+<span class="hljs-params">  genObj <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>, <span class="hljs-literal">true</span></span>
+<span class="hljs-params">);</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span>
+<span class="hljs-params">  <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span> <span class="hljs-keyword">in</span> genObj, <span class="hljs-literal">true</span></span>
+<span class="hljs-params">);</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-comment">// Iterator returned by `Iterator` method</span></span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> iter = <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]).<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x * <span class="hljs-number">2</span>);</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
-<code><span class="hljs-params">  iter <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>, <span class="hljs-literal">true</span></span></code>
-<code><span class="hljs-params">);</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span> <span class="hljs-keyword">in</span> iter, <span class="hljs-literal">true</span></span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-params"><span class="hljs-comment">// Iterator returned by `Iterator` method</span></span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> iter = <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>]).<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x * <span class="hljs-number">2</span>);</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span>
+<span class="hljs-params">  iter <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>, <span class="hljs-literal">true</span></span>
+<span class="hljs-params">);</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span>
+<span class="hljs-params">  <span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span> <span class="hljs-keyword">in</span> iter, <span class="hljs-literal">true</span></span>
+<span class="hljs-params">);</span>
 </pre>
 <p>That has the benefit of us being able to iterate over the iterator’s values – e.g., via <code>for-of</code> and <code>Array.from()</code>.</p>
 <p>Another benefit is that generators become more versatile. On one hand, we can use them to implement iterators:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyIterable</span> {</code>
-<code>  <span class="hljs-comment">/** This method must return an iterator */</span></code>
-<code>  * [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {</code>
-<code>    <span class="hljs-keyword">yield</span> <span class="hljs-string">'good'</span>;</code>
-<code>    <span class="hljs-keyword">yield</span> <span class="hljs-string">'morning'</span>;</code>
-<code>  }</code>
-<code>}</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyIterable</span>()),</code>
-<code>  [<span class="hljs-string">'good'</span>, <span class="hljs-string">'morning'</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">MyIterable</span> {
+  <span class="hljs-comment">/** This method must return an iterator */</span>
+  * [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {
+    <span class="hljs-keyword">yield</span> <span class="hljs-string">'good'</span>;
+    <span class="hljs-keyword">yield</span> <span class="hljs-string">'morning'</span>;
+  }
+}
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">MyIterable</span>()),
+  [<span class="hljs-string">'good'</span>, <span class="hljs-string">'morning'</span>]
+);
 </pre>
 <p>On the other hand, we can use them to implement iterables:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">createIterable</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title function_">createIterable</span>()),</span></code>
-<code><span class="hljs-params">  [<span class="hljs-string">'good'</span>, <span class="hljs-string">'morning'</span>]</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">createIterable</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span>
+<span class="hljs-params">  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title function_">createIterable</span>()),</span>
+<span class="hljs-params">  [<span class="hljs-string">'good'</span>, <span class="hljs-string">'morning'</span>]</span>
+<span class="hljs-params">);</span>
 </pre>
 <h4 id="an-iterator-returns-itself-when-asked-for-an-iterator"><a class="heading-id-link" href="#an-iterator-returns-itself-when-asked-for-an-iterator">32.6.2 An iterator returns itself when asked for an iterator</a></h4>
 <p>If an iterator is iterable: What are the iterators it produces? It simply returns itself when asked for an iterator:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> iterator = <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>])</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  iterator[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>](),</code>
-<code>  iterator</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> iterator = <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>])
+assert.<span class="hljs-title function_">equal</span>(
+  iterator[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>](),
+  iterator
+);
 </pre>
 <h4 id="one-time-iterable-vs-many-times-iterable"><a class="heading-id-link" href="#one-time-iterable-vs-many-times-iterable">32.6.3 Iteration quirk: two kinds of iterables</a></h4>
 <p>Alas, iterable iterators mean that there are two kinds of iterables:</p>
@@ -562,53 +562,53 @@
 </ol>
 <p>With a one-time iterable, each time we iterate, we remove more elements, until, eventually, no more are left:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> oneTime = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>();</code>
-<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> oneTime) {</code>
-<code>  assert.<span class="hljs-title function_">equal</span>(</code>
-<code>    x, <span class="hljs-string">'a'</span></code>
-<code>  );</code>
-<code>  <span class="hljs-keyword">break</span>;</code>
-<code>}</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(oneTime),</code>
-<code>  [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(oneTime),</code>
-<code>  []</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> oneTime = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>();
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> oneTime) {
+  assert.<span class="hljs-title function_">equal</span>(
+    x, <span class="hljs-string">'a'</span>
+  );
+  <span class="hljs-keyword">break</span>;
+}
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(oneTime),
+  [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(oneTime),
+  []
+);
 </pre>
 <p>With a many-times iterable, each iteration starts fresh:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> manyTimes = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>];</code>
-<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> manyTimes) {</code>
-<code>  assert.<span class="hljs-title function_">equal</span>(</code>
-<code>    x, <span class="hljs-string">'a'</span></code>
-<code>  );</code>
-<code>  <span class="hljs-keyword">break</span>;</code>
-<code>}</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(manyTimes),</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(manyTimes),</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> manyTimes = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>];
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> manyTimes) {
+  assert.<span class="hljs-title function_">equal</span>(
+    x, <span class="hljs-string">'a'</span>
+  );
+  <span class="hljs-keyword">break</span>;
+}
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(manyTimes),
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(manyTimes),
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
 </pre>
 <p>The following code is another demonstration of the difference:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> oneTime = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>();</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [...oneTime, ...oneTime, ...oneTime],</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> oneTime = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>();
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [...oneTime, ...oneTime, ...oneTime],
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
 <code/>
-<code><span class="hljs-keyword">const</span> manyTimes = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>];</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [...manyTimes, ...manyTimes, ...manyTimes],</code>
-<code>  [<span class="hljs-string">'a'</span>,<span class="hljs-string">'b'</span>,<span class="hljs-string">'c'</span>, <span class="hljs-string">'a'</span>,<span class="hljs-string">'b'</span>,<span class="hljs-string">'c'</span>, <span class="hljs-string">'a'</span>,<span class="hljs-string">'b'</span>,<span class="hljs-string">'c'</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> manyTimes = [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>];
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [...manyTimes, ...manyTimes, ...manyTimes],
+  [<span class="hljs-string">'a'</span>,<span class="hljs-string">'b'</span>,<span class="hljs-string">'c'</span>, <span class="hljs-string">'a'</span>,<span class="hljs-string">'b'</span>,<span class="hljs-string">'c'</span>, <span class="hljs-string">'a'</span>,<span class="hljs-string">'b'</span>,<span class="hljs-string">'c'</span>]
+);
 </pre>
 <h3 id="class-iterator"><a class="heading-id-link" href="#class-iterator">32.7 Class <code>Iterator</code> and iterator helper methods<span> <sup>ES2025</sup></span></a></h3>
 <p>We have already seen that <code>%IteratorPrototype%</code> is the prototype of all built-in iterators. ECMAScript 2025 introduces a class <code>Iterator</code>:</p>
@@ -706,18 +706,18 @@
 </ul>
 <p>For a brief description of each method, see <a href="#quickref-iterator">“Quick reference: class <code>Iterator</code><span> <sup>ES2025</sup></span>” (§32.10)</a>. These are examples of the methods in action:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>().<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-string">`=<span class="hljs-subst">${x}</span>=`</span>).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'=a='</span>, <span class="hljs-string">'=b='</span>, <span class="hljs-string">'=c='</span>]</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>().<span class="hljs-title function_">drop</span>(<span class="hljs-number">1</span>).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>().<span class="hljs-title function_">take</span>(<span class="hljs-number">2</span>).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>().<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-string">`=<span class="hljs-subst">${x}</span>=`</span>).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'=a='</span>, <span class="hljs-string">'=b='</span>, <span class="hljs-string">'=c='</span>]
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>().<span class="hljs-title function_">drop</span>(<span class="hljs-number">1</span>).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>].<span class="hljs-title function_">values</span>().<span class="hljs-title function_">take</span>(<span class="hljs-number">2</span>).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]
+);
 </pre>
 <p>The Array method <code>arr.values()</code> returns an iterator over the elements of <code>arr</code>.</p>
 <div class="boxout">
@@ -746,32 +746,32 @@
 <p>With iterator helper methods, any data structure that supports iteration automatically gains functionality.</p>
 <p>For example, Sets don’t support the operations <code>filter</code> and <code>map</code>, but we can get them via iterator methods:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>( <span class="hljs-comment">// (A)</span></code>
-<code>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([-<span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">6</span>, -<span class="hljs-number">3</span>]).<span class="hljs-title function_">values</span>().<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x &gt;= <span class="hljs-number">0</span>)</code>
-<code>  ),</code>
-<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-number">2</span>, <span class="hljs-number">6</span>])</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>( <span class="hljs-comment">// (B)</span></code>
-<code>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([-<span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">6</span>, -<span class="hljs-number">3</span>]).<span class="hljs-title function_">values</span>().<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x / <span class="hljs-number">2</span>)</code>
-<code>  ),</code>
-<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([-<span class="hljs-number">2.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, -<span class="hljs-number">1.5</span>])</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>( <span class="hljs-comment">// (A)</span>
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([-<span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">6</span>, -<span class="hljs-number">3</span>]).<span class="hljs-title function_">values</span>().<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x &gt;= <span class="hljs-number">0</span>)
+  ),
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-number">2</span>, <span class="hljs-number">6</span>])
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>( <span class="hljs-comment">// (B)</span>
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([-<span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">6</span>, -<span class="hljs-number">3</span>]).<span class="hljs-title function_">values</span>().<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x / <span class="hljs-number">2</span>)
+  ),
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([-<span class="hljs-number">2.5</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, -<span class="hljs-number">1.5</span>])
+);
 </pre>
 <p>Note that <code>new Set()</code> accepts iterables and therefore iterable iterators (line A and line B).</p>
 <p>DOM collections also don’t have the methods <code>.filter()</code> and <code>.map()</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> domCollection = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">'a'</span>);</code>
+<span class="hljs-keyword">const</span> domCollection = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">querySelectorAll</span>(<span class="hljs-string">'a'</span>);
 <code/>
-<code><span class="hljs-comment">// Alas, the collection doesn’t have a method .map()</span></code>
-<code>assert.<span class="hljs-title function_">equal</span>(<span class="hljs-string">'map'</span> <span class="hljs-keyword">in</span> domCollection, <span class="hljs-literal">false</span>);</code>
+<span class="hljs-comment">// Alas, the collection doesn’t have a method .map()</span>
+assert.<span class="hljs-title function_">equal</span>(<span class="hljs-string">'map'</span> <span class="hljs-keyword">in</span> domCollection, <span class="hljs-literal">false</span>);
 <code/>
-<code><span class="hljs-comment">// Solution: use an iterator</span></code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  domCollection.<span class="hljs-title function_">values</span>().<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x.<span class="hljs-property">href</span>).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'https://2ality.com'</span>, <span class="hljs-string">'https://exploringjs.com'</span>]</code>
-<code>);</code>
+<span class="hljs-comment">// Solution: use an iterator</span>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  domCollection.<span class="hljs-title function_">values</span>().<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x.<span class="hljs-property">href</span>).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'https://2ality.com'</span>, <span class="hljs-string">'https://exploringjs.com'</span>]
+);
 </pre>
 <div class="boxout">
   <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Implementing <code>.filter()</code> and <code>.map()</code> for Sets via iterator methods</strong></p>
@@ -781,62 +781,62 @@
 <h5 id="benefit-no-intermediate-arrays-and-incremental-processing"><a class="heading-id-link" href="#benefit-no-intermediate-arrays-and-incremental-processing">32.7.2.2 Benefit: no intermediate Arrays and incremental processing</a></h5>
 <p>If we chain operations that return Arrays (line A, line B, line C) then each operation produces a new Array:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">quoteNonEmptyLinesArray</span>(<span class="hljs-params">str</span>) {</code>
-<code>  <span class="hljs-keyword">return</span> str</code>
-<code>    .<span class="hljs-title function_">split</span>(<span class="hljs-regexp">/(?&lt;=\r?\n)/</span>) <span class="hljs-comment">// (A)</span></code>
-<code>    .<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">line</span> =&gt;</span> line.<span class="hljs-title function_">trim</span>().<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) <span class="hljs-comment">// (B)</span></code>
-<code>    .<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">line</span> =&gt;</span> <span class="hljs-string">'&gt; '</span> + line) <span class="hljs-comment">// (C)</span></code>
-<code>    ;</code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">quoteNonEmptyLinesArray</span>(<span class="hljs-params">str</span>) {
+  <span class="hljs-keyword">return</span> str
+    .<span class="hljs-title function_">split</span>(<span class="hljs-regexp">/(?&lt;=\r?\n)/</span>) <span class="hljs-comment">// (A)</span>
+    .<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">line</span> =&gt;</span> line.<span class="hljs-title function_">trim</span>().<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) <span class="hljs-comment">// (B)</span>
+    .<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">line</span> =&gt;</span> <span class="hljs-string">'&gt; '</span> + line) <span class="hljs-comment">// (C)</span>
+    ;
+}
 </pre>
 <p>The regular expression in line A contains <a href="ch_regexps.html#regexp-lookbehind-assertions">a lookbehind assertion</a> which ensures that the lines returned by <code>.split()</code> includes line terminators.</p>
 <p>In contrast, each operation (line A, line B, line C) in the following code returns an iterator and no intermediate Arrays are created:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">quoteNonEmptyLinesIter</span>(<span class="hljs-params">str</span>) {</code>
-<code>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">splitLinesIter</span>(str) <span class="hljs-comment">// (A)</span></code>
-<code>    .<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">line</span> =&gt;</span> line.<span class="hljs-title function_">trim</span>().<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) <span class="hljs-comment">// (B)</span></code>
-<code>    .<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">line</span> =&gt;</span> <span class="hljs-string">'&gt; '</span> + line) <span class="hljs-comment">// (C)</span></code>
-<code>    ;</code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">quoteNonEmptyLinesIter</span>(<span class="hljs-params">str</span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">splitLinesIter</span>(str) <span class="hljs-comment">// (A)</span>
+    .<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">line</span> =&gt;</span> line.<span class="hljs-title function_">trim</span>().<span class="hljs-property">length</span> &gt; <span class="hljs-number">0</span>) <span class="hljs-comment">// (B)</span>
+    .<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">line</span> =&gt;</span> <span class="hljs-string">'&gt; '</span> + line) <span class="hljs-comment">// (C)</span>
+    ;
+}
 <code/>
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">splitLinesIter</span>(<span class="hljs-params">str</span>) {</code>
-<code>  <span class="hljs-keyword">let</span> prevIndex = <span class="hljs-number">0</span>;</code>
-<code>  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {</code>
-<code>    <span class="hljs-keyword">const</span> eolIndex = str.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'\n'</span>, prevIndex);</code>
-<code>    <span class="hljs-keyword">if</span> (eolIndex &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">break</span>;</code>
-<code>    <span class="hljs-comment">// Including EOL</span></code>
-<code>    <span class="hljs-keyword">const</span> line = str.<span class="hljs-title function_">slice</span>(prevIndex, eolIndex + <span class="hljs-number">1</span>);</code>
-<code>    <span class="hljs-keyword">yield</span> line;</code>
-<code>    prevIndex = eolIndex + <span class="hljs-number">1</span>;</code>
-<code>  }</code>
-<code>  <span class="hljs-keyword">if</span> (prevIndex &lt; str.<span class="hljs-property">length</span>) {</code>
-<code>    <span class="hljs-keyword">yield</span> str.<span class="hljs-title function_">slice</span>(prevIndex);</code>
-<code>  }</code>
-<code>}</code>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">splitLinesIter</span>(<span class="hljs-params">str</span>) {
+  <span class="hljs-keyword">let</span> prevIndex = <span class="hljs-number">0</span>;
+  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+    <span class="hljs-keyword">const</span> eolIndex = str.<span class="hljs-title function_">indexOf</span>(<span class="hljs-string">'\n'</span>, prevIndex);
+    <span class="hljs-keyword">if</span> (eolIndex &lt; <span class="hljs-number">0</span>) <span class="hljs-keyword">break</span>;
+    <span class="hljs-comment">// Including EOL</span>
+    <span class="hljs-keyword">const</span> line = str.<span class="hljs-title function_">slice</span>(prevIndex, eolIndex + <span class="hljs-number">1</span>);
+    <span class="hljs-keyword">yield</span> line;
+    prevIndex = eolIndex + <span class="hljs-number">1</span>;
+  }
+  <span class="hljs-keyword">if</span> (prevIndex &lt; str.<span class="hljs-property">length</span>) {
+    <span class="hljs-keyword">yield</span> str.<span class="hljs-title function_">slice</span>(prevIndex);
+  }
+}
 </pre>
 <p>Example of using <code>quoteNonEmptyLinesIter()</code>:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title function_">quoteNonEmptyLinesIter</span>(<span class="hljs-string">'have\n\na nice\n\nday'</span>)),</code>
-<code>  [</code>
-<code>    <span class="hljs-string">'&gt; have\n'</span>,</code>
-<code>    <span class="hljs-string">'&gt; a nice\n'</span>,</code>
-<code>    <span class="hljs-string">'&gt; day'</span>,</code>
-<code>  ]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title function_">quoteNonEmptyLinesIter</span>(<span class="hljs-string">'have\n\na nice\n\nday'</span>)),
+  [
+    <span class="hljs-string">'&gt; have\n'</span>,
+    <span class="hljs-string">'&gt; a nice\n'</span>,
+    <span class="hljs-string">'&gt; day'</span>,
+  ]
+);
 </pre>
 <p>Note that the empty lines between the three lines of text were filtered out.</p>
 <p>In addition to no intermediate Arrays being created, iterators also give us incremental processing:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> iter = <span class="hljs-title function_">quoteNonEmptyLinesIter</span>(<span class="hljs-string">'have\n\na nice\n\nday'</span>);</span></code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iter.<span class="hljs-title function_">next</span>()</span></code>
-<code>{ value: '&gt; have\n', done: false }</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iter.<span class="hljs-title function_">next</span>()</span></code>
-<code>{ value: '&gt; a nice\n', done: false }</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iter.<span class="hljs-title function_">next</span>()</span></code>
-<code>{ value: '&gt; day', done: false }</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iter.<span class="hljs-title function_">next</span>()</span></code>
-<code>{ value: undefined, done: true }</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> iter = <span class="hljs-title function_">quoteNonEmptyLinesIter</span>(<span class="hljs-string">'have\n\na nice\n\nday'</span>);</span>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iter.<span class="hljs-title function_">next</span>()</span>
+{ value: '&gt; have\n', done: false }
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iter.<span class="hljs-title function_">next</span>()</span>
+{ value: '&gt; a nice\n', done: false }
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iter.<span class="hljs-title function_">next</span>()</span>
+{ value: '&gt; day', done: false }
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">iter.<span class="hljs-title function_">next</span>()</span>
+{ value: undefined, done: true }
 </pre>
 <p>In contrast, <code>quoteNonEmptyLinesArray()</code> first splits all lines, then filters all lines and then maps all lines. Incremental processing matters when dealing with a large amount of data. Iterator helper methods complement generators as tools for incremental processing.</p>
 <h4 id="Iterator.from"><a class="heading-id-link" href="#Iterator.from">32.7.3 <code>Iterator.from()</code>: creating API iterators</a></h4>
@@ -869,21 +869,21 @@
 </ul>
 <p>In the following example, we use <code>Iterator.from()</code> to convert a legacy iterator to an API iterator:</p>
 <pre class="language-js">
-<code><span class="hljs-comment">// Not an instance of `Iterator`</span></code>
-<code><span class="hljs-keyword">const</span> legacyIterator = {</code>
-<code>  <span class="hljs-title function_">next</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">    <span class="hljs-comment">// Infinite iterator (never done)</span></span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> { <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'#'</span> };</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">};</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>(legacyIterator) <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>,</span></code>
-<code><span class="hljs-params">  <span class="hljs-literal">true</span></span></code>
-<code><span class="hljs-params">);</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>(legacyIterator).<span class="hljs-title function_">take</span>(<span class="hljs-number">3</span>).<span class="hljs-title function_">toArray</span>(),</span></code>
-<code><span class="hljs-params">  [<span class="hljs-string">'#'</span>, <span class="hljs-string">'#'</span>, <span class="hljs-string">'#'</span>]</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-comment">// Not an instance of `Iterator`</span>
+<span class="hljs-keyword">const</span> legacyIterator = {
+  <span class="hljs-title function_">next</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">    <span class="hljs-comment">// Infinite iterator (never done)</span></span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> { <span class="hljs-attr">done</span>: <span class="hljs-literal">false</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'#'</span> };</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">};</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span>
+<span class="hljs-params">  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>(legacyIterator) <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>,</span>
+<span class="hljs-params">  <span class="hljs-literal">true</span></span>
+<span class="hljs-params">);</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span>
+<span class="hljs-params">  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>(legacyIterator).<span class="hljs-title function_">take</span>(<span class="hljs-number">3</span>).<span class="hljs-title function_">toArray</span>(),</span>
+<span class="hljs-params">  [<span class="hljs-string">'#'</span>, <span class="hljs-string">'#'</span>, <span class="hljs-string">'#'</span>]</span>
+<span class="hljs-params">);</span>
 </pre>
 <h4 id="iterator-methods-change-how-we-use-iteration"><a class="heading-id-link" href="#iterator-methods-change-how-we-use-iteration">32.7.4 Iterator methods change how we use iteration</a></h4>
 <p>The iterator methods change how we use iteration:</p>
@@ -897,128 +897,128 @@
 </ul>
 <p>It’s interesting how our focus shifts with methods such as <code>Array.prototype.keys()</code> that return iterable iterators: Before iterator methods, we used the result as an iterable. With iterator methods, we also use them as iterators:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>].<span class="hljs-title function_">keys</span>()) <span class="hljs-comment">// iterable</span></span></code>
-<code>[ 0, 1 ]</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">[<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>].<span class="hljs-title function_">keys</span>().<span class="hljs-title function_">toArray</span>() <span class="hljs-comment">// iterator</span></span></code>
-<code>[ 0, 1 ]</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>].<span class="hljs-title function_">keys</span>()) <span class="hljs-comment">// iterable</span></span>
+[ 0, 1 ]
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">[<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>].<span class="hljs-title function_">keys</span>().<span class="hljs-title function_">toArray</span>() <span class="hljs-comment">// iterator</span></span>
+[ 0, 1 ]
 </pre>
 <p>For more information, see <a href="#creating-iterators">“Creating iterators” (§32.10.1)</a>.</p>
 <h4 id="upgrading-a-legacy-iterable-to-the-iterator-api"><a class="heading-id-link" href="#upgrading-a-legacy-iterable-to-the-iterator-api">32.7.5 Upgrading a legacy iterable to the <code>Iterator</code> API</a></h4>
 <p>This is an example of a legacy iterable:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterable</span> {</code>
-<code>  #values;</code>
-<code>  #index = <span class="hljs-number">0</span>;</code>
-<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">...values</span>) {</code>
-<code>    <span class="hljs-variable language_">this</span>.#values = values;</code>
-<code>  }</code>
-<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {</code>
-<code>    <span class="hljs-keyword">return</span> {</code>
-<code>      <span class="hljs-comment">// Arrow function so that we can use the outer `this`</span></code>
-<code>      <span class="hljs-attr">next</span>: <span class="hljs-function">() =&gt;</span> {</code>
-<code>        <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.#index &gt;= <span class="hljs-variable language_">this</span>.#values.<span class="hljs-property">length</span>) {</code>
-<code>          <span class="hljs-keyword">return</span> {<span class="hljs-attr">done</span>: <span class="hljs-literal">true</span>};</code>
-<code>        }</code>
-<code>        <span class="hljs-keyword">const</span> value = <span class="hljs-variable language_">this</span>.#values[<span class="hljs-variable language_">this</span>.#index];</code>
-<code>        <span class="hljs-variable language_">this</span>.#index++;</code>
-<code>        <span class="hljs-keyword">return</span> {<span class="hljs-attr">done</span>: <span class="hljs-literal">false</span>, value};</code>
-<code>      },</code>
-<code>    };</code>
-<code>  }</code>
-<code>}</code>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterable</span> {
+  #values;
+  #index = <span class="hljs-number">0</span>;
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">...values</span>) {
+    <span class="hljs-variable language_">this</span>.#values = values;
+  }
+  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-comment">// Arrow function so that we can use the outer `this`</span>
+      <span class="hljs-attr">next</span>: <span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-keyword">if</span> (<span class="hljs-variable language_">this</span>.#index &gt;= <span class="hljs-variable language_">this</span>.#values.<span class="hljs-property">length</span>) {
+          <span class="hljs-keyword">return</span> {<span class="hljs-attr">done</span>: <span class="hljs-literal">true</span>};
+        }
+        <span class="hljs-keyword">const</span> value = <span class="hljs-variable language_">this</span>.#values[<span class="hljs-variable language_">this</span>.#index];
+        <span class="hljs-variable language_">this</span>.#index++;
+        <span class="hljs-keyword">return</span> {<span class="hljs-attr">done</span>: <span class="hljs-literal">false</span>, value};
+      },
+    };
+  }
+}
 <code/>
-<code><span class="hljs-comment">// legacyIterable is an iterable</span></code>
-<code><span class="hljs-keyword">const</span> legacyIterable = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueIterable</span>(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueIterable</span>(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>)),</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</code>
-<code>);</code>
+<span class="hljs-comment">// legacyIterable is an iterable</span>
+<span class="hljs-keyword">const</span> legacyIterable = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueIterable</span>(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueIterable</span>(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>)),
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]
+);
 <code/>
-<code><span class="hljs-comment">// But its iterators are not instances of Iterator</span></code>
-<code><span class="hljs-keyword">const</span> legacyIterator = legacyIterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]();</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  legacyIterator <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>, <span class="hljs-literal">false</span></code>
-<code>);</code>
+<span class="hljs-comment">// But its iterators are not instances of Iterator</span>
+<span class="hljs-keyword">const</span> legacyIterator = legacyIterable[<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]();
+assert.<span class="hljs-title function_">equal</span>(
+  legacyIterator <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>, <span class="hljs-literal">false</span>
+);
 </pre>
 <p>If we want <code>ValueIterable</code> to support the <code>Iterator</code> API, we have to make its iterators instances of <code>Iterator</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterable</span> {</code>
-<code>  <span class="hljs-comment">// ···</span></code>
-<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {</code>
-<code>    <span class="hljs-keyword">return</span> {</code>
-<code>      <span class="hljs-attr">__proto__</span>: <span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>,</code>
-<code>      <span class="hljs-attr">next</span>: <span class="hljs-function">() =&gt;</span> {</code>
-<code>        <span class="hljs-comment">// ···</span></code>
-<code>      },</code>
-<code>    };</code>
-<code>  }</code>
-<code>}</code>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterable</span> {
+  <span class="hljs-comment">// ···</span>
+  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">__proto__</span>: <span class="hljs-title class_">Iterator</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>,
+      <span class="hljs-attr">next</span>: <span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-comment">// ···</span>
+      },
+    };
+  }
+}
 </pre>
 <p>This is another option (albeit a less efficient one):</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterable</span> {</code>
-<code>  <span class="hljs-comment">// ···</span></code>
-<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {</code>
-<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>({</code>
-<code>      <span class="hljs-attr">next</span>: <span class="hljs-function">() =&gt;</span> {</code>
-<code>        <span class="hljs-comment">// ···</span></code>
-<code>      },</code>
-<code>    });</code>
-<code>  }</code>
-<code>}</code>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterable</span> {
+  <span class="hljs-comment">// ···</span>
+  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {
+    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>({
+      <span class="hljs-attr">next</span>: <span class="hljs-function">() =&gt;</span> {
+        <span class="hljs-comment">// ···</span>
+      },
+    });
+  }
+}
 </pre>
 <p>We can also create a class for iterators:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterable</span> {</code>
-<code>  #values;</code>
-<code>  #index = <span class="hljs-number">0</span>;</code>
-<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">...values</span>) {</code>
-<code>    <span class="hljs-variable language_">this</span>.#values = values;</code>
-<code>  }</code>
-<code>  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {</code>
-<code>    <span class="hljs-keyword">const</span> outerThis = <span class="hljs-variable language_">this</span>;</code>
-<code>    <span class="hljs-comment">// Because ValueIterator is nested, it can access the private fields of</span></code>
-<code>    <span class="hljs-comment">// ValueIterable</span></code>
-<code>    <span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterator</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Iterator</span> {</code>
-<code>      <span class="hljs-title function_">next</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">        <span class="hljs-keyword">if</span> (outerThis.#index &gt;= outerThis.#values.<span class="hljs-property">length</span>) {</span></code>
-<code><span class="hljs-params">          <span class="hljs-keyword">return</span> {<span class="hljs-attr">done</span>: <span class="hljs-literal">true</span>};</span></code>
-<code><span class="hljs-params">        }</span></code>
-<code><span class="hljs-params">        <span class="hljs-keyword">const</span> value = outerThis.#values[outerThis.#index];</span></code>
-<code><span class="hljs-params">        outerThis.#index++;</span></code>
-<code><span class="hljs-params">        <span class="hljs-keyword">return</span> {<span class="hljs-attr">done</span>: <span class="hljs-literal">false</span>, value};</span></code>
-<code><span class="hljs-params">      }</span></code>
-<code><span class="hljs-params">    }</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueIterator</span>();</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterable</span> {
+  #values;
+  #index = <span class="hljs-number">0</span>;
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">...values</span>) {
+    <span class="hljs-variable language_">this</span>.#values = values;
+  }
+  [<span class="hljs-title class_">Symbol</span>.<span class="hljs-property">iterator</span>]() {
+    <span class="hljs-keyword">const</span> outerThis = <span class="hljs-variable language_">this</span>;
+    <span class="hljs-comment">// Because ValueIterator is nested, it can access the private fields of</span>
+    <span class="hljs-comment">// ValueIterable</span>
+    <span class="hljs-keyword">class</span> <span class="hljs-title class_">ValueIterator</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">Iterator</span> {
+      <span class="hljs-title function_">next</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">        <span class="hljs-keyword">if</span> (outerThis.#index &gt;= outerThis.#values.<span class="hljs-property">length</span>) {</span>
+<span class="hljs-params">          <span class="hljs-keyword">return</span> {<span class="hljs-attr">done</span>: <span class="hljs-literal">true</span>};</span>
+<span class="hljs-params">        }</span>
+<span class="hljs-params">        <span class="hljs-keyword">const</span> value = outerThis.#values[outerThis.#index];</span>
+<span class="hljs-params">        outerThis.#index++;</span>
+<span class="hljs-params">        <span class="hljs-keyword">return</span> {<span class="hljs-attr">done</span>: <span class="hljs-literal">false</span>, value};</span>
+<span class="hljs-params">      }</span>
+<span class="hljs-params">    }</span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ValueIterator</span>();</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">}</span>
 </pre>
 <h3 id="grouping-sync-iterables"><a class="heading-id-link" href="#grouping-sync-iterables">32.8 Grouping iterables<span> <sup>ES2024</sup></span></a></h3>
 <p><code>Map.groupBy()</code> groups the items of an iterable into Map entries whose keys are provided by a callback:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Map</span>.<span class="hljs-title function_">groupBy</span>([<span class="hljs-number">0</span>, -<span class="hljs-number">5</span>, <span class="hljs-number">3</span>, -<span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sign</span>(x)),</code>
-<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>().<span class="hljs-title function_">set</span>(<span class="hljs-number">0</span>, [<span class="hljs-number">0</span>]).<span class="hljs-title function_">set</span>(-<span class="hljs-number">1</span>, [-<span class="hljs-number">5</span>,-<span class="hljs-number">4</span>]).<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, [<span class="hljs-number">3</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>])</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Map</span>.<span class="hljs-title function_">groupBy</span>([<span class="hljs-number">0</span>, -<span class="hljs-number">5</span>, <span class="hljs-number">3</span>, -<span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sign</span>(x)),
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>().<span class="hljs-title function_">set</span>(<span class="hljs-number">0</span>, [<span class="hljs-number">0</span>]).<span class="hljs-title function_">set</span>(-<span class="hljs-number">1</span>, [-<span class="hljs-number">5</span>,-<span class="hljs-number">4</span>]).<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, [<span class="hljs-number">3</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>])
+);
 </pre>
 <p>The items to be grouped can come from any iterable:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">generateNumbers</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-number">2</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> -<span class="hljs-number">7</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-number">4</span>;</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">Map</span>.<span class="hljs-title function_">groupBy</span>(<span class="hljs-title function_">generateNumbers</span>(), <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sign</span>(x)),</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>().<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, [<span class="hljs-number">2</span>,<span class="hljs-number">4</span>]).<span class="hljs-title function_">set</span>(-<span class="hljs-number">1</span>, [-<span class="hljs-number">7</span>])</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">generateNumbers</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-number">2</span>;</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> -<span class="hljs-number">7</span>;</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-number">4</span>;</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span>
+<span class="hljs-params">  <span class="hljs-title class_">Map</span>.<span class="hljs-title function_">groupBy</span>(<span class="hljs-title function_">generateNumbers</span>(), <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sign</span>(x)),</span>
+<span class="hljs-params">  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>().<span class="hljs-title function_">set</span>(<span class="hljs-number">1</span>, [<span class="hljs-number">2</span>,<span class="hljs-number">4</span>]).<span class="hljs-title function_">set</span>(-<span class="hljs-number">1</span>, [-<span class="hljs-number">7</span>])</span>
+<span class="hljs-params">);</span>
 </pre>
 <p>There is also <code>Object.groupBy()</code> which produces an object instead of a Map:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">groupBy</span>([<span class="hljs-number">0</span>, -<span class="hljs-number">5</span>, <span class="hljs-number">3</span>, -<span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sign</span>(x)),</code>
-<code>  {<span class="hljs-string">'0'</span>: [<span class="hljs-number">0</span>], <span class="hljs-string">'-1'</span>: [-<span class="hljs-number">5</span>,-<span class="hljs-number">4</span>], <span class="hljs-string">'1'</span>: [<span class="hljs-number">3</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>], <span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>}</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">groupBy</span>([<span class="hljs-number">0</span>, -<span class="hljs-number">5</span>, <span class="hljs-number">3</span>, -<span class="hljs-number">4</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>], <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">sign</span>(x)),
+  {<span class="hljs-string">'0'</span>: [<span class="hljs-number">0</span>], <span class="hljs-string">'-1'</span>: [-<span class="hljs-number">5</span>,-<span class="hljs-number">4</span>], <span class="hljs-string">'1'</span>: [<span class="hljs-number">3</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>], <span class="hljs-attr">__proto__</span>: <span class="hljs-literal">null</span>}
+);
 </pre>
 <h4 id="choosing-between-mapgroupby-and-objectgroupby"><a class="heading-id-link" href="#choosing-between-mapgroupby-and-objectgroupby">32.8.1 Choosing between <code>Map.groupBy()</code> and <code>Object.groupBy()</code></a></h4>
 <ul>
@@ -1045,76 +1045,76 @@
 <h4 id="example-handling-cases"><a class="heading-id-link" href="#example-handling-cases">32.8.2 Example: handling cases</a></h4>
 <p>The Promise combinator <a href="ch_promises.html#Promise.allSettled"><code>Promise.allSettled()</code></a> returns Arrays such as the following one:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> settled = [</code>
-<code>  { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jhon'</span> },</code>
-<code>  { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'Jane'</span> },</code>
-<code>  { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'John'</span> },</code>
-<code>  { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jaen'</span> },</code>
-<code>  { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jnoh'</span> },</code>
-<code>];</code>
+<span class="hljs-keyword">const</span> settled = [
+  { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jhon'</span> },
+  { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'Jane'</span> },
+  { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'John'</span> },
+  { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jaen'</span> },
+  { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jnoh'</span> },
+];
 </pre>
 <p>We can group the Array elements as follows:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> {fulfilled, rejected} = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">groupBy</span>(settled, <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x.<span class="hljs-property">status</span>); <span class="hljs-comment">// (A)</span></code>
+<span class="hljs-keyword">const</span> {fulfilled, rejected} = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">groupBy</span>(settled, <span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x.<span class="hljs-property">status</span>); <span class="hljs-comment">// (A)</span>
 <code/>
-<code><span class="hljs-comment">// Handle fulfilled results</span></code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  fulfilled,</code>
-<code>  [</code>
-<code>    { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'Jane'</span> },</code>
-<code>    { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'John'</span> },</code>
-<code>  ]</code>
-<code>);</code>
+<span class="hljs-comment">// Handle fulfilled results</span>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  fulfilled,
+  [
+    { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'Jane'</span> },
+    { <span class="hljs-attr">status</span>: <span class="hljs-string">'fulfilled'</span>, <span class="hljs-attr">value</span>: <span class="hljs-string">'John'</span> },
+  ]
+);
 <code/>
-<code><span class="hljs-comment">// Handle rejected results</span></code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  rejected,</code>
-<code>  [</code>
-<code>    { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jhon'</span> },</code>
-<code>    { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jaen'</span> },</code>
-<code>    { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jnoh'</span> },</code>
-<code>  ]</code>
-<code>);</code>
+<span class="hljs-comment">// Handle rejected results</span>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  rejected,
+  [
+    { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jhon'</span> },
+    { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jaen'</span> },
+    { <span class="hljs-attr">status</span>: <span class="hljs-string">'rejected'</span>, <span class="hljs-attr">reason</span>: <span class="hljs-string">'Jnoh'</span> },
+  ]
+);
 </pre>
 <p>For this use case, <code>Object.groupBy()</code> works better because we can use destructuring (line A).</p>
 <h4 id="example-grouping-by-property-value"><a class="heading-id-link" href="#example-grouping-by-property-value">32.8.3 Example: grouping by property value</a></h4>
 <p>In the next example, we’d like to group persons by country:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> persons = [</code>
-<code>  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Louise'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'France'</span> },</code>
-<code>  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Felix'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'Germany'</span> },</code>
-<code>  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Ava'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'USA'</span> },</code>
-<code>  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Léo'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'France'</span> },</code>
-<code>  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Oliver'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'USA'</span> },</code>
-<code>  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Leni'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'Germany'</span> },</code>
-<code>];</code>
+<span class="hljs-keyword">const</span> persons = [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Louise'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'France'</span> },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Felix'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'Germany'</span> },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Ava'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'USA'</span> },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Léo'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'France'</span> },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Oliver'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'USA'</span> },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">'Leni'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'Germany'</span> },
+];
 <code/>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Map</span>.<span class="hljs-title function_">groupBy</span>(persons, <span class="hljs-function">(<span class="hljs-params">person</span>) =&gt;</span> person.<span class="hljs-property">country</span>),</code>
-<code>  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([</code>
-<code>    [</code>
-<code>      <span class="hljs-string">'France'</span>,</code>
-<code>      [</code>
-<code>        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Louise'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'France'</span> },</code>
-<code>        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Léo'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'France'</span> },</code>
-<code>      ]</code>
-<code>    ],</code>
-<code>    [</code>
-<code>      <span class="hljs-string">'Germany'</span>,</code>
-<code>      [</code>
-<code>        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Felix'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'Germany'</span> },</code>
-<code>        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Leni'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'Germany'</span> },</code>
-<code>      ]</code>
-<code>    ],</code>
-<code>    [</code>
-<code>      <span class="hljs-string">'USA'</span>,</code>
-<code>      [</code>
-<code>        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Ava'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'USA'</span> },</code>
-<code>        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Oliver'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'USA'</span> },</code>
-<code>      ]</code>
-<code>    ],</code>
-<code>  ])</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Map</span>.<span class="hljs-title function_">groupBy</span>(persons, <span class="hljs-function">(<span class="hljs-params">person</span>) =&gt;</span> person.<span class="hljs-property">country</span>),
+  <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>([
+    [
+      <span class="hljs-string">'France'</span>,
+      [
+        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Louise'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'France'</span> },
+        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Léo'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'France'</span> },
+      ]
+    ],
+    [
+      <span class="hljs-string">'Germany'</span>,
+      [
+        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Felix'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'Germany'</span> },
+        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Leni'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'Germany'</span> },
+      ]
+    ],
+    [
+      <span class="hljs-string">'USA'</span>,
+      [
+        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Ava'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'USA'</span> },
+        { <span class="hljs-attr">name</span>: <span class="hljs-string">'Oliver'</span>, <span class="hljs-attr">country</span>: <span class="hljs-string">'USA'</span> },
+      ]
+    ],
+  ])
+);
 </pre>
 <p>For this use case, <code>Map.groupBy()</code> is a better choice because we can use arbitrary keys in Maps whereas in objects, keys are limited to strings and symbols.</p>
 <div class="boxout">
@@ -1168,17 +1168,17 @@
 </ul>
 <p>Synchronous generator functions and methods expose their yielded values via iterable objects that they return:</p>
 <pre class="language-js">
-<code><span class="hljs-comment">/** Synchronous generator function */</span></code>
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">createSyncIterable</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'c'</span>;</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-comment">/** Synchronous generator function */</span>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">createSyncIterable</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'a'</span>;</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'b'</span>;</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span> <span class="hljs-string">'c'</span>;</span>
+<span class="hljs-params">}</span>
 <code/>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title function_">createSyncIterable</span>()),</span></code>
-<code><span class="hljs-params">  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span>
+<span class="hljs-params">  <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(<span class="hljs-title function_">createSyncIterable</span>()),</span>
+<span class="hljs-params">  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>]</span>
+<span class="hljs-params">);</span>
 </pre>
 <h4 id="synchronous-iteration-data-consumers"><a class="heading-id-link" href="#synchronous-iteration-data-consumers">32.9.2 Synchronous iteration: data consumers</a></h4>
 <p>This section lists constructs that consume data via synchronous iteration.</p>
@@ -1187,28 +1187,28 @@
   <li>
     <p>The <code>for-of</code> loop:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) { <span class="hljs-comment">/*···*/</span> }</code>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> x <span class="hljs-keyword">of</span> iterable) { <span class="hljs-comment">/*···*/</span> }
 </pre>
   </li>
   <li>
     <p>Spreading (via <code>...</code>) into Array literals and function calls:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, ...iterable, <span class="hljs-string">'z'</span>];</code>
-<code><span class="hljs-title function_">func</span>(<span class="hljs-string">'a'</span>, ...iterable, <span class="hljs-string">'z'</span>);</code>
+<span class="hljs-keyword">const</span> arr = [<span class="hljs-string">'a'</span>, ...iterable, <span class="hljs-string">'z'</span>];
+<span class="hljs-title function_">func</span>(<span class="hljs-string">'a'</span>, ...iterable, <span class="hljs-string">'z'</span>);
 </pre>
   </li>
   <li>
     <p>Destructuring via an Array pattern:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> [x, y] = iterable;</code>
+<span class="hljs-keyword">const</span> [x, y] = iterable;
 </pre>
   </li>
   <li>
     <p><code>yield*</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">generatorFunction</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">yield</span>* iterable;</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">generatorFunction</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">yield</span>* iterable;</span>
+<span class="hljs-params">}</span>
 </pre>
   </li>
 </ul>
@@ -1217,31 +1217,31 @@
   <li>
     <p><a href="ch_objects.html#Object.fromEntries"><code>Object.fromEntries()</code></a>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> obj = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(iterableOverKeyValuePairs);</code>
+<span class="hljs-keyword">const</span> obj = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(iterableOverKeyValuePairs);
 </pre>
   </li>
   <li>
     <p><a href="ch_arrays.html#Array.from"><code>Array.from()</code></a>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> arr = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(iterable);</code>
+<span class="hljs-keyword">const</span> arr = <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">from</span>(iterable);
 </pre>
     <p>Alternative – <a href="ch_arrays.html#spreading-into-array-literals">spreading</a>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> arr = [...iterable];</code>
+<span class="hljs-keyword">const</span> arr = [...iterable];
 </pre>
   </li>
   <li>
     <p><a href="ch_maps.html#ch_maps"><code>new Map()</code></a> and <a href="ch_weakmaps.html#ch_weakmaps"><code>new WeakMap()</code></a>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> m  = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(iterableOverKeyValuePairs);</code>
-<code><span class="hljs-keyword">const</span> wm = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>(iterableOverKeyValuePairs);</code>
+<span class="hljs-keyword">const</span> m  = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Map</span>(iterableOverKeyValuePairs);
+<span class="hljs-keyword">const</span> wm = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>(iterableOverKeyValuePairs);
 </pre>
   </li>
   <li>
     <p><a href="ch_sets.html#ch_sets"><code>new Set()</code></a> and <a href="ch_weaksets.html#ch_weaksets"><code>new WeakSet()</code></a>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> s  = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>(iterableOverElements);</code>
-<code><span class="hljs-keyword">const</span> ws = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakSet</span>(iterableOverElements);</code>
+<span class="hljs-keyword">const</span> s  = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>(iterableOverElements);
+<span class="hljs-keyword">const</span> ws = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakSet</span>(iterableOverElements);
 </pre>
   </li>
 </ul>
@@ -1250,10 +1250,10 @@
   <li>
     <p><a href="ch_promises.html#promise-combinators">Promise combinator functions</a>: <code>Promise.all()</code> etc.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> promise1 = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(iterableOverPromises);</code>
-<code><span class="hljs-keyword">const</span> promise2 = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">race</span>(iterableOverPromises);</code>
-<code><span class="hljs-keyword">const</span> promise3 = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">any</span>(iterableOverPromises);</code>
-<code><span class="hljs-keyword">const</span> promise4 = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">allSettled</span>(iterableOverPromises);</code>
+<span class="hljs-keyword">const</span> promise1 = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(iterableOverPromises);
+<span class="hljs-keyword">const</span> promise2 = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">race</span>(iterableOverPromises);
+<span class="hljs-keyword">const</span> promise3 = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">any</span>(iterableOverPromises);
+<span class="hljs-keyword">const</span> promise4 = <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">allSettled</span>(iterableOverPromises);
 </pre>
   </li>
 </ul>
@@ -1341,12 +1341,12 @@
 <h5 id="other-sources-of-iterators"><a class="heading-id-link" href="#other-sources-of-iterators">32.10.1.3 Other sources of iterators</a></h5>
 <p>Generators also return iterators:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span>* <span class="hljs-title function_">gen</span>(<span class="hljs-params">) {}</span></code>
+<span class="hljs-keyword">function</span>* <span class="hljs-title function_">gen</span>(<span class="hljs-params">) {}</span>
 <code/>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title function_">gen</span>() <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>,</span></code>
-<code><span class="hljs-params">  <span class="hljs-literal">true</span></span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span>
+<span class="hljs-params">  <span class="hljs-title function_">gen</span>() <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Iterator</span>,</span>
+<span class="hljs-params">  <span class="hljs-literal">true</span></span>
+<span class="hljs-params">);</span>
 </pre>
 <h4 id="iterator"><a class="heading-id-link" href="#iterator">32.10.2 <code>Iterator.*</code></a></h4>
 <ul>
@@ -1387,75 +1387,75 @@
   <li>
     <p><code id="qref-Iterator.prototype.drop">Iterator.prototype.drop(limit)</code> <span class="ibox ibox-small" size="small">ES2025</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">drop</span>(<span class="hljs-attr">limit</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">Iterator</span>&lt;T&gt;</code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">drop</span>(<span class="hljs-attr">limit</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">Iterator</span>&lt;T&gt;
 </pre>
     <p>This method returns an iterator that with all values of <code>iterator</code>, except for the first <code>limit</code> ones. That is, iteration starts when the iteration counter is <code>limit</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">drop</span>(<span class="hljs-number">1</span>).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">drop</span>(<span class="hljs-number">1</span>).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]
+);
 </pre>
   </li>
   <li>
     <p><code id="qref-Iterator.prototype.filter">Iterator.prototype.filter(filterFn)</code><br/><span class="ibox ibox-small" size="small">ES2025 | Callback gets counter</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">filter</span>(</code>
-<code>  <span class="hljs-attr">filterFn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">boolean</span></code>
-<code>): <span class="hljs-title class_">Iterator</span>&lt;T&gt;</code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">filter</span>(
+  <span class="hljs-attr">filterFn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">boolean</span>
+): <span class="hljs-title class_">Iterator</span>&lt;T&gt;
 </pre>
     <p>This method returns an iterator whose values are the values of <code>iterator</code> for which <code>filterFn</code> returns <code>true</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x &lt;= <span class="hljs-string">'b'</span>).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x &lt;= <span class="hljs-string">'b'</span>).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>]
+);
 </pre>
   </li>
   <li>
     <p><code id="qref-Iterator.prototype.flatMap">Iterator.prototype.flatMap(mapFn)</code><br/><span class="ibox ibox-small" size="small">ES2025 | Callback gets counter</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">flatMap</span>&lt;U&gt;(</code>
-<code>  <span class="hljs-attr">mapFn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-title class_">Iterable</span>&lt;U&gt; | <span class="hljs-title class_">Iterator</span>&lt;U&gt;</code>
-<code>): <span class="hljs-title class_">Iterator</span>&lt;U&gt;</code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">flatMap</span>&lt;U&gt;(
+  <span class="hljs-attr">mapFn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-title class_">Iterable</span>&lt;U&gt; | <span class="hljs-title class_">Iterator</span>&lt;U&gt;
+): <span class="hljs-title class_">Iterator</span>&lt;U&gt;
 </pre>
     <p>This method returns an iterator whose values are the values of the iterables or iterators that are the results of applying <code>mapFn</code> to the values of <code>iterator</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>])</code>
-<code>  .<span class="hljs-title function_">flatMap</span>(<span class="hljs-function">(<span class="hljs-params">value, counter</span>) =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(counter).<span class="hljs-title function_">fill</span>(value))</code>
-<code>  .<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>, <span class="hljs-string">'d'</span>, <span class="hljs-string">'d'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>])
+  .<span class="hljs-title function_">flatMap</span>(<span class="hljs-function">(<span class="hljs-params">value, counter</span>) =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Array</span>(counter).<span class="hljs-title function_">fill</span>(value))
+  .<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>, <span class="hljs-string">'d'</span>, <span class="hljs-string">'d'</span>]
+);
 </pre>
     <p>For more information see the section on the Array method with the same name: <a href="ch_arrays.html#Array.prototype.flatMap">“<code>.flatMap()</code>: Each input element produces zero or more output elements<span> <sup>ES2019</sup></span>” (§34.14.3)</a>.</p>
   </li>
   <li>
     <p><code id="qref-Iterator.prototype.map">Iterator.prototype.map(mapFn)</code><br/><span class="ibox ibox-small" size="small">ES2025 | Callback gets counter</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">map</span>&lt;U&gt;(</code>
-<code>  <span class="hljs-attr">mapFn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> U</code>
-<code>): <span class="hljs-title class_">Iterator</span>&lt;U&gt;</code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">map</span>&lt;U&gt;(
+  <span class="hljs-attr">mapFn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> U
+): <span class="hljs-title class_">Iterator</span>&lt;U&gt;
 </pre>
     <p>This method returns an iterator whose values are the result of applying <code>mapFn</code> to the values of <code>iterator</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x + x).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'aa'</span>, <span class="hljs-string">'bb'</span>, <span class="hljs-string">'cc'</span>, <span class="hljs-string">'dd'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x + x).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'aa'</span>, <span class="hljs-string">'bb'</span>, <span class="hljs-string">'cc'</span>, <span class="hljs-string">'dd'</span>]
+);
 </pre>
   </li>
   <li>
     <p><code id="qref-Iterator.prototype.take">Iterator.prototype.take(limit)</code> <span class="ibox ibox-small" size="small">ES2025</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">take</span>(<span class="hljs-attr">limit</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">Iterator</span>&lt;T&gt;</code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">take</span>(<span class="hljs-attr">limit</span>: <span class="hljs-built_in">number</span>): <span class="hljs-title class_">Iterator</span>&lt;T&gt;
 </pre>
     <p>This method returns an iterator with the first <code>limit</code> values of <code>iterator</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">take</span>(<span class="hljs-number">1</span>).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'a'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">take</span>(<span class="hljs-number">1</span>).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'a'</span>]
+);
 </pre>
   </li>
 </ul>
@@ -1464,31 +1464,31 @@
   <li>
     <p><code id="qref-Iterator.prototype.every">Iterator.prototype.every(fn)</code><br/><span class="ibox ibox-small" size="small">ES2025 | Callback gets counter</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">every</span>(</code>
-<code>  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">boolean</span></code>
-<code>): <span class="hljs-built_in">boolean</span></code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">every</span>(
+  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">boolean</span>
+): <span class="hljs-built_in">boolean</span>
 </pre>
     <p>This method returns <code>true</code> if <code>fn</code> returns <code>true</code> for every value of <code>iterator</code>. Otherwise, it returns <code>false</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">every</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x === <span class="hljs-string">'c'</span>),</code>
-<code>  <span class="hljs-literal">false</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">every</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x === <span class="hljs-string">'c'</span>),
+  <span class="hljs-literal">false</span>
+);
 </pre>
   </li>
   <li>
     <p><code id="qref-Iterator.prototype.some">Iterator.prototype.some(fn)</code><br/><span class="ibox ibox-small" size="small">ES2025 | Callback gets counter</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">some</span>(</code>
-<code>  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">boolean</span></code>
-<code>): <span class="hljs-built_in">boolean</span></code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">some</span>(
+  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">boolean</span>
+): <span class="hljs-built_in">boolean</span>
 </pre>
     <p>This method returns <code>true</code> if <code>fn</code> returns <code>true</code> for at least one value of <code>iterator</code>. Otherwise, it returns <code>false</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">some</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x === <span class="hljs-string">'c'</span>),</code>
-<code>  <span class="hljs-literal">true</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">some</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> x === <span class="hljs-string">'c'</span>),
+  <span class="hljs-literal">true</span>
+);
 </pre>
   </li>
 </ul>
@@ -1497,55 +1497,55 @@
   <li>
     <p><code id="qref-Iterator.prototype.find">Iterator.prototype.find(fn)</code><br/><span class="ibox ibox-small" size="small">ES2025 | Callback gets counter</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">find</span>(</code>
-<code>  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">boolean</span></code>
-<code>): T</code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">find</span>(
+  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">boolean</span>
+): T
 </pre>
     <p>This method returns the first value of <code>iterator</code> for which <code>fn</code> returns <code>true</code>. If there is no such value, it returns <code>undefined</code>.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">_, counter</span>) =&gt;</span> counter === <span class="hljs-number">1</span>),</code>
-<code>  <span class="hljs-string">'b'</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">find</span>(<span class="hljs-function">(<span class="hljs-params">_, counter</span>) =&gt;</span> counter === <span class="hljs-number">1</span>),
+  <span class="hljs-string">'b'</span>
+);
 </pre>
   </li>
   <li>
     <p><code id="qref-Iterator.prototype.reduce">Iterator.prototype.reduce(reducer, initialValue?)</code><br/><span class="ibox ibox-small" size="small">ES2025 | Callback gets counter</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">reduce</span>&lt;U&gt;(</code>
-<code>  <span class="hljs-attr">reducer</span>: <span class="hljs-function">(<span class="hljs-params">accumulator: U, value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> U,</code>
-<code>  initialValue?: U</code>
-<code>): U</code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">reduce</span>&lt;U&gt;(
+  <span class="hljs-attr">reducer</span>: <span class="hljs-function">(<span class="hljs-params">accumulator: U, value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> U,
+  initialValue?: U
+): U
 </pre>
     <p>This method uses the function <code>reducer</code> to combine the values of <code>iterator</code> into a single value.</p>
     <p>Example – concatenating the strings of an iterator:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">acc, v</span>) =&gt;</span> acc + v),</code>
-<code>  <span class="hljs-string">'abcd'</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">acc, v</span>) =&gt;</span> acc + v),
+  <span class="hljs-string">'abcd'</span>
+);
 </pre>
     <p>Example – computing the minimum of a Set of numbers:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> set = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-number">3</span>, -<span class="hljs-number">2</span>, -<span class="hljs-number">5</span>, <span class="hljs-number">4</span>]);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  set.<span class="hljs-title function_">values</span>().<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">min, cur</span>) =&gt;</span> cur &lt; min ? cur : min, <span class="hljs-title class_">Infinity</span>),</code>
-<code>  -<span class="hljs-number">5</span></code>
-<code>);</code>
+<span class="hljs-keyword">const</span> set = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Set</span>([<span class="hljs-number">3</span>, -<span class="hljs-number">2</span>, -<span class="hljs-number">5</span>, <span class="hljs-number">4</span>]);
+assert.<span class="hljs-title function_">equal</span>(
+  set.<span class="hljs-title function_">values</span>().<span class="hljs-title function_">reduce</span>(<span class="hljs-function">(<span class="hljs-params">min, cur</span>) =&gt;</span> cur &lt; min ? cur : min, <span class="hljs-title class_">Infinity</span>),
+  -<span class="hljs-number">5</span>
+);
 </pre>
     <p>For more information see the section on the Array method with the same name: <a href="ch_arrays.html#Array.prototype.reduce">“<code>.reduce()</code>: computing a summary for an Array” (§34.15)</a>.</p>
   </li>
   <li>
     <p><code id="qref-Iterator.prototype.toArray">Iterator.prototype.toArray()</code> <span class="ibox ibox-small" size="small">ES2025</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">toArray</span>(): <span class="hljs-title class_">Array</span>&lt;T&gt;</code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">toArray</span>(): <span class="hljs-title class_">Array</span>&lt;T&gt;
 </pre>
     <p>This method returns the values of <code>iterator</code> in an Array.</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">toArray</span>(),</code>
-<code>  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">toArray</span>(),
+  [<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]
+);
 </pre>
   </li>
 </ul>
@@ -1554,18 +1554,18 @@
   <li>
     <p><code id="qref-Iterator.prototype.forEach">Iterator.prototype.forEach(fn)</code><br/><span class="ibox ibox-small" size="small">ES2025 | Callback gets counter</span></p>
 <pre class="language-ts">
-<code><span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">forEach</span>(</code>
-<code>  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">void</span></code>
-<code>): <span class="hljs-built_in">void</span></code>
+<span class="hljs-title class_">Iterator</span>&lt;T&gt;.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-title function_">forEach</span>(
+  <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">value: T, counter: <span class="hljs-built_in">number</span></span>) =&gt;</span> <span class="hljs-built_in">void</span>
+): <span class="hljs-built_in">void</span>
 </pre>
     <p>This method applies <code>fn</code> to each value in <code>iterator</code>.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> result = [];</code>
-<code><span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> result.<span class="hljs-title function_">unshift</span>(x))</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  result,</code>
-<code>  [<span class="hljs-string">'d'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'a'</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> result = [];
+<span class="hljs-title class_">Iterator</span>.<span class="hljs-title function_">from</span>([<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'d'</span>]).<span class="hljs-title function_">forEach</span>(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> result.<span class="hljs-title function_">unshift</span>(x))
+assert.<span class="hljs-title function_">deepEqual</span>(
+  result,
+  [<span class="hljs-string">'d'</span>, <span class="hljs-string">'c'</span>, <span class="hljs-string">'b'</span>, <span class="hljs-string">'a'</span>]
+);
 </pre>
   </li>
 </ul>

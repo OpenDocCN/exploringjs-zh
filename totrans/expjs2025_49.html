@@ -75,42 +75,42 @@
 <h3 id="synchronous-functions"><a class="heading-id-link" href="#synchronous-functions">41.2 Synchronous functions</a></h3>
 <p>Normal functions are <em>synchronous</em>: the caller waits until the callee is finished with its computation. <code>divideSync()</code> in line A is a synchronous function call:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-title function_">divideSync</span>(<span class="hljs-number">12</span>, <span class="hljs-number">3</span>); <span class="hljs-comment">// (A)</span></span></code>
-<code><span class="hljs-params">    assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">4</span>);</span></code>
-<code><span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span></code>
-<code><span class="hljs-params">    assert.<span class="hljs-title function_">fail</span>(err);</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">try</span> {</span>
+<span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-title function_">divideSync</span>(<span class="hljs-number">12</span>, <span class="hljs-number">3</span>); <span class="hljs-comment">// (A)</span></span>
+<span class="hljs-params">    assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">4</span>);</span>
+<span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span>
+<span class="hljs-params">    assert.<span class="hljs-title function_">fail</span>(err);</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">}</span>
 </pre>
 <h3 id="javascript-executes-tasks-sequentially-in-a-single-process"><a class="heading-id-link" href="#javascript-executes-tasks-sequentially-in-a-single-process">41.3 JavaScript executes tasks sequentially in a single process</a></h3>
 <p>By default, JavaScript <em>tasks</em> are functions that are executed sequentially in a single process. That looks like this:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {</code>
-<code>  <span class="hljs-keyword">const</span> task = taskQueue.<span class="hljs-title function_">dequeue</span>();</code>
-<code>  <span class="hljs-title function_">task</span>(); <span class="hljs-comment">// run task</span></code>
-<code>}</code>
+<span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+  <span class="hljs-keyword">const</span> task = taskQueue.<span class="hljs-title function_">dequeue</span>();
+  <span class="hljs-title function_">task</span>(); <span class="hljs-comment">// run task</span>
+}
 </pre>
 <p>This loop is also called the <em>event loop</em> because events, such as clicking a mouse, add tasks to the queue.</p>
 <p>Due to this style of cooperative multitasking, we don’t want a task to block other tasks from being executed while, for example, it waits for results coming from a server. <span refcheck="#roadmap-callbacks-for-async">The next subsection</span> explores how to handle this case.</p>
 <h3 id="roadmap-callbacks-for-async"><a class="heading-id-link" href="#roadmap-callbacks-for-async">41.4 Callback-based asynchronous functions</a></h3>
 <p>What if <code>divide()</code> needs a server to compute its result? Then the result should be delivered in a different manner: The caller shouldn’t have to wait (synchronously) until the result is ready; it should be notified (asynchronously) when it is. One way of delivering the result asynchronously is by giving <code>divide()</code> a callback function that it uses to notify the caller.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-title function_">divideCallback</span>(<span class="hljs-number">12</span>, <span class="hljs-number">3</span>,</span></code>
-<code><span class="hljs-params">    <span class="hljs-function">(<span class="hljs-params">err, result</span>) =&gt;</span> {</span></code>
-<code><span class="hljs-params">      <span class="hljs-keyword">if</span> (err) {</span></code>
-<code><span class="hljs-params">        assert.<span class="hljs-title function_">fail</span>(err);</span></code>
-<code><span class="hljs-params">      } <span class="hljs-keyword">else</span> {</span></code>
-<code><span class="hljs-params">        assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">4</span>);</span></code>
-<code><span class="hljs-params">      }</span></code>
-<code><span class="hljs-params">    });</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-title function_">divideCallback</span>(<span class="hljs-number">12</span>, <span class="hljs-number">3</span>,</span>
+<span class="hljs-params">    <span class="hljs-function">(<span class="hljs-params">err, result</span>) =&gt;</span> {</span>
+<span class="hljs-params">      <span class="hljs-keyword">if</span> (err) {</span>
+<span class="hljs-params">        assert.<span class="hljs-title function_">fail</span>(err);</span>
+<span class="hljs-params">      } <span class="hljs-keyword">else</span> {</span>
+<span class="hljs-params">        assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">4</span>);</span>
+<span class="hljs-params">      }</span>
+<span class="hljs-params">    });</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>When there is an asynchronous function call:</p>
 <pre class="language-js">
-<code><span class="hljs-title function_">divideCallback</span>(x, y, callback)</code>
+<span class="hljs-title function_">divideCallback</span>(x, y, callback)
 </pre>
 <p>Then the following steps happen:</p>
 <ul>
@@ -126,13 +126,13 @@
       <li>
         <p>An error <code>err</code>: Then the following task is added to the queue.</p>
 <pre class="language-js">
-<code>taskQueue.<span class="hljs-title function_">enqueue</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">callback</span>(err));</code>
+taskQueue.<span class="hljs-title function_">enqueue</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">callback</span>(err));
 </pre>
       </li>
       <li>
         <p>A <code>result</code> value: Then the following task is added to the queue.</p>
 <pre class="language-js">
-<code>taskQueue.<span class="hljs-title function_">enqueue</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">callback</span>(<span class="hljs-literal">null</span>, result));</code>
+taskQueue.<span class="hljs-title function_">enqueue</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-title function_">callback</span>(<span class="hljs-literal">null</span>, result));
 </pre>
       </li>
     </ul>
@@ -150,23 +150,23 @@
 </ul>
 <p>Invoking a Promise-based function looks as follows.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-title function_">dividePromise</span>(<span class="hljs-number">12</span>, <span class="hljs-number">3</span>)</span></code>
-<code><span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">result</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">4</span>))</span></code>
-<code><span class="hljs-params">    .<span class="hljs-title function_">catch</span>(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> assert.<span class="hljs-title function_">fail</span>(err));</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-title function_">dividePromise</span>(<span class="hljs-number">12</span>, <span class="hljs-number">3</span>)</span>
+<span class="hljs-params">    .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">result</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">4</span>))</span>
+<span class="hljs-params">    .<span class="hljs-title function_">catch</span>(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> assert.<span class="hljs-title function_">fail</span>(err));</span>
+<span class="hljs-params">}</span>
 </pre>
 <h3 id="roadmap-async-functions"><a class="heading-id-link" href="#roadmap-async-functions">41.6 Async functions</a></h3>
 <p>One way of looking at async functions is as better syntax for Promise-based code:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title function_">dividePromise</span>(<span class="hljs-number">12</span>, <span class="hljs-number">3</span>); <span class="hljs-comment">// (A)</span></span></code>
-<code><span class="hljs-params">    assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">4</span>);</span></code>
-<code><span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span></code>
-<code><span class="hljs-params">    assert.<span class="hljs-title function_">fail</span>(err);</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">main</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">try</span> {</span>
+<span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title function_">dividePromise</span>(<span class="hljs-number">12</span>, <span class="hljs-number">3</span>); <span class="hljs-comment">// (A)</span></span>
+<span class="hljs-params">    assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">4</span>);</span>
+<span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span>
+<span class="hljs-params">    assert.<span class="hljs-title function_">fail</span>(err);</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>The <code>dividePromise()</code> we are calling in line A is the same Promise-based function as in the previous section. But we now have synchronous-looking syntax for handling the call. <code>await</code> can only be used inside a special kind of function, an <em>async function</em> (note the keyword <code>async</code> in front of the keyword <code>function</code>). <code>await</code> pauses the current async function and returns from it. Once the awaited result is ready, the execution of the function continues where it left off.</p>
 

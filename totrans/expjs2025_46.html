@@ -48,16 +48,16 @@
 <p>Given that we can’t iterate over the elements of WeakSets, there are not that many use cases for them.</p>
 <p>We can use WeakSets to mark objects – for example:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> isSaved = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakSet</span>();</code>
-<code>{</code>
-<code>  <span class="hljs-keyword">const</span> obj = {};</code>
-<code>  isSaved.<span class="hljs-title function_">add</span>(obj); <span class="hljs-comment">// (A)</span></code>
-<code>  assert.<span class="hljs-title function_">equal</span>(</code>
-<code>    isSaved.<span class="hljs-title function_">has</span>(obj), <span class="hljs-comment">// (B)</span></code>
-<code>    <span class="hljs-literal">true</span></code>
-<code>  );</code>
-<code>}</code>
-<code><span class="hljs-comment">// (C)</span></code>
+<span class="hljs-keyword">const</span> isSaved = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakSet</span>();
+{
+  <span class="hljs-keyword">const</span> obj = {};
+  isSaved.<span class="hljs-title function_">add</span>(obj); <span class="hljs-comment">// (A)</span>
+  assert.<span class="hljs-title function_">equal</span>(
+    isSaved.<span class="hljs-title function_">has</span>(obj), <span class="hljs-comment">// (B)</span>
+    <span class="hljs-literal">true</span>
+  );
+}
+<span class="hljs-comment">// (C)</span>
 </pre>
 <ul>
   <li>
@@ -72,42 +72,42 @@
 </ul>
 <p>In a way, we created a boolean property for <code>obj</code>, but stored it externally. If <code>isSaved</code> were a property, the previous code would look as follows:</p>
 <pre class="language-js">
-<code>{</code>
-<code>  <span class="hljs-keyword">const</span> obj = {};</code>
-<code>  obj.<span class="hljs-property">isSaved</span> = <span class="hljs-literal">true</span>;</code>
-<code>  assert.<span class="hljs-title function_">equal</span>(</code>
-<code>    obj.<span class="hljs-property">isSaved</span>,</code>
-<code>    <span class="hljs-literal">true</span></code>
-<code>  );</code>
-<code>}</code>
+{
+  <span class="hljs-keyword">const</span> obj = {};
+  obj.<span class="hljs-property">isSaved</span> = <span class="hljs-literal">true</span>;
+  assert.<span class="hljs-title function_">equal</span>(
+    obj.<span class="hljs-property">isSaved</span>,
+    <span class="hljs-literal">true</span>
+  );
+}
 </pre>
 <h4 id="example-marking-objects-as-safe-to-use-with-a-method"><a class="heading-id-link" href="#example-marking-objects-as-safe-to-use-with-a-method">39.2.1 Example: Marking objects as safe to use with a method</a></h4>
 <p>The following code demonstrates how a class can ensure that its methods are only applied to instances that were created by it (based on <a href="https://esdiscuss.org/topic/actual-weakset-use-cases#content-1">code by Domenic Denicola</a>):</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> instancesOfSafeClass = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakSet</span>();</code>
+<span class="hljs-keyword">const</span> instancesOfSafeClass = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakSet</span>();
 <code/>
-<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">SafeClass</span> {</code>
-<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">    instancesOfSafeClass.<span class="hljs-title function_">add</span>(<span class="hljs-variable language_">this</span>);</span></code>
-<code><span class="hljs-params">  }</span></code>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">SafeClass</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">    instancesOfSafeClass.<span class="hljs-title function_">add</span>(<span class="hljs-variable language_">this</span>);</span>
+<span class="hljs-params">  }</span>
 <code/>
-<code><span class="hljs-params">  <span class="hljs-title function_">method</span>(<span class="hljs-params"/>) {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">if</span> (!instancesOfSafeClass.<span class="hljs-title function_">has</span>(<span class="hljs-variable language_">this</span>)) {</span></code>
-<code><span class="hljs-params">      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>(<span class="hljs-string">'Incompatible object!'</span>);</span></code>
-<code><span class="hljs-params">    }</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-params">  <span class="hljs-title function_">method</span>(<span class="hljs-params"/>) {</span>
+<span class="hljs-params">    <span class="hljs-keyword">if</span> (!instancesOfSafeClass.<span class="hljs-title function_">has</span>(<span class="hljs-variable language_">this</span>)) {</span>
+<span class="hljs-params">      <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>(<span class="hljs-string">'Incompatible object!'</span>);</span>
+<span class="hljs-params">    }</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">}</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> safeInstance = <span class="hljs-keyword">new</span> <span class="hljs-title class_">SafeClass</span>();</span></code>
-<code><span class="hljs-params">safeInstance.<span class="hljs-title function_">method</span>(); <span class="hljs-comment">// works</span></span></code>
+<span class="hljs-params"><span class="hljs-keyword">const</span> safeInstance = <span class="hljs-keyword">new</span> <span class="hljs-title class_">SafeClass</span>();</span>
+<span class="hljs-params">safeInstance.<span class="hljs-title function_">method</span>(); <span class="hljs-comment">// works</span></span>
 <code/>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">throws</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-function">() =&gt;</span> {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">const</span> obj = {};</span></code>
-<code><span class="hljs-params">    <span class="hljs-title class_">SafeClass</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">method</span>.<span class="hljs-title function_">call</span>(obj); <span class="hljs-comment">// throws an exception</span></span></code>
-<code><span class="hljs-params">  },</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">TypeError</span></span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-params">assert.<span class="hljs-title function_">throws</span>(</span>
+<span class="hljs-params">  <span class="hljs-function">() =&gt;</span> {</span>
+<span class="hljs-params">    <span class="hljs-keyword">const</span> obj = {};</span>
+<span class="hljs-params">    <span class="hljs-title class_">SafeClass</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">method</span>.<span class="hljs-title function_">call</span>(obj); <span class="hljs-comment">// throws an exception</span></span>
+<span class="hljs-params">  },</span>
+<span class="hljs-params">  <span class="hljs-title class_">TypeError</span></span>
+<span class="hljs-params">);</span>
 </pre>
 <h3 id="weakset-api"><a class="heading-id-link" href="#weakset-api">39.3 WeakSet API</a></h3>
 <p>The constructor and the three methods of <code>WeakSet</code> work the same as <a href="ch_sets.html#quickref-sets">their <code>Set</code> equivalents</a>:</p>

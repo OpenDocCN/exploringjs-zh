@@ -118,14 +118,14 @@
 <p>Planes 1-16 are called supplementary planes or <strong>astral planes</strong>.</p>
 <p>Let’s check the code points of a few characters:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'A'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
-<code>'41'</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'ü'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
-<code>'fc'</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'π'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
-<code>'3c0'</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
-<code>'1f642'</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'A'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span>
+'41'
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'ü'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span>
+'fc'
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'π'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span>
+'3c0'
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span>
+'1f642'
 </pre>
 <p>The hexadecimal numbers of the code points tell us that the first three characters reside in plane 0 (within 16 bits), while the emoji resides in plane 1.</p>
 <h4 id="encoding-unicode-code-points-utf32-utf16-utf8"><a class="heading-id-link" href="#encoding-unicode-code-points-utf32-utf16-utf8">21.1.2 Encoding Unicode code points: UTF-32, UTF-16, UTF-8</a></h4>
@@ -172,32 +172,32 @@
 <p><span id="index-entry-surrogate--lone"/></p>
 <p>This is how the bits of the code points are distributed among the surrogates:</p>
 <pre>
-<code>0bhhhhhhhhhhllllllllll // code point - 0x10000</code>
-<code>0b110110hhhhhhhhhh     // 0xD800 + 0bhhhhhhhhhh</code>
-<code>0b110111llllllllll     // 0xDC00 + 0bllllllllll</code>
+0bhhhhhhhhhhllllllllll // code point - 0x10000
+0b110110hhhhhhhhhh     // 0xD800 + 0bhhhhhhhhhh
+0b110111llllllllll     // 0xDC00 + 0bllllllllll
 </pre>
 <p>Each character of a JavaScript string is a UTF-16 code unit. As an example, consider code point 0x1F642 (🙂) that is represented by two UTF-16 code units – 0xD83D and 0xDE42:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
-<code>'1f642'</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-property">length</span></span></code>
-<code>2</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">split</span>(<span class="hljs-string">''</span>)</span></code>
-<code>[ '\uD83D', '\uDE42' ]</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">codePointAt</span>(<span class="hljs-number">0</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span>
+'1f642'
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-property">length</span></span>
+2
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'🙂'</span>.<span class="hljs-title function_">split</span>(<span class="hljs-string">''</span>)</span>
+[ '\uD83D', '\uDE42' ]
 </pre>
 <p>Let’s derive the code units from the code point:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0x1F642</span> - <span class="hljs-number">0x10000</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>).<span class="hljs-title function_">padStart</span>(<span class="hljs-number">20</span>, <span class="hljs-string">'0'</span>)</span></code>
-<code>'00001111011001000010'</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0xD800</span> + <span class="hljs-number">0b0000111101</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
-<code>'d83d'</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0xDC00</span> + <span class="hljs-number">0b1001000010</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span></code>
-<code>'de42'</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0x1F642</span> - <span class="hljs-number">0x10000</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>).<span class="hljs-title function_">padStart</span>(<span class="hljs-number">20</span>, <span class="hljs-string">'0'</span>)</span>
+'00001111011001000010'
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0xD800</span> + <span class="hljs-number">0b0000111101</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span>
+'d83d'
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0xDC00</span> + <span class="hljs-number">0b1001000010</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">16</span>)</span>
+'de42'
 </pre>
 <p>In contrast, code point 0x03C0 (π) is part of the BMP and therefore represented by a single UTF-16 code unit – 0x03C0:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'π'</span>.<span class="hljs-property">length</span></span></code>
-<code>1</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-string">'π'</span>.<span class="hljs-property">length</span></span>
+1
 </pre>
 <h5 id="utf8-unicode-transformation-format-8"><a class="heading-id-link" href="#utf8-unicode-transformation-format-8">21.1.2.3 UTF-8 (Unicode Transformation Format 8)</a></h5>
 <p><span id="index-entry-UTF-8"/></p>
@@ -285,22 +285,22 @@
 <h4 id="strings-utf16"><a class="heading-id-link" href="#strings-utf16">21.2.2 Strings: UTF-16</a></h4>
 <p>The characters in JavaScript strings are based on UTF-16 code units:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> smiley = <span class="hljs-string">'🙂'</span>;</span></code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">smiley.<span class="hljs-property">length</span></span></code>
-<code>2</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">smiley === <span class="hljs-string">'\uD83D\uDE42'</span> <span class="hljs-comment">// code units</span></span></code>
-<code>true</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> smiley = <span class="hljs-string">'🙂'</span>;</span>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">smiley.<span class="hljs-property">length</span></span>
+2
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">smiley === <span class="hljs-string">'\uD83D\uDE42'</span> <span class="hljs-comment">// code units</span></span>
+true
 </pre>
 <p>For more information on Unicode and strings, see <a href="ch_strings.html#atoms-of-text">“Atoms of text: code points, JavaScript characters, grapheme clusters” (§22.7)</a>.</p>
 <h4 id="source-code-in-files-utf8"><a class="heading-id-link" href="#source-code-in-files-utf8">21.2.3 Source code in files: UTF-8</a></h4>
 <p>HTML and JavaScript files are almost always encoded as UTF-8 now.</p>
 <p>For example, this is how HTML files usually start now:</p>
 <pre class="language-html">
-<code><span class="hljs-meta">&lt;!doctype <span class="hljs-keyword">html</span>&gt;</span></code>
-<code><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span></code>
-<code><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span></code>
-<code>  <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"UTF-8"</span>&gt;</span></code>
-<code>···</code>
+<span class="hljs-meta">&lt;!doctype <span class="hljs-keyword">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">"UTF-8"</span>&gt;</span>
+···
 </pre>
 <h3 id="grapheme-clusters"><a class="heading-id-link" href="#grapheme-clusters">21.3 Grapheme clusters – the real characters</a></h3>
 <p><span id="index-entry-grapheme-cluster"/></p>

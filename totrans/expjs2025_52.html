@@ -105,16 +105,16 @@
 <h3 id="async-functions-the-basics"><a class="heading-id-link" href="#async-functions-the-basics">44.1 Async functions: the basics</a></h3>
 <p>Consider the following async function:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">fetchJsonAsync</span>(<span class="hljs-params">url</span>) {</code>
-<code>  <span class="hljs-keyword">try</span> {</code>
-<code>    <span class="hljs-keyword">const</span> request = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(url); <span class="hljs-comment">// async</span></code>
-<code>    <span class="hljs-keyword">const</span> text = <span class="hljs-keyword">await</span> request.<span class="hljs-title function_">text</span>(); <span class="hljs-comment">// async</span></code>
-<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(text); <span class="hljs-comment">// sync</span></code>
-<code>  }</code>
-<code>  <span class="hljs-keyword">catch</span> (error) {</code>
-<code>    assert.<span class="hljs-title function_">fail</span>(error);</code>
-<code>  }</code>
-<code>}</code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">fetchJsonAsync</span>(<span class="hljs-params">url</span>) {
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> request = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(url); <span class="hljs-comment">// async</span>
+    <span class="hljs-keyword">const</span> text = <span class="hljs-keyword">await</span> request.<span class="hljs-title function_">text</span>(); <span class="hljs-comment">// async</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(text); <span class="hljs-comment">// sync</span>
+  }
+  <span class="hljs-keyword">catch</span> (error) {
+    assert.<span class="hljs-title function_">fail</span>(error);
+  }
+}
 </pre>
 <p>Two keywords are important:</p>
 <ul>
@@ -127,24 +127,24 @@
 </ul>
 <p>The previous, rather synchronous-looking code is equivalent to the following code that uses Promises directly:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">fetchJsonViaPromises</span>(<span class="hljs-params">url</span>) {</code>
-<code>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">fetch</span>(url) <span class="hljs-comment">// async</span></code>
-<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">request</span> =&gt;</span> request.<span class="hljs-title function_">text</span>()) <span class="hljs-comment">// async</span></code>
-<code>  .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">text</span> =&gt;</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(text)) <span class="hljs-comment">// sync</span></code>
-<code>  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
-<code>    assert.<span class="hljs-title function_">fail</span>(error);</code>
-<code>  });</code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">fetchJsonViaPromises</span>(<span class="hljs-params">url</span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-title function_">fetch</span>(url) <span class="hljs-comment">// async</span>
+  .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">request</span> =&gt;</span> request.<span class="hljs-title function_">text</span>()) <span class="hljs-comment">// async</span>
+  .<span class="hljs-title function_">then</span>(<span class="hljs-function"><span class="hljs-params">text</span> =&gt;</span> <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(text)) <span class="hljs-comment">// sync</span>
+  .<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {
+    assert.<span class="hljs-title function_">fail</span>(error);
+  });
+}
 </pre>
 <p>Both <code>fetchJsonAsync()</code> and <code>fetchJsonViaPromises()</code> are called in exactly the same way – e.g., like this:</p>
 <pre class="language-js">
-<code><span class="hljs-title function_">fetchJsonAsync</span>(<span class="hljs-string">'http://example.com/person.json'</span>)</code>
-<code>.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">obj</span>) =&gt;</span> {</code>
-<code>  assert.<span class="hljs-title function_">deepEqual</span>(obj, {</code>
-<code>    <span class="hljs-attr">first</span>: <span class="hljs-string">'Jane'</span>,</code>
-<code>    <span class="hljs-attr">last</span>: <span class="hljs-string">'Doe'</span>,</code>
-<code>  });</code>
-<code>});</code>
+<span class="hljs-title function_">fetchJsonAsync</span>(<span class="hljs-string">'http://example.com/person.json'</span>)
+.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">obj</span>) =&gt;</span> {
+  assert.<span class="hljs-title function_">deepEqual</span>(obj, {
+    <span class="hljs-attr">first</span>: <span class="hljs-string">'Jane'</span>,
+    <span class="hljs-attr">last</span>: <span class="hljs-string">'Doe'</span>,
+  });
+});
 </pre>
 <div class="boxout">
   <p><img src="../Images/38ba63de820aae6f94a019538ae0f222.png" class="boxout-icon" height="24" alt="Icon “details”" data-original-src="https://exploringjs.com/js/book/icon/details.svg"/> <strong>Async functions are as Promise-based as functions that use Promises directly</strong></p>
@@ -157,24 +157,24 @@
   <li>
     <p>If the Promise is fulfilled, <code>await</code> returns the fulfillment value.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>),</span></code>
-<code><span class="hljs-params">    <span class="hljs-string">'fulfilled'</span></span></code>
-<code><span class="hljs-params">  );</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(</span>
+<span class="hljs-params">    <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>),</span>
+<span class="hljs-params">    <span class="hljs-string">'fulfilled'</span></span>
+<span class="hljs-params">  );</span>
+<span class="hljs-params">}</span>
 </pre>
   </li>
   <li>
     <p>If the Promise is rejected, <code>await</code> throws the rejection value.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'rejected'</span>);</span></code>
-<code><span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span></code>
-<code><span class="hljs-params">    assert.<span class="hljs-title function_">equal</span>(err, <span class="hljs-string">'rejected'</span>);</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">try</span> {</span>
+<span class="hljs-params">    <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'rejected'</span>);</span>
+<span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span>
+<span class="hljs-params">    assert.<span class="hljs-title function_">equal</span>(err, <span class="hljs-string">'rejected'</span>);</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">}</span>
 </pre>
   </li>
 </ul>
@@ -184,19 +184,19 @@
   <li>
     <p>Any value that is returned (explicitly or implicitly) is used to resolve that Promise:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params">) { <span class="hljs-keyword">return</span> <span class="hljs-string">'fulfilled'</span> }</span></code>
-<code><span class="hljs-params"><span class="hljs-title function_">f1</span>().<span class="hljs-title function_">then</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-function"><span class="hljs-params">result</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-string">'fulfilled'</span>)</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f1</span>(<span class="hljs-params">) { <span class="hljs-keyword">return</span> <span class="hljs-string">'fulfilled'</span> }</span>
+<span class="hljs-params"><span class="hljs-title function_">f1</span>().<span class="hljs-title function_">then</span>(</span>
+<span class="hljs-params">  <span class="hljs-function"><span class="hljs-params">result</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-string">'fulfilled'</span>)</span>
+<span class="hljs-params">);</span>
 </pre>
   </li>
   <li>
     <p>Any exception that is thrown is used to reject the Promise:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) { <span class="hljs-keyword">throw</span> <span class="hljs-string">'rejected'</span> }</span></code>
-<code><span class="hljs-params"><span class="hljs-title function_">f</span>().<span class="hljs-title function_">catch</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(error, <span class="hljs-string">'rejected'</span>)</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) { <span class="hljs-keyword">throw</span> <span class="hljs-string">'rejected'</span> }</span>
+<span class="hljs-params"><span class="hljs-title function_">f</span>().<span class="hljs-title function_">catch</span>(</span>
+<span class="hljs-params">  <span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(error, <span class="hljs-string">'rejected'</span>)</span>
+<span class="hljs-params">);</span>
 </pre>
   </li>
 </ul>
@@ -204,20 +204,20 @@
 <p><span id="index-entry-async"/></p>
 <p>JavaScript has the following async versions of synchronous callable entities. Their roles are always either real function or method.</p>
 <pre class="language-js">
-<code><span class="hljs-comment">// Async function declaration</span></code>
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">) {}</span></code>
+<span class="hljs-comment">// Async function declaration</span>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">func1</span>(<span class="hljs-params">) {}</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-comment">// Async function expression</span></span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> func2 = <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> (<span class="hljs-params"/>) {};</span></code>
+<span class="hljs-params"><span class="hljs-comment">// Async function expression</span></span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> func2 = <span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> (<span class="hljs-params"/>) {};</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-comment">// Async arrow function</span></span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> <span class="hljs-title function_">func3</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"/>) =&gt; {};</span></code>
+<span class="hljs-params"><span class="hljs-comment">// Async arrow function</span></span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> <span class="hljs-title function_">func3</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"/>) =&gt; {};</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-comment">// Async method definition in an object literal</span></span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> obj = { <span class="hljs-keyword">async</span> <span class="hljs-title function_">m</span>(<span class="hljs-params"/>) {} };</span></code>
+<span class="hljs-params"><span class="hljs-comment">// Async method definition in an object literal</span></span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> obj = { <span class="hljs-keyword">async</span> <span class="hljs-title function_">m</span>(<span class="hljs-params"/>) {} };</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-comment">// Async method definition in a class definition</span></span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyClass</span> { <span class="hljs-keyword">async</span> <span class="hljs-title function_">m</span>(<span class="hljs-params"/>) {} }</span></code>
+<span class="hljs-params"><span class="hljs-comment">// Async method definition in a class definition</span></span>
+<span class="hljs-params"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MyClass</span> { <span class="hljs-keyword">async</span> <span class="hljs-title function_">m</span>(<span class="hljs-params"/>) {} }</span>
 </pre>
 <div class="boxout">
   <p><img src="../Images/38ba63de820aae6f94a019538ae0f222.png" class="boxout-icon" height="24" alt="Icon “details”" data-original-src="https://exploringjs.com/js/book/icon/details.svg"/> <strong>Asynchronous functions vs. async functions</strong></p>
@@ -262,149 +262,149 @@
 <h4 id="awaiting-fulfilled-promises"><a class="heading-id-link" href="#awaiting-fulfilled-promises">44.2.1 Awaiting fulfilled Promises</a></h4>
 <p>If its operand is a fulfilled Promise, <code>await</code> returns its fulfillment value:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>), <span class="hljs-string">'fulfilled'</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>), <span class="hljs-string">'fulfilled'</span>
+);
 </pre>
 <p>The value of <code>await</code> is delivered asynchronously:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">awaitPromise</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-title function_">queueMicrotask</span>( <span class="hljs-comment">// (A)</span></span></code>
-<code><span class="hljs-params">    <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'OTHER TASK'</span>)</span></code>
-<code><span class="hljs-params">  );</span></code>
-<code><span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'before'</span>);</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>);</span></code>
-<code><span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'after'</span>);</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">await</span> <span class="hljs-title function_">awaitPromise</span>();</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">awaitPromise</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-title function_">queueMicrotask</span>( <span class="hljs-comment">// (A)</span></span>
+<span class="hljs-params">    <span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'OTHER TASK'</span>)</span>
+<span class="hljs-params">  );</span>
+<span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'before'</span>);</span>
+<span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>);</span>
+<span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'after'</span>);</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-keyword">await</span> <span class="hljs-title function_">awaitPromise</span>();</span>
 </pre>
 <p>Output:</p>
 <pre>
-<code>before</code>
-<code>OTHER TASK</code>
-<code>after</code>
+before
+OTHER TASK
+after
 </pre>
 <p>In line A, we can’t use <code>setTimeout()</code>. We have to use <code>queueMicrotask()</code> because Promise-related tasks are so-called <em>microtasks</em> which are different from normal tasks and always handled before them (via a <em>microtask queue</em>). For more information, see the MDN article <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide/In_depth">“In depth: Microtasks and the JavaScript runtime environment”</a>.</p>
 <h4 id="awaiting-rejected-promises"><a class="heading-id-link" href="#awaiting-rejected-promises">44.2.2 Awaiting rejected Promises</a></h4>
 <p>If its operand is a rejected Promise, then <code>await</code> throws the rejection value:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">try</span> {</code>
-<code>  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(</code>
-<code>    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Problem!'</span>)</code>
-<code>  );</code>
-<code>  assert.<span class="hljs-title function_">fail</span>(); <span class="hljs-comment">// we never get here</span></code>
-<code>} <span class="hljs-keyword">catch</span> (err) {</code>
-<code>  assert.<span class="hljs-title function_">deepEqual</span>(err, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Problem!'</span>));</code>
-<code>}</code>
+<span class="hljs-keyword">try</span> {
+  <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(
+    <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Problem!'</span>)
+  );
+  assert.<span class="hljs-title function_">fail</span>(); <span class="hljs-comment">// we never get here</span>
+} <span class="hljs-keyword">catch</span> (err) {
+  assert.<span class="hljs-title function_">deepEqual</span>(err, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Problem!'</span>));
+}
 </pre>
 <h4 id="awaiting-nonpromise-values"><a class="heading-id-link" href="#awaiting-nonpromise-values">44.2.3 Awaiting non-Promise values</a></h4>
 <p>Non-Promise values can also be awaited and are simply passed on:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-keyword">await</span> <span class="hljs-string">'non-Promise value'</span>, <span class="hljs-string">'non-Promise value'</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-keyword">await</span> <span class="hljs-string">'non-Promise value'</span>, <span class="hljs-string">'non-Promise value'</span>
+);
 </pre>
 <p>Even in this case, the result of <code>await</code> is delivered asynchronously:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">awaitNonPromiseValue</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-title function_">queueMicrotask</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'OTHER TASK'</span>));</span></code>
-<code><span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'before'</span>);</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-string">'non-Promise value'</span>;</span></code>
-<code><span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'after'</span>);</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">await</span> <span class="hljs-title function_">awaitNonPromiseValue</span>();</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">awaitNonPromiseValue</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-title function_">queueMicrotask</span>(<span class="hljs-function">() =&gt;</span> <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'OTHER TASK'</span>));</span>
+<span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'before'</span>);</span>
+<span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-string">'non-Promise value'</span>;</span>
+<span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'after'</span>);</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-keyword">await</span> <span class="hljs-title function_">awaitNonPromiseValue</span>();</span>
 </pre>
 <p>Output:</p>
 <pre>
-<code>before</code>
-<code>OTHER TASK</code>
-<code>after</code>
+before
+OTHER TASK
+after
 </pre>
 <h3 id="where-can-await-be-used"><a class="heading-id-link" href="#where-can-await-be-used">44.3 Where can <code>await</code> be used?</a></h3>
 <h4 id="using-await-at-the-top-levels-of-modules-es2022"><a class="heading-id-link" href="#using-await-at-the-top-levels-of-modules-es2022">44.3.1 Using <code>await</code> at the top levels of modules<span> <sup>ES2022</sup></span></a></h4>
 <p>We can use <code>await</code> at the top levels of modules – for example:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">let</span> mylib;</code>
-<code><span class="hljs-keyword">try</span> {</code>
-<code>  mylib = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://primary.example.com/mylib'</span>);</code>
-<code>} <span class="hljs-keyword">catch</span> {</code>
-<code>  mylib = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://secondary.example.com/mylib'</span>);</code>
-<code>}</code>
+<span class="hljs-keyword">let</span> mylib;
+<span class="hljs-keyword">try</span> {
+  mylib = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://primary.example.com/mylib'</span>);
+} <span class="hljs-keyword">catch</span> {
+  mylib = <span class="hljs-keyword">await</span> <span class="hljs-keyword">import</span>(<span class="hljs-string">'https://secondary.example.com/mylib'</span>);
+}
 </pre>
 <p>For more information on this feature, see <a href="ch_modules.html#top-level-await">“Top-level <code>await</code> in modules<span> <sup>ES2022</sup> (advanced)</span>” (§29.15)</a>.</p>
 <h4 id="awaiting-is-shallow"><a class="heading-id-link" href="#awaiting-is-shallow">44.3.2 Awaiting is shallow</a></h4>
 <p>If we are inside an async function and want to pause it via <code>await</code>, we must do so directly within that function; we can’t use it inside a nested function, such as a callback. That is, pausing is <em>shallow</em>.</p>
 <p>Let’s examine what that means. In the following code, we try to await inside a nested function:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> <span class="hljs-title function_">nestedFunc</span> = (<span class="hljs-params"/>) =&gt; {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>); <span class="hljs-comment">// SyntaxError!</span></span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'RESULT: '</span> + result;</span></code>
-<code><span class="hljs-params">  };</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> [ <span class="hljs-title function_">nestedFunc</span>() ];</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> <span class="hljs-title function_">nestedFunc</span> = (<span class="hljs-params"/>) =&gt; {</span>
+<span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>); <span class="hljs-comment">// SyntaxError!</span></span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'RESULT: '</span> + result;</span>
+<span class="hljs-params">  };</span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> [ <span class="hljs-title function_">nestedFunc</span>() ];</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>However, that isn’t even valid syntax because <code>await</code> is not allowed inside synchronous functions such as <code>nestedFunc()</code>. What happens if we make <code>nestedFunc()</code> an async function?</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> <span class="hljs-title function_">nestedFunc</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"/>) =&gt; {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>); <span class="hljs-comment">// (A)</span></span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'RESULT: '</span> + result;</span></code>
-<code><span class="hljs-params">  };</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> [ <span class="hljs-title function_">nestedFunc</span>() ]; <span class="hljs-comment">// (B)</span></span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> arr = <span class="hljs-keyword">await</span> <span class="hljs-title function_">f</span>(); <span class="hljs-comment">// (C)</span></span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span></code>
-<code><span class="hljs-params">  arr[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Promise</span>, <span class="hljs-literal">true</span></span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> <span class="hljs-title function_">nestedFunc</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"/>) =&gt; {</span>
+<span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>); <span class="hljs-comment">// (A)</span></span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'RESULT: '</span> + result;</span>
+<span class="hljs-params">  };</span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> [ <span class="hljs-title function_">nestedFunc</span>() ]; <span class="hljs-comment">// (B)</span></span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> arr = <span class="hljs-keyword">await</span> <span class="hljs-title function_">f</span>(); <span class="hljs-comment">// (C)</span></span>
+<span class="hljs-params">assert.<span class="hljs-title function_">equal</span>(</span>
+<span class="hljs-params">  arr[<span class="hljs-number">0</span>] <span class="hljs-keyword">instanceof</span> <span class="hljs-title class_">Promise</span>, <span class="hljs-literal">true</span></span>
+<span class="hljs-params">);</span>
 </pre>
 <p>This time, the <code>await</code> in line A pauses <code>nestedFunc()</code>, not <code>f()</code>. <code>nestedFunc()</code> returns a Promise, which is wrapped in an Array in line B. Note <a href="ch_modules.html#top-level-await">the top-level <code>await</code></a> in line C.</p>
 <p>To make this code work, we must await the result of <code>nestedFunc()</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> <span class="hljs-title function_">nestedFunc</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"/>) =&gt; {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>);</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'RESULT: '</span> + result;</span></code>
-<code><span class="hljs-params">  };</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> [ <span class="hljs-keyword">await</span> <span class="hljs-title function_">nestedFunc</span>() ];</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-title function_">f</span>(), [<span class="hljs-string">'RESULT: abc'</span>]</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> <span class="hljs-title function_">nestedFunc</span> = <span class="hljs-keyword">async</span> (<span class="hljs-params"/>) =&gt; {</span>
+<span class="hljs-params">    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'abc'</span>);</span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'RESULT: '</span> + result;</span>
+<span class="hljs-params">  };</span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> [ <span class="hljs-keyword">await</span> <span class="hljs-title function_">nestedFunc</span>() ];</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span>
+<span class="hljs-params">  <span class="hljs-keyword">await</span> <span class="hljs-title function_">f</span>(), [<span class="hljs-string">'RESULT: abc'</span>]</span>
+<span class="hljs-params">);</span>
 </pre>
 <p>To summarize: <code>await</code> only affects the immediately surrounding function (which must be an async function).</p>
 <h4 id="map-with-async-callback"><a class="heading-id-link" href="#map-with-async-callback">44.3.3 Example: <code>.map()</code> with an async function as a callback</a></h4>
 <p>What happens if we use an async function as a callback for <code>.map()</code>? Then the result is an Array of Promises:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> arrayOfPromises = arr.<span class="hljs-title function_">map</span>(</code>
-<code>  <span class="hljs-keyword">async</span> (x) =&gt; { <span class="hljs-comment">/*···*/</span> }</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> arrayOfPromises = arr.<span class="hljs-title function_">map</span>(
+  <span class="hljs-keyword">async</span> (x) =&gt; { <span class="hljs-comment">/*···*/</span> }
+);
 </pre>
 <p>We can use <a href="ch_promises.html#Promise.all"><code>Promise.all()</code></a> to convert that Array of Promises to a Promise for an Array and await that Promise:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> array = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(</code>
-<code>  arr.<span class="hljs-title function_">map</span>(</code>
-<code>    <span class="hljs-keyword">async</span> (x) =&gt; { <span class="hljs-comment">/*···*/</span> }</code>
-<code>  )</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> array = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>(
+  arr.<span class="hljs-title function_">map</span>(
+    <span class="hljs-keyword">async</span> (x) =&gt; { <span class="hljs-comment">/*···*/</span> }
+  )
+);
 </pre>
 <p>We use that technique in the following code, which downloads files via <a href="ch_promises.html#fetch-api"><code>fetch()</code></a>. The content of each file is its filename.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> urls = [</code>
-<code>  <span class="hljs-string">'http://example.com/file1.txt'</span>,</code>
-<code>  <span class="hljs-string">'http://example.com/file2.txt'</span>,</code>
-<code>];</code>
-<code><span class="hljs-keyword">const</span> uppercaseTexts = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>( <span class="hljs-comment">// (A)</span></code>
-<code>  urls.<span class="hljs-title function_">map</span>(<span class="hljs-keyword">async</span> (url) =&gt; {</code>
-<code>    <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(url);</code>
-<code>    <span class="hljs-keyword">const</span> text = <span class="hljs-keyword">await</span> response.<span class="hljs-title function_">text</span>();</code>
-<code>    <span class="hljs-keyword">return</span> text.<span class="hljs-title function_">toUpperCase</span>();</code>
-<code>  })</code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  uppercaseTexts,</code>
-<code>  [<span class="hljs-string">'FILE1.TXT'</span>, <span class="hljs-string">'FILE2.TXT'</span>]</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> urls = [
+  <span class="hljs-string">'http://example.com/file1.txt'</span>,
+  <span class="hljs-string">'http://example.com/file2.txt'</span>,
+];
+<span class="hljs-keyword">const</span> uppercaseTexts = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>( <span class="hljs-comment">// (A)</span>
+  urls.<span class="hljs-title function_">map</span>(<span class="hljs-keyword">async</span> (url) =&gt; {
+    <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> <span class="hljs-title function_">fetch</span>(url);
+    <span class="hljs-keyword">const</span> text = <span class="hljs-keyword">await</span> response.<span class="hljs-title function_">text</span>();
+    <span class="hljs-keyword">return</span> text.<span class="hljs-title function_">toUpperCase</span>();
+  })
+);
+assert.<span class="hljs-title function_">deepEqual</span>(
+  uppercaseTexts,
+  [<span class="hljs-string">'FILE1.TXT'</span>, <span class="hljs-string">'FILE2.TXT'</span>]
+);
 </pre>
 <div class="boxout">
   <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Mapping and filtering asynchronously</strong></p>
@@ -415,56 +415,56 @@
 <h4 id="the-result-of-an-async-function-is-always-a-promise"><a class="heading-id-link" href="#the-result-of-an-async-function-is-always-a-promise">44.4.1 The result of an async function is always a Promise</a></h4>
 <p>If we call an async function, the result is always a Promise – even if the async function throws an exception. Inside the async function, we can fulfill the result Promise by returning non-Promise values (line A):</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-number">123</span>; <span class="hljs-comment">// (A)</span></span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-number">123</span>; <span class="hljs-comment">// (A)</span></span>
+<span class="hljs-params">}</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>()</span></code>
-<code><span class="hljs-params">.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">123</span>);</span></code>
-<code><span class="hljs-params">});</span></code>
+<span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>()</span>
+<span class="hljs-params">.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-number">123</span>);</span>
+<span class="hljs-params">});</span>
 </pre>
 <p>As usual, if we don’t explicitly return anything, <code>undefined</code> is returned for us:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {}</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>()</span></code>
-<code><span class="hljs-params">.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-literal">undefined</span>);</span></code>
-<code><span class="hljs-params">});</span></code>
+<span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>()</span>
+<span class="hljs-params">.<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-literal">undefined</span>);</span>
+<span class="hljs-params">});</span>
 </pre>
 <p>We reject the result Promise via <code>throw</code> (line A):</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Problem!'</span>); <span class="hljs-comment">// (A)</span></span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Problem!'</span>); <span class="hljs-comment">// (A)</span></span>
+<span class="hljs-params">}</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>()</span></code>
-<code><span class="hljs-params">.<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(err, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Problem!'</span>));</span></code>
-<code><span class="hljs-params">});</span></code>
+<span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>()</span>
+<span class="hljs-params">.<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">err</span>) =&gt;</span> {</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(err, <span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Problem!'</span>));</span>
+<span class="hljs-params">});</span>
 </pre>
 <h4 id="returning-a-promise-resolves-the-result-promise"><a class="heading-id-link" href="#returning-a-promise-resolves-the-result-promise">44.4.2 Returning a Promise resolves the result Promise</a></h4>
 <p>If we return a Promise <code>q</code> then it resolves the result Promise <code>p</code> of the async function: <code>p</code> adopts the state of <code>q</code> (<code>q</code> basically replaces <code>p</code>). Resolving never nests Promises.</p>
 <p>Returning a fulfilled Promise fulfills the result Promise:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc1</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>);</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> p1 = <span class="hljs-title function_">asyncFunc1</span>();</span></code>
-<code><span class="hljs-params">p1.<span class="hljs-title function_">then</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-function"><span class="hljs-params">result</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-string">'fulfilled'</span>)</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc1</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'fulfilled'</span>);</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> p1 = <span class="hljs-title function_">asyncFunc1</span>();</span>
+<span class="hljs-params">p1.<span class="hljs-title function_">then</span>(</span>
+<span class="hljs-params">  <span class="hljs-function"><span class="hljs-params">result</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-string">'fulfilled'</span>)</span>
+<span class="hljs-params">);</span>
 </pre>
 <p>Returning a rejected Promise has the same effect as throwing an exception:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc2</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'rejected'</span>);</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-keyword">const</span> p2 = <span class="hljs-title function_">asyncFunc2</span>();</span></code>
-<code><span class="hljs-params">p2.<span class="hljs-title function_">catch</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(error, <span class="hljs-string">'rejected'</span>)</span></code>
-<code><span class="hljs-params">);</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc2</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'rejected'</span>);</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-keyword">const</span> p2 = <span class="hljs-title function_">asyncFunc2</span>();</span>
+<span class="hljs-params">p2.<span class="hljs-title function_">catch</span>(</span>
+<span class="hljs-params">  <span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> assert.<span class="hljs-title function_">equal</span>(error, <span class="hljs-string">'rejected'</span>)</span>
+<span class="hljs-params">);</span>
 </pre>
 <p>The behavior of <code>return</code> is similar to how a Promise <code>q</code> is treated in the following situations:</p>
 <ul>
@@ -518,54 +518,54 @@
 <p>Note that the notification of the settlement of <code>resultPromise</code> happens asynchronously, as is always the case with Promises.</p>
 <p>The following code demonstrates that an async function is started synchronously (line A), then the current task finishes (line C), then the result Promise is settled – asynchronously (line B).</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'asyncFunc() starts'</span>); <span class="hljs-comment">// (A)</span></span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-string">'abc'</span>;</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>().</span></code>
-<code><span class="hljs-params"><span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> { <span class="hljs-comment">// (B)</span></span></code>
-<code><span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Resolved: <span class="hljs-subst">${x}</span>`</span>);</span></code>
-<code><span class="hljs-params">});</span></code>
-<code><span class="hljs-params"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Task ends'</span>); <span class="hljs-comment">// (C)</span></span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'asyncFunc() starts'</span>); <span class="hljs-comment">// (A)</span></span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-string">'abc'</span>;</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-title function_">asyncFunc</span>().</span>
+<span class="hljs-params"><span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">x</span>) =&gt;</span> { <span class="hljs-comment">// (B)</span></span>
+<span class="hljs-params">  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">`Resolved: <span class="hljs-subst">${x}</span>`</span>);</span>
+<span class="hljs-params">});</span>
+<span class="hljs-params"><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Task ends'</span>); <span class="hljs-comment">// (C)</span></span>
 </pre>
 <p>Output:</p>
 <pre>
-<code>asyncFunc() starts</code>
-<code>Task ends</code>
-<code>Resolved: abc</code>
+asyncFunc() starts
+Task ends
+Resolved: abc
 </pre>
 <h3 id="tips-for-using-async-functions"><a class="heading-id-link" href="#tips-for-using-async-functions">44.6 Tips for using async functions</a></h3>
 <h4 id="fire-and-forget-await"><a class="heading-id-link" href="#fire-and-forget-await">44.6.1 We don’t need <code>await</code> if we “fire and forget”</a></h4>
 <p><code>await</code> is not required when working with a Promise-based function; we only need it if we want to pause and wait until the returned Promise is settled. If we only want to start an asynchronous operation, then we don’t need it:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> writer = <span class="hljs-title function_">openFile</span>(<span class="hljs-string">'someFile.txt'</span>);</span></code>
-<code><span class="hljs-params">  writer.<span class="hljs-title function_">write</span>(<span class="hljs-string">'hello'</span>); <span class="hljs-comment">// don’t wait</span></span></code>
-<code><span class="hljs-params">  writer.<span class="hljs-title function_">write</span>(<span class="hljs-string">'world'</span>); <span class="hljs-comment">// don’t wait</span></span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">await</span> writer.<span class="hljs-title function_">close</span>(); <span class="hljs-comment">// wait for file to close</span></span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">asyncFunc</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> writer = <span class="hljs-title function_">openFile</span>(<span class="hljs-string">'someFile.txt'</span>);</span>
+<span class="hljs-params">  writer.<span class="hljs-title function_">write</span>(<span class="hljs-string">'hello'</span>); <span class="hljs-comment">// don’t wait</span></span>
+<span class="hljs-params">  writer.<span class="hljs-title function_">write</span>(<span class="hljs-string">'world'</span>); <span class="hljs-comment">// don’t wait</span></span>
+<span class="hljs-params">  <span class="hljs-keyword">await</span> writer.<span class="hljs-title function_">close</span>(); <span class="hljs-comment">// wait for file to close</span></span>
+<span class="hljs-params">}</span>
 </pre>
 <p>In this code, we don’t await <code>.write()</code> because we don’t care when it is finished. We do, however, want to wait until <code>.close()</code> is done.</p>
 <p>Note: Each invocation of <code>.write()</code> starts synchronously. That prevents race conditions.</p>
 <h4 id="it-can-make-sense-to-await-and-ignore-the-result"><a class="heading-id-link" href="#it-can-make-sense-to-await-and-ignore-the-result">44.6.2 It can make sense to <code>await</code> and ignore the result</a></h4>
 <p>It can occasionally make sense to use <code>await</code>, even if we ignore its result – for example:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">await</span> <span class="hljs-title function_">longRunningAsyncOperation</span>();</code>
-<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Done!'</span>);</code>
+<span class="hljs-keyword">await</span> <span class="hljs-title function_">longRunningAsyncOperation</span>();
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Done!'</span>);
 </pre>
 <p>Here, we are using <code>await</code> to join a long-running asynchronous operation. That ensures that the logging really happens <em>after</em> that operation is done.</p>
 <h4 id="return-await"><a class="heading-id-link" href="#return-await">44.6.3 The pros and cons of <code>return await</code></a></h4>
 <p>If we await a Promise before returning it, we unwrap it before immediately wrapping it again:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result'</span>);</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result'</span>);</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>Since <code>return</code> resolves the result Promise of <code>f()</code>, the following code is simpler and equivalent:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result'</span>);</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">resolve</span>(<span class="hljs-string">'result'</span>);</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>There are, however, three reasons to stick with <code>return await</code>:</p>
 <ul>
@@ -581,103 +581,103 @@
 </ul>
 <p>Let’s explore the last reason. If we await the rejected Promise in line A before returning it, it causes an exception:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'error'</span>); <span class="hljs-comment">// (A)</span></span></code>
-<code><span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'Caught an error: '</span> + err;</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-title function_">f</span>().<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-string">'Caught an error: error'</span>);</span></code>
-<code><span class="hljs-params">});</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">try</span> {</span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'error'</span>); <span class="hljs-comment">// (A)</span></span>
+<span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'Caught an error: '</span> + err;</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-title function_">f</span>().<span class="hljs-title function_">then</span>(<span class="hljs-function">(<span class="hljs-params">result</span>) =&gt;</span> {</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result, <span class="hljs-string">'Caught an error: error'</span>);</span>
+<span class="hljs-params">});</span>
 </pre>
 <p>If, on the other hand, we return without <code>await</code>, no exception is thrown and the result Promise of <code>f()</code> adopts the state of the rejected Promise:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">try</span> {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'error'</span>);</span></code>
-<code><span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'Caught an error: '</span> + err;</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">}</span></code>
-<code><span class="hljs-params"><span class="hljs-title function_">f</span>().<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(reason, <span class="hljs-string">'error'</span>);</span></code>
-<code><span class="hljs-params">});</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">f</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">try</span> {</span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>(<span class="hljs-string">'error'</span>);</span>
+<span class="hljs-params">  } <span class="hljs-keyword">catch</span> (err) {</span>
+<span class="hljs-params">    <span class="hljs-keyword">return</span> <span class="hljs-string">'Caught an error: '</span> + err;</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">}</span>
+<span class="hljs-params"><span class="hljs-title function_">f</span>().<span class="hljs-title function_">catch</span>(<span class="hljs-function">(<span class="hljs-params">reason</span>) =&gt;</span> {</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(reason, <span class="hljs-string">'error'</span>);</span>
+<span class="hljs-params">});</span>
 </pre>
 <h3 id="concurrency-and-await"><a class="heading-id-link" href="#concurrency-and-await">44.7 Concurrency and <code>await</code><span> (advanced)</span></a></h3>
 <p>In <span refcheck="#await-sequentially #await-concurrently">the next two subsections</span>, we’ll use the helper function <code>returnAfterPause()</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-params">id</span>) {</code>
-<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'START '</span> + id);</code>
-<code>  <span class="hljs-keyword">await</span> <span class="hljs-title function_">delay</span>(<span class="hljs-number">10</span>); <span class="hljs-comment">// pause</span></code>
-<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'END '</span> + id);</code>
-<code>  <span class="hljs-keyword">return</span> id;</code>
-<code>}</code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-params">id</span>) {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'START '</span> + id);
+  <span class="hljs-keyword">await</span> <span class="hljs-title function_">delay</span>(<span class="hljs-number">10</span>); <span class="hljs-comment">// pause</span>
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'END '</span> + id);
+  <span class="hljs-keyword">return</span> id;
+}
 <code/>
-<code><span class="hljs-comment">/**</span></code>
-<code><span class="hljs-comment"> * Resolves after `ms` milliseconds</span></code>
-<code><span class="hljs-comment"> */</span></code>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">delay</span>(<span class="hljs-params">ms</span>) {</code>
-<code>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, _reject</span>) =&gt;</span> {</code>
-<code>    <span class="hljs-built_in">setTimeout</span>(resolve, ms);</code>
-<code>  });</code>
-<code>}</code>
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Resolves after `ms` milliseconds</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">delay</span>(<span class="hljs-params">ms</span>) {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, _reject</span>) =&gt;</span> {
+    <span class="hljs-built_in">setTimeout</span>(resolve, ms);
+  });
+}
 </pre>
 <h4 id="await-sequentially"><a class="heading-id-link" href="#await-sequentially">44.7.1 <code>await</code>: running Promise-based functions sequentially</a></h4>
 <p>If we prefix the invocations of multiple Promise-based functions with <code>await</code>, then those functions are executed sequentially:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">sequentialAwait</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> result1 = <span class="hljs-keyword">await</span> <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'first'</span>);</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result1, <span class="hljs-string">'first'</span>);</span></code>
-<code><span class="hljs-params">  </span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> result2 = <span class="hljs-keyword">await</span> <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'second'</span>);</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result2, <span class="hljs-string">'second'</span>);</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">sequentialAwait</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> result1 = <span class="hljs-keyword">await</span> <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'first'</span>);</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result1, <span class="hljs-string">'first'</span>);</span>
+<span class="hljs-params">  </span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> result2 = <span class="hljs-keyword">await</span> <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'second'</span>);</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(result2, <span class="hljs-string">'second'</span>);</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>Output:</p>
 <pre>
-<code>START first</code>
-<code>END first</code>
-<code>START second</code>
-<code>END second</code>
+START first
+END first
+START second
+END second
 </pre>
 <p>That is, <code>returnAfterPause('second')</code> is only started after <code>returnAfterPause('first')</code> is completely finished.</p>
 <h4 id="await-concurrently"><a class="heading-id-link" href="#await-concurrently">44.7.2 <code>await</code>: running Promise-based functions concurrently</a></h4>
 <p>If we want to run multiple Promise-based functions concurrently, we can use the utility method <code>Promise.all()</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">concurrentPromiseAll</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([</span></code>
-<code><span class="hljs-params">    <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'first'</span>),</span></code>
-<code><span class="hljs-params">    <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'second'</span>),</span></code>
-<code><span class="hljs-params">  ]);</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(result, [<span class="hljs-string">'first'</span>, <span class="hljs-string">'second'</span>]);</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">concurrentPromiseAll</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">all</span>([</span>
+<span class="hljs-params">    <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'first'</span>),</span>
+<span class="hljs-params">    <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'second'</span>),</span>
+<span class="hljs-params">  ]);</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">deepEqual</span>(result, [<span class="hljs-string">'first'</span>, <span class="hljs-string">'second'</span>]);</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>Output:</p>
 <pre>
-<code>START first</code>
-<code>START second</code>
-<code>END first</code>
-<code>END second</code>
+START first
+START second
+END first
+END second
 </pre>
 <p>Here, both asynchronous functions are started at the same time. Once both are settled, <code>await</code> gives us either an Array of fulfillment values or – if at least one Promise is rejected – an exception.</p>
 <p>Recall from <a href="ch_promises.html#focus-on-async-start">earlier</a> that what counts is when we start a Promise-based computation; not how we process its result. Therefore, the following code is as “concurrent” as the previous one:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">concurrentAwait</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> resultPromise1 = <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'first'</span>);</span></code>
-<code><span class="hljs-params">  <span class="hljs-keyword">const</span> resultPromise2 = <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'second'</span>);</span></code>
-<code><span class="hljs-params">  </span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(<span class="hljs-keyword">await</span> resultPromise1, <span class="hljs-string">'first'</span>);</span></code>
-<code><span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(<span class="hljs-keyword">await</span> resultPromise2, <span class="hljs-string">'second'</span>);</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">async</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">concurrentAwait</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> resultPromise1 = <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'first'</span>);</span>
+<span class="hljs-params">  <span class="hljs-keyword">const</span> resultPromise2 = <span class="hljs-title function_">returnAfterPause</span>(<span class="hljs-string">'second'</span>);</span>
+<span class="hljs-params">  </span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(<span class="hljs-keyword">await</span> resultPromise1, <span class="hljs-string">'first'</span>);</span>
+<span class="hljs-params">  assert.<span class="hljs-title function_">equal</span>(<span class="hljs-keyword">await</span> resultPromise2, <span class="hljs-string">'second'</span>);</span>
+<span class="hljs-params">}</span>
 </pre>
 <p>Output:</p>
 <pre>
-<code>START first</code>
-<code>START second</code>
-<code>END first</code>
-<code>END second</code>
+START first
+START second
+END first
+END second
 </pre>
 
     

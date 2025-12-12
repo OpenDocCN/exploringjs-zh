@@ -70,10 +70,10 @@
 </ul>
 <p>The following JavaScript code is an approximation of the event loop:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {</code>
-<code>  <span class="hljs-keyword">const</span> task = taskQueue.<span class="hljs-title function_">dequeue</span>();</code>
-<code>  <span class="hljs-title function_">task</span>(); <span class="hljs-comment">// run task</span></code>
-<code>}</code>
+<span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
+  <span class="hljs-keyword">const</span> task = taskQueue.<span class="hljs-title function_">dequeue</span>();
+  <span class="hljs-title function_">task</span>(); <span class="hljs-comment">// run task</span>
+}
 </pre>
 <p>The event loop is depicted in <a href="#fig:event_loop">figure 42.1</a>.</p>
 <figure id="fig:event_loop" class="float">
@@ -95,32 +95,32 @@
 </ul>
 <p>The following HTML is the page’s user interface:</p>
 <pre class="language-html">
-<code><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"block"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">""</span>&gt;</span>Block<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></code>
-<code><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"statusMessage"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></code>
-<code><span class="hljs-tag">&lt;<span class="hljs-name">button</span>&gt;</span>Click me!<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></code>
+<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"block"</span> <span class="hljs-attr">href</span>=<span class="hljs-string">""</span>&gt;</span>Block<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"statusMessage"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">button</span>&gt;</span>Click me!<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
 </pre>
 <p>The idea is that we click “Block” and a long-running loop is executed via JavaScript. During that loop, we can’t click the button because the browser/JavaScript process is blocked.</p>
 <p>A simplified version of the JavaScript code looks like this:</p>
 <pre class="language-js">
-<code><span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'block'</span>)</code>
-<code>  .<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'click'</span>, doBlock); <span class="hljs-comment">// (A)</span></code>
+<span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'block'</span>)
+  .<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'click'</span>, doBlock); <span class="hljs-comment">// (A)</span>
 <code/>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">doBlock</span>(<span class="hljs-params">event</span>) {</code>
-<code>  <span class="hljs-comment">// ···</span></code>
-<code>  <span class="hljs-title function_">displayStatus</span>(<span class="hljs-string">'Blocking...'</span>);</code>
-<code>  <span class="hljs-comment">// ···</span></code>
-<code>  <span class="hljs-title function_">sleep</span>(<span class="hljs-number">5000</span>); <span class="hljs-comment">// (B)</span></code>
-<code>  <span class="hljs-title function_">displayStatus</span>(<span class="hljs-string">'Done'</span>);</code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">doBlock</span>(<span class="hljs-params">event</span>) {
+  <span class="hljs-comment">// ···</span>
+  <span class="hljs-title function_">displayStatus</span>(<span class="hljs-string">'Blocking...'</span>);
+  <span class="hljs-comment">// ···</span>
+  <span class="hljs-title function_">sleep</span>(<span class="hljs-number">5000</span>); <span class="hljs-comment">// (B)</span>
+  <span class="hljs-title function_">displayStatus</span>(<span class="hljs-string">'Done'</span>);
+}
 <code/>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">sleep</span>(<span class="hljs-params">milliseconds</span>) {</code>
-<code>  <span class="hljs-keyword">const</span> start = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();</code>
-<code>  <span class="hljs-keyword">while</span> ((<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() - start) &lt; milliseconds);</code>
-<code>}</code>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">displayStatus</span>(<span class="hljs-params">status</span>) {</code>
-<code>  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'statusMessage'</span>)</code>
-<code>    .<span class="hljs-property">textContent</span> = status;</code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">sleep</span>(<span class="hljs-params">milliseconds</span>) {
+  <span class="hljs-keyword">const</span> start = <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>();
+  <span class="hljs-keyword">while</span> ((<span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() - start) &lt; milliseconds);
+}
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">displayStatus</span>(<span class="hljs-params">status</span>) {
+  <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'statusMessage'</span>)
+    .<span class="hljs-property">textContent</span> = status;
+}
 </pre>
 <p>These are the key parts of the code:</p>
 <ul>
@@ -154,29 +154,29 @@
 <h4 id="setTimeout"><a class="heading-id-link" href="#setTimeout">42.2.3 Scheduling new tasks via <code>setTimeout()</code></a></h4>
 <p>The following global function executes its parameter <code>callback</code> after a delay of <code>ms</code> milliseconds (the type signature is simplified – <code>setTimeout()</code> has more features):</p>
 <pre class="language-ts">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">setTimeout</span>(<span class="hljs-params">callback: () =&gt; <span class="hljs-built_in">void</span>, ms: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">any</span></code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">setTimeout</span>(<span class="hljs-params">callback: () =&gt; <span class="hljs-built_in">void</span>, ms: <span class="hljs-built_in">number</span></span>): <span class="hljs-built_in">any</span>
 </pre>
 <p>The function returns a <em>handle</em> (an ID) that can be used to <em>clear</em> the timeout (cancel the execution of the callback before it happens) via the following global function:</p>
 <pre class="language-ts">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">clearTimeout</span>(<span class="hljs-params">handle?: <span class="hljs-built_in">any</span></span>): <span class="hljs-built_in">void</span></code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">clearTimeout</span>(<span class="hljs-params">handle?: <span class="hljs-built_in">any</span></span>): <span class="hljs-built_in">void</span>
 </pre>
 <p><code>setTimeout()</code> is available on both browsers and Node.js. We can view <code>setTimeout()</code> as scheduling a task for later execution:</p>
 <pre class="language-js">
-<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'First task starts'</span>);</code>
-<code><span class="hljs-built_in">setTimeout</span>(</code>
-<code>  <span class="hljs-function">() =&gt;</span> { <span class="hljs-comment">// (A)</span></code>
-<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Second task starts'</span>);</code>
-<code>  },</code>
-<code>  <span class="hljs-number">0</span> <span class="hljs-comment">// (B)</span></code>
-<code>);</code>
-<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'First task ends'</span>);</code>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'First task starts'</span>);
+<span class="hljs-built_in">setTimeout</span>(
+  <span class="hljs-function">() =&gt;</span> { <span class="hljs-comment">// (A)</span>
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Second task starts'</span>);
+  },
+  <span class="hljs-number">0</span> <span class="hljs-comment">// (B)</span>
+);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'First task ends'</span>);
 </pre>
 <p>Within the first task, we are scheduling a new task (the callback starting in line A) to be run after a delay of zero milliseconds (line B).</p>
 <p>Output:</p>
 <pre>
-<code>First task starts</code>
-<code>First task ends</code>
-<code>Second task starts</code>
+First task starts
+First task ends
+Second task starts
 </pre>
 <p>There is another way of looking at what happened: <strong>The first task took a break and later continued with the second task.</strong></p>
 <ul>
@@ -200,14 +200,14 @@
 <p>As a consequence, tasks don’t have to worry about their data being changed while they are working on it (<em>concurrent modification</em>). That simplifies programming in JavaScript.</p>
 <p>We can observe run to completion in the previous example:</p>
 <pre class="language-js">
-<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'First task starts'</span>);</code>
-<code><span class="hljs-built_in">setTimeout</span>(</code>
-<code>  <span class="hljs-function">() =&gt;</span> {</code>
-<code>    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Second task starts'</span>);</code>
-<code>  },</code>
-<code>  <span class="hljs-number">0</span></code>
-<code>);</code>
-<code><span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'First task ends'</span>);</code>
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'First task starts'</span>);
+<span class="hljs-built_in">setTimeout</span>(
+  <span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'Second task starts'</span>);
+  },
+  <span class="hljs-number">0</span>
+);
+<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">'First task ends'</span>);
 </pre>
 <p>The first task ends before the next task starts.</p>
 <h3 id="patterns-for-async-results"><a class="heading-id-link" href="#patterns-for-async-results">42.3 Patterns for delivering results asynchronously</a></h3>
@@ -253,16 +253,16 @@
 <h5 id="events-indexeddb"><a class="heading-id-link" href="#events-indexeddb">42.3.1.1 Events: IndexedDB</a></h5>
 <p>IndexedDB is a database that is built into web browsers. This is an example of using it:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> openRequest = indexedDB.<span class="hljs-title function_">open</span>(<span class="hljs-string">'MyDatabase'</span>, <span class="hljs-number">1</span>); <span class="hljs-comment">// (A)</span></code>
+<span class="hljs-keyword">const</span> openRequest = indexedDB.<span class="hljs-title function_">open</span>(<span class="hljs-string">'MyDatabase'</span>, <span class="hljs-number">1</span>); <span class="hljs-comment">// (A)</span>
 <code/>
-<code>openRequest.<span class="hljs-property">onsuccess</span> = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {</code>
-<code>  <span class="hljs-keyword">const</span> db = event.<span class="hljs-property">target</span>.<span class="hljs-property">result</span>;</code>
-<code>  <span class="hljs-comment">// ···</span></code>
-<code>};</code>
+openRequest.<span class="hljs-property">onsuccess</span> = <span class="hljs-function">(<span class="hljs-params">event</span>) =&gt;</span> {
+  <span class="hljs-keyword">const</span> db = event.<span class="hljs-property">target</span>.<span class="hljs-property">result</span>;
+  <span class="hljs-comment">// ···</span>
+};
 <code/>
-<code>openRequest.<span class="hljs-property">onerror</span> = <span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {</code>
-<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(error);</code>
-<code>};</code>
+openRequest.<span class="hljs-property">onerror</span> = <span class="hljs-function">(<span class="hljs-params">error</span>) =&gt;</span> {
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(error);
+};
 </pre>
 <p><code>indexedDB</code> has an unusual way of invoking operations:</p>
 <ul>
@@ -279,23 +279,23 @@
 <h5 id="XMLHttpRequest"><a class="heading-id-link" href="#XMLHttpRequest">42.3.1.2 Events: <code>XMLHttpRequest</code></a></h5>
 <p>The <code>XMLHttpRequest</code> API lets us make downloads from within a web browser. This is how we download the file <code>http://example.com/textfile.txt</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> xhr = <span class="hljs-keyword">new</span> <span class="hljs-title class_">XMLHttpRequest</span>(); <span class="hljs-comment">// (A)</span></code>
-<code>xhr.<span class="hljs-title function_">open</span>(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'http://example.com/textfile.txt'</span>); <span class="hljs-comment">// (B)</span></code>
-<code>xhr.<span class="hljs-property">onload</span> = <span class="hljs-function">() =&gt;</span> { <span class="hljs-comment">// (C)</span></code>
-<code>  <span class="hljs-keyword">if</span> (xhr.<span class="hljs-property">status</span> == <span class="hljs-number">200</span>) {</code>
-<code>    <span class="hljs-title function_">processData</span>(xhr.<span class="hljs-property">responseText</span>);</code>
-<code>  } <span class="hljs-keyword">else</span> {</code>
-<code>    assert.<span class="hljs-title function_">fail</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(xhr.<span class="hljs-property">statusText</span>));</code>
-<code>  }</code>
-<code>};</code>
-<code>xhr.<span class="hljs-property">onerror</span> = <span class="hljs-function">() =&gt;</span> { <span class="hljs-comment">// (D)</span></code>
-<code>  assert.<span class="hljs-title function_">fail</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Network error'</span>));</code>
-<code>};</code>
-<code>xhr.<span class="hljs-title function_">send</span>(); <span class="hljs-comment">// (E)</span></code>
+<span class="hljs-keyword">const</span> xhr = <span class="hljs-keyword">new</span> <span class="hljs-title class_">XMLHttpRequest</span>(); <span class="hljs-comment">// (A)</span>
+xhr.<span class="hljs-title function_">open</span>(<span class="hljs-string">'GET'</span>, <span class="hljs-string">'http://example.com/textfile.txt'</span>); <span class="hljs-comment">// (B)</span>
+xhr.<span class="hljs-property">onload</span> = <span class="hljs-function">() =&gt;</span> { <span class="hljs-comment">// (C)</span>
+  <span class="hljs-keyword">if</span> (xhr.<span class="hljs-property">status</span> == <span class="hljs-number">200</span>) {
+    <span class="hljs-title function_">processData</span>(xhr.<span class="hljs-property">responseText</span>);
+  } <span class="hljs-keyword">else</span> {
+    assert.<span class="hljs-title function_">fail</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(xhr.<span class="hljs-property">statusText</span>));
+  }
+};
+xhr.<span class="hljs-property">onerror</span> = <span class="hljs-function">() =&gt;</span> { <span class="hljs-comment">// (D)</span>
+  assert.<span class="hljs-title function_">fail</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Error</span>(<span class="hljs-string">'Network error'</span>));
+};
+xhr.<span class="hljs-title function_">send</span>(); <span class="hljs-comment">// (E)</span>
 <code/>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">processData</span>(<span class="hljs-params">str</span>) {</code>
-<code>  assert.<span class="hljs-title function_">equal</span>(str, <span class="hljs-string">'Content of textfile.txt\n'</span>);</code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">processData</span>(<span class="hljs-params">str</span>) {
+  assert.<span class="hljs-title function_">equal</span>(str, <span class="hljs-string">'Content of textfile.txt\n'</span>);
+}
 </pre>
 <p>With this API, we first create a request object (line A), then configure it, then activate it (line E). The configuration consists of:</p>
 <ul>
@@ -312,13 +312,13 @@
 <h5 id="events-dom"><a class="heading-id-link" href="#events-dom">42.3.1.3 Events: DOM</a></h5>
 <p>We have already seen DOM events in action in <a href="#blocking-browsers">“The user interface of the browser can be blocked” (§42.2.1)</a>. The following code also handles <code>click</code> events:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> element = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'my-link'</span>); <span class="hljs-comment">// (A)</span></code>
-<code>element.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'click'</span>, clickListener); <span class="hljs-comment">// (B)</span></code>
+<span class="hljs-keyword">const</span> element = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(<span class="hljs-string">'my-link'</span>); <span class="hljs-comment">// (A)</span>
+element.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">'click'</span>, clickListener); <span class="hljs-comment">// (B)</span>
 <code/>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">clickListener</span>(<span class="hljs-params">event</span>) {</code>
-<code>  event.<span class="hljs-title function_">preventDefault</span>(); <span class="hljs-comment">// (C)</span></code>
-<code>  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(event.<span class="hljs-property">shiftKey</span>); <span class="hljs-comment">// (D)</span></code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">clickListener</span>(<span class="hljs-params">event</span>) {
+  event.<span class="hljs-title function_">preventDefault</span>(); <span class="hljs-comment">// (C)</span>
+  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(event.<span class="hljs-property">shiftKey</span>); <span class="hljs-comment">// (D)</span>
+}
 </pre>
 <p>We first ask the browser to retrieve the HTML element whose ID is <code>'my-link'</code> (line A). Then we add a listener for all <code>click</code> events (line B). In the listener, we first tell the browser not to perform its default action (line C) – going to the target of the link. Then we log to the console if the shift key is currently pressed (line D).</p>
 <h4 id="callback-pattern"><a class="heading-id-link" href="#callback-pattern">42.3.2 Delivering asynchronous results via callbacks</a></h4>
@@ -326,14 +326,14 @@
 <p>Callbacks are another pattern for handling asynchronous results. They are only used for one-off results and have the advantage of being less verbose than events.</p>
 <p>As an example, consider a function <code>readFile()</code> that reads a text file and returns its contents asynchronously. This is how we call <code>readFile()</code> if it uses Node.js-style callbacks:</p>
 <pre class="language-js">
-<code><span class="hljs-title function_">readFile</span>(<span class="hljs-string">'some-file.txt'</span>, {<span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span>},</code>
-<code>  <span class="hljs-function">(<span class="hljs-params">error, data</span>) =&gt;</span> {</code>
-<code>    <span class="hljs-keyword">if</span> (error) {</code>
-<code>      assert.<span class="hljs-title function_">fail</span>(error);</code>
-<code>      <span class="hljs-keyword">return</span>;</code>
-<code>    }</code>
-<code>    assert.<span class="hljs-title function_">equal</span>(data, <span class="hljs-string">'The content of some-file.txt'</span>);</code>
-<code>  });</code>
+<span class="hljs-title function_">readFile</span>(<span class="hljs-string">'some-file.txt'</span>, {<span class="hljs-attr">encoding</span>: <span class="hljs-string">'utf-8'</span>},
+  <span class="hljs-function">(<span class="hljs-params">error, data</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (error) {
+      assert.<span class="hljs-title function_">fail</span>(error);
+      <span class="hljs-keyword">return</span>;
+    }
+    assert.<span class="hljs-title function_">equal</span>(data, <span class="hljs-string">'The content of some-file.txt'</span>);
+  });
 </pre>
 <p>There is a single callback that handles both success and failure. If the first parameter is not <code>null</code> then an error happened. Otherwise, the result can be found in the second parameter.</p>
 <div class="boxout">

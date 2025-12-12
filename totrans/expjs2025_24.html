@@ -139,60 +139,60 @@
 </ul>
 <p>A bigint literal is a sequence of one or more digits, suffixed with an <code>n</code> – for example:</p>
 <pre class="language-js">
-<code><span class="hljs-number">123n</span></code>
+<span class="hljs-number">123n</span>
 </pre>
 <p>Operators such as <code>-</code> and <code>*</code> are overloaded and work with bigints:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> * <span class="hljs-number">456n</span></span></code>
-<code>56088n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> * <span class="hljs-number">456n</span></span>
+56088n
 </pre>
 <p>Bigints are primitive values. <code>typeof</code> returns a distinct result for them:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">typeof</span> <span class="hljs-number">123n</span></span></code>
-<code>'bigint'</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">typeof</span> <span class="hljs-number">123n</span></span>
+'bigint'
 </pre>
 <h4 id="going-beyond-53-bits-for-integers"><a class="heading-id-link" href="#going-beyond-53-bits-for-integers">20.2.1 Going beyond 53 bits for integers</a></h4>
 <p>JavaScript numbers are internally represented as a fraction multiplied by an exponent (see <a href="ch_numbers.html#floating-point-precision">“Background: floating point precision” (§18.8)</a> for details). As a consequence, if we go beyond the highest <a href="ch_numbers.html#safe-integers"><em>safe integer</em></a> 2<sup>53</sup>−1, there are still <em>some</em> integers that can be represented, but with gaps between them:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">53</span> <span class="hljs-comment">// can be represented but same as next number</span></span></code>
-<code>9007199254740992</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">53</span> + <span class="hljs-number">1</span> <span class="hljs-comment">// wrong</span></span></code>
-<code>9007199254740992</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">53</span> <span class="hljs-comment">// can be represented but same as next number</span></span>
+9007199254740992
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">53</span> + <span class="hljs-number">1</span> <span class="hljs-comment">// wrong</span></span>
+9007199254740992
 </pre>
 <p>Bigints enable us to go beyond 53 bits:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span>**<span class="hljs-number">53n</span></span></code>
-<code>9007199254740992n</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span>**<span class="hljs-number">53n</span> + <span class="hljs-number">1n</span></span></code>
-<code>9007199254740993n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span>**<span class="hljs-number">53n</span></span>
+9007199254740992n
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span>**<span class="hljs-number">53n</span> + <span class="hljs-number">1n</span></span>
+9007199254740993n
 </pre>
 <h4 id="example-using-bigints"><a class="heading-id-link" href="#example-using-bigints">20.2.2 Example: using bigints</a></h4>
 <p>This is what using bigints looks like (code based on an example in the proposal):</p>
 <pre class="language-js">
-<code><span class="hljs-comment">/**</span></code>
-<code><span class="hljs-comment"> * Takes a bigint as an argument and returns a bigint</span></code>
-<code><span class="hljs-comment"> */</span></code>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">nthPrime</span>(<span class="hljs-params">nth</span>) {</code>
-<code>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> nth !== <span class="hljs-string">'bigint'</span>) {</code>
-<code>    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>();</code>
-<code>  }</code>
-<code>  <span class="hljs-keyword">function</span> <span class="hljs-title function_">isPrime</span>(<span class="hljs-params">p</span>) {</code>
-<code>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">2n</span>; i &lt; p; i++) {</code>
-<code>      <span class="hljs-keyword">if</span> (p % i === <span class="hljs-number">0n</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;</code>
-<code>    }</code>
-<code>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;</code>
-<code>  }</code>
-<code>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">2n</span>; ; i++) {</code>
-<code>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isPrime</span>(i)) {</code>
-<code>      <span class="hljs-keyword">if</span> (--nth === <span class="hljs-number">0n</span>) <span class="hljs-keyword">return</span> i;</code>
-<code>    }</code>
-<code>  }</code>
-<code>}</code>
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Takes a bigint as an argument and returns a bigint</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">nthPrime</span>(<span class="hljs-params">nth</span>) {
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> nth !== <span class="hljs-string">'bigint'</span>) {
+    <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">TypeError</span>();
+  }
+  <span class="hljs-keyword">function</span> <span class="hljs-title function_">isPrime</span>(<span class="hljs-params">p</span>) {
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">2n</span>; i &lt; p; i++) {
+      <span class="hljs-keyword">if</span> (p % i === <span class="hljs-number">0n</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+  }
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">2n</span>; ; i++) {
+    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isPrime</span>(i)) {
+      <span class="hljs-keyword">if</span> (--nth === <span class="hljs-number">0n</span>) <span class="hljs-keyword">return</span> i;
+    }
+  }
+}
 <code/>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  [<span class="hljs-number">1n</span>, <span class="hljs-number">2n</span>, <span class="hljs-number">3n</span>, <span class="hljs-number">4n</span>, <span class="hljs-number">5n</span>].<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">nth</span> =&gt;</span> <span class="hljs-title function_">nthPrime</span>(nth)),</code>
-<code>  [<span class="hljs-number">2n</span>, <span class="hljs-number">3n</span>, <span class="hljs-number">5n</span>, <span class="hljs-number">7n</span>, <span class="hljs-number">11n</span>]</code>
-<code>);</code>
+assert.<span class="hljs-title function_">deepEqual</span>(
+  [<span class="hljs-number">1n</span>, <span class="hljs-number">2n</span>, <span class="hljs-number">3n</span>, <span class="hljs-number">4n</span>, <span class="hljs-number">5n</span>].<span class="hljs-title function_">map</span>(<span class="hljs-function"><span class="hljs-params">nth</span> =&gt;</span> <span class="hljs-title function_">nthPrime</span>(nth)),
+  [<span class="hljs-number">2n</span>, <span class="hljs-number">3n</span>, <span class="hljs-number">5n</span>, <span class="hljs-number">7n</span>, <span class="hljs-number">11n</span>]
+);
 </pre>
 <h3 id="bigint-literals"><a class="heading-id-link" href="#bigint-literals">20.3 Bigint literals</a></h3>
 <p>Like number literals, bigint literals support several bases:</p>
@@ -214,11 +214,11 @@
 <h4 id="numeric-separator-bigint-literals"><a class="heading-id-link" href="#numeric-separator-bigint-literals">20.3.1 Underscores (<code>_</code>) as separators in bigint literals<span> <sup>ES2021</sup></span></a></h4>
 <p><a href="ch_numbers.html#numeric-separator-number-literals">Just like in number literals</a>, we can use underscores (<code>_</code>) as separators in bigint literals:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> massOfEarthInKg = <span class="hljs-number">6_000_000_000_000_000_000_000_000n</span>;</code>
+<span class="hljs-keyword">const</span> massOfEarthInKg = <span class="hljs-number">6_000_000_000_000_000_000_000_000n</span>;
 </pre>
 <p>Bigints are often used to represent money in the financial technical sector. Separators can help here, too:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> priceInCents = <span class="hljs-number">123_000_00n</span>; <span class="hljs-comment">// 123 thousand dollars</span></code>
+<span class="hljs-keyword">const</span> priceInCents = <span class="hljs-number">123_000_00n</span>; <span class="hljs-comment">// 123 thousand dollars</span>
 </pre>
 <p>As with number literals, two restrictions apply:</p>
 <ul>
@@ -232,79 +232,79 @@
 <h3 id="reusing-number-operators-for-bigints-overloading"><a class="heading-id-link" href="#reusing-number-operators-for-bigints-overloading">20.4 Reusing number operators for bigints (overloading)</a></h3>
 <p>With most operators, we are not allowed to mix bigints and numbers. If we do, exceptions are thrown:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span> + <span class="hljs-number">1</span></span></code>
-<code>TypeError: Cannot mix BigInt and other types, use explicit conversions</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span> + <span class="hljs-number">1</span></span>
+TypeError: Cannot mix BigInt and other types, use explicit conversions
 </pre>
 <p>The reason for this rule is that there is no general way of coercing a number and a bigint to a common type: numbers can’t represent bigints beyond 53 bits, bigints can’t represent fractions. Therefore, the exceptions warn us about typos that may lead to unexpected results.</p>
 <p>Consider the following expression:</p>
 <pre class="language-js">
-<code><span class="hljs-number">2</span>**<span class="hljs-number">53</span> + <span class="hljs-number">1n</span></code>
+<span class="hljs-number">2</span>**<span class="hljs-number">53</span> + <span class="hljs-number">1n</span>
 </pre>
 <p>Should the result be <code>9007199254740993n</code> or <code>9007199254740992</code>?</p>
 <p>It is also not clear what the result of the following expression should be:</p>
 <pre class="language-js">
-<code><span class="hljs-number">2n</span>**<span class="hljs-number">53n</span> * <span class="hljs-number">3.3</span></code>
+<span class="hljs-number">2n</span>**<span class="hljs-number">53n</span> * <span class="hljs-number">3.3</span>
 </pre>
 <h4 id="arithmetic-operators-1"><a class="heading-id-link" href="#arithmetic-operators-1">20.4.1 Arithmetic operators</a></h4>
 <p>Binary <code>+</code>,  binary <code>-</code>, <code>*</code>, <code>**</code> work as expected:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">7n</span> * <span class="hljs-number">3n</span></span></code>
-<code>21n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">7n</span> * <span class="hljs-number">3n</span></span>
+21n
 </pre>
 <p>It is OK to mix bigints and strings:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">6n</span> + <span class="hljs-string">' apples'</span></span></code>
-<code>'6 apples'</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">6n</span> + <span class="hljs-string">' apples'</span></span>
+'6 apples'
 </pre>
 <p><code>/</code> and <code>%</code> round towards zero by removing the fraction (like <code>Math.trunc()</code>):</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">1n</span> / <span class="hljs-number">2n</span></span></code>
-<code>0n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">1n</span> / <span class="hljs-number">2n</span></span>
+0n
 </pre>
 <p>Unary <code>-</code> works as expected:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">-(-<span class="hljs-number">64n</span>)</span></code>
-<code>64n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">-(-<span class="hljs-number">64n</span>)</span>
+64n
 </pre>
 <p>Unary <code>+</code> is not supported for bigints because much code relies on it coercing its operand to number:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">+<span class="hljs-number">23n</span></span></code>
-<code>TypeError: Cannot convert a BigInt value to a number</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">+<span class="hljs-number">23n</span></span>
+TypeError: Cannot convert a BigInt value to a number
 </pre>
 <h4 id="loose-equality--and-inequality-"><a class="heading-id-link" href="#loose-equality--and-inequality-">20.4.2 Loose equality (<code>==</code>) and inequality (<code>!=</code>)</a></h4>
 <p>Loose equality (<code>==</code>) and inequality (<code>!=</code>) coerce values:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">0n</span> == <span class="hljs-literal">false</span></span></code>
-<code>true</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">1n</span> == <span class="hljs-literal">true</span></span></code>
-<code>true</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">0n</span> == <span class="hljs-literal">false</span></span>
+true
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">1n</span> == <span class="hljs-literal">true</span></span>
+true
 <code/>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> == <span class="hljs-number">123</span></span></code>
-<code>true</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> == <span class="hljs-number">123</span></span>
+true
 <code/>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> == <span class="hljs-string">'123'</span></span></code>
-<code>true</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> == <span class="hljs-string">'123'</span></span>
+true
 </pre>
 <h4 id="strict-equality--and-inequality-"><a class="heading-id-link" href="#strict-equality--and-inequality-">20.4.3 Strict equality (<code>===</code>) and inequality (<code>!==</code>)</a></h4>
 <p>Strict equality (<code>===</code>) and inequality (<code>!==</code>) only consider values to be equal if they have the same type:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> === <span class="hljs-number">123</span></span></code>
-<code>false</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> === <span class="hljs-number">123n</span></span></code>
-<code>true</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> === <span class="hljs-number">123</span></span>
+false
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">123n</span> === <span class="hljs-number">123n</span></span>
+true
 </pre>
 <h4 id="ordering-operators-1"><a class="heading-id-link" href="#ordering-operators-1">20.4.4 Ordering operators</a></h4>
 <p>Ordering operators <code>&lt;</code>, <code>&gt;</code>, <code>&gt;=</code>, <code>&lt;=</code> work as expected:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">17n</span> &lt;= <span class="hljs-number">17n</span></span></code>
-<code>true</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">3n</span> &gt; -<span class="hljs-number">1n</span></span></code>
-<code>true</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">17n</span> &lt;= <span class="hljs-number">17n</span></span>
+true
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">3n</span> &gt; -<span class="hljs-number">1n</span></span>
+true
 </pre>
 <p>Comparing bigints and numbers does not pose any risks. Therefore, we can mix bigints and numbers:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">3n</span> &gt; -<span class="hljs-number">1</span></span></code>
-<code>true</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">3n</span> &gt; -<span class="hljs-number">1</span></span>
+true
 </pre>
 <div class="boxout">
   <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Converting numbers-based code to bigints</strong></p>
@@ -315,17 +315,17 @@
 <h5 id="bitwise-operators-for-numbers"><a class="heading-id-link" href="#bitwise-operators-for-numbers">20.4.5.1 Bitwise operators for numbers</a></h5>
 <p>Bitwise operators interpret numbers as 32-bit integers. These integers are either unsigned or signed. If they are signed, the negative of an integer is its <em>two’s complement</em>: If we add an integer to its two’s complement and ignore overflow (digits beyond 32 bits) then the result is zero.</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">32</span> - <span class="hljs-number">1</span> &gt;&gt; <span class="hljs-number">0</span> <span class="hljs-comment">// 0b11111111111111111111111111111111</span></span></code>
-<code>-1</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">32</span> - <span class="hljs-number">1</span> &gt;&gt; <span class="hljs-number">0</span> <span class="hljs-comment">// 0b11111111111111111111111111111111</span></span>
+-1
 </pre>
 <p>If we add <code>1</code> to the binary number consisting of 32 ones, we get a one followed by 32 zeros. Everything beyond 32 bits is overflow, which means that that number is zero.</p>
 <p>We used signed right shift operator (<code>&gt;&gt;</code>): We shifted the left operand by zero bits, which converted it to Int32 (which is signed) and back to number.</p>
 <p>Due to these integers having a fixed size, their highest bits indicate their signs:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">31</span> &gt;&gt; <span class="hljs-number">0</span> <span class="hljs-comment">// highest bit is 1</span></span></code>
-<code>-2147483648</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">31</span> - <span class="hljs-number">1</span> &gt;&gt; <span class="hljs-number">0</span> <span class="hljs-comment">// highest bit is 0</span></span></code>
-<code>2147483647</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">31</span> &gt;&gt; <span class="hljs-number">0</span> <span class="hljs-comment">// highest bit is 1</span></span>
+-2147483648
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2</span>**<span class="hljs-number">31</span> - <span class="hljs-number">1</span> &gt;&gt; <span class="hljs-number">0</span> <span class="hljs-comment">// highest bit is 0</span></span>
+2147483647
 </pre>
 <h5 id="bitwise-operators-for-bigints"><a class="heading-id-link" href="#bitwise-operators-for-bigints">20.4.5.2 Bitwise operators for bigints</a></h5>
 <p>For bigints, bitwise operators interpret a negative sign as an infinite two’s complement – for example:</p>
@@ -347,51 +347,51 @@
 <h5 id="bitwise-not-"><a class="heading-id-link" href="#bitwise-not-">20.4.5.3 Bitwise Not (<code>~</code>)</a></h5>
 <p>Bitwise Not (<code>~</code>) inverts all bits:</p>
 <pre class="language-js">
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  ~<span class="hljs-number">0b10n</span>,</code>
-<code>  -<span class="hljs-number">3n</span> <span class="hljs-comment">// ···111101</span></code>
-<code>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  ~-<span class="hljs-number">2n</span>, <span class="hljs-comment">// ···111110</span></code>
-<code>  <span class="hljs-number">1n</span></code>
-<code>);</code>
+assert.<span class="hljs-title function_">equal</span>(
+  ~<span class="hljs-number">0b10n</span>,
+  -<span class="hljs-number">3n</span> <span class="hljs-comment">// ···111101</span>
+);
+assert.<span class="hljs-title function_">equal</span>(
+  ~-<span class="hljs-number">2n</span>, <span class="hljs-comment">// ···111110</span>
+  <span class="hljs-number">1n</span>
+);
 </pre>
 <h5 id="binary-bitwise-operators---"><a class="heading-id-link" href="#binary-bitwise-operators---">20.4.5.4 Binary bitwise operators (<code>&amp;</code>, <code>|</code>, <code>^</code>)</a></h5>
 <p>Applying binary bitwise operators to bigints works analogously to applying them to numbers:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0b1010n</span> |  <span class="hljs-number">0b0111n</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>)</span></code>
-<code>'1111'</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0b1010n</span> &amp;  <span class="hljs-number">0b0111n</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>)</span></code>
-<code>'10'</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0b1010n</span> |  <span class="hljs-number">0b0111n</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>)</span>
+'1111'
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0b1010n</span> &amp;  <span class="hljs-number">0b0111n</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>)</span>
+'10'
 <code/>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0b1010n</span> | -<span class="hljs-number">1n</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>)</span></code>
-<code>'-1'</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0b1010n</span> &amp; -<span class="hljs-number">1n</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>)</span></code>
-<code>'1010'</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0b1010n</span> | -<span class="hljs-number">1n</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>)</span>
+'-1'
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">(<span class="hljs-number">0b1010n</span> &amp; -<span class="hljs-number">1n</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-number">2</span>)</span>
+'1010'
 </pre>
 <h5 id="bitwise-signed-shift-operators--and-"><a class="heading-id-link" href="#bitwise-signed-shift-operators--and-">20.4.5.5 Bitwise signed shift operators (<code>&lt;&lt;</code> and <code>&gt;&gt;</code>)</a></h5>
 <p>The signed shift operators for bigints preserve the sign of a number:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span> &lt;&lt; <span class="hljs-number">1n</span></span></code>
-<code>4n</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">-<span class="hljs-number">2n</span> &lt;&lt; <span class="hljs-number">1n</span></span></code>
-<code>-4n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span> &lt;&lt; <span class="hljs-number">1n</span></span>
+4n
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">-<span class="hljs-number">2n</span> &lt;&lt; <span class="hljs-number">1n</span></span>
+-4n
 <code/>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span> &gt;&gt; <span class="hljs-number">1n</span></span></code>
-<code>1n</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">-<span class="hljs-number">2n</span> &gt;&gt; <span class="hljs-number">1n</span></span></code>
-<code>-1n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span> &gt;&gt; <span class="hljs-number">1n</span></span>
+1n
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">-<span class="hljs-number">2n</span> &gt;&gt; <span class="hljs-number">1n</span></span>
+-1n
 </pre>
 <p>Recall that <code>-1n</code> is a sequence of ones that extends infinitely to the left. That’s why shifting it left doesn’t change it:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">-<span class="hljs-number">1n</span> &gt;&gt; <span class="hljs-number">20n</span></span></code>
-<code>-1n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript">-<span class="hljs-number">1n</span> &gt;&gt; <span class="hljs-number">20n</span></span>
+-1n
 </pre>
 <h5 id="bitwise-unsigned-right-shift-operator-"><a class="heading-id-link" href="#bitwise-unsigned-right-shift-operator-">20.4.5.6 Bitwise unsigned right shift operator (<code>&gt;&gt;&gt;</code>)</a></h5>
 <p>There is no unsigned right shift operator for bigints:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span> &gt;&gt;&gt; <span class="hljs-number">1n</span></span></code>
-<code>TypeError: BigInts have no unsigned right shift, use &gt;&gt; instead</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-number">2n</span> &gt;&gt;&gt; <span class="hljs-number">1n</span></span>
+TypeError: BigInts have no unsigned right shift, use &gt;&gt; instead
 </pre>
 <p>Why? The idea behind unsigned right shifting is that a zero is shifted in “from the left”. In other words, the assumption is that there is a finite amount of binary digits.</p>
 <p>However, with negative bigints (especially negative ones), there is no “left”; their binary digits extend infinitely.</p>
@@ -467,46 +467,46 @@
 <h5 id="converting-undefined-and-null"><a class="heading-id-link" href="#converting-undefined-and-null">20.5.1.1 Converting <code>undefined</code> and <code>null</code></a></h5>
 <p>A <code>TypeError</code> is thrown if <code>x</code> is either <code>undefined</code> or <code>null</code>:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-literal">undefined</span>)</span></code>
-<code>TypeError: Cannot convert undefined to a BigInt</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-literal">null</span>)</span></code>
-<code>TypeError: Cannot convert null to a BigInt</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-literal">undefined</span>)</span>
+TypeError: Cannot convert undefined to a BigInt
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-literal">null</span>)</span>
+TypeError: Cannot convert null to a BigInt
 </pre>
 <h5 id="converting-strings"><a class="heading-id-link" href="#converting-strings">20.5.1.2 Converting strings</a></h5>
 <p>If a string does not represent an integer, <code>BigInt()</code> throws a <code>SyntaxError</code> (whereas <code>Number()</code> returns the error value <code>NaN</code>):</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'abc'</span>)</span></code>
-<code>SyntaxError: Cannot convert abc to a BigInt</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'abc'</span>)</span>
+SyntaxError: Cannot convert abc to a BigInt
 </pre>
 <p>The suffix <code>'n'</code> is not allowed:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'123n'</span>)</span></code>
-<code>SyntaxError: Cannot convert 123n to a BigInt</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'123n'</span>)</span>
+SyntaxError: Cannot convert 123n to a BigInt
 </pre>
 <p>All bases of bigint literals are allowed:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'123'</span>)</span></code>
-<code>123n</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'0xFF'</span>)</span></code>
-<code>255n</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'0b1101'</span>)</span></code>
-<code>13n</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'0o777'</span>)</span></code>
-<code>511n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'123'</span>)</span>
+123n
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'0xFF'</span>)</span>
+255n
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'0b1101'</span>)</span>
+13n
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-string">'0o777'</span>)</span>
+511n
 </pre>
 <h5 id="noninteger-numbers-produce-exceptions"><a class="heading-id-link" href="#noninteger-numbers-produce-exceptions">20.5.1.3 Non-integer numbers produce exceptions</a></h5>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-number">123.45</span>)</span></code>
-<code>RangeError: The number 123.45 cannot be converted to a BigInt because</code>
-<code>it is not an integer</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-number">123</span>)</span></code>
-<code>123n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-number">123.45</span>)</span>
+RangeError: The number 123.45 cannot be converted to a BigInt because
+it is not an integer
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>(<span class="hljs-number">123</span>)</span>
+123n
 </pre>
 <h5 id="converting-objects"><a class="heading-id-link" href="#converting-objects">20.5.1.4 Converting objects</a></h5>
 <p>How objects are converted to bigints can be configured – for example, by overriding <code>.valueOf()</code>:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>({<span class="hljs-title function_">valueOf</span>(<span class="hljs-params"/>) {<span class="hljs-keyword">return</span> <span class="hljs-number">123n</span>}})</span></code>
-<code>123n</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">BigInt</span>({<span class="hljs-title function_">valueOf</span>(<span class="hljs-params"/>) {<span class="hljs-keyword">return</span> <span class="hljs-number">123n</span>}})</span>
+123n
 </pre>
 <h4 id="bigintprototype-methods"><a class="heading-id-link" href="#bigintprototype-methods">20.5.2 <code>BigInt.prototype.*</code> methods</a></h4>
 <p><code>BigInt.prototype</code> holds the methods “inherited” by primitive bigints:</p>
@@ -535,9 +535,9 @@
 <h5 id="example-using-64bit-integers"><a class="heading-id-link" href="#example-using-64bit-integers">20.5.3.1 Example: using 64-bit integers</a></h5>
 <p>Casting allows us to create integer values with a specific number of bits – e.g., if we want to restrict ourselves to 64-bit integers, we always have to cast:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> uint64a = <span class="hljs-title class_">BigInt</span>.<span class="hljs-title function_">asUintN</span>(<span class="hljs-number">64</span>, <span class="hljs-number">12345n</span>);</code>
-<code><span class="hljs-keyword">const</span> uint64b = <span class="hljs-title class_">BigInt</span>.<span class="hljs-title function_">asUintN</span>(<span class="hljs-number">64</span>, <span class="hljs-number">67890n</span>);</code>
-<code><span class="hljs-keyword">const</span> result = <span class="hljs-title class_">BigInt</span>.<span class="hljs-title function_">asUintN</span>(<span class="hljs-number">64</span>, uint64a * uint64b);</code>
+<span class="hljs-keyword">const</span> uint64a = <span class="hljs-title class_">BigInt</span>.<span class="hljs-title function_">asUintN</span>(<span class="hljs-number">64</span>, <span class="hljs-number">12345n</span>);
+<span class="hljs-keyword">const</span> uint64b = <span class="hljs-title class_">BigInt</span>.<span class="hljs-title function_">asUintN</span>(<span class="hljs-number">64</span>, <span class="hljs-number">67890n</span>);
+<span class="hljs-keyword">const</span> result = <span class="hljs-title class_">BigInt</span>.<span class="hljs-title function_">asUintN</span>(<span class="hljs-number">64</span>, uint64a * uint64b);
 </pre>
 <div class="boxout">
   <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: Implementing the analog of <code>Number.parseInt()</code> for bigints</strong></p>
@@ -620,44 +620,44 @@
 <p>The JSON standard is fixed and won’t change. The upside is that old JSON parsing code will never be outdated. The downside is that JSON can’t be extended to contain bigints.</p>
 <p>Stringifying bigints throws exceptions:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(<span class="hljs-number">123n</span>)</span></code>
-<code>TypeError: Do not know how to serialize a BigInt</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>([<span class="hljs-number">123n</span>])</span></code>
-<code>TypeError: Do not know how to serialize a BigInt</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(<span class="hljs-number">123n</span>)</span>
+TypeError: Do not know how to serialize a BigInt
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>([<span class="hljs-number">123n</span>])</span>
+TypeError: Do not know how to serialize a BigInt
 </pre>
 <h4 id="stringifying-bigints"><a class="heading-id-link" href="#stringifying-bigints">20.8.1 Stringifying bigints</a></h4>
 <p>Therefore, our best option is to store bigints in strings:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> bigintPrefix = <span class="hljs-string">'[[bigint]]'</span>;</code>
+<span class="hljs-keyword">const</span> bigintPrefix = <span class="hljs-string">'[[bigint]]'</span>;
 <code/>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">bigintReplacer</span>(<span class="hljs-params">_key, value</span>) {</code>
-<code>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'bigint'</span>) {</code>
-<code>    <span class="hljs-keyword">return</span> bigintPrefix + value;</code>
-<code>  }</code>
-<code>  <span class="hljs-keyword">return</span> value;</code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">bigintReplacer</span>(<span class="hljs-params">_key, value</span>) {
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'bigint'</span>) {
+    <span class="hljs-keyword">return</span> bigintPrefix + value;
+  }
+  <span class="hljs-keyword">return</span> value;
+}
 <code/>
-<code><span class="hljs-keyword">const</span> data = { <span class="hljs-attr">value</span>: <span class="hljs-number">9007199254740993n</span> };</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(data, bigintReplacer),</code>
-<code>  <span class="hljs-string">'{"value":"[[bigint]]9007199254740993"}'</span></code>
-<code>);</code>
+<span class="hljs-keyword">const</span> data = { <span class="hljs-attr">value</span>: <span class="hljs-number">9007199254740993n</span> };
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(data, bigintReplacer),
+  <span class="hljs-string">'{"value":"[[bigint]]9007199254740993"}'</span>
+);
 </pre>
 <h4 id="parsing-bigints"><a class="heading-id-link" href="#parsing-bigints">20.8.2 Parsing bigints</a></h4>
 <p>The following code shows how to parse strings such as the one that we have produced in the previous example.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">bigintReviver</span>(<span class="hljs-params">_key, value</span>) {</code>
-<code>  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'string'</span> &amp;&amp; value.<span class="hljs-title function_">startsWith</span>(bigintPrefix)) {</code>
-<code>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">BigInt</span>(value.<span class="hljs-title function_">slice</span>(bigintPrefix.<span class="hljs-property">length</span>));</code>
-<code>  }</code>
-<code>  <span class="hljs-keyword">return</span> value;</code>
-<code>}</code>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">bigintReviver</span>(<span class="hljs-params">_key, value</span>) {
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> value === <span class="hljs-string">'string'</span> &amp;&amp; value.<span class="hljs-title function_">startsWith</span>(bigintPrefix)) {
+    <span class="hljs-keyword">return</span> <span class="hljs-title class_">BigInt</span>(value.<span class="hljs-title function_">slice</span>(bigintPrefix.<span class="hljs-property">length</span>));
+  }
+  <span class="hljs-keyword">return</span> value;
+}
 <code/>
-<code><span class="hljs-keyword">const</span> str = <span class="hljs-string">'{"value":"[[bigint]]9007199254740993"}'</span>;</code>
-<code>assert.<span class="hljs-title function_">deepEqual</span>(</code>
-<code>  <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(str, bigintReviver),</code>
-<code>  { <span class="hljs-attr">value</span>: <span class="hljs-number">9007199254740993n</span> }</code>
-<code>);</code>
+<span class="hljs-keyword">const</span> str = <span class="hljs-string">'{"value":"[[bigint]]9007199254740993"}'</span>;
+assert.<span class="hljs-title function_">deepEqual</span>(
+  <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(str, bigintReviver),
+  { <span class="hljs-attr">value</span>: <span class="hljs-number">9007199254740993n</span> }
+);
 </pre>
 <h3 id="faq-bigints"><a class="heading-id-link" href="#faq-bigints">20.9 FAQ: Bigints</a></h3>
 <h4 id="how-do-i-decide-when-to-use-numbers-and-when-to-use-bigints"><a class="heading-id-link" href="#how-do-i-decide-when-to-use-numbers-and-when-to-use-bigints">20.9.1 How do I decide when to use numbers and when to use bigints?</a></h4>

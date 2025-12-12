@@ -122,13 +122,13 @@
       </li>
     </ul>
 <pre class="language-js">
-<code><span class="hljs-comment">// Get a symbol from the registry</span></code>
-<code><span class="hljs-keyword">const</span> mySymbol = <span class="hljs-title class_">Symbol</span>.<span class="hljs-title function_">for</span>(<span class="hljs-string">'key-in-symbol-registry'</span>);</code>
-<code>assert.<span class="hljs-title function_">equal</span>(</code>
-<code>  <span class="hljs-comment">// Retrieve that symbol again</span></code>
-<code>  <span class="hljs-title class_">Symbol</span>.<span class="hljs-title function_">for</span>(<span class="hljs-string">'key-in-symbol-registry'</span>),</code>
-<code>  mySymbol</code>
-<code>);</code>
+<span class="hljs-comment">// Get a symbol from the registry</span>
+<span class="hljs-keyword">const</span> mySymbol = <span class="hljs-title class_">Symbol</span>.<span class="hljs-title function_">for</span>(<span class="hljs-string">'key-in-symbol-registry'</span>);
+assert.<span class="hljs-title function_">equal</span>(
+  <span class="hljs-comment">// Retrieve that symbol again</span>
+  <span class="hljs-title class_">Symbol</span>.<span class="hljs-title function_">for</span>(<span class="hljs-string">'key-in-symbol-registry'</span>),
+  mySymbol
+);
 </pre>
   </li>
 </ul>
@@ -145,16 +145,16 @@
 <h3 id="attaching-values-to-objects-via-weakmaps"><a class="heading-id-link" href="#attaching-values-to-objects-via-weakmaps">37.4 Use case for WeakMaps: attaching values to objects</a></h3>
 <p>We can use WeakMaps to externally attach values to objects – for example:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> externalId = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();</code>
-<code>{</code>
-<code>  <span class="hljs-keyword">const</span> obj = {};</code>
-<code>  externalId.<span class="hljs-title function_">set</span>(obj, <span class="hljs-string">'x3cdw5am'</span>); <span class="hljs-comment">// (A)</span></code>
-<code>  assert.<span class="hljs-title function_">equal</span>(</code>
-<code>    externalId.<span class="hljs-title function_">get</span>(obj), <span class="hljs-comment">// (B)</span></code>
-<code>    <span class="hljs-string">'x3cdw5am'</span></code>
-<code>  );</code>
-<code>}</code>
-<code><span class="hljs-comment">// (C)</span></code>
+<span class="hljs-keyword">const</span> externalId = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();
+{
+  <span class="hljs-keyword">const</span> obj = {};
+  externalId.<span class="hljs-title function_">set</span>(obj, <span class="hljs-string">'x3cdw5am'</span>); <span class="hljs-comment">// (A)</span>
+  assert.<span class="hljs-title function_">equal</span>(
+    externalId.<span class="hljs-title function_">get</span>(obj), <span class="hljs-comment">// (B)</span>
+    <span class="hljs-string">'x3cdw5am'</span>
+  );
+}
+<span class="hljs-comment">// (C)</span>
 </pre>
 <ul>
   <li>
@@ -169,72 +169,72 @@
 </ul>
 <p>In a way, we created a property for <code>obj</code>, but stored it externally. If <code>externalId</code> were a property, the previous code would look as follows:</p>
 <pre class="language-js">
-<code>{</code>
-<code>  <span class="hljs-keyword">const</span> obj = {};</code>
-<code>  obj.<span class="hljs-property">externalId</span> = <span class="hljs-string">'x3cdw5am'</span>;</code>
-<code>  assert.<span class="hljs-title function_">equal</span>(</code>
-<code>    obj.<span class="hljs-property">externalId</span>,</code>
-<code>    <span class="hljs-string">'x3cdw5am'</span></code>
-<code>  );</code>
-<code>}</code>
+{
+  <span class="hljs-keyword">const</span> obj = {};
+  obj.<span class="hljs-property">externalId</span> = <span class="hljs-string">'x3cdw5am'</span>;
+  assert.<span class="hljs-title function_">equal</span>(
+    obj.<span class="hljs-property">externalId</span>,
+    <span class="hljs-string">'x3cdw5am'</span>
+  );
+}
 </pre>
 <h4 id="example-caching-computed-results"><a class="heading-id-link" href="#example-caching-computed-results">37.4.1 Example: caching computed results</a></h4>
 <p>With WeakMaps, we can associate previously computed results with objects without having to worry about memory management. The following function <code>countOwnKeys()</code> is an example: it caches previous results in the WeakMap <code>cache</code>.</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> cache = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();</code>
-<code><span class="hljs-keyword">function</span> <span class="hljs-title function_">countOwnKeys</span>(<span class="hljs-params">obj</span>) {</code>
-<code>  <span class="hljs-keyword">if</span> (cache.<span class="hljs-title function_">has</span>(obj)) {</code>
-<code>    <span class="hljs-keyword">return</span> [cache.<span class="hljs-title function_">get</span>(obj), <span class="hljs-string">'cached'</span>];</code>
-<code>  } <span class="hljs-keyword">else</span> {</code>
-<code>    <span class="hljs-keyword">const</span> count = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(obj).<span class="hljs-property">length</span>;</code>
-<code>    cache.<span class="hljs-title function_">set</span>(obj, count);</code>
-<code>    <span class="hljs-keyword">return</span> [count, <span class="hljs-string">'computed'</span>];</code>
-<code>  }</code>
-<code>}</code>
+<span class="hljs-keyword">const</span> cache = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">countOwnKeys</span>(<span class="hljs-params">obj</span>) {
+  <span class="hljs-keyword">if</span> (cache.<span class="hljs-title function_">has</span>(obj)) {
+    <span class="hljs-keyword">return</span> [cache.<span class="hljs-title function_">get</span>(obj), <span class="hljs-string">'cached'</span>];
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">const</span> count = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(obj).<span class="hljs-property">length</span>;
+    cache.<span class="hljs-title function_">set</span>(obj, count);
+    <span class="hljs-keyword">return</span> [count, <span class="hljs-string">'computed'</span>];
+  }
+}
 </pre>
 <p>If we use this function with an object <code>obj</code>, we can see that the result is only computed for the first invocation, while a cached value is used for the second invocation:</p>
 <pre class="language-node-repl">
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> obj = { <span class="hljs-attr">foo</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">bar</span>: <span class="hljs-number">2</span>};</span></code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title function_">countOwnKeys</span>(obj)</span></code>
-<code>[2, 'computed']</code>
-<code><span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title function_">countOwnKeys</span>(obj)</span></code>
-<code>[2, 'cached']</code>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-keyword">const</span> obj = { <span class="hljs-attr">foo</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">bar</span>: <span class="hljs-number">2</span>};</span>
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title function_">countOwnKeys</span>(obj)</span>
+[2, 'computed']
+<span class="hljs-meta prompt_">&gt;</span> <span class="language-javascript"><span class="hljs-title function_">countOwnKeys</span>(obj)</span>
+[2, 'cached']
 </pre>
 <h4 id="private-data-in-weakmaps"><a class="heading-id-link" href="#private-data-in-weakmaps">37.4.2 Example: keeping data of objects private</a></h4>
 <p>In the following code, the WeakMaps <code>_counter</code> and <code>_action</code> are used to store the values of virtual properties of instances of <code>Countdown</code>:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">const</span> _counter = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();</code>
-<code><span class="hljs-keyword">const</span> _action = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();</code>
+<span class="hljs-keyword">const</span> _counter = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();
+<span class="hljs-keyword">const</span> _action = <span class="hljs-keyword">new</span> <span class="hljs-title class_">WeakMap</span>();
 <code/>
-<code><span class="hljs-keyword">class</span> <span class="hljs-title class_">Countdown</span> {</code>
-<code>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">counter, action</span>) {</code>
-<code>    _counter.<span class="hljs-title function_">set</span>(<span class="hljs-variable language_">this</span>, counter);</code>
-<code>    _action.<span class="hljs-title function_">set</span>(<span class="hljs-variable language_">this</span>, action);</code>
-<code>  }</code>
-<code>  <span class="hljs-title function_">dec</span>(<span class="hljs-params">) {</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">let</span> counter = _counter.<span class="hljs-title function_">get</span>(<span class="hljs-variable language_">this</span>);</span></code>
-<code><span class="hljs-params">    counter--;</span></code>
-<code><span class="hljs-params">    _counter.<span class="hljs-title function_">set</span>(<span class="hljs-variable language_">this</span>, counter);</span></code>
-<code><span class="hljs-params">    <span class="hljs-keyword">if</span> (counter === <span class="hljs-number">0</span>) {</span></code>
-<code><span class="hljs-params">      _action.<span class="hljs-title function_">get</span>(<span class="hljs-variable language_">this</span>)();</span></code>
-<code><span class="hljs-params">    }</span></code>
-<code><span class="hljs-params">  }</span></code>
-<code><span class="hljs-params">}</span></code>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">Countdown</span> {
+  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">counter, action</span>) {
+    _counter.<span class="hljs-title function_">set</span>(<span class="hljs-variable language_">this</span>, counter);
+    _action.<span class="hljs-title function_">set</span>(<span class="hljs-variable language_">this</span>, action);
+  }
+  <span class="hljs-title function_">dec</span>(<span class="hljs-params">) {</span>
+<span class="hljs-params">    <span class="hljs-keyword">let</span> counter = _counter.<span class="hljs-title function_">get</span>(<span class="hljs-variable language_">this</span>);</span>
+<span class="hljs-params">    counter--;</span>
+<span class="hljs-params">    _counter.<span class="hljs-title function_">set</span>(<span class="hljs-variable language_">this</span>, counter);</span>
+<span class="hljs-params">    <span class="hljs-keyword">if</span> (counter === <span class="hljs-number">0</span>) {</span>
+<span class="hljs-params">      _action.<span class="hljs-title function_">get</span>(<span class="hljs-variable language_">this</span>)();</span>
+<span class="hljs-params">    }</span>
+<span class="hljs-params">  }</span>
+<span class="hljs-params">}</span>
 <code/>
-<code><span class="hljs-params"><span class="hljs-comment">// The two pseudo-properties are truly private:</span></span></code>
-<code><span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span></code>
-<code><span class="hljs-params">  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Countdown</span>()),</span></code>
-<code><span class="hljs-params">  []);</span></code>
+<span class="hljs-params"><span class="hljs-comment">// The two pseudo-properties are truly private:</span></span>
+<span class="hljs-params">assert.<span class="hljs-title function_">deepEqual</span>(</span>
+<span class="hljs-params">  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Countdown</span>()),</span>
+<span class="hljs-params">  []);</span>
 </pre>
 <p>This is how <code>Countdown</code> is used:</p>
 <pre class="language-js">
-<code><span class="hljs-keyword">let</span> invoked = <span class="hljs-literal">false</span>;</code>
+<span class="hljs-keyword">let</span> invoked = <span class="hljs-literal">false</span>;
 <code/>
-<code><span class="hljs-keyword">const</span> cd = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Countdown</span>(<span class="hljs-number">3</span>, <span class="hljs-function">() =&gt;</span> invoked = <span class="hljs-literal">true</span>);</code>
+<span class="hljs-keyword">const</span> cd = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Countdown</span>(<span class="hljs-number">3</span>, <span class="hljs-function">() =&gt;</span> invoked = <span class="hljs-literal">true</span>);
 <code/>
-<code>cd.<span class="hljs-title function_">dec</span>(); assert.<span class="hljs-title function_">equal</span>(invoked, <span class="hljs-literal">false</span>);</code>
-<code>cd.<span class="hljs-title function_">dec</span>(); assert.<span class="hljs-title function_">equal</span>(invoked, <span class="hljs-literal">false</span>);</code>
-<code>cd.<span class="hljs-title function_">dec</span>(); assert.<span class="hljs-title function_">equal</span>(invoked, <span class="hljs-literal">true</span>);</code>
+cd.<span class="hljs-title function_">dec</span>(); assert.<span class="hljs-title function_">equal</span>(invoked, <span class="hljs-literal">false</span>);
+cd.<span class="hljs-title function_">dec</span>(); assert.<span class="hljs-title function_">equal</span>(invoked, <span class="hljs-literal">false</span>);
+cd.<span class="hljs-title function_">dec</span>(); assert.<span class="hljs-title function_">equal</span>(invoked, <span class="hljs-literal">true</span>);
 </pre>
 <div class="boxout">
   <p><img src="../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png" class="boxout-icon" height="24" alt="Icon “exercise”" data-original-src="https://exploringjs.com/js/book/icon/exercise.svg"/> <strong>Exercise: WeakMaps for private data</strong></p>
