@@ -1,0 +1,735 @@
+- en: 15 Operators
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_operators.html](https://exploringjs.com/js/book/ch_operators.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[15.1 Making sense of operators](#making-sense-of-operators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.1.1 Operators coerce their operands to appropriate types](#operators-coerce-their-operands-to-appropriate-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.1.2 Most operators only work with primitive values](#most-operators-only-work-with-primitive-values)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.2 Converting values to primitives (advanced)](#ToPrimitive)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.3 The plus operator (`+`)](#plus-operator)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.4 Assignment operators](#assignment-operators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.4.1 The plain assignment operator](#the-plain-assignment-operator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.4.2 Compound assignment operators](#compound-assignment-operators)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.5 Equality: `==` vs. `===` vs. `Object.is()`](#equality--vs--vs-objectis)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.5.1 Strict equality (`===` and `!==`)](#strict-equality)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.5.2 Loose equality (`==` and `!=`)](#loose-equality)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.5.3 Recommendation: always use strict equality](#recommendation-always-strict-equality)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.5.4 Even stricter than `===`: `Object.is()` (advanced)](#Object.is)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.6 Ordering operators](#ordering-operators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.7 Various other operators](#various-other-operators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.7.1 Comma operator](#comma-operator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.7.2 `void` operator](#void-operator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[15.1 Making sense of operators](#making-sense-of-operators)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'JavaScript’s operators sometimes produce unintuitive results. With the following
+    two rules, they are easier to understand:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Operators coerce their operands to appropriate types.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Most operators only work with primitive values.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[15.1.1 Operators coerce their operands to appropriate types](#operators-coerce-their-operands-to-appropriate-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If an operator gets operands that don’t have the proper types, it rarely throws
+    an exception. Instead, it *coerces* (automatically converts) the operands so that
+    it can work with them. Let’s look at two examples.
+  prefs: []
+  type: TYPE_NORMAL
+- en: First, the multiplication operator can only work with numbers. Therefore, it
+    converts strings to numbers before computing its result.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Second, the square brackets operator (`[ ]`) for accessing the properties of
+    an object can only handle strings and symbols. All other values are coerced to
+    string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.1.2 Most operators only work with primitive values](#most-operators-only-work-with-primitive-values)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As mentioned before, most operators only work with primitive values. If an
+    operand is an object, it is usually coerced to a primitive value – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Why? The plus operator first coerces its operands to primitive values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Next, it concatenates the two strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.2 Converting values to primitives (advanced)](#ToPrimitive)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following JavaScript code explains how arbitrary values are converted to
+    primitive values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Only the following objects define a method with the key `Symbol.toPrimitive`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Symbol.prototype[Symbol.toPrimitive]`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Date.prototype[Symbol.toPrimitive]`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Therefore, let’s focus on `OrdinaryToPrimitive()`: If we prefer strings, `.toString()`
+    is called first. If we prefer numbers, `.valueOf()` is called first. We can see
+    that in the following code.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.3 The plus operator (`+`)](#plus-operator)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The plus operator works as follows in JavaScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, it converts both operands to primitive values (by default, conversion
+    to primitive prefers numbers). Then it switches to one of two modes:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'String mode: If one of the two primitive values is a string, then it converts
+    the other one to a string, concatenates both strings, and returns the result.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Number mode: Otherwise, It converts both operands to numbers, adds them, and
+    returns the result.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'String mode lets us use `+` to assemble strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Number mode means that if neither operand is a string (or an object that becomes
+    a string) then everything is coerced to numbers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Number(true)` is `1`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.4 Assignment operators](#assignment-operators)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[15.4.1 The plain assignment operator](#the-plain-assignment-operator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The plain assignment operator is used to change storage locations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Initializers in variable declarations can also be viewed as a form of assignment:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.4.2 Compound assignment operators](#compound-assignment-operators)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'JavaScript supports the following assignment operators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Arithmetic assignment operators: `+= -= *= /= %=` ^(ES1)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`+=` can also be used for string concatenation'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Introduced later: `**=` ^(ES2016)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Bitwise assignment operators: `&= ^= |=` ^(ES1)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Bitwise shift assignment operators: `<<= >>= >>>=` ^(ES1)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Logical assignment operators: `||= &&= ??=` ^(ES2021)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[15.4.2.1 Logical assignment operators ^(ES2021)](#logical-assignment-operators)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Logical assignment operators work differently from other compound assignment
+    operators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Assignment operator | Equivalent to | Only assigns if `a` is |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `a &#124;&#124;= b` | `a &#124;&#124; (a = b)` | Falsy |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `a &&= b` | `a && (a = b)` | Truthy |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `a ??= b` | `a ?? (a = b)` | Nullish |'
+  prefs: []
+  type: TYPE_TB
+- en: Why is `a ||= b` equivalent to the following expression?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`a || (a = b)`'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: Why not to this expression?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`a = a || b`'
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'The former expression has the benefit of [short-circuiting](ch_booleans.html#short-circuiting):
+    The assignment is only evaluated if `a` evaluates to `false`. Therefore, the assignment
+    is only performed if it’s necessary. In contrast, the latter expression always
+    performs an assignment.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For more on `??=`, see [“The nullish coalescing assignment operator (`??=`)
+    ^(ES2021)” (§16.4.4)](ch_undefined-null.html#nullish-coalescing-assignment-operator).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.4.2.2 The remaining compound assignment operators](#the-remaining-compound-assignment-operators)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'For operators `op` other than `|| && ??`, the following two ways of assigning
+    are equivalent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: If, for example, `op` is `+`, then we get the operator `+=` that works as follows.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.5 Equality: `==` vs. `===` vs. `Object.is()`](#equality--vs--vs-objectis)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'JavaScript has two kinds of equality operators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: (`==`) loose equality (“double equals”)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (`===`) strict equality (“triple equals”)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![Icon “tip”](../Images/8440b17bb8219cda9f9405ac83c36db0.png) **Recommendation:
+    always use strict equality (`===`)**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Loose equality has many quirks and is difficult to understand. My recommendation
+    is to always use strict equality. I’ll explain how loose equality works but it’s
+    not something worth remembering.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.5.1 Strict equality (`===` and `!==`)](#strict-equality)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Two values are only strictly equal if they have the same type. Strict equality
+    never coerces.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Primitive values (including strings and excluding symbols) are compared by
+    value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'All other values must have the same identity:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Symbols are compared similarly to objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The `number` error value `NaN` is famously not strictly equal to itself (because,
+    internally, it’s not a single value):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.5.2 Loose equality (`==` and `!=`)](#loose-equality)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Loose equality is one of JavaScript’s quirks. Let’s explore its behavior.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.5.2.1 If both operands have the same type](#if-both-operands-have-the-same-type)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If both operands have the same primitive type, loose equality behaves like
+    strict equality:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If both operands are objects, the same rule applies: Loose equality behaves
+    like strict equality and they are only equal if they have the same identity.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: Comparing symbols works similarly.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.5.2.2 Coercion](#coercion-1)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If the operands have different types, loose equality often coerces. Some of
+    those type coercions make sense:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Others less so:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'An object is coerced to a primitive value (only) if the other operand is primitive:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.5.2.3 `==` vs. `Boolean()`](#-vs-boolean)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Comparison with booleans is different from converting to boolean via `Boolean()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.5.2.4 `undefined == null`](#undefined--null)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`==` considers `undefined` and `null` to be equal:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.5.2.5 How exactly does loose equality work? (advanced)](#how-exactly-does-loose-equality-work-advanced)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the ECMAScript specification, loose equality is defined via [the following
+    operation](https://tc39.es/ecma262/#sec-islooselyequal):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`IsLooselyEqual(x: any, y: any): boolean`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If both operands have the same type, return the result of [`IsStrictlyEqual(x,
+    y)`](https://tc39.es/ecma262/#sec-isstrictlyequal) (not explained here).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If one operand is `null` and the other one is `undefined`, return `true`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If one operand is a number and the other one a string, convert the string to
+    a number and return the result of applying `IsLooselyEqual()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If one operand is a bigint and the other one a string, convert the string to
+    a bigint and return the result of applying `IsLooselyEqual()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If one operand is a boolean, convert it to a number and return the result of
+    applying `IsLooselyEqual()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If one operand is an object and the other is a string, a number, a bigint or
+    a symbol, then convert the object to a primitive via [`ToPrimitive()`](#ToPrimitive)
+    and return the result of applying `IsLooselyEqual()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If one operand is a bigint and the other operand is a number:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If either operand is not finite, return `false`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If both operands represent the same mathematical value, return `true`; otherwise
+    return `false`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Return `false`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As you can see, this algorithm is not exactly intuitive. Hence the following
+    recommendation.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.5.3 Recommendation: always use strict equality](#recommendation-always-strict-equality)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: I recommend to always use `===`. It makes our code easier to understand and
+    spares us from having to think about the quirks of `==`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Let’s look at two use cases for `==` and what I recommend to do instead.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.5.3.1 Use case for `==`: comparing with a number or a string](#use-case-for--comparing-with-a-number-or-a-string)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`==` lets us check if a value `x` is a number or that number as a string –
+    with a single comparison:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'I prefer either of the following two alternatives:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: We can also convert `x` to a number when we first encounter it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.5.3.2 Use case for `==`: comparing with `undefined` or `null`](#use-case-for--comparing-with-undefined-or-null)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Another use case for `==` is to check if a value `x` is either `undefined`
+    or `null`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: The problem with this code is that we can’t be sure if someone meant to write
+    it that way or if they made a typo and meant `=== null`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'I prefer this alternative:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[15.5.4 Even stricter than `===`: `Object.is()` (advanced)](#Object.is)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Method `Object.is()` compares two values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Object.is()` is even stricter than `===` – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'It considers `NaN`, [the error value for computations involving numbers](ch_numbers.html#NaN),
+    to be equal to itself:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'It distinguishes a positive zero and a negative zero (the two are usually considered
+    to be the same value, so this functionality is not that useful):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[15.5.4.1 Detecting `NaN` via `Object.is()`](#detecting-nan-via-objectis)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`Object.is()` considering `NaN` to be equal to itself is occasionally useful.
+    For example, we can use it to implement an improved version of the Array method
+    `.indexOf()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`myIndexOf()` finds `NaN` in an Array, while `.indexOf()` doesn’t:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: The result `-1` means that `.indexOf()` couldn’t find its argument in the Array.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.6 Ordering operators](#ordering-operators)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '| Operator | name |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `<` | less than |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `<=` | Less than or equal |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `>` | Greater than |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `>=` | Greater than or equal |'
+  prefs: []
+  type: TYPE_TB
+- en: 'Table 15.1: JavaScript’s ordering operators.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'JavaScript’s ordering operators ([table 15.1](#tbl:ordering_operators)) work
+    for both numbers and strings:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`<=` and `>=` are based on strict equality.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “warning”](../Images/5aa4bf88dc66ecb2bac6be4022a1fed4.png) **The ordering
+    operators don’t work well for human languages**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The ordering operators don’t work well for comparing text in a human language,
+    e.g., when capitalization or accents are involved. The details are explained in
+    [“Comparing strings” (§22.6)](ch_strings.html#comparing-strings).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.7 Various other operators](#various-other-operators)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The following operators are covered elsewhere in this book:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Operators for [booleans](ch_booleans.html#ch_booleans), [numbers](ch_numbers.html#ch_numbers),
+    [strings](ch_strings.html#ch_strings), [objects](ch_objects.html#ch_objects)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[The nullish coalescing operator (`??`) for default values](ch_undefined-null.html#nullish-coalescing-operator)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The next two subsections discuss two operators that are rarely used.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.7.1 Comma operator](#comma-operator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The comma operator has two operands, evaluates both of them and returns the
+    second one:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on this operator, see [*Speaking JavaScript*](http://exploringjs.com/es5/ch09.html#comma_operator).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[15.7.2 `void` operator](#void-operator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The `void` operator evaluates its operand and returns `undefined`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on this operator, see [*Speaking JavaScript*](http://exploringjs.com/es5/ch09.html#void_operator).
+  prefs: []
+  type: TYPE_NORMAL

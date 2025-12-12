@@ -1,0 +1,505 @@
+- en: 42 Foundations of asynchronous programming in JavaScript
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_async-js.html](https://exploringjs.com/js/book/ch_async-js.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[42.1 The event loop](#event-loop)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.2 How to avoid blocking the JavaScript process](#how-to-avoid-blocking-the-javascript-process)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.2.1 The user interface of the browser can be blocked](#blocking-browsers)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.2.2 How can we avoid blocking the browser?](#avoiding-blocking-browser)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.2.3 Scheduling new tasks via `setTimeout()`](#setTimeout)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.2.4 Run-to-completion semantics](#run-to-completion-semantics)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.3 Patterns for delivering results asynchronously](#patterns-for-async-results)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.3.1 Delivering asynchronous results via events](#event-pattern)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.3.2 Delivering asynchronous results via callbacks](#callback-pattern)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.4 Asynchronous code: the downsides](#async-code-downsides)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[42.5 Resources](#resources)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: This chapter explains the foundations of asynchronous programming in JavaScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[42.1 The event loop](#event-loop)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Normally JavaScript runs in a single process – in both web browsers and Node.js.
+    Inside that single process, *tasks* are run, one at a time. A *task* is a piece
+    of code – think function with zero parameters. Tasks are managed via a queue:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The *event loop* runs continuously inside the JavaScript process. During each
+    loop iteration, it takes one task out of the queue (if the queue is empty, it
+    waits until it isn’t) and executes it. After the task is finished, control goes
+    back to the event loop, which then retrieves the next task from the queue and
+    executes it. And so on.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Task sources* add tasks to the queue. Some of those sources run concurrently
+    to the JavaScript process. For example, one task source takes care of user interface
+    events: if a user clicks somewhere and a click listener was registered, then an
+    invocation of that listener is added to the task queue.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following JavaScript code is an approximation of the event loop:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: The event loop is depicted in [figure 42.1](#fig:event_loop).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/74ee57a8c7fc965c57f47cc602fdd8cf.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 42.1: *Task sources* add code to run to the *task queue*, which is emptied
+    by the *event loop*.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[42.2 How to avoid blocking the JavaScript process](#how-to-avoid-blocking-the-javascript-process)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[42.2.1 The user interface of the browser can be blocked](#blocking-browsers)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Many of the user interface mechanisms of browsers also run in the JavaScript
+    process (as tasks). Therefore, long-running JavaScript code can block the user
+    interface. Let’s look at a web page that demonstrates that. There are two ways
+    in which we can try out that page:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can [run it online](http://rauschma.github.io/async-examples/blocking.html).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We can open the following file inside the repository with the exercises: `demos/async-js/blocking.html`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following HTML is the page’s user interface:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: The idea is that we click “Block” and a long-running loop is executed via JavaScript.
+    During that loop, we can’t click the button because the browser/JavaScript process
+    is blocked.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'A simplified version of the JavaScript code looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'These are the key parts of the code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Line A: We tell the browser to call `doBlock()` whenever the HTML element is
+    clicked whose ID is `block`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`doBlock()` displays status information and then calls `sleep()` to block the
+    JavaScript process for 5000 milliseconds (line B).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`sleep()` blocks the JavaScript process by looping until enough time has passed.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`displayStatus()` displays status messages inside the `<div>` whose ID is `statusMessage`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[42.2.2 How can we avoid blocking the browser?](#avoiding-blocking-browser)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: How can we prevent a long-running operation from blocking the browser?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The operation can deliver its result *asynchronously*: Some operations, such
+    as downloading files, run outside the JavaScript process and concurrently with
+    it. If we invoke such an operation, we provide it with a callback. Once the operation
+    is done, it calls the callback with the result (by adding a task to the queue).
+    This style of delivering a result is called *asynchronous* because the invoker
+    isn’t blocked while it waits for the result: It can do other things and is notified
+    when the result is ready. Normal function invocations deliver their results synchronously.
+    Our own code can also deliver results asynchronously. We’ll learn more about asynchronous
+    code soon.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The operation can be performed in a separate process: This can be done via
+    so-called *Web Workers*. A Web Worker is a heavyweight process that runs concurrently
+    to the main process. It has its own runtime environment (global variables, etc.).
+    It is completely isolated; communication happens via message passing. See [MDN
+    web docs](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API) for
+    more information.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The operation can take breaks and give pending tasks in the queue a chance to
+    run – which unblocks the browser. The next subsection explains how that is done.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[42.2.3 Scheduling new tasks via `setTimeout()`](#setTimeout)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following global function executes its parameter `callback` after a delay
+    of `ms` milliseconds (the type signature is simplified – `setTimeout()` has more
+    features):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The function returns a *handle* (an ID) that can be used to *clear* the timeout
+    (cancel the execution of the callback before it happens) via the following global
+    function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`setTimeout()` is available on both browsers and Node.js. We can view `setTimeout()`
+    as scheduling a task for later execution:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: Within the first task, we are scheduling a new task (the callback starting in
+    line A) to be run after a delay of zero milliseconds (line B).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'There is another way of looking at what happened: **The first task took a break
+    and later continued with the second task.**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The first task runs. While it does, events such as click events may fire and
+    cause tasks to be added to the queue. Those tasks can only run after the current
+    task is finished.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The first task ends. Now other tasks can run. We used a delay of zero milliseconds,
+    so all tasks that were added to the queue before the second task, will run next.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The second task runs, continuing the work of the first task.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In other words: The task took a break and gave other tasks a chance to run.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[42.2.4 Run-to-completion semantics](#run-to-completion-semantics)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'JavaScript makes a guarantee for tasks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Each task is always finished (“run to completion”) before the next task is executed.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: As a consequence, tasks don’t have to worry about their data being changed while
+    they are working on it (*concurrent modification*). That simplifies programming
+    in JavaScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can observe run to completion in the previous example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: The first task ends before the next task starts.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[42.3 Patterns for delivering results asynchronously](#patterns-for-async-results)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In order to avoid blocking the main process while waiting for a long-running
+    operation to finish, results are often delivered asynchronously in JavaScript.
+    These are three popular patterns for doing so:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Events
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Callbacks
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Promises
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The first two patterns are explained in the next two subsections. Promises are
+    explained in [the next chapter](ch_promises.html#ch_promises).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[42.3.1 Delivering asynchronous results via events](#event-pattern)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Events as a pattern work as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: They are used to deliver values asynchronously.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: They do so zero or more times.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'There are three roles in this pattern:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *event* (an object) carries the data to be delivered.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *event listener* is a function that receives events via a parameter.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *event source* sends events and lets us register event listeners.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Multiple variations of this pattern exist in the world of JavaScript. We’ll
+    look at three examples next.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[42.3.1.1 Events: IndexedDB](#events-indexeddb)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'IndexedDB is a database that is built into web browsers. This is an example
+    of using it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`indexedDB` has an unusual way of invoking operations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Each operation has an associated method for creating *request objects*. For
+    example, in line A, the operation is “open”, the method is `.open()`, and the
+    request object is `openRequest`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The parameters for the operation are provided via the request object, not via
+    parameters of the method. For example, the event listeners (functions) are stored
+    in the properties `.onsuccess` and `.onerror`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The invocation of the operation is added to the task queue via the method (in
+    line A). That is, we configure the operation *after* its invocation has already
+    been added to the queue. Only run-to-completion semantics saves us from race conditions
+    here and ensures that the operation runs after the current code fragment is finished.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[42.3.1.2 Events: `XMLHttpRequest`](#XMLHttpRequest)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The `XMLHttpRequest` API lets us make downloads from within a web browser.
+    This is how we download the file `http://example.com/textfile.txt`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With this API, we first create a request object (line A), then configure it,
+    then activate it (line E). The configuration consists of:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Specifying which HTTP request method to use (line B): `GET`, `POST`, `PUT`,
+    etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Registering a listener (line C) that is notified if something could be downloaded.
+    Inside the listener, we still need to determine if the download contains what
+    we requested or informs us of an error. Note that some of the result data is delivered
+    via the request object `xhr`. (I’m not a fan of this kind of mixing of input and
+    output data.)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Registering a listener (line D) that is notified if there was a network error.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[42.3.1.3 Events: DOM](#events-dom)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We have already seen DOM events in action in [“The user interface of the browser
+    can be blocked” (§42.2.1)](#blocking-browsers). The following code also handles
+    `click` events:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: We first ask the browser to retrieve the HTML element whose ID is `'my-link'`
+    (line A). Then we add a listener for all `click` events (line B). In the listener,
+    we first tell the browser not to perform its default action (line C) – going to
+    the target of the link. Then we log to the console if the shift key is currently
+    pressed (line D).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[42.3.2 Delivering asynchronous results via callbacks](#callback-pattern)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Callbacks are another pattern for handling asynchronous results. They are only
+    used for one-off results and have the advantage of being less verbose than events.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'As an example, consider a function `readFile()` that reads a text file and
+    returns its contents asynchronously. This is how we call `readFile()` if it uses
+    Node.js-style callbacks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: There is a single callback that handles both success and failure. If the first
+    parameter is not `null` then an error happened. Otherwise, the result can be found
+    in the second parameter.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercises:
+    Callback-based code**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The following exercises use tests for asynchronous code, which are different
+    from tests for synchronous code. See [“Asynchronous tests in Mocha” (§12.2.2)](ch_exercises.html#async-tests-mocha)
+    for more information.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'From synchronous to callback-based code: `exercises/async-js/read_file_cb_exrc.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Implementing a callback-based version of `.map()`: `exercises/async-js/map_cb_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[42.4 Asynchronous code: the downsides](#async-code-downsides)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In many situations, on either browsers or Node.js, we have no choice: We must
+    use asynchronous code. In this chapter, we have seen several patterns that such
+    code can use. All of them have two disadvantages:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Asynchronous code is more verbose than synchronous code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we call asynchronous code, our code must become asynchronous too. That’s
+    because we can’t wait synchronously for an asynchronous result. Asynchronous code
+    has an infectious quality.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The first disadvantage becomes less severe with Promises (covered in [the next
+    chapter](ch_promises.html#ch_promises)) and mostly disappears with async functions
+    (covered in [the chapter after next](ch_async-functions.html#ch_async-functions)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: Alas, the infectiousness of async code does not go away. But it is mitigated
+    by the fact that switching between sync and async is easy with async functions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[42.5 Resources](#resources)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[“Help, I''m stuck in an event-loop”](https://vimeo.com/96425312) by Philip
+    Roberts (video).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“Event loops”](https://www.w3.org/TR/html5/webappapis.html#event-loops), section
+    in HTML5 spec.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

@@ -1,0 +1,2308 @@
+- en: 43 Promises for asynchronous programming ES6
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_promises.html](https://exploringjs.com/js/book/ch_promises.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[43.1 The basics of using Promises](#the-basics-of-using-promises)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.1 Using a Promise-based function](#using-promise-based-functions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.2 Promises vs. events](#promises-vs-events)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.3 Implementing a Promise-based function](#implementing-promise-based-functions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.4 The three basic states of Promises](#basic-states-of-promises)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.5 Creating resolved and rejected Promises via `Promise.resolve()` and
+    `Promise.reject()`](#Promise.resolve-Promise.reject)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.6 Returning and throwing in `.then()` callbacks](#returning-and-throwing-in-then-callbacks)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.7 `.catch()` and its callback](#catch-and-its-callback)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.8 Chaining method calls](#chaining-method-calls)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.9 `Promise.try()`: starting a Promise chain ^(ES2025)](#Promise.try)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.10 `Promise.prototype.finally()` ^(ES2018)](#Promise.prototype.finally)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.11 `Promise.withResolvers()` ^(ES2024)](#Promise.withResolvers)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.1.12 Advantages of promises over plain callbacks](#promises-vs-callbacks)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.2 Examples](#examples)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.2.1 Node.js: Reading a file asynchronously](#nodejs-reading-a-file-asynchronously)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.2.2 Browsers: Promisifying `XMLHttpRequest`](#promisifying-xmlhttprequest)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.2.3 Fetch API](#fetch-api)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.3 Tip for error handling: don’t mix rejections and exceptions](#tip-for-error-handling-dont-mix-rejections-and-exceptions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.4 Promise-based functions start synchronously, settle asynchronously](#promise-based-functions-start-sync-settle-async)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.5 Promise combinator functions: working with Arrays of Promises](#promise-combinators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.5.1 What is a Promise combinator function?](#what-is-a-promise-combinator-function)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.5.2 `Promise.all()`](#Promise.all)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.5.3 `Promise.race()`](#Promise.race)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.5.4 `Promise.any()` ^(ES2021)](#Promise.any)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.5.5 `Promise.allSettled()` ^(ES2020)](#Promise.allSettled)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.5.6 Short-circuiting (advanced)](#shortcircuiting-advanced)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.6 Concurrency and `Promise.all()` (advanced)](#concurrency-and-promiseall-advanced)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.6.1 Sequential execution vs. concurrent execution](#sequential-execution-vs-concurrent-execution)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.6.2 Concurrency tip: focus on when operations start](#focus-on-async-start)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.6.3 `Promise.all()` is fork-join](#promise-all-is-fork-join)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.7 Tips for chaining Promises](#tips-for-chaining-promises)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.7.1 Chaining mistake: losing the tail](#chaining-mistake-losing-thetail)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.7.2 Chaining mistake: nesting](#chaining-mistake-nesting)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.7.3 Chaining mistake: more nesting than necessary](#chaining-mistake-more-nesting-than-necessary)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.7.4 Not all nesting is bad](#not-all-nesting-is-bad)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.7.5 Chaining mistake: creating Promises instead of chaining](#chaining-mistake-creating-promises-instead-of-chaining)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.8 Thenables (Promise-like objects) (advanced)](#thenables-promiselike-objects-advanced)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.8.1 Example: a fulfilled thenable](#example-a-fulfilled-thenable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.8.2 Example: a rejected thenable](#example-a-rejected-thenable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.9 Quick reference: `Promise`](#quickref-Promise)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.9.1 `new Promise()`](#new-promise)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.9.2 `Promise.*`: creating Promises](#promise-creating-promises)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.9.3 `Promise.*`: miscellaneous functionality](#promise-miscellaneous-functionality)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.9.4 `Promise.*`: Promise combinators](#promise-promise-combinators)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[43.9.5 `Promise.prototype.*`](#promiseprototype)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '![Icon “reading”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **Recommended
+    reading**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This chapter builds on [the previous chapter](ch_async-js.html#ch_async-js)
+    with background on asynchronous programming in JavaScript.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1 The basics of using Promises](#the-basics-of-using-promises)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[43.1.1 Using a Promise-based function](#using-promise-based-functions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Promises are a technique for delivering results asynchronously. Instead of
+    directly returning a result, a Promise-based function returns a *Promise*: a container
+    object that is initially empty. If and when the function is eventually done, it
+    puts either a result or an error into the Promise.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The following code shows how the Promise-based function `addAsync()` is used.
+    We’ll see how that function is implemented soon.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To access what’s inside the Promise (if and when there is something inside
+    it), we register callbacks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Method `.then()` registers callbacks that are called with the result (if and
+    when there is one).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Method `.catch()` registers callbacks that are called with the error (if and
+    when there is one).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This aspect of Promises is similar to [the event pattern](ch_async-js.html#event-pattern).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1.2 Promises vs. events](#promises-vs-events)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Promises differ from events in two ways:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'They deliver at most one result and are optimized for that use case:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we register a `.then()` callback when a Promise is still empty, it is notified
+    if and when the Promise receives a result. If we register a `.catch()` callback
+    when a Promise is still empty, it is notified if and when the Promise receives
+    an error.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Once a Promise receives a result or an error, that value is cached. Thus, if
+    we register a callback after that happens, it gets the cached value (depending
+    on whether it is eligible to receive it). That means there is no risk of registering
+    a callback too late.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The first value received by a Promise permanently *settles* that Promise: Values
+    it receives later are ignored.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We can chain the Promise methods `.then()` and `.catch()` because they both
+    return Promises. That helps with sequentially invoking multiple asynchronous functions.
+    More on that later.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[43.1.3 Implementing a Promise-based function](#implementing-promise-based-functions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is an implementation of a Promise-based function that adds two numbers
+    `x` and `y`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`addAsync()` immediately creates and returns a Promise by new-invoking the
+    `Promise` constructor (line A). It can only change the state of the new Promise
+    from inside the callback (line B) that it passes to the constructor:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The callback parameter `resolve` is a function that puts a result into the Promise
+    (in case of success).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The callback parameter `reject` is a function that puts an error into the Promise
+    (in case of failure).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: One we have invoked either these functions, subsequent invocations of them have
+    no effect.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1.3.1 The revealing constructor pattern (advanced)](#revealing-constructor-pattern)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The Promise constructor uses *the revealing constructor pattern*:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Quoting Domenic Denicola](https://blog.domenic.me/the-revealing-constructor-pattern/),
+    one of the people behind JavaScript’s Promise API:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: I call this *the revealing constructor pattern* because the `Promise` constructor
+    is *revealing* its internal capabilities, but only to the code that constructs
+    the promise in question. The ability to resolve or reject the promise is only
+    revealed to the constructing code, and is crucially *not* revealed to anyone *using*
+    the promise. So if we hand off `p` to another consumer, say
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_BQ
+  type: TYPE_PRE
+- en: ''
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: then we can be sure that this consumer cannot mess with any of the internals
+    that were revealed to us by the constructor. This is as opposed to, for example,
+    putting `resolve` and `reject` methods on `p`, which anyone could call.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[43.1.4 The three basic states of Promises](#basic-states-of-promises)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[Figure 43.1](#fig:promise_states_simple) depicts the three states a Promise
+    can be in.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/06c68bd8e345f2ccc6d4e27fffb6f694.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 43.1: A Promise is initially in the state “pending”. It can later transition
+    to either the state “fulfilled” or the state “rejected” (but it may never do so).
+    If a Promise is in a final (non-pending) state, it is called *settled*.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1.4.1 Some Promises are never settled](#promises-that-are-never-settled)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is an example of a Promise that is never settled and forever pending:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.4.2 What is the difference between resolving and fulfilling a Promise?](#resolving-vs-fulfilling-promises)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'A Promise can only be fulfilled with a non-Promise value. In contrast, we can
+    resolve a Promise with either a non-Promise value or a Promise. If the callback
+    of `new Promise()` calls `resolve(x)` then it depends on `x` what happens to the
+    newly created Promise `p`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `x` is a non-Promise value then `p` is fulfilled with `x`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If `x` is a Promise, then `p` adopts the state of `x` (which basically results
+    in `x` replacing `p`). In other words:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: While `x` is pending, `p` is pending.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If and when `x` is fulfilled, `p` is fulfilled.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If and when `x` is rejected, `p` is rejected.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In other words: Resolving only determines the fate of a Promise; it may or
+    may not fulfill it. This behavior helps with chaining Promise methods. More on
+    that later.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1.5 Creating resolved and rejected Promises via `Promise.resolve()` and
+    `Promise.reject()`](#Promise.resolve-Promise.reject)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If `x` is a non-Promise value then `Promise.resolve(x)` creates a Promise that
+    is fulfilled with that value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If the argument is already a Promise, it is returned unchanged:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Promise.reject(err)` accepts a value `err` (that is normally not a Promise)
+    and returns a Promise that is rejected with it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why is that useful?
+  prefs: []
+  type: TYPE_NORMAL
+- en: On one hand, we can use `Promise.resolve()` to convert a value that may or may
+    not be a Promise to a value that is guaranteed to be a Promise.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: On the other hand, we may want to create a Promise that is fulfilled or rejected
+    with a given non-Promise value. Then we can use `Promise.resolve()` and `Promise.reject()`
+    – as demonstrated by the example below.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.6 Returning and throwing in `.then()` callbacks](#returning-and-throwing-in-then-callbacks)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`.then()` registers callbacks for Promise fulfillments. It also returns a new
+    Promise. Doing so enables method chaining: We can invoke `.then()` and `.catch()`
+    on the result and keep the asynchronous computation going.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: How the Promise returned by `.then()` is resolved, depends on what happens inside
+    its callback. Let’s look at three common cases.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1.6.1 Returning a non-Promise value from the `.then()` callback](#then-callback-returns-non-promise-value)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'First, the callback can return a non-Promise value (line A). Consequently,
+    the Promise returned by `.then()` is fulfilled with that value (as checked in
+    line B):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.6.2 Returning a Promise from the `.then()` callback](#then-callback-returns-promise)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Second, the callback can return a Promise `q` (line A). Consequently, the Promise
+    `p` returned by `.then()` is resolved with `q`. In other words: `p` is effectively
+    replaced by `q`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Why is that useful? We can return the result of a Promise-based operation and
+    process its fulfillment value via a “flat” (non-nested) `.then()`. Compare:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.6.3 Throwing an exception inside the `.then()` callback](#then-callback-throws-exception)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Third, the callback can throw an exception. Consequently, the Promise returned
+    by `.then()` is rejected with that exception. That is, a synchronous error is
+    converted into an asynchronous error.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.7 `.catch()` and its callback](#catch-and-its-callback)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The difference between `.then()` and `.catch()` is that the latter is triggered
+    by rejections, not fulfillments. However, both methods turn the actions of their
+    callbacks into Promises in the same manner. For example, in the following code,
+    the value returned by the `.catch()` callback in line A becomes a fulfillment
+    value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.8 Chaining method calls](#chaining-method-calls)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`.then()` and `.catch()` always returning Promises enables us to create arbitrary
+    long chains of method calls:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: Due to chaining, the `return` in line A returns the result of the last `.then()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In a way, `.then()` is the asynchronous version of the synchronous semicolon:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`asyncFunc1().then(asyncFunc2)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: executes the asynchronous operations `asyncFunc1` and `asyncFunc2` sequentially.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`syncFunc1(); syncFunc2()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: executes the synchronous operations `syncFunc1` and `syncFunc2` sequentially.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'We can also add `.catch()` into the mix and let it handle multiple error sources
+    at the same time:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.9 `Promise.try()`: starting a Promise chain ^(ES2025)](#Promise.try)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Where the Promise method `.then(cb)` continues a Promise chain, `Promise.try(cb)`
+    starts a Promise chain – while treating the callback `cb` similarly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It calls `cb`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `cb` throws an exception, `Promise.try()` returns a rejection with that exception.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `cb` returns a value, `Promise.try()` resolves that value into a Promise
+    (without nesting if the value already is a Promise).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[43.1.9.1 Use case for `Promise.try()`: starting a Promise chain with code
+    that is not purely asynchronous](#use-case-for-promisetry-starting-a-promise-chain-with-code-that-is-not-purely-asynchronous)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We need `Promise.try()` to start a Promise chain with code that is a mix of
+    synchronous and asynchronous functionality:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Why a mix? If code is purely asynchronous, we can use it to start a Promise
+    chain. If code is purely synchronous, there is no need for Promises.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Why at the start? Later in a Promise chain, Promise functions such as `.then()`
+    are good tools for dealing with mixed code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let’s look at an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: We have a mix of synchronous functionality (line A) and asynchronous functionality
+    (line B).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Why wrap the code inside the callback at all? It helps if the synchronous function
+    we call in line A throws an exception: Then `Promise.try()` catches that exception
+    and converts it into a rejected Promise for us. Therefore, the previous code is
+    mostly equivalent to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.9.2 Why not use an async function?](#why-not-use-an-async-function)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`Promise.try()` is only needed if we work directly with Promises. Async functions
+    (which are explained in [the next chapter](ch_async-functions.html#ch_async-functions))
+    already provide good support for dealing with a mix of sync and async code (anywhere).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1.9.3 Alternative to `Promise.try()`](#alternative-to-promisetry)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This following code is an alternative to `Promise.try()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Promise.resolve()` creates a Promise that is fulfilled with `undefined`. That
+    result does not matter to us. What does matter is that we have just started a
+    Promise chain and can put the code to try into the callback in line A.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The main downside compared to `Promise.try()` is that this pattern executes
+    the code in line A on the next tick (and not immediately).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1.10 `Promise.prototype.finally()` ^(ES2018)](#Promise.prototype.finally)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The Promise method `.finally()` is often used as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The `.finally()` callback is always executed – independently of `somePromise`
+    and the values returned by `.then()` and/or `.catch()`. In contrast:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The `.then()` callback is only executed if `somePromise` is fulfilled.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The `.catch()` callback is only executed if:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: either `somePromise` is rejected,
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: or the `.then()` callback returns a rejected Promise,
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: or the `.then()` callback throws an exception.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If the callback returns a non-Promise value or a fulfilled Promise, `.finally()`
+    ignores that result and simply passes on the settlement that existed before it
+    was called:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If however, the `.finally()` callback throws an exception or returns a rejected
+    Promise, the Promise returned by `.finally()` is rejected:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.10.1 Use case for `.finally()`: cleaning up](#use-case-for-finally-cleaning-up)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'One common use case for `.finally()` is similar to a common use case of the
+    synchronous `finally` clause: cleaning up after you are done with a resource.
+    That should always happen, regardless of whether everything went smoothly or there
+    was an error – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.10.2 Use case for `.finally()`: doing something first after any kind
+    of settlement](#use-case-for-finally-doing-something-first-after-any-kind-of-settlement)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can also use `.finally()` before both `.then()` and `.catch()`. Then what
+    we do in the `.finally()` callback is always executed before the other two callbacks.
+    As an example, consider the following function `handleAsyncResult()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens with a fulfilled Promise:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens with a rejected Promise:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.11 `Promise.withResolvers()` ^(ES2024)](#Promise.withResolvers)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The most common way of creating and resolving a Promise is via the `Promise`
+    constructor:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'One limitation of creating Promises like that is that the settlement functions
+    `resolve` and `reject` are meant to only be used inside the callback. Sometimes
+    we want to use them outside of it. That’s when the following static factory method
+    is useful:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what using that factory method looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “question”](../Images/3decb3ca67c240d2bb04742c1f28af18.png) **Why the
+    name `withResolvers`? Why not, e.g., `withSettlers`?**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`resolve()` may not settle `promise` – it only resolves it.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The ECMAScript specification uses [the name “resolving functions”](https://tc39.es/ecma262/#sec-createresolvingfunctions)
+    for `resolve` and `reject`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Implementing an asynchronous queue via a linked list whose elements are Promises**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/promises/promise-queue_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.1.11.1 An implementation](#an-implementation)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can implement `Promise.withResolvers()` as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.11.2 Example: one-element queue](#example-oneelement-queue)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.1.12 Advantages of promises over plain callbacks](#promises-vs-callbacks)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'These are some of the advantages of Promises over plain callbacks when it comes
+    to handling one-off results:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The type signatures of Promise-based functions and methods are cleaner: if
+    a function is callback-based, some parameters are about input, while the one or
+    two callbacks at the end are about output. With Promises, everything output-related
+    is handled via the returned value.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Chaining asynchronous processing steps is more convenient.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Promises handle both asynchronous errors (via rejections) and synchronous errors:
+    Inside the callbacks for `new Promise()`, `.then()`, and `.catch()`, exceptions
+    are converted to rejections. In contrast, if we use callbacks for asynchronicity,
+    exceptions are normally not handled for us; we have to do it ourselves.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Promises are a single standard that is slowly replacing several, mutually incompatible
+    alternatives. For example, in Node.js, many functions are now available in Promise-based
+    versions. And new asynchronous browser APIs are usually Promise-based.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'One of the biggest advantages of Promises involves not working with them directly:
+    they are the foundation of *async functions*, a synchronous-looking syntax for
+    performing asynchronous computations. Asynchronous functions are covered in [the
+    next chapter](ch_async-functions.html#ch_async-functions).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.2 Examples](#examples)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Seeing Promises in action helps with understanding them. Let’s look at examples.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.2.1 Node.js: Reading a file asynchronously](#nodejs-reading-a-file-asynchronously)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Consider the following text file `person.json` with [JSON data](ch_json.html#ch_json)
+    in it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: Let’s look at two versions of code that reads this file and parses it into an
+    object. First, a callback-based version. Second, a Promise-based version.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.2.1.1 The callback-based version](#the-callbackbased-version)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following code reads the contents of this file and converts it to a JavaScript
+    object. It is based on Node.js-style callbacks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`fs` is a built-in Node.js module for file system operations. We use the callback-based
+    function `fs.readFile()` to read a file whose name is `person.json`. If we succeed,
+    the content is delivered via the parameter `text` as a string. In line C, we convert
+    that string from the text-based data format JSON into a JavaScript object. `JSON`
+    is an object with methods for consuming and producing JSON. It is part of JavaScript’s
+    standard library and documented [later in this book](ch_json.html#ch_json).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Note that there are two error-handling mechanisms: the `if` in line A takes
+    care of asynchronous errors reported by `fs.readFile()`, while the `try` in line
+    B takes care of synchronous errors reported by `JSON.parse()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.2.1.2 The Promise-based version](#the-promisebased-version)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following code uses `readFile()` from `node:fs/promises`, the Promise-based
+    version of `fs.readFile()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: Function `readFile()` returns a Promise. In line A, we specify a success callback
+    via method `.then()` of that Promise. The remaining code in `then`’s callback
+    is synchronous.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.then()` returns a Promise, which enables the invocation of the Promise method
+    `.catch()` in line B. We use it to specify a failure callback.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that `.catch()` lets us handle both the asynchronous errors of `readFile()`
+    and the synchronous errors of `JSON.parse()` because exceptions inside a `.then()`
+    callback become rejections.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.2.2 Browsers: Promisifying `XMLHttpRequest`](#promisifying-xmlhttprequest)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We have previously seen the event-based `XMLHttpRequest` API for downloading
+    data in web browsers. The following function promisifies that API:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note how the results and errors of `XMLHttpRequest` are handled via `resolve()`
+    and `reject()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A successful outcome leads to the returned Promise being fullfilled with it
+    (line A).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An error leads to the Promise being rejected (lines B and C).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is how to use `httpGet()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Timing out a Promise**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/promises/promise_timeout_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.2.3 Fetch API](#fetch-api)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Most JavaScript platforms support Fetch, a Promise-based API for downloading
+    data. Think of it as a Promise-based version of `XMLHttpRequest`. The following
+    is an excerpt of [the API](https://fetch.spec.whatwg.org/#fetch-api):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That means we can use `fetch()` as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`fetch()` is also used here: [“Example: `.map()` with an async function as
+    a callback” (§44.3.3)](ch_async-functions.html#map-with-async-callback).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Using the fetch API**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/promises/fetch_json_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.3 Tip for error handling: don’t mix rejections and exceptions](#tip-for-error-handling-dont-mix-rejections-and-exceptions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Tip for implementing functions and methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Don’t mix (asynchronous) rejections and (synchronous) exceptions.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: This makes our synchronous and asynchronous code more predictable and simpler
+    because we can always focus on a single error-handling mechanism.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For Promise-based functions and methods, the rule means that they should never
+    throw exceptions. Alas, it is easy to accidentally get this wrong – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: The problem is that if an exception is thrown in line A, then `asyncFunc()`
+    will throw an exception. Callers of that function only expect rejections and are
+    not prepared for an exception. There are three ways in which we can fix this issue.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can wrap the whole body of the function in a `try-catch` statement and return
+    a rejected Promise if an exception is thrown:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: Given that `.then()` converts exceptions to rejections, we can execute `doSomethingSync()`
+    inside a `.then()` callback. To do so, we start a Promise chain via `Promise.resolve()`.
+    We ignore the fulfillment value `undefined` of that initial Promise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Lastly, `new Promise()` also converts exceptions to rejections. Using this
+    constructor is therefore similar to the previous solution:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.4 Promise-based functions start synchronously, settle asynchronously](#promise-based-functions-start-sync-settle-async)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Most Promise-based functions are executed as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Their execution starts right away, synchronously (in the current task).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: But the Promise they return is guaranteed to be settled asynchronously (in a
+    later task) – if ever.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: We can see that the callback of `new Promise()` is executed before the end of
+    the code, while the result is delivered later (line A).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Benefits of this approach:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Starting synchronously helps avoid race conditions because we can rely on the
+    order in which Promise-based functions begin. There is an example [in the next
+    chapter](ch_async-functions.html#fire-and-forget-await), where text is written
+    to a file and race conditions are avoided.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Chaining Promises won’t starve other tasks of processing time because before
+    a Promise is settled, there will always be a break, during which the event loop
+    can run.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Promise-based functions always return results asynchronously; we can be sure
+    that there is never a synchronous return. This kind of predictability makes code
+    easier to work with.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![Icon “external”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png) **More information
+    on this approach**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[“Designing APIs for Asynchrony”](http://blog.izs.me/post/59142742143/designing-apis-for-asynchrony)
+    by Isaac Z. Schlueter'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5 Promise combinator functions: working with Arrays of Promises](#promise-combinators)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[43.5.1 What is a Promise combinator function?](#what-is-a-promise-combinator-function)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The [*combinator pattern*](https://wiki.haskell.org/Combinator_pattern) is
+    a pattern in functional programming for building structures. It is based on two
+    kinds of functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Primitive functions* (short: *primitives*) create atomic pieces.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Combinator functions* (short: *combinators*) combine atomic and/or compound
+    pieces to create compound pieces.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'When it comes to JavaScript Promises:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Primitive functions include: `Promise.resolve()`, `Promise.reject()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Combinators include: `Promise.all()`, `Promise.race()`, `Promise.any()`, `Promise.allSettled()`.
+    In each of these cases:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Input is an iterable over zero or more Promises.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Output is a single Promise.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Next, we’ll take a closer look at the mentioned Promise combinators.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.2 `Promise.all()`](#Promise.all)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is the type signature of `Promise.all()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Promise.all()` returns a Promise which is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Fulfilled if all `promises` are fulfilled.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then its fulfillment value is an Array with the fulfillment values of `promises`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Rejected if at least one Promise is rejected.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then its rejection value is the rejection value of that Promise.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is a quick demo of the output Promise being fulfilled:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following example demonstrates what happens if at least one of the input
+    Promises is rejected:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Figure 43.2](#fig:combinator-promise-all) illustrates how `Promise.all()`
+    works.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/304b67c9d82e5f471ff49a4f60ee10e2.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 43.2: The Promise combinator `Promise.all()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.2.1 Asynchronous `.map()` via `Promise.all()`](#asynchronous-map-via-promiseall)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Array transformation methods such as `.map()`, `.filter()`, etc., are made
+    for synchronous computations. For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'What happens if the callback of `.map()` is a Promise-based function (a function
+    that maps normal values to Promises)? Then the result of `.map()` is an Array
+    of Promises. Alas, that is not data that normal code can work with. Thankfully,
+    we can fix that via `Promise.all()`: It converts an Array of Promises into a Promise
+    that is fulfilled with an Array of normal values.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.5.2.2 A more realistic `.map()` example](#promise-all-download-text)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Next, we’ll use `.map()` and `Promise.all()` to downlooad text files from the
+    web. For that, we need the following tool function:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`downloadText()` uses the Promise-based [fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
+    to download a text file as a string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: First, it asynchronously retrieves a `response` (line A).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`response.ok` (line B) checks if there were errors such as “file not found”.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If there weren’t any, we use `.text()` (line C) to retrieve the content of the
+    file as a string.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In the following example, we download two text files:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.5.2.3 A simple implementation of `Promise.all()`](#a-simple-implementation-of-promiseall)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is a simplified implementation of `Promise.all()` (e.g., it performs no
+    safety checks):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs: []
+  type: TYPE_PRE
+- en: The two main locations where the result Promise is settled are line A and line
+    B. After one of them settled, the other can’t change the settlement value anymore
+    because a Promise can only be settled once.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.3 `Promise.race()`](#Promise.race)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is the type signature of `Promise.race()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Promise.race()` returns a Promise `q` which is settled as soon as the first
+    Promise `p` among `promises` is settled. `q` has the same settlement value as
+    `p`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the following demo, the settlement of the fulfilled Promise (line A) happens
+    before the settlement of the rejected Promise (line B). Therefore, the result
+    is also fulfilled (line C).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE55]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the next demo, the rejection happens first:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE56]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that the Promise returned by `Promise.race()` is settled as soon as the
+    first among its input Promises is settled. That means that the result of `Promise.race([])`
+    is never settled.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Figure 43.3](#fig:combinator-promise-race) illustrates how `Promise.race()`
+    works.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/3728be0c72a2536ecd233d4e9ef7d204.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 43.3: The Promise combinator `Promise.race()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.3.1 Using `Promise.race()` to time out a Promise](#timing-out-via-race)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In this section, we are going to use `Promise.race()` to time out Promises.
+    We will be using the following helper functions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE57]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This function times out a Promise:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE58]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`timeout()` returns a Promise whose settlement is the same as the one of whichever
+    Promise settles first among the following two:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The parameter `promise`
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: A Promise that is rejected after `timeoutInMs` milliseconds
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: To produce the second Promise, `timeout()` uses the fact that resolving a pending
+    Promise with a rejected Promise leads to the former being rejected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Let’s see `timeout()` in action. Here, the input Promise is fulfilled before
+    the timeout. Therefore, the output Promise is fulfilled.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE59]'
+  prefs: []
+  type: TYPE_PRE
+- en: Here, the timeout happens before the input Promise is fulfilled. Therefore,
+    the output Promise is rejected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE60]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It is important to understand what “timing out a Promise” really means:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If the input Promise is settled quickly enough, its settlement is passed on
+    to the output Promise.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If it isn’t settled quickly enough, the output Promise is rejected.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: That is, timing out only prevents the input Promise from affecting the output
+    (since a Promise can only be settled once). But it does not stop the asynchronous
+    operation that produced the input Promise.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.3.2 A simple implementation of `Promise.race()`](#a-simple-implementation-of-promiserace)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is a simplified implementation of `Promise.race()` (e.g., it performs
+    no safety checks):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE61]'
+  prefs: []
+  type: TYPE_PRE
+- en: The result Promise is settled in either line A or line B. Once it is, the settlement
+    value can’t be changed anymore.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.4 `Promise.any()` ^(ES2021)](#Promise.any)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is the type signature of `Promise.any()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE62]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Promise.any()` returns a Promise `p`. How it is settled, depends on the parameter
+    `promises` (which refers to an iterable over Promises):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If and when the first Promise is fulfilled, `p` is resolved with that Promise.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If all Promises are rejected, `p` is rejected with an instance of `AggregateError`
+    that contains all rejection values.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Figure 43.4](#fig:combinator-promise-any) illustrates how `Promise.any()`
+    works.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/e8a5def71f107f982eeb0cdeee8e7f86.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 43.4: The Promise combinator `Promise.any()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.4.1 `AggregateError` ^(ES2021)](#AggregateError)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is the type signature of `AggregateError` (a subclass of [`Error`](ch_exception-handling.html#class-Error)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE63]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.5.4.2 Two first examples](#two-first-examples)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is what happens if one Promise is fulfilled:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE64]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is what happens if all Promises are rejected:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE65]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.5.4.3 `Promise.any()` vs. `Promise.all()`](#promiseany-vs-promiseall)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'There are two ways in which `Promise.any()` and `Promise.all()` can be compared:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'They are inverses of each other:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.all()`: First input rejection rejects the result Promise or its fulfillment
+    value is an Array with input fulfillment values.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.any()`: First input fulfillment fulfills the result Promise or its
+    rejection value is an Array with input rejection values (inside an error object).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They have different focuses:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.all()` is interested in *all* fulfillments. The opposite case (at
+    least one rejection) leads to a rejection.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.any()` is interested in the first fulfillment. The opposite case (only
+    rejections) leads to a rejection.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[43.5.4.4 `Promise.any()` vs. `Promise.race()`](#promiseany-vs-promiserace)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`Promise.any()` and `Promise.race()` are also related, but interested in different
+    things:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Promise.race()` is interested in settlements. The Promise which is settled
+    first, “wins”. In other words: We want to know about the asynchronous computation
+    that terminates first.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.any()` is interested in fulfillments. The Promise which is fulfilled
+    first, “wins”. In other words: We want to know about the asynchronous computation
+    that succeeds first.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The main – relatively rare – use case for `.race()` is timing out Promises.
+    The use cases for `.any()` are broader. We’ll look at them next.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.4.5 Use cases for `Promise.any()`](#use-cases-for-promiseany)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: We use `Promise.any()` if we have multiple asynchronous computations and we
+    are only interested in the first successful one. In a way, we let the computations
+    compete with each other and use whichever one is fastest.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates what that looks like when downloading resources:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE66]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The same pattern enables us to use whichever module downloads more quickly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE67]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For comparison, this is the code we’d use if the secondary server is only a
+    fallback – in case the primary server fails:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE68]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.5.4.6 How would we implement `Promise.any()`?](#how-would-we-implement-promiseany)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: A simple implementation of `Promise.any()` is basically a mirror version of
+    the implementation of `Promise.all()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.5 `Promise.allSettled()` ^(ES2020)](#Promise.allSettled)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: This time, the type signatures are a little more complicated. Feel free to skip
+    ahead to the first demo, which should be easier to understand.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is the type signature of `Promise.allSettled()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE69]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It returns a Promise for an Array whose elements have the following type signature:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE70]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`Promise.allSettled()` returns a Promise `out`. Once all `promises` are settled,
+    `out` is fulfilled with an Array. Each element `e` of that Array corresponds to
+    one Promise `p` of `promises`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `p` is fulfilled with the fulfillment value `v`, then `e` is
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE71]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: If `p` is rejected with the rejection value `r`, then `e` is
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE72]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Unless there is an error when iterating over `promises`, the output Promise
+    `out` is never rejected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Figure 43.5](#fig:combinator-promise-all-settled) illustrates how `Promise.allSettled()`
+    works.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/3bb559e958e51edd426fc59d90d5a465.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 43.5: The Promise combinator `Promise.allSettled()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.5.5.1 A first demo of `Promise.allSettled()`](#a-first-demo-of-promiseallsettled)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is a quick first demo of how `Promise.allSettled()` works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE73]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.5.5.2 A longer example of `Promise.allSettled()`](#a-longer-example-of-promiseallsettled)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The next example is similar to [the `.map()` plus `Promise.all()` example](#promise-all-download-text)
+    (from which we are borrowing the function `downloadText()`): We are downloading
+    multiple text files whose URLs are stored in an Array. However, this time, we
+    don’t want to stop when there is an error, we want to keep going. `Promise.allSettled()`
+    allows us to do that:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE74]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.5.5.3 A simple implementation of `Promise.allSettled()`](#a-simple-implementation-of-promiseallsettled)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is a simplified implementation of `Promise.allSettled()` (e.g., it performs
+    no safety checks):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE75]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercises:
+    Promise combinator methods**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Getting the highest fulfillment value of an iterable over Promises: `exercises/promises/get-highest-fulfillment_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Implementing `Promise.anySettled()`: `exercises/promises/promise-any-settled_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[43.5.6 Short-circuiting (advanced)](#shortcircuiting-advanced)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'For a Promise combinator, *short-circuiting* means that the output Promise
+    is settled early – before all input Promises are settled. The following combinators
+    short-circuit:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Promise.all()`: The output Promise is rejected as soon as one input Promise
+    is rejected.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.race()`: The output Promise is settled as soon as one input Promise
+    is settled.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.any()`: The output Promise is fulfilled as soon as one input Promise
+    is fulfilled.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Once again, settling early does not mean that the operations behind the ignored
+    Promises are stopped. It just means that their settlements are ignored.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.6 Concurrency and `Promise.all()` (advanced)](#concurrency-and-promiseall-advanced)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[43.6.1 Sequential execution vs. concurrent execution](#sequential-execution-vs-concurrent-execution)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Consider the following code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE76]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Using `.then()` in this manner executes Promise-based functions *sequentially*:
+    only after the result of `asyncFunc1()` is settled will `asyncFunc2()` be executed.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Promise.all()` helps execute Promise-based functions more concurrently:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE77]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.6.2 Concurrency tip: focus on when operations start](#focus-on-async-start)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Tip for determining how “concurrent” asynchronous code is: Focus on when asynchronous
+    operations start, not on how their Promises are handled.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For example, each of the following functions executes `asyncFunc1()` and `asyncFunc2()`
+    concurrently because they are started at nearly the same time.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE78]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On the other hand, both of the following functions execute `asyncFunc1()` and
+    `asyncFunc2()` sequentially: `asyncFunc2()` is only invoked after the Promise
+    of `asyncFunc1()` is fulfilled.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE79]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.6.3 `Promise.all()` is fork-join](#promise-all-is-fork-join)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Promise.all()` is loosely related to the concurrency pattern “fork join”.
+    Let’s revisit an example that we have encountered [previously](#promise-all-download-text):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE80]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Fork: In line A, we are forking two asynchronous computations and executing
+    them concurrently.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Join: In line B, we are joining these computations into a single “thread” which
+    is started once all of them are done.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[43.7 Tips for chaining Promises](#tips-for-chaining-promises)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: This section gives tips for chaining Promises.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.7.1 Chaining mistake: losing the tail](#chaining-mistake-losing-thetail)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Problem:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE81]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Computation starts with the Promise returned by `asyncFunc()`. But afterward,
+    computation continues and another Promise is created via `.then()`. `foo()` returns
+    the former Promise, but should return the latter. This is how to fix it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE82]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.7.2 Chaining mistake: nesting](#chaining-mistake-nesting)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Problem:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE83]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The `.then()` in line A is nested. A flat structure would be better:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE84]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.7.3 Chaining mistake: more nesting than necessary](#chaining-mistake-more-nesting-than-necessary)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is another example of avoidable nesting:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE85]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can once again get a flat structure:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE86]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.7.4 Not all nesting is bad](#not-all-nesting-is-bad)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the following code, we actually benefit from nesting:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE87]'
+  prefs: []
+  type: TYPE_PRE
+- en: We are receiving an asynchronous result in line A. In line B, we are nesting
+    so that we have access to variable `connection` inside the callback and in line
+    C.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.7.5 Chaining mistake: creating Promises instead of chaining](#chaining-mistake-creating-promises-instead-of-chaining)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Problem:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE88]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In line A, we are creating a Promise to deliver the result of `db.insert()`.
+    That is unnecessarily verbose and can be simplified:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE89]'
+  prefs: []
+  type: TYPE_PRE
+- en: The key idea is that we don’t need to create a Promise; we can return the result
+    of the `.then()` call. An additional benefit is that we don’t need to catch and
+    re-reject the failure of `db.insert()`. We simply pass its rejection on to the
+    caller of `.insertInto()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.8 Thenables (Promise-like objects) (advanced)](#thenables-promiselike-objects-advanced)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: When Promises were added to JavaScript’s standard library in ES6 (in 2015),
+    several Promise libraries were popular and widely used. To make those libraries
+    interoperable with the built-in API, TC39 defined a minimal interface for Promise-like
+    objects that is compatible with most of those libraries. As often as possible,
+    the API does not require objects to be Promises – it’s enough if they are Promise-like.
+    If necessary, the API transparently converts Promise-like objects to API Promises.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'So what minimal interface describes the essence of Promises? It only needs
+    a method `.then()` that lets us register callbacks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE90]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is a simplified version of TypeScript’s type for Promise-like objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE91]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This interface is sufficient because `.catch()` is actually just a convenient
+    way of invoking `.then()` (whose second parameter we have ignored previously)
+    – the following two invocations are equivalent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE92]'
+  prefs: []
+  type: TYPE_PRE
+- en: Because Promise-like objects only have a method `.then()`, they are also called
+    *thenables*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[43.8.1 Example: a fulfilled thenable](#example-a-fulfilled-thenable)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following object is a fulfilled thenable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE93]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we pass the thenable to `Promise.resolve()`, it converts it to a Promise:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE94]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Returning the thenable from a callback is equivalent to returning a Promise:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE95]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also resolve a new Promise with a thenable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE96]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.8.2 Example: a rejected thenable](#example-a-rejected-thenable)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates a rejected thenable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE97]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[43.9 Quick reference: `Promise`](#quickref-Promise)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[43.9.1 `new Promise()`](#new-promise)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`new Promise(executor)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE98]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'This constructor creates a new Promise. It passes functions to its callback
+    with which that Promise can be resolved or rejected:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE99]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[43.9.2 `Promise.*`: creating Promises](#promise-creating-promises)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Promise.withResolvers()` ES2024'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE100]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method creates a Promise and returns an object that contains that Promise
+    plus functions for resolving or rejecting it.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Promise.resolve(value?)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Creates a Promise, resolves it with `value` and returns it:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE101]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Promise.reject(reason?)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Creates a Promise, rejects it with `value` and returns it:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE102]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[43.9.3 `Promise.*`: miscellaneous functionality](#promise-miscellaneous-functionality)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Promise.try(callback, ...args)` ES2025'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Creates a Promise by treating `callback` as if it were a `.then()` callback:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: It invokes `callback` with zero or more arguments.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `callback` throws an exception, `Promise.try()` turns it into a rejected
+    Promise and returns it.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `callback` returns a value, `Promise.try()` resolves it to a Promise and
+    returns it.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The use case for this method is starting a Promise chain with code that is
+    not purely asynchronous – e.g.:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE103]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[43.9.4 `Promise.*`: Promise combinators](#promise-promise-combinators)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Glossary:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Short-circuiting*: In some cases, the output Promise can be settled early
+    (before every input Promise is settled). That is called short-circuiting.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'These are the Promise combinators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Promise.all(promises)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE104]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '**Fulfillment** of `P`: if all input Promises are fulfilled.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Value: Array with the fulfillment values of the input Promises'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Rejection** of `P`: if one input Promise is rejected.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Value: rejection value of the input Promise'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Short-circuits: yes'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Use case: processing Arrays with Promises (rejections terminate processing)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.race(promises)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE105]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '**Settlement** of `P`: if the first input Promise is settled.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Value: settlement value of the input Promise'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Short-circuits: yes'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Use case: reacting to the first settlement among multiple Promises'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Promise.any(promises)` ES2021'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE106]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '**Fulfillment** of `P`: if one input Promise is fulfilled.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Value: fulfillment value of the input Promise'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Rejection** of `P`: if all input Promises are rejected.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Value: `AggregateError` that contains the rejection values of the input Promises.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Short-circuits: yes'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Use case: Among several asynchronous computations, we are only interested in
+    the first successful one. That is, we are trying several approaches and the fastest
+    one should win.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is the type signature of `AggregateError` (a few members were omitted):'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE107]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Promise.allSettled(promises)` ES2020'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE108]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '**Fulfillment** of `P`: if all input Promise are settled.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Value: Array with one *settlement object* for each input Promise. A settlement
+    object contains the kind of settlement and the settlement value.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Rejection** of `P`: if there is an error when iterating over the input Promises.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Short-circuits: no'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Use case: processing Arrays with Promises (rejections don’t terminate processing)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is the type signature of `SettlementObject`:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE109]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[43.9.5 `Promise.prototype.*`](#promiseprototype)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Promise.prototype.then(onFulfilled?, onRejected?)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE110]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Registers callbacks for the fulfillment value and/or the rejection value of
+    a Promise. Usually, only the first parameter `onFulfilled` is used. `.catch()`
+    provides a more self-descriptive alternative to using the second parameter `onRejected`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE111]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Promise.prototype.catch(onRejected)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE112]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Registers a callback for the rejection value of a Promise. A more self-descriptive
+    alternative to using `.then()` for that purpose – the following two invocations
+    are equivalent:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE113]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Example:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE114]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Promise.prototype.finally(onFinally)` ES2018'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE115]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Often used as follows:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE116]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: The `.finally()` callback is always executed – independently of `somePromise`
+    and the values returned by `.then()` and/or `.catch()`. The callback only has
+    an effect if it returns a rejected Promise or throws an exception. Then the final
+    Promise is rejected with the rejection value or the exception.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL

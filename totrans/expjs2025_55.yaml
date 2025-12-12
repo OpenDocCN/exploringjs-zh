@@ -1,0 +1,4322 @@
+- en: 46 Regular expressions (RegExp)
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_regexps.html](https://exploringjs.com/js/book/ch_regexps.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[46.1 Creating regular expressions](#creating-regular-expressions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.1.1 Literal vs. constructor](#regex-literal-vs-constructor)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.1.2 Tip: Use `String.raw` literals with `new RegExp()`](#tip-use-stringraw-literals-with-new-regexp)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.1.3 Cloning and non-destructively modifying regular expressions](#cloning-regexps)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.2 Syntax characters and escaping](#escaping-for-regexp)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.2.1 Syntax characters](#syntax-characters)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.2.2 Illegal top-level escaping](#illegal-toplevel-escaping)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.2.3 Escaping inside character classes (`[···]`)](#escaping-inside-character-classes)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.3 Regular expressions: the concept of a character](#regular-expression-character)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.4 Syntax: matching single characters](#syntax-matching-single-characters)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.5 Syntax: character class escapes](#syntax-character-class-escapes)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.5.1 Basic character class escapes (sets of code units): `\d \D \s \S \w
+    \W`](#basic-character-class-escapes)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.5.2 Unicode property escapes: `\p{}` and `\P{}`](#unicode-property-escapes)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.5.3 Unicode character property escapes ^(ES2018)](#unicode-character-property-escapes)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.5.4 Unicode string property escapes ^(ES2024)](#unicode-string-property-escapes)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.6 Syntax: character classes](#syntax-character-classes)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.6.1 Code point sequences in character classes ^(ES2024)](#character-class-code-point-sequences)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.6.2 Set operations for character classes ^(ES2024)](#regexp-character-class-set-operations)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.7 Syntax: capture groups](#regexp-capture-groups)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.8 Syntax: quantifiers](#regexp-quantifiers)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.9 Syntax: assertions](#regexp-assertions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.9.1 Lookahead assertions](#regexp-lookahead-assertions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.9.2 Lookbehind assertions ^(ES2018)](#regexp-lookbehind-assertions)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.10 Syntax: disjunction (`|`)](#syntax-disjunction-)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.11 Regular expression flags](#regexp-flags)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.11.1 How to order regular expression flags?](#order-of-regexp-flags)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.11.2 Without the Unicode flags `/u` and `/v`: characters are UTF-16 code
+    units](#without-the-unicode-flags-u-and-v-characters-are-utf16-code-units)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.11.3 Flag `/u`: characters are code points ^(ES6)](#regexp-flag-unicode)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.11.4 Flag `/v`: limited support for multi-code-point grapheme clusters
+    ^(ES2024)](#regexp-flag-unicode-sets)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.12 Pattern modifiers (inline flags) ^(ES2025)](#regexp-pattern-modifiers)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.12.1 The syntax of pattern modifiers](#the-syntax-of-pattern-modifiers)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.12.2 Which flags are supported?](#which-flags-are-supported)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.12.3 Use case: changing flags for part of a regular expression](#use-case-changing-flags-for-part-of-a-regular-expression)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.12.4 Use case: inlining flags](#use-case-inlining-flags)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.12.5 Use case: regular expression fragments that change flags](#use-case-regular-expression-fragments-that-change-flags)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.13 Properties of regular expression objects](#properties-of-regular-expression-objects)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.13.1 Flags as properties](#flags-as-properties)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.13.2 Other properties](#other-properties)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.14 Match objects](#match-objects)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.14.1 Match indices in match objects ^(ES2022)](#regexp-match-indices)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15 Methods for working with regular expressions](#methods-for-working-with-regular-expressions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.1 By default, regular expressions match anywhere in a string](#by-default-regular-expressions-match-anywhere-in-a-string)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.2 `string.match(regExp)` without `/g`: getting a match object for the
+    first match](#String.prototype.match)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.3 `string.match(regExp)` with `/g`: getting all group 0 captures ^(ES3)](#stringmatchregexp-with-g-getting-all-group-0-captures-es3)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.4 `string.matchAll(regExp)`: getting an iterable over all match objects
+    ^(ES2020)](#String.prototype.matchAll)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.5 `regExp.exec(str)`: capturing groups ^(ES3)](#RegExp.prototype.exec)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.6 `string.match()` vs. `string.matchAll()` vs. `regExp.exec()`](#match-vs-matchall-vs-exec)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.7 Replacing with `string.replace()` and `string.replaceAll()`](#replace-replaceAll)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.8 `regExp.test(str)`: is there a match? ^(ES3)](#RegExp.prototype.test)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.9 `string.search(regExp)`: at what index is the match? ^(ES3)](#String.prototype.search)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.15.10 `string.split(separator, limit?)`: splitting strings ^(ES3)](#String.prototype.split)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.16 The flags `/g` and `/y`, and the property `.lastIndex` (advanced)](#regexp-flags-gy)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.16.1 The flags `/g` and `/y`](#the-flags-g-and-y)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.16.2 How exactly are methods affected by `/g` and `/y`?](#how-exactly-are-methods-affected-by-g-and-y)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.16.3 Four pitfalls of `/g` and `/y` and how to deal with them](#four-pitfalls-of-g-and-y-and-how-to-deal-with-them)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.16.4 Use case for `.lastIndex`: starting matching at a given index](#use-case-for-lastindex-starting-matching-at-a-given-index)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.16.5 The downsides and an upside of `.lastIndex`](#regexp-lastindex-upsides-downsides)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.17 `RegExp.escape()`: escaping text so that it can be used inside a regular
+    expression ^(ES2025)](#RegExp.escape)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.17.1 Use case for `RegExp.escape()`: replacing all occurrences of a text](#use-case-for-regexpescape-replacing-all-occurrences-of-a-text)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.17.2 Use case for `RegExp.escape()`: part of a regular expression must
+    match a given text](#use-case-for-regexpescape-part-of-a-regular-expression-must-match-a-given-text)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.18 Matching everything or nothing](#matching-everything-or-nothing)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19 Tips for making regular expressions easier to use](#tips-for-making-regular-expressions-easier-to-use)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.1 Tip: Use flag `/v`](#tip-use-flag-v)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.2 Tip: order flags alphabetically](#tip-order-flags-alphabetically)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.3 Tip: Use named capture groups](#tip-use-named-capture-groups)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.4 Tip: insignificant whitespace and line comments via `#`](#tip-insignificant-whitespace-and-line-comments-via-)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.5 Tip: Write tests for your regular expression](#tip-write-tests-for-your-regular-expression)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.6 Tip: Mention examples in your documentation](#tip-mention-examples-in-your-documentation)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.7 Bonus tip: Use interpolation to reuse patterns](#bonus-tip-use-interpolation-to-reuse-patterns)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.8 Bonus tip: insignificant whitespace without a library](#bonus-tip-insignificant-whitespace-without-a-library)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.19.9 Conclusion: This is how regular expressions are meant to be written](#conclusion-this-is-how-regular-expressions-are-meant-to-be-written)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.20 Quick reference: regular expression functionality](#quickref-RegExp)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.20.1 Summary: `.global` (`/g`) and `.sticky` (`/y`)](#summary-flags-global-sticky)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.20.2 `String.prototype.*`: matching and searching](#stringprototype-matching-and-searching)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.20.3 `String.prototype.*`: splitting and replacing](#stringprototype-splitting-and-replacing)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[46.20.4 `RegExp.prototype.*`](#regexpprototype)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '![Icon “reading”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **Availability
+    of features**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Unless stated otherwise, each regular expression feature has been available
+    since ES3.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.1 Creating regular expressions](#creating-regular-expressions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[46.1.1 Literal vs. constructor](#regex-literal-vs-constructor)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The two main ways of creating regular expressions are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Literal: compiled statically (at load time).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Constructor: compiled dynamically (at runtime).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Both regular expressions have the same two parts:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The *body* `abc` – the actual regular expression.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The *flags* `i` and `v`. Flags configure how the pattern is interpreted. For
+    example, `i` enables case-insensitive matching. A list of available flags is given
+    [later in this chapter](#regexp-flags).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![Icon “tip”](../Images/8440b17bb8219cda9f9405ac83c36db0.png) **Recommended:
+    flag `/v` ^(ES2024)**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Flag `/v` enables important features and is recommended for all regular expressions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.1.2 Tip: Use `String.raw` literals with `new RegExp()`](#tip-use-stringraw-literals-with-new-regexp)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we use a normal string literal as an argument for `new RegExp()`, every
+    regular expression backslash has to be escaped. If we use [`String.raw`](ch_template-literals.html#raw-string-literals)
+    as a template tag then that’s not necessary. The following three regular expressions
+    are all equivalent:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we use `String.raw` often, we can abbreviate it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.1.3 Cloning and non-destructively modifying regular expressions](#cloning-regexps)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'There are two variants of the constructor `RegExp()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`new RegExp(pattern : string, flags = '''')` ^(ES3)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A new regular expression is created as specified via `pattern`. If `flags` is
+    missing, the empty string `''` is used.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`new RegExp(regExp : RegExp, flags = regExp.flags)` ^(ES6)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`regExp` is cloned. If `flags` is provided, then it determines the flags of
+    the clone.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'The second variant is useful for cloning regular expressions, optionally while
+    modifying them. Flags are immutable and this is the only way of changing them
+    – for example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`new Set()` iterates over its argument which means that a string is split into
+    code points. Those code points become Set elements, which eliminates duplicates.
+    Before we can join them into a string, we have to convert them to an Array and
+    do so via `Array.from()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.2 Syntax characters and escaping](#escaping-for-regexp)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[46.2.1 Syntax characters](#syntax-characters)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: At the top level of a regular expression, the following [*Syntax Characters*](https://tc39.es/ecma262/#prod-SyntaxCharacter)
+    are special. They are escaped by prefixing a backslash (`\`).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In regular expression literals, we must escape slashes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the argument of `new RegExp()`, we don’t have to escape slashes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.2.2 Illegal top-level escaping](#illegal-toplevel-escaping)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: With a Unicode flag (`/u` or `/v`), escaping a non-syntax character at the top
+    level is a syntax error. That enables syntax such as `\p{···}`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Without flag `/u` and `/v`, an escaped non-syntax character at the top level
+    matches itself:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.2.3 Escaping inside character classes (`[···]`)](#escaping-inside-character-classes)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The rules for escaping inside character classes are different if we use the
+    recommended flag `/v`. We look at those first before we look at the rules for
+    regular expressions that have no Unicode flag (neither `/u` nor `/v`).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.2.3.1 Escaping inside character classes: flag `/v`](#escaping-inside-character-classes-flag-v)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The following characters can be escaped via backslash:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[*Syntax Characters*](https://tc39.es/ecma262/#prod-SyntaxCharacter):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Slash:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[*Class Set Reserved Punctuators*](https://tc39.es/ecma262/#prod-ClassSetReservedDoublePunctuator):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Interestingly, we don’t always have to escape these characters. Only the following
+    sequences of characters don’t match themselves and have to be escaped:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A single `^` only has to be escaped if it comes first.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[*Class Set Syntax Characters*](https://tc39.es/ecma262/#prod-ClassSetSyntaxCharacter)
+    must always be escaped:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[*Class Set Reserved Double Punctuators*](https://tc39.es/ecma262/#prod-ClassSetReservedDoublePunctuator)
+    must always be escaped (at least one of them):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[46.2.3.2 Escaping inside character classes: no Unicode flag (neither `/u`
+    nor `/v`)](#escaping-inside-character-classes-no-unicode-flag-neither-u-nor-v)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We always must escape: `\ ]`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Some characters only have to be escaped in some locations:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`^` only has to be escaped if it comes first.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`-` only has to be escaped if it doesn’t come first or last.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.3 Regular expressions: the concept of a character](#regular-expression-character)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In the context of regular expressions, “character” means “atomic unit of text”:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Without the Unicode flags (`/u` and `/v`), a character is a JavaScript character
+    (a UTF-16 code unit).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: With a Unicode flag, a character is a code point.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For example, a dot (`.`) matches a single character:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.4 Syntax: matching single characters](#syntax-matching-single-characters)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'These constructs match single characters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Pattern characters* are all characters *except* syntax characters (`^`, `$`,
+    etc.). Pattern characters match themselves. Examples: `A b % -`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.` matches any character. We can use [flag `/s` (`dotAll`)](#regexp-dot-all-flag)
+    to control if the dot matches line terminators or not.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Character escapes* (each escape matches a single fixed character):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Control escapes (for a few control characters):'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`\f`: form feed (FF)'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`\n`: line feed (LF)'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`\r`: carriage return (CR)'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`\t`: character tabulation'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`\v`: line tabulation'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Control characters: `\cA` (Ctrl-A), …, `\cZ` (Ctrl-Z)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Hex escape (first 256 Unicode code points): `\x20` (space)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Unicode code unit escapes: `\u00E4` (ä)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Unicode code point escapes (require Unicode flag `/u` or `/v`): `\u{1F642}`
+    (🙂)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Identity escapes match the escaped characters (these are the rules with a Unicode
+    flag `/u` or `/v`; without them, most characters can be identity-escaped):'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We can escape the following [syntax characters](https://tc39.es/ecma262/#prod-SyntaxCharacter)
+    by prefixing them with backslashes:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'We can also escape a slash like this: `\/`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.5 Syntax: character class escapes](#syntax-character-class-escapes)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Character class escapes match sets of code units, sets of code points or sets
+    of code point sequences.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.5.1 Basic character class escapes (sets of code units): `\d \D \s \S \w
+    \W`](#basic-character-class-escapes)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following character class escapes and their complements are always supported:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|  | Escape | Equivalent | Complement |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Digits | `\d` | `[0-9]` | `\D` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| “Word” characters | `\w` | `[a-zA-Z0-9_]` | `\W` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Whitespace | `\s` |  | `\S` |'
+  prefs: []
+  type: TYPE_TB
+- en: 'Note:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Whitespace: `\s` matches all whitespace code points: space, tab, line terminators,
+    etc. They all fit into single UTF-16 code units.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: “Word” characters are related to identifiers in programming languages.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Examples:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.5.2 Unicode property escapes: `\p{}` and `\P{}`](#unicode-property-escapes)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Unicode property escapes look like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Positive escape: `\p{UP}` matches Unicode characters or Unicode strings that
+    have the Unicode property `UP`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Negative escape: `\P{UP}` matches Unicode characters that do not have the Unicode
+    property `UP`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'There are two kinds of Unicode properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Unicode character properties* are properties of code points. They specify
+    sets of code points.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Example: `White_Space`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Supported by flag `/u` and flag `/v`
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Introduced in ES2018
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Unicode string properties* are properties of sequences of code points. They
+    specify sets of code point strings. String property escapes can only be positive.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Example: `RGI_Emoji`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Only supported by flag `/v`
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Introduced in ES2024
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A quick example before we look at everything in more detail. This is how we
+    can escape the Unicode character property `White_Space`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.5.3 Unicode character property escapes ^(ES2018)](#unicode-character-property-escapes)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'With flag `/u` or flag `/v`, we can use `\p{}` and `\P{}` to specify sets of
+    code points via *Unicode character properties* (we’ll learn more about those in
+    the next subsection). That looks like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`\p{prop=value}`: matches all characters whose Unicode character property `prop`
+    has the value `value`.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`\P{prop=value}`: matches all characters that do not have a Unicode character
+    property `prop` whose value is `value`.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`\p{bin_prop}`: matches all characters whose binary Unicode character property
+    `bin_prop` is True.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '`\P{bin_prop}`: matches all characters whose binary Unicode character property
+    `bin_prop` is False.'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Comments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Forms (3) and (4) can be used as abbreviations if the property is `General_Category`.
+    For example, the following two escapes are equivalent:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Without the flags `/u` and `/v`, `\p` is the same as `p`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Examples:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Checking for whitespace:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Checking for Greek letters:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Deleting any letters:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Deleting lowercase letters:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[46.5.3.1 Unicode character properties](#unicode-character-properties)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'In the Unicode standard, each character has *properties* – metadata describing
+    it. Properties play an important role in defining the nature of a character. Quoting
+    [the Unicode Standard, Sect. 3.3, D3](http://www.unicode.org/versions/Unicode9.0.0/ch03.pdf):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The semantics of a character are determined by its identity, normative properties,
+    and behavior.
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: 'These are a few examples of properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Name`: a unique name, composed of uppercase letters, digits, hyphens, and
+    spaces – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A: `Name = LATIN CAPITAL LETTER A`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '🙂: `Name = SLIGHTLY SMILING FACE`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`General_Category`: categorizes characters – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'x: `General_Category = Lowercase_Letter`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '3: `General_Category = Number`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '$: `General_Category = Currency_Symbol`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`White_Space`: used for marking invisible spacing characters, such as spaces,
+    tabs and newlines – for example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '\t: `White_Space = True`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'π: `White_Space = False`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Age`: version of the Unicode Standard in which a character was introduced
+    – for example: The Euro sign € was added in version 2.1 of the Unicode standard.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '€: `Age = 2.1`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Block`: a contiguous range of code points. Blocks don’t overlap and their
+    names are unique. For example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'S: `Block = Basic_Latin` (range 0x0000..0x007F)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '🙂: `Block = Emoticons` (range 0x1F600..0x1F64F)'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Script`: is a collection of characters used by one or more writing systems.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Some scripts support several writing systems. For example, the Latin script
+    supports the writing systems English, French, German, Latin, etc.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Some languages can be written in multiple alternate writing systems that are
+    supported by multiple scripts. For example, Turkish used the Arabic script before
+    it transitioned to the Latin script in the early 20th century.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Examples:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'α: `Script = Greek`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Д: `Script = Cyrillic`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Further reading:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Lists of Unicode properties and their values: [“Unicode Standard Annex #44:
+    Unicode Character Database”](https://unicode.org/reports/tr44/#Properties) (Editors:
+    Mark Davis, Laurențiu Iancu, Ken Whistler)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.5.4 Unicode string property escapes ^(ES2024)](#unicode-string-property-escapes)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Only flag `/v` lets us use `\p{}` to specify sets of code point sequences via
+    *Unicode string properties* (negation via `\P{}` is not supported). For example,
+    `RGI_Emoji` is a Unicode string property:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s see how the Unicode character property `Emoji` does with these inputs:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: As expected, it only matches single code points.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.5.4.1 Unicode string properties](#unicode-string-properties)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'For now, only the following Unicode string properties are supported by JavaScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Basic_Emoji`: single code points'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Emoji_Keycap_Sequence`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`RGI_Emoji_Modifier_Sequence`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`RGI_Emoji_Flag_Sequence`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`RGI_Emoji_Tag_Sequence`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`RGI_Emoji_ZWJ_Sequence`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`RGI_Emoji`: union of all of the above sets'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The semantics of Unicode string properties are defined in [text files](https://www.unicode.org/reports/tr51/#Emoji_Properties_and_Data_Files)
+    that enumerate code point sequences likes this (`\x{23}` is `#`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Further reading:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Section “Properties of Strings”](https://www.unicode.org/reports/tr23/#PropertyStringsDefinitions)
+    in “Unicode Technical Report #23: The Unicode Character Property Model” defines
+    what properties of strings are.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Table “Binary Unicode properties of strings”](https://tc39.es/ecma262/#table-binary-unicode-properties-of-strings)
+    in the ECMAScript specification lists the properties of strings that are supported
+    by JavaScript.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.6 Syntax: character classes](#syntax-character-classes)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'A *character class* wraps *class ranges* in square brackets. The class ranges
+    specify a set of characters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`[«class ranges»]` matches any character in the set.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`[^«class ranges»]` matches any character not in the set.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Rules for class ranges:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Non-syntax characters stand for themselves: `[abc]`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'What characters must be escaped depends on the flags:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Flag `/v`: Some of the following characters only have to be escaped if they
+    appear twice, but it’s easier to always escape them. For details, see [“Escaping
+    inside character classes (`[···]`)” (§46.2.3)](#escaping-inside-character-classes).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Syntax Characters](https://tc39.es/ecma262/#prod-SyntaxCharacter):'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Slash:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[Class Set Reserved Punctuators](https://tc39.es/ecma262/#prod-ClassSetReservedPunctuator):'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'No Unicode flag (neither `/v` nor `/u`):'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We always must escape: `\ ]`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Some characters only have to be escaped in some locations:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`^` only has to be escaped if it comes first.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`-` only has to be escaped if it doesn’t come first or last.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Character escapes (`\n`, `\x20`, `\u{1F44D}`, etc.) have the usual meanings.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Watch out: `\b` stands for backspace. Elsewhere in a regular expression, it
+    matches word boundaries.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Character class escapes (`\d`, `\P{White_Space}`, `\p{RGI_Emoji}`, etc.) have
+    the usual meanings.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'A range of characters is specified via a dash: `[a-z]`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.6.1 Code point sequences in character classes ^(ES2024)](#character-class-code-point-sequences)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'With flag `/v`, we can use `\q{}` to add code point sequences to the set defined
+    by a character class. This syntax is also called:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Class string disjunction* (by [the ECMAScript specification](https://tc39.es/ecma262/#prod-ClassStringDisjunction))'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*String literal* (by [the ECMAScript proposal for flag `/v`](https://github.com/tc39/proposal-regexp-v-flag))'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is an example of using `\q{}`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Without `\q{}`, a [grapheme cluster](ch_unicode.html#grapheme-clusters) with
+    multiple code points is still treated as multiple characters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can use a single `\q{}` to add multiple code point sequences – if we separate
+    them with pipes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.6.2 Set operations for character classes ^(ES2024)](#regexp-character-class-set-operations)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Flag `/v` enables set operations for character classes.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.6.2.1 Nesting character classes](#nesting-character-classes)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'To enable set operations for character classes, we must be able to nest them.
+    Character class escapes already provide some kind of nesting:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With flag `/v`, we can additionally nest character classes (the regular expression
+    below is equivalent to the regular expression in the previous example):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.6.2.2 Subtraction of character sets via `--`](#subtraction-of-character-sets-via-)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can use the `--` operator to set-theoretically subtract the character sets
+    defined by character classes or character class escapes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Single code points can also be used on either side of the `--` operator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.6.2.3 Intersection of character sets via `&&`](#intersection-of-character-sets-via-)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can use the `&&` operator to set-theoretically intersect the character sets
+    defined by character classes or character class escapes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.6.2.4 Union of characters sets](#union-of-characters-sets)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Two compute the set-theoretical union of character sets, we only need to write
+    their definining constructs next to each other inside a character class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.7 Syntax: capture groups](#regexp-capture-groups)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Numbered capture group: `(a+)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Backreference: `\1`, `\2`, etc.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Named capture group ^(ES2018): `(?<as>a+)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Backreference: `\k<as>`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Noncapturing group: `(?:a+)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.8 Syntax: quantifiers](#regexp-quantifiers)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'By default, all of the following quantifiers are *greedy* (they match as many
+    characters as possible):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`?`: match never or once'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`*`: match zero or more times'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`+`: match one or more times'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`{n}`: match `n` times'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`{n,}`: match `n` or more times'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`{n,m}`: match at least `n` times, at most `m` times.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'To make them *reluctant* (so that they match as few characters as possible),
+    put question marks (`?`) after them:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.9 Syntax: assertions](#regexp-assertions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`^` matches only at the beginning of the input'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`$` matches only at the end of the input'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`\b` matches only at a word boundary'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`\B` matches only when not at a word boundary'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Overview of available lookaround assertions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Pattern | Name |  |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `(?=«pattern»)` | Positive lookahead | ES3 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `(?!«pattern»)` | Negative lookahead | ES3 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `(?<=«pattern»)` | Positive lookbehind | ES2018 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `(?<!«pattern»)` | Negative lookbehind | ES2018 |'
+  prefs: []
+  type: TYPE_TB
+- en: '[46.9.1 Lookahead assertions](#regexp-lookahead-assertions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '**Positive lookahead:** `(?=«pattern»)` matches if `pattern` matches what comes
+    next.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Example: sequences of lowercase letters that are followed by an `X`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that the `X` itself is not part of the matched substring.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Negative lookahead:** `(?!«pattern»)` matches if `pattern` does not match
+    what comes next.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Example: sequences of lowercase letters that are not followed by an `X`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.9.2 Lookbehind assertions ^(ES2018)](#regexp-lookbehind-assertions)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '**Positive lookbehind:** `(?<=«pattern»)` matches if `pattern` matches what
+    came before.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Example: sequences of lowercase letters that are preceded by an `X`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: '**Negative lookbehind:** `(?<!«pattern»)` matches if `pattern` does not match
+    what came before.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Example: sequences of lowercase letters that are not preceded by an `X`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Example: replace “.js” with “.html”, but not in “Node.js”.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.10 Syntax: disjunction (`|`)](#syntax-disjunction-)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Caveat: this operator has low precedence (binds very weakly). Use groups if
+    necessary:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`^aa|zz$` matches all strings that start with `aa` and/or end with `zz`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Note that `|` has a lower precedence than `^` and `$`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`^(aa|zz)$` matches the two strings `''aa''` and `''zz''`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`^a(a|z)z$` matches the two strings `''aaz''` and `''azz''`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.11 Regular expression flags](#regexp-flags)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '| Literal flag | Property name | ES | Description |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `d` | `hasIndices` | ES2022 | Switch on match indices |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `g` | `global` | ES3 | Match multiple times |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `i` | `ignoreCase` | ES3 | Match case-insensitively |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `m` | `multiline` | ES3 | `^` and `$` match per line |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `s` | `dotAll` | ES2018 | Dot matches line terminators |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `u` | `unicode` | ES6 | Unicode mode |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `v` | `unicodeSets` | ES2024 | Unicode sets mode (**recommended**) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `y` | `sticky` | ES6 | No characters between matches |'
+  prefs: []
+  type: TYPE_TB
+- en: 'Table 46.1: These are the regular expression flags supported by JavaScript.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The following regular expression flags are available in JavaScript ([table
+    46.1](#tbl:reg-exp-flags-table) provides a compact overview):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`/d` (`.hasIndices`): Some RegExp-related methods return *match objects* that
+    describe where the regular expression matched in an input string. If this flag
+    is on, each match object includes *match indices* which tell us where each group
+    capture starts and ends. More information: [“Match indices in match objects ^(ES2022)”
+    (§46.14.1)](#regexp-match-indices).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`/g` (`.global`) fundamentally changes how the following methods work.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`String.prototype.match()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`RegExp.prototype.exec()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`RegExp.prototype.test()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'How, is explained in [“The flags `/g` and `/y`, and the property `.lastIndex`
+    (advanced)” (§46.16)](#regexp-flags-gy). In a nutshell: Without `/g`, the methods
+    only consider the first match for a regular expression in an input string. With
+    `/g`, they consider all matches.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`/i` (`.ignoreCase`) switches on case-insensitive matching:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`/m` (`.multiline`): If this flag is on, `^` matches the beginning of each
+    line and `$` matches the end of each line. If it is off, `^` matches the beginning
+    of the whole input string and `$` matches the end of the whole input string.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`/s` (`.dotAll`): By default, the dot does not match line terminators. With
+    this flag, it does:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Workaround: If `/s` isn’t supported, we can use `[^]` instead of a dot.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Better support for Unicode (the “Unicode flags”):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`/u` (`.unicode`): By default, the atomic units of matching are JavaScript
+    characters (Unicode code units). This flag switches to Unicode code points as
+    atomic units. It is explained in [“Flag `/u`: characters are code points ^(ES6)”
+    (§46.11.3)](#regexp-flag-unicode).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`/v` (`.unicodeSets`): This flag improves and replaces flag `/u`. It supports
+    multi-code-point grapheme clusters and set operations in character classes. It
+    is explained in [“Flag `/v`: limited support for multi-code-point grapheme clusters
+    ^(ES2024)” (§46.11.4)](#regexp-flag-unicode-sets). **I recommend to use flag `/v`
+    with all regular expressions** – due to all the features it enables.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`/y` (`.sticky`): This flag mainly makes sense in conjunction with `/g`. When
+    both are switched on, any match must directly follow the previous one (that is,
+    it must start at index `.lastIndex` of the regular expression object). Therefore,
+    the first match must be at index 0.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'The main use case for `/y` is tokenization (during parsing). More information
+    on this flag: [“The flags `/g` and `/y`, and the property `.lastIndex` (advanced)”
+    (§46.16)](#regexp-flags-gy).'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[46.11.1 How to order regular expression flags?](#order-of-regexp-flags)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Consider the following regular expression: `/“([^”]+)”/vdg`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In which order should we list its flags? Two options are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Alphabetical order: `/dgv`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'In order of importance (arguably, `/v` is most fundamental etc.): `/vgd`'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'Given that (2) is not obvious, (1) is the better choice. JavaScript also uses
+    it for the RegExp property `.flags` :'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.11.2 Without the Unicode flags `/u` and `/v`: characters are UTF-16 code
+    units](#without-the-unicode-flags-u-and-v-characters-are-utf16-code-units)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Without the Unicode flags `/u` and `/v`, most constructs work with single UTF-16
+    code units, which is problematic whenever a character has more than one code unit
+    – e.g. 🙂:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Without Unicode flags, the largest character we can escape is a code unit,
+    via a *code unit escape*. It consists of `\u` followed by four hexadecimal digits:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The dot operator (`.`) matches code units, which is why we get two matches
+    instead of one:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Quantifiers apply to code units and therefore only repeat the second half of
+    🙂:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE55]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Character class escapes define sets of code units. Therefore, the class escape
+    `\D` for “not a decimal digit” gets two matches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE56]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Character classes define sets of code units. Therefore, putting 🙂 in a character
+    class has unintuitive consequences:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE57]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.11.3 Flag `/u`: characters are code points ^(ES6)](#regexp-flag-unicode)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In the previous subsection, we encountered problems when we wanted to match
+    a code point with more than one UTF-16 code unit – such as 🙂. Flag `/u` enables
+    support for code points and fixes those problems.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can escape code points via *code point escapes* – `\u{}` with one to six
+    hexadecimal digits:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE58]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The dot operator (`.`) matches code points:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE59]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Quantifiers apply to code points:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE60]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Character class escapes define sets of code points:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE61]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A new kind of character class escapes is supported – [Unicode character property
+    escapes](#unicode-character-property-escapes) specify sets of code points:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE62]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Character classes also define sets of code points:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE63]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.11.4 Flag `/v`: limited support for multi-code-point grapheme clusters
+    ^(ES2024)](#regexp-flag-unicode-sets)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '![Icon “tip”](../Images/8440b17bb8219cda9f9405ac83c36db0.png) **Use flag `/v`
+    whenever you can**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: This flag improves many aspects of JavaScript’s regular expressions and should
+    be used by default. If a platform doesn’t support it yet, you should at least
+    use `/u`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Flag `/v` builds on the improvements brought by flag `/u` and fixes several
+    of its shortcomings.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Note that flag `/v` and flag `/u` are mutually exclusive – we can’t use both
+    at the same time:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE64]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[46.11.4.1 Limitation of flag `/u`: handling grapheme clusters with more than
+    one code point](#limitation-of-flag-u-handling-grapheme-clusters-with-more-than-one-code-point)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Some font glyphs are represented by *grapheme clusters* (code point sequences)
+    with more than one code point – e.g. 😵‍💫:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE65]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Flag `/u` does not help us with those kinds of grapheme clusters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE66]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.11.4.2 Flag `/v`: Unicode string property escapes and character class string
+    literals](#flag-v-unicode-string-property-escapes-and-character-class-string-literals)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Flag `/v` works like flag `/u` but provides better support for multi-code-point
+    grapheme clusters. It doesn’t switch from code points to grapheme clusters everywhere,
+    but it does fix the last two issues we encountered in the previous subsection
+    – by adding support for multi-code-point grapheme clusters to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Character class escapes: We can refer to [Unicode string properties](#unicode-string-properties)
+    via `\p{}`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE67]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Character classes: `\q{}` lets us define [code point sequences](#character-class-code-point-sequences).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE68]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[46.11.4.3 Flag `/v`: character class set operations](#flag-v-character-class-set-operations)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Character classes can be nested and combined via the set operations subtraction
+    and intersection – see [“Set operations for character classes ^(ES2024)” (§46.6.2)](#regexp-character-class-set-operations).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.11.4.4 Flag `/v`: improved case-insensitive matching](#flag-v-improved-caseinsensitive-matching)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Flag `/u` has a quirk when it comes to case-insensitive matching: Using `\P{···}`
+    produces different results than `[^\p{···}]`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE69]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Observations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Both ways of negating should produce the same results.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Intuitively, if we add `/i` to a regular expression, it should match at least
+    as many strings as before – not fewer.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Flag `/v` fixes that quirk:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE70]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Further reading:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[A 2ality blog post](https://2ality.com/2022/11/regexp-v-flag.html#improved-case-insensitive-matching)
+    explains why `/u` causes this behavior.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Source of this section: [GitHub issue “IgnoreCase vs. complement vs. nested
+    class”](https://github.com/tc39/proposal-regexp-v-flag/issues/30)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.12 Pattern modifiers (inline flags) ^(ES2025)](#regexp-pattern-modifiers)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Pattern modifiers let us apply a flag to a part of a regular expression (vs.
+    all of the regular expression) – for example, in the following regular expression,
+    the flag `i` is only applied to “HELLO”:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE71]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.12.1 The syntax of pattern modifiers](#the-syntax-of-pattern-modifiers)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is what the syntax looks like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE72]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Notes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A flag that follows the question mark (`?`) is activated.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A flag that follows the hyphen (`-`) is deactivated.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A flag cannot appear in both the “activation section” and the “deactivation
+    section”.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Without any flags, this syntax is simply a non-capturing group: `(?:pattern)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Let’s change the previous example: Now all of the regular expression is case-insensitive
+    – except for “HELLO”:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE73]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.12.2 Which flags are supported?](#which-flags-are-supported)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following flags can be used in pattern modifiers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Literal flag | Property name | ES | Description |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| i | ignoreCase | ES3 | Match case-insensitively |'
+  prefs: []
+  type: TYPE_TB
+- en: '| m | multiline | ES3 | `^` and `$` match per line |'
+  prefs: []
+  type: TYPE_TB
+- en: '| s | dotAll | ES2018 | Dot matches line terminators |'
+  prefs: []
+  type: TYPE_TB
+- en: For more information, see [“Regular expression flags” (§46.11)](#regexp-flags).
+  prefs: []
+  type: TYPE_NORMAL
+- en: The remaining flags are not supported because they would either make regular
+    expression semantics too complicated (e.g. flag `v`) or because they only make
+    sense if applied to the whole regular expression (e.g. flag `g`).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.12.3 Use case: changing flags for part of a regular expression](#use-case-changing-flags-for-part-of-a-regular-expression)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'It’s sometimes useful to change flags for part of a regular expression. For
+    example, Ron Buckton [explains](https://github.com/tc39/proposal-regexp-modifiers/issues/1)
+    that changing flag `m` helps with matching a Markdown frontmatter block at the
+    start of a file (I slightly edited his version):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE74]'
+  prefs: []
+  type: TYPE_PRE
+- en: How does this regular expression work?
+  prefs: []
+  type: TYPE_NORMAL
+- en: By default, flag `m` is on and the anchor `^` matches at the beginning of a
+    line and the anchor `$` matches at the end of a line.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The very first `^` is different: It must match at the beginning of a string.
+    That’s why we use a pattern modifier there and switch flag `m` off.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is the regular expression, formatted with insignificant whitespace and
+    explanatory comments:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE75]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.12.4 Use case: inlining flags](#use-case-inlining-flags)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In some situations, flags being outside the actual regular expressions is inconvenient.
+    Then pattern modifiers help. Examples include:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Storing regular expressions in configuration files, e.g. in JSON format.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[The Regex+ library](https://github.com/slevithan/regex) provides a template
+    literal that makes creating regular expressions much more convenient. The syntax
+    for specifying flags adds a bit of clutter that can be avoided via pattern modifiers
+    (if they support the required flags):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE76]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[46.12.5 Use case: regular expression fragments that change flags](#use-case-regular-expression-fragments-that-change-flags)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In complex applications, it helps if you can compose large regular expressions
+    out of smaller regular expressions. The aforementioned Regex+ library supports
+    that. If a smaller regular expression needs different flags (e.g. because it wants
+    to ignore case) then it can – thanks to pattern modifiers.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.13 Properties of regular expression objects](#properties-of-regular-expression-objects)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Noteworthy:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Strictly speaking, only `.lastIndex` is a real instance property. All other
+    properties are implemented via getters.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Accordingly, `.lastIndex` is the only mutable property. All other properties
+    are read-only. If we want to change them, we need to copy the regular expression
+    (see [“Cloning and non-destructively modifying regular expressions” (§46.1.3)](#cloning-regexps)
+    for details).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.13.1 Flags as properties](#flags-as-properties)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Each regular expression flag exists as a property with a longer, more descriptive
+    name:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE77]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is the complete list of flag properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.dotAll` (`/s`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.global` (`/g`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.hasIndices` (`/d`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.ignoreCase` (`/i`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.multiline` (`/m`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.sticky` (`/y`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.unicode` (`/u`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.unicodeSets` (`/v`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.13.2 Other properties](#other-properties)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Each regular expression also has the following properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.source` ^(ES3): The regular expression pattern'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE78]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`.flags` ^(ES6): The flags of the regular expression'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE79]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`.lastIndex` ^(ES3): Used when flag `/g` is switched on. See [“The flags `/g`
+    and `/y`, and the property `.lastIndex` (advanced)” (§46.16)](#regexp-flags-gy)
+    for details.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.14 Match objects](#match-objects)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Several regular expression-related methods return so-called *match objects*
+    to provide detailed information for the locations where a regular expression matches
+    an input string. These methods are:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`RegExp.prototype.exec()` returns `null` or a single match object.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`String.prototype.match()` returns `null` or a single match object (if flag
+    `/g` is not set).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`String.prototype.matchAll()` returns an iterable of match objects (flag `/g`
+    must be set; otherwise, an exception is thrown).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This is an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE80]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The result of `.exec()` is a *match object* for the first match with the following
+    properties:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`[0]`: the complete substring matched by the regular expression'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`[1]`: capture of numbered group 1 (etc.)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.index`: where did the match occur?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.input`: the string that was matched against'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.groups`: captures of named groups (see [“Named capture groups ^(ES2018)”
+    (§46.15.2.1)](#named-capture-groups))'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.indices`: the index ranges of captured groups'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This property is only created if flag `/d` is switched on.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.14.1 Match indices in match objects ^(ES2022)](#regexp-match-indices)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '*Match indices* are a feature of match objects: If we turn it on via the regular
+    expression flag `/d` (property `.hasIndices`), they record the start and end indices
+    of where groups were captured.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.14.1.1 Match indices for numbered groups](#match-indices-for-numbered-groups)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'This is how we access the captures of numbered groups:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE81]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Due to the regular expression flag `/d`, `matchObj` also has a property `.indices`
+    that records for each numbered group where it was captured in the input string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE82]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.14.1.2 Match indices for named groups](#match-indices-for-named-groups)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The captures of named groups are accessed like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE83]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Their indices are stored in `matchObj.indices.groups`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE84]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.14.1.3 A more realistic example](#a-more-realistic-example)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'One important use case for match indices are parsers that point to where exactly
+    a syntactic error is located. The following code solves a related problem: It
+    points to where quoted content starts and where it ends (see demonstration at
+    the end).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE85]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.15 Methods for working with regular expressions](#methods-for-working-with-regular-expressions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[46.15.1 By default, regular expressions match anywhere in a string](#by-default-regular-expressions-match-anywhere-in-a-string)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'By default, regular expressions match anywhere in a string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE86]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can change that by using assertions such as `^` (or by using the flag `/y`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE87]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.15.2 `string.match(regExp)` without `/g`: getting a match object for the
+    first match](#String.prototype.match)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Without the flag `/g`, `string.match(regExp)` returns [a match object](#match-objects)
+    for the first match of `regExp` in `str`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE88]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.15.2.1 Named capture groups ^(ES2018)](#named-capture-groups)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The previous example contained a single numbered group. The following example
+    demonstrates named groups:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE89]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the result of `.match()`, we can see that a named group is also a numbered
+    group – its capture exists twice:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Once as a numbered capture (property `'1'`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Once as a named capture (property `groups.as`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.15.2.2 Duplicate named capture groups ^(ES2025)](#duplicate-named-capture-groups)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Since ECMAScript 2025, we can use the same group name twice – as long as it
+    appears in different alternatives:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE90]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following is not allowed (group `xs` would match twice):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE91]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.15.3 `string.match(regExp)` with `/g`: getting all group 0 captures ^(ES3)](#stringmatchregexp-with-g-getting-all-group-0-captures-es3)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'With flag `/g`, `string.match(regExp)` returns all substrings of `str` that
+    match `regExp`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE92]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If there is no match, `.match()` returns `null`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE93]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can use [the nullish coalescing operator (`??`)](ch_undefined-null.html#nullish-coalescing-operator)
+    to protect ourselves against `null`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE94]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also use [optional chaining (`?.`)](ch_objects.html#optional-chaining)
+    and combine it with the nullish coalescing operator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE95]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.15.4 `string.matchAll(regExp)`: getting an iterable over all match objects
+    ^(ES2020)](#String.prototype.matchAll)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is how `.matchAll()` is invoked:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE96]'
+  prefs: []
+  type: TYPE_PRE
+- en: Given a string and a regular expression, `.matchAll()` returns an iterable over
+    the match objects of all matches.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In the following example, we use [`Array.from()`](ch_arrays.html#Array.from)
+    to convert iterables to Arrays so that we can compare them better.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE97]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Flag `/g` must be set:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE98]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`.matchAll()` isn’t affected by `regExp.lastIndex` and doesn’t change it.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Extracting quoted text via `.matchAll()`**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/regexps/extract_quoted_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.15.4.1 Implementing `.matchAll()`](#implementing-matchall)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`.matchAll()` could be implemented via `.exec()` as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE99]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Making a local copy ensures two things:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`regex.lastIndex` isn’t changed.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`localCopy.lastIndex` is zero.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Using `matchAll()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE100]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE101]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.15.5 `regExp.exec(str)`: capturing groups ^(ES3)](#RegExp.prototype.exec)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[46.15.5.1 `regExp.exec(str)` without `/g`: getting a match object for the
+    first match](#regexpexecstr-without-g-getting-a-match-object-for-the-first-match)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Without flag `/g`, `regExp.exec()` works like `string.match()` – it returns
+    a single match object.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.15.5.2 `regExp.exec(str)` with `/g`: looping over all matches](#regexpexecstr-with-g-looping-over-all-matches)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '![Icon “tip”](../Images/8440b17bb8219cda9f9405ac83c36db0.png) **Better alternative
+    for retrieving all matches: `string.matchAll(regExp)` ^(ES2020)**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Since ECMAScript 2020, JavaScript has another method for retrieving all matches:
+    [`string.matchAll(regExp)`](#String.prototype.matchAll). That method is easier
+    and safer to use: It returns an iterable, is unaffected by `.lastIndex` and throws
+    an exception if flag `/g` is missing.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we want to retrieve all matches of a regular expression (not just the first
+    one), we need to switch on the flag `/g`. Then we can call `.exec()` multiple
+    times and get one match each time. After the last match, `.exec()` returns `null`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE102]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Therefore, we can loop over all matches as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE103]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE104]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.15.6 `string.match()` vs. `string.matchAll()` vs. `regExp.exec()`](#match-vs-matchall-vs-exec)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following table summarizes the differences between three methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|  | Without `/g` | With `/g` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `string.match(regExp)` | First match object | Array of group 0 captures |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `string.matchAll(regExp)` | `TypeError` | Iterable over match objects |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `regExp.exec(string)` | First match object | Next match object or `null`
+    |'
+  prefs: []
+  type: TYPE_TB
+- en: '[46.15.7 Replacing with `string.replace()` and `string.replaceAll()`](#replace-replaceAll)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Both replacing methods have two parameters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`string.replace(searchValue, replacementValue)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`string.replaceAll(searchValue, replacementValue)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`searchValue` can be:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A string
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A regular expression
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`replacementValue` can be:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'String: Replace matches with this string. The character `$` has special meaning
+    and lets us insert captures of groups and more (details are explained later).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Function: Compute strings that replace matches via this function.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The two methods differ as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.replace()` replaces the first occurrence of a string or a regular expression
+    without `/g`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.replaceAll()` replaces all occurrences of a string or a regular expression
+    with `/g`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This table summarizes how that works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Search for: → | string | RegExp w/o `/g` | RegExp with `/g` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `.replace` | First occurrence | First occurrence | (All occurrences) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `.replaceAll` | All occurrences | `TypeError` | All occurrences |'
+  prefs: []
+  type: TYPE_TB
+- en: The last column of `.replace()` is in parentheses because this method existed
+    long before `.replaceAll()` and therefore supports functionality that should now
+    be handled via the latter method. If we could change that, `.replace()` would
+    throw a `TypeError` here.
+  prefs: []
+  type: TYPE_NORMAL
+- en: We first explore how `.replace()` and `.replaceAll()` work individually when
+    `replacementValue` is a simple string (without the character `$`). Then we examine
+    how both are affected by more complicated replacement values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.15.7.1 `string.replace(searchValue, replacementValue)` ^(ES3)](#String.prototype.replace)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'How `.replace()` operates is influenced by its first parameter `searchValue`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Regular expression without `/g`: Replace first match of this regular expression.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE105]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'String: Replace first occurrence of this string (the string is interpreted
+    verbatim, not as a regular expression).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE106]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Regular expression with `/g`: Replace all matches of this regular expression.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE107]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Recommendation: If `.replaceAll()` is available, it’s better to use that method
+    in this case – its purpose is to replace multiple occurrences.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'If we want to replace every occurrence of a string, we have two options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can use `.replaceAll()` (which was introduced in ES2021).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Later in this chapter, we will encounter [the tool function `escapeForRegExp()`)
+    which will help us convert a string into a regular expression that matches that
+    string multiple times (e.g., `'*'` becomes `/\*/g`).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.15.7.2 `string.replaceAll(searchValue, replacementValue)` ^(ES2021)](#String.prototype.replaceAll)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'How `.replaceAll()` operates is influenced by its first parameter `searchValue`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Regular expression with `/g`: Replace all matches of this regular expression.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE108]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'String: Replace all occurrences of this string (the string is interpreted verbatim,
+    not as a regular expression).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE109]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Regular expression without `/g`: A `TypeError` is thrown (because the purpose
+    of `.replaceAll()` is to replace multiple occurrences).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE110]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[46.15.7.3 The parameter `replacementValue` of `.replace()` and `.replaceAll()`](#the-parameter-replacementvalue-of-replace-and-replaceall)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'So far, we have only used the parameter `replacementValue` with simple strings,
+    but it can do more. If its value is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A string, then matches are replaced with this string. The character `$` has
+    special meaning and lets us insert captures of groups and more (read on for details).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A function, then matches are replaced by strings that are computed via this
+    function.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.15.7.4 `replacementValue` is a string](#replacementvalue-is-a-string)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If the replacement value is a string, the dollar sign has special meaning –
+    it inserts text matched by the regular expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Text | Result |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `$$` | single `$` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `$&` | complete match |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `` $` `` | text before match |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `$''` | text after match |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `$n` | capture of numbered group `n` (`n` > 0) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `$<name>` | capture of named group `name` (ES2018) |'
+  prefs: []
+  type: TYPE_TB
+- en: 'Example: Inserting the text before, inside, and after the matched substring.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE111]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Example: Inserting the captures of numbered groups.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE112]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Example: Inserting the captures of named groups.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE113]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Change quotes via `.replace()` and a named group**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/regexps/change_quotes_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.15.7.5 `replacementValue` is a function](#replacementvalue-is-a-function)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: If the replacement value is a function, we can compute each replacement. In
+    the following example, we multiply each non-negative integer that we find by two.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE114]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The replacement function gets the following parameters. Note how similar they
+    are to match objects. These parameters are all positional, but I’ve included how
+    one might name them:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`all`: complete match'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`g1`: capture of numbered group 1'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`index`: where did the match occur?'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`input`: the string in which we are replacing'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`groups` ^(ES2018): captures of named groups (an object). Always the last parameter.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'If we are only interested in `groups`, we can use the following technique:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE115]'
+  prefs: []
+  type: TYPE_PRE
+- en: Due to the [rest parameter](ch_callables.html#rest-parameters) in line A, `args`
+    contains an Array with all parameters. We access the last parameter via [the Array
+    method `.at()`](ch_arrays.html#Array.prototype.at) in line B.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.15.8 `regExp.test(str)`: is there a match? ^(ES3)](#RegExp.prototype.test)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The regular expression method `regExp.test(str)` returns `true` if `regExp`
+    matches `str`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE116]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With `.test()` we should normally avoid the `/g` flag. If we use it, we generally
+    don’t get the same result every time we call the method:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE117]'
+  prefs: []
+  type: TYPE_PRE
+- en: The results are due to `/a/` having two matches in the string. After all of
+    those were found, `.test()` returns `false`. For more information, see [“The flags
+    `/g` and `/y`, and the property `.lastIndex` (advanced)” (§46.16)](#regexp-flags-gy).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.15.9 `string.search(regExp)`: at what index is the match? ^(ES3)](#String.prototype.search)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The string method `.search()` returns the first index of `str` at which there
+    is a match for `regExp`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE118]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.15.10 `string.split(separator, limit?)`: splitting strings ^(ES3)](#String.prototype.split)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Splits the string into an Array of substrings – the strings that occur between
+    the separators.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The separator can be a string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE119]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'It can also be a regular expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE120]'
+  prefs: []
+  type: TYPE_PRE
+- en: The last invocation demonstrates that captures made by groups in the regular
+    expression become elements of the returned Array.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we want the separators to be part of the returned string fragments, we can
+    use a regular expression with a [lookbehind assertion](#regexp-lookbehind-assertions)
+    or a [lookahead assertion](#regexp-lookahead-assertions):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE121]'
+  prefs: []
+  type: TYPE_PRE
+- en: Thanks to the lookaround assertions, the regular expression used for splitting
+    leaves the colons in the fragments and only removes the spaces following or preceding
+    the colons.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Pitfall:** `.split('''')` splits into JavaScript characters, but we usually
+    want to split into grapheme clusters or at least Unicode code points. Therefore,
+    it’s better to use `Intl.Segmenter` or `Array.from()` for splitting. For more
+    information, see [“Atoms of text: code points, JavaScript characters, grapheme
+    clusters” (§22.7)](ch_strings.html#atoms-of-text).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16 The flags `/g` and `/y`, and the property `.lastIndex` (advanced)](#regexp-flags-gy)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: In this section, we examine how the RegExp flags `/g` and `/y` work and how
+    they depend on the RegExp property `.lastIndex`. We’ll also discover an interesting
+    use case for `.lastIndex` that you may find surprising.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.1 The flags `/g` and `/y`](#the-flags-g-and-y)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Every method reacts differently to `/g` and `/y`; this gives us a rough general
+    idea:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`/g` (`.global`, ES3): The regular expression should match multiple times,
+    anywhere in a string.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`/y` (`.sticky`, ES6): Any match inside a string should immediately follow
+    a previous match (the matches “stick” together).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a regular expression has neither the flag `/g` nor the flag `/y`, matching
+    happens once and starts at the beginning.
+  prefs: []
+  type: TYPE_NORMAL
+- en: With either `/g` or `/y`, matching is performed relative to a “current position”
+    inside the input string. That position is stored in the regular expression property
+    `.lastIndex`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'There are three groups of regular-expression-related methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The string methods `.search(regExp)` and `.split(regExp)` completely ignore
+    `/g` and `/y` (and therefore also `.lastIndex`).
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The `RegExp` methods `.exec(str)` and `.test(str)` change in two ways if either
+    `/g` or `/y` is set.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: First, we get multiple matches, by calling one method repeatedly. Each time,
+    it returns either another result (a match object or `true`) or an “end of results”
+    value (`null` or `false`).
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Second, the regular expression property `.lastIndex` is used to step through
+    the input string. On one hand, `.lastIndex` determines where matching starts:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`/g` means that a match must begin at `.lastIndex` or later.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`/y` means that a match must begin at `.lastIndex`. That is, the beginning
+    of the regular expression is anchored to `.lastIndex`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Note that `^` and `$` continue to work as usually: They anchor matches to the
+    beginning or end of the input string, unless `.multiline` is set. Then they anchor
+    to the beginnings or ends of lines.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: On the other hand, `.lastIndex` is set to one plus the last index of the previous
+    match.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'The remaining methods are:'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: The string methods `.match(regExp)` and `.matchAll(regExp)` (throws without
+    `/g`)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The string methods `.replace(regExp, str)` and `.replaceAll(regExp, str)` (throws
+    without `/g`)
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'These are all affected as follows:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`/g` leads to multiple matches.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`/y` leads to a single match that must start at `.lastIndex`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`/gy` leads to multiple matches without gaps.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This was a first overview. The next sections get into more details.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.2 How exactly are methods affected by `/g` and `/y`?](#how-exactly-are-methods-affected-by-g-and-y)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following methods are unaffected by `/g` and `/y`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`string.search(regExp)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`string.split(regExp)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.16.2.1 `string.match(regExp)` ^(ES3)](#stringmatchregexp-es3)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: Without `/g` and `/y`, `.match()` ignores `.lastIndex` and always returns a
+    match object for the first match.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE122]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/y`, the match must start at exactly `.lastIndex`. `.lastIndex` is updated.
+    If there is no match, `null` is returned.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE123]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/g`, we get all matches (group 0) in an Array. `.lastIndex` is ignored
+    and reset to zero.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE124]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`/gy` works similarly to `/g`, but no gaps between matches are allowed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE125]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.2.2 `string.matchAll(regExp)` ^(ES2020)](#stringmatchallregexp-es2020)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If `/g` is not set, `.matchAll()` throws an exception:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE126]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If `/g` is set, matching starts at `.lastIndex` and that property isn’t changed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE127]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`/gy` works similarly to `/g`, but no gaps between matches are allowed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE128]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.2.3 `regExp.exec(str)` ^(ES3)](#regexpexecstr-es3)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Without `/g` and `/y`, `.exec()` ignores `.lastIndex` and always returns a
+    match object for the first match:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE129]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/g`, the match must start at `.lastIndex` or later. `.lastIndex` is updated.
+    If there is no match, `null` is returned.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE130]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/y`, the match must start at exactly `.lastIndex`. `.lastIndex` is updated.
+    If there is no match, `null` is returned.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE131]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/gy`, `.exec()` behaves the same as with `/y`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.2.4 `string.replace(regExp, str)` ^(ES3)](#stringreplaceregexp-str-es3)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Without `/g` and `/y`, only the first occurrence is replaced:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE132]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/g`, all occurrences are replaced. `.lastIndex` is ignored but reset to
+    zero.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE133]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/y`, only the (first) occurrence at `.lastIndex` is replaced. `.lastIndex`
+    is updated.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE134]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`/gy` works like `/g`, but gaps between matches are not allowed:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE135]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.2.5 `string.replaceAll(regExp, str)` ^(ES2021)](#stringreplaceallregexp-str-es2021)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`.replaceAll()` works like `.replace()` but throws an exception if `/g` is
+    not set:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE136]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.2.6 `regExp.test(str)` ^(ES3)](#regexpteststr-es3)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: This method behaves the same same as `.exec()`, but instead of returning a match
+    object, it returns `true`, and instead of returning `null`, it returns `false`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, without either `/g` or `/y`, the result is always `true`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE137]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With `/g`, there are two matches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE138]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With `/y`, there is only one match:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE139]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/gy`, `.test()` behaves the same as with `/y`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.3 Four pitfalls of `/g` and `/y` and how to deal with them](#four-pitfalls-of-g-and-y-and-how-to-deal-with-them)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: We will first look at four pitfalls of `/g` and `/y` and then at ways of dealing
+    with those pitfalls.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.3.1 Pitfall 1: We can’t inline a regular expression with `/g` or `/y`](#pitfall-1-we-cant-inline-a-regular-expression-with-g-or-y)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: A regular expression with `/g` can’t be inlined. For example, in the following
+    `while` loop, the regular expression is created fresh, every time the condition
+    is checked. Therefore, its `.lastIndex` is always zero and the loop never terminates.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE140]'
+  prefs: []
+  type: TYPE_PRE
+- en: With `/y`, the problem is the same.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.3.2 Pitfall 2: Removing `/g` or `/y` can break code](#pitfall-2-removing-g-or-y-can-break-code)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If code expects a regular expression with `/g` and has a loop over the results
+    of `.exec()` or `.test()`, then a regular expression without `/g` can cause an
+    infinite loop:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE141]'
+  prefs: []
+  type: TYPE_PRE
+- en: Why is there an infinite loop? Because `.exec()` always returns the first result,
+    a match object, and never `null`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: With `/y`, the problem is the same.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.3.3 Pitfall 3: Adding `/g` or `/y` can break code](#pitfall-3-adding-g-or-y-can-break-code)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'With `.test()`, there is another caveat: It is affected by `.lastIndex`. Therefore,
+    if we want to check exactly once if a regular expression matches a string, then
+    the regular expression must not have `/g`. Otherwise, we generally get a different
+    result every time we call `.test()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE142]'
+  prefs: []
+  type: TYPE_PRE
+- en: The first invocation produces a match and updates `.lastIndex`. The second invocation
+    does not find a match and resets `.lastIndex` to zero.
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we create a regular expression specifically for `.test()`, then we probably
+    won’t add `/g`. However, the likeliness of encountering `/g` increases if we use
+    the same regular expression for replacing and for testing.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Once again, this problem also exists with `/y`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE143]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.3.4 Pitfall 4: Code can produce unexpected results if `.lastIndex` isn’t
+    zero](#pitfall-4-code-can-produce-unexpected-results-if-lastindex-isnt-zero)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If an operation uses regular expression methods that are affected by `.lastIndex`,
+    then we must ensure that `.lastIndex` is zero at the beginning. Otherwise, we
+    may get unexpected results:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE144]'
+  prefs: []
+  type: TYPE_PRE
+- en: Normally, `.lastIndex` is zero in newly created regular expressions and we won’t
+    change it explicitly like we did in the example. But `.lastIndex` can still end
+    up not being zero if we use the regular expression multiple times.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.3.5 How to avoid the pitfalls of `/g` and `/y`](#how-to-avoid-the-pitfalls-of-g-and-y)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: As an example of dealing with `/g` and `.lastIndex`, we revisit `countMatches()`
+    from the previous example. How do we prevent a wrong regular expression from breaking
+    our code? Let’s look at three approaches.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.3.5.1 Throwing exceptions](#throwing-exceptions)'
+  prefs:
+  - PREF_H6
+  type: TYPE_NORMAL
+- en: 'First, we can throw an exception if `/g` isn’t set or `.lastIndex` isn’t zero:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE145]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.3.5.2 Cloning regular expressions](#cloning-regular-expressions)'
+  prefs:
+  - PREF_H6
+  type: TYPE_NORMAL
+- en: Second, we can clone the parameter. That has the added benefit that `regExp`
+    won’t be changed.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE146]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.3.5.3 Using an operation that isn’t affected by `.lastIndex` or flags](#using-an-operation-that-isnt-affected-by-lastindex-or-flags)'
+  prefs:
+  - PREF_H6
+  type: TYPE_NORMAL
+- en: 'Several regular expression operations are not affected by `.lastIndex` or by
+    flags. For example, `.match()` ignores `.lastIndex` if `/g` is present:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE147]'
+  prefs: []
+  type: TYPE_PRE
+- en: Here, `countMatches()` works even though we didn’t check or fix `.lastIndex`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.4 Use case for `.lastIndex`: starting matching at a given index](#use-case-for-lastindex-starting-matching-at-a-given-index)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Apart from storing the current position when matching multiple times, `.lastIndex`
+    can also be used to:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Match once at exactly a given position (via flag `/y`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Match once at a given position or later (via flag `/g`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We’ll look at examples next.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.4.1 Example: Checking if a regular expression matches at a given index](#example-checking-if-a-regular-expression-matches-at-a-given-index)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Given that `.test()` is affected by `/y` and `.lastIndex`, we can use it to
+    check if a regular expression `regExp` matches a string `str` at exactly a given
+    `index`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE148]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`regExp` is anchored to `.lastIndex` due to `/y`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Note that we must not use the assertion `^` which would anchor `regExp` to the
+    beginning of the input string.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.16.4.2 Example: Finding the location of a match, starting at a given index](#example-finding-the-location-of-a-match-starting-at-a-given-index)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`.search()` lets us find the location where a regular expression matches:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE149]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Alas, we can’t change where `.search()` starts looking for matches. As a workaround,
+    we can use `.exec()` for searching:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE150]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.4.3 Example: Replacing an occurrence at a given index](#example-replacing-an-occurrence-at-a-given-index)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'When used without `/g` and with `/y`, `.replace()` makes one replacement –
+    if there is a match at `.lastIndex`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE151]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.16.5 The downsides and an upside of `.lastIndex`](#regexp-lastindex-upsides-downsides)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The regular expression property `.lastIndex` has two significant downsides:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'It makes regular expressions stateful:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We now have to be mindful of the states of regular expressions and how we share
+    them.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: For many use cases, we can’t make them immutable via freezing, either.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Support for `.lastIndex` is inconsistent among regular expression operations.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'On the upside, `.lastIndex` also gives us additional useful functionality:
+    We can dictate where matching should begin (for some operations). Ideally, such
+    functionality would be provided via an assertion such as `\G` (vs. a flag `/y`)
+    and an index as an argument for various regular-expression-related methods (vs.
+    a regular expression property `.lastIndex`). But it’s better than not having it
+    at all.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.17 `RegExp.escape()`: escaping text so that it can be used inside a regular
+    expression ^(ES2025)](#RegExp.escape)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: For a string `text`, `RegExp.escape(text)` creates a regular expression pattern
+    that matches `text`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Characters that have special meaning in regular expressions can’t be used verbatim
+    and have to be escaped:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE152]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Note that we see each regular expression backslash twice: One of them is the
+    actual backslash, the other one escapes it inside the string literal:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE153]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Characters that have no special meaning don’t have to be escaped:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE154]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.17.1 Use case for `RegExp.escape()`: replacing all occurrences of a text](#use-case-for-regexpescape-replacing-all-occurrences-of-a-text)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The classic use case for escaping was searching and replacing text:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE155]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'However, since ES2021, we have [`.replaceAll()`](#String.prototype.replaceAll):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE156]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.17.2 Use case for `RegExp.escape()`: part of a regular expression must
+    match a given text](#use-case-for-regexpescape-part-of-a-regular-expression-must-match-a-given-text)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code removes all occurrences of `text` inside `str` that are
+    not quoted:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE157]'
+  prefs: []
+  type: TYPE_PRE
+- en: The same approach can also be used to find or count unquoted text.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Searching for text that contains a wildcard**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ✅ `exercises/regexps/includes-with-elision_test.mjs`
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.18 Matching everything or nothing](#matching-everything-or-nothing)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Sometimes, we may need a regular expression that matches everything or nothing
+    – for example, as a default value.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Match everything: `/(?:)/`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The empty group `()` matches everything. We make it non-capturing (via `?:`),
+    to avoid unnecessary work.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE158]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Match nothing: `/.^/`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`^` only matches at the beginning of a string. The dot moves matching beyond
+    the first character and now `^` doesn’t match anymore.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE159]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Regular expression literals can’t be empty because `//` starts a single-line
+    comment. Therefore, the first of the previous two regular expressions is used
+    in this case:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE160]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.19 Tips for making regular expressions easier to use](#tips-for-making-regular-expressions-easier-to-use)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'In this section, we explore ways in which we can make regular expressions easier
+    to use. We’ll use the following regular expression as an example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE161]'
+  prefs: []
+  type: TYPE_PRE
+- en: Right now, it is still fairly cryptic. It will be much easier to understand
+    once we get to “insignificant whitespace”.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.19.1 Tip: Use flag `/v`](#tip-use-flag-v)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we add flag `/v` to our regular expression, we get fewer quirks and more
+    features:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE162]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`/v` doesn’t change anything in this particular case, but it helps us if we
+    add grapheme clusters with more than one code point or if we want features such
+    as set operations in character classes.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.19.2 Tip: order flags alphabetically](#tip-order-flags-alphabetically)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If there is more than one flag, we should [order the flags alphabetically](#order-of-regexp-flags)
+    – e.g.:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE163]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'That makes ordering consistent and is also how JavaScript displays regular
+    expressions:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE164]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.19.3 Tip: Use named capture groups](#tip-use-named-capture-groups)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Our regular expression contains two positional capture groups. If we name them,
+    they describe their purposes and we need less external documentation:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE165]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.19.4 Tip: insignificant whitespace and line comments via `#`](#tip-insignificant-whitespace-and-line-comments-via-)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'So far, the regular expression is still fairly hard to read. We can change
+    that by adding spaces and line breaks. Since regular expression literals don’t
+    allow us to do that, we use the library [Regex+](https://github.com/slevithan/regex)
+    which provides us with the template tag `regex`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE166]'
+  prefs: []
+  type: TYPE_PRE
+- en: The feature of ignoring whitespace in regular expression patterns is called
+    *insignificant whitespace*. Additionally, we used a feature called *inline comments*
+    – which are started by hash symbols (`#`).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Two observations:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Since all spaces are removed, we use the hex escape `\x20` to express that there
+    is a space after `new` and after `get`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Alas, line comments are not allowed inside character classes. That’s why the
+    comment about square brackets comes before the character class.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In the future, JavaScript may get built-in support for insignificant whitespace
+    via a flag `/x` ([ECMAScript proposal](https://github.com/tc39/proposal-regexp-x-mode)).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'With the `regex` template tag, the following flags are always active:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Flag `/v`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Flag `/x` (emulated) enables insignificant whitespace and line comments via
+    `#`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Flag `/n` (emulated) enables *named capture only mode*, which prevents numbered
+    groups from capturing. In other words: `(pattern)` is treated like `(?:pattern)`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[46.19.5 Tip: Write tests for your regular expression](#tip-write-tests-for-your-regular-expression)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'To make sure that a regular expression works as intended, we can write tests
+    for it. These are tests for `RE_API_SIGNATURE`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE167]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[46.19.6 Tip: Mention examples in your documentation](#tip-mention-examples-in-your-documentation)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Seeing strings that match, helps with understanding what a regular expression
+    is supposed to do:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE168]'
+  prefs: []
+  type: TYPE_PRE
+- en: '* `get Map.prototype.size`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '* `new Array(len = 0)`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '* `Array.prototype.push(...items)`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '* `Map.prototype[Symbol.iterator]()`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '* [PRE169]'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Some documentation tools let us refer to unit tests in doc comments and show
+    their code in the documentation. That’s a good alternative to what we have done
+    above.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.19.7 Bonus tip: Use interpolation to reuse patterns](#bonus-tip-use-interpolation-to-reuse-patterns)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The Regex+ library lets us interpolate regular expression fragments (“patterns”),
+    which helps with reuse. The following example defines a simple markup syntax that
+    is reminiscent of HTML:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE170]'
+  prefs: []
+  type: TYPE_PRE
+- en: The regular expression `TAG` uses the regular expression fragments `NAME` and
+    `ARGS` twice – which reduces redundancy.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.19.8 Bonus tip: insignificant whitespace without a library](#bonus-tip-insignificant-whitespace-without-a-library)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'With the following trick, we don’t need a library to write a regular expression
+    with insignificant whitespace:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE171]'
+  prefs: []
+  type: TYPE_PRE
+- en: How does this code work?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`String.raw`](ch_template-literals.html#raw-string-literals) enables two things:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: We don’t have to escape regular expression backslashes for this kind of string
+    literal.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The regular expression can span multiple lines.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.replaceAll()` removes all whitespace (spaces, tabs, line breaks, etc.) so
+    that the end result looks almost like the initial version of the regular expression.
+    There is one difference, though: Since literal spaces are removed, we have to
+    find a different way to specify that there is a space after `new` and after `get`.
+    One option is the hex escape `\x20`: hexadecimal 20 (decimal 32) is the code point
+    SPACE.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'We can even emulate inline comments like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE172]'
+  prefs: []
+  type: TYPE_PRE
+- en: Alas, it’s more syntactically noisy than I’d like.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.19.9 Conclusion: This is how regular expressions are meant to be written](#conclusion-this-is-how-regular-expressions-are-meant-to-be-written)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'One reason why many people don’t like regular expressions is that they find
+    them difficult to read. However, that is much less of a problem with insignificant
+    whitespace and comments. I’d argue that is the proper way of writing regular expressions:
+    Think what JavaScript code would look like if we had to write it without whitespace
+    and comments.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.20 Quick reference: regular expression functionality](#quickref-RegExp)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[46.20.1 Summary: `.global` (`/g`) and `.sticky` (`/y`)](#summary-flags-global-sticky)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following two methods are completely unaffected by `/g` and `/y`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`String.prototype.search()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`String.prototype.split()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'This table explains how the remaining regular-expression-related methods are
+    affected by these two flags (if neither `/g` nor `/y` are there, `regExp.lastIndex`
+    is always ignored):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '|  | Flags | Honors `.lastIndex`? | Updates `.lastIndex`? |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `s.match` | `/y` | ✔ | ✔ |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  | `/g /gy` | ✘ | 0 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `s.matchAll` | `/g /gy` | ✔ | ✘ |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `r.exec` | `/g /y /gy` | ✔ | ✔ |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `s.replace` | `/y` | ✔ | ✔ |'
+  prefs: []
+  type: TYPE_TB
+- en: '|  | `/g /gy` | ✘ | 0 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `s.replaceAll` | `/g /gy` | ✘ | 0 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `r.test` | `/g /y /gy` | ✔ | ✔ |'
+  prefs: []
+  type: TYPE_TB
+- en: '![Icon “external”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png) **A longer
+    overview**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: I posted [a longer table](https://gist.github.com/rauschma/5c90e6c19923611521a61e199d8cb15b)
+    online that was created via a Node.js script.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[46.20.2 `String.prototype.*`: matching and searching](#stringprototype-matching-and-searching)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`String.prototype.match(regExpOrString)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES3 | `/y` honors and updates `.lastIndex` | `/g /gy` ignore and reset `.lastIndex`
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (1 of 3) `regExpOrString` is a string.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `regExpOrString` is a string, it defines a pattern for a regular expression
+    without `/g` (think parameter of `new RegExp()`). That regular expression is used
+    as explained in the next list item.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (2 of 3) `regExpOrString` is a RegExp without `/g`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE173]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: If `regExpOrString` is a regular expression with flag `/g` not set, then `.match()`
+    returns the first match for `regExpOrString` within the string. Or `null` if there
+    is no match.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Numbered capture groups become Array elements (which is why `RegExpMatchArray`
+    extends `Array`).
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Named capture groups](#named-capture-groups) ^(ES2018) become properties of
+    `.groups`.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Examples:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE174]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: (3 of 3) `regExpOrString` is RegExp with `/g`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE175]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: If flag `/g` of `regExpOrString` is set, `.match()` returns either an Array
+    with all matches or `null` if there was no match.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE176]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`String.prototype.matchAll(regExp)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2020 | `/g /gy` honor and preserve `.lastIndex`
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE177]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Throws an exception if flag `/g` is not set.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Returns an iterator over zero or more matches. Per match:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Numbered capture groups become Array elements (which is why `RegExpMatchArray`
+    extends `Array`).
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Named capture groups](#named-capture-groups) ^(ES2018) become properties of
+    `.groups`.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Example:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE178]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`String.prototype.search(regExpOrString)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES3 | Ignores `.lastIndex`
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Returns the index at which `regExpOrString` occurs within the string. If `regExpOrString`
+    is a string, it is used to create a regular expression (think parameter of `new
+    RegExp()`).
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE179]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[46.20.3 `String.prototype.*`: splitting and replacing](#stringprototype-splitting-and-replacing)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`String.prototype.split(separator, limit?)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES3 | Ignores `.lastIndex`
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE180]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: The separator can be a string (which is interpreted as plain text, not as a
+    regular expression pattern) or a regular expression.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Examples:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE181]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'If we want the separators to be part of the returned string fragments, we can
+    use a regular expression with a [lookbehind assertion](#regexp-lookbehind-assertions)
+    or a [lookahead assertion](#regexp-lookahead-assertions):'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE182]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '**Pitfall:** `.split('''')` splits into JavaScript characters, but we usually
+    want to split into grapheme clusters or at least Unicode code points. Therefore,
+    it’s better to use `Array.from()` or `Intl.Segmenter` for splitting. For more
+    information, see [“Atoms of text: code points, JavaScript characters, grapheme
+    clusters” (§22.7)](ch_strings.html#atoms-of-text).'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`String.prototype.replace(searchValue, replaceValue)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES3 | `/y` honors and updates `.lastIndex` | `/g /gy` ignore and reset `.lastIndex`
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: For more information on this method, see [its section](#String.prototype.replace)
+    earlier in this chapter.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (1 of 2) `searchValue` is string or RegExp without `/g`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE183]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Works similarly to `.replaceAll()`, but only replaces the first occurrence:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE184]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: (1 of 2) `searchValue` is RegExp with `/g`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE185]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Works exactly like `.replaceAll()`:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE186]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`String.prototype.replaceAll(searchValue, replaceValue)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2021 | `/g /gy` ignore and reset `.lastIndex`
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (1 of 2) `replaceValue` is a string.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE187]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: Replaces all matches of `searchValue` with `replaceValue`. If `searchValue`
+    is a regular expression without flag `/g`, a `TypeError` is thrown.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE188]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Special characters in `replaceValue` are:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`$$`: becomes `$`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`$n`: becomes the capture of numbered group `n` (alas, `$0` stands for the
+    string `''$0''`, it does not refer to the complete match)'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`$&`: becomes the complete match'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`` $` ``: becomes everything before the match'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`$''`: becomes everything after the match'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`$<name>` becomes the capture of named group `name`'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (2 of 2) `replaceValue` is a function.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE189]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'If the second parameter is a function, occurrences are replaced with the strings
+    it returns. Its parameters `args` are:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`matched: string`. The complete match'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`g1: string|undefined`. The capture of numbered group 1'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`g2: string|undefined`. The capture of numbered group 2'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: (Etc.)
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`offset: number`. Where was the match found in the input string?'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`input: string`. The whole input string'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE190]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[Named capture groups](#named-capture-groups) (ES2018) are supported, too.
+    If there are any, an argument is added at the end with an object whose properties
+    contain the captures:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE191]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[46.20.4 `RegExp.prototype.*`](#regexpprototype)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`RegExp.prototype.test(string)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES3 | `/g /y /gy` honor and update `.lastIndex`
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE192]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Returns `true` if the receiver matches `string`:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE193]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '**Pitfall:** Don’t use this method with a regular expression that has flag
+    `/g`. Then `regExp.test()` starts matching at `regExp.lastIndex` and also updates
+    that property.'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`RegExp.prototype.exec(string)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES3 | `/g /y /gy` honor and update `.lastIndex`
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (1 of 2) Receiver is a RegExp without `/g`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Without flag `/g`, `regExp.exec(string)` works like [`string.match(regExp)`](#qref-String.prototype.match)
+    – it returns a single match object.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: (2 of 2) Receiver is a RegExp with `/g`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE194]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE
+- en: If `regExp` has flag `/g` then `regExp.exec(str)` returns an object for the
+    first match starting at `regExp.lastIndex` – or `null` if it can’t find a match.
+    It also updates `regExp.lastIndex` so that it points to the index after the match.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: Numbered capture groups become Array elements (which is why `RegExpExecArray`
+    extends `Array`).
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[Named capture groups](#named-capture-groups) ^(ES2018) become properties of
+    `.groups`.'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Examples:'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE195]'
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  type: TYPE_PRE

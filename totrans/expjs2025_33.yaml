@@ -1,0 +1,154 @@
+- en: '28 Evaluating code dynamically: eval(), new Function() (advanced)'
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_dynamic-code-evaluation.html](https://exploringjs.com/js/book/ch_dynamic-code-evaluation.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[28.1 `eval()`](#eval)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.2 `new Function()`](#new-function)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[28.3 Recommendations](#recommendations)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'In this chapter, we’ll look at two ways of evaluating code dynamically: `eval()`
+    and `new Function()`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[28.1 `eval()`](#eval)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Given a string `str` with JavaScript code, `eval(str)` evaluates that code
+    and returns the result:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'There are two ways of invoking `eval()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Directly*, via a function call. Then the code in its argument is evaluated
+    inside the current scope.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Indirectly*, not via a function call. Then it evaluates its code in global
+    scope.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '“Not via a function call” means “anything that looks different than `eval(···)`”:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`eval.call(undefined, ''···'')` (uses [method `.call()` of functions](ch_callables.html#Function.prototype.call))'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`eval?.(''···'')` (uses [optional chaining](ch_objects.html#optional-chaining))'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`(0, eval)(''···'')` (uses [the comma operator](ch_operators.html#comma-operator))'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`globalThis.eval(''···'')`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`const e = eval; e(''···'')`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Etc.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following code illustrates the difference:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: Evaluating code in global context is safer because the code has access to fewer
+    internals.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[28.2 `new Function()`](#new-function)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`new Function()` creates a function object and is invoked as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: The previous statement is equivalent to the next statement. Note that `«param_1»`,
+    etc., are not inside string literals, anymore.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In the next example, we create the same function twice, first via `new Function()`,
+    then via a function expression:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “warning”](../Images/5aa4bf88dc66ecb2bac6be4022a1fed4.png) **`new Function()`
+    creates non-strict mode functions**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: By default, functions created via `new Function()` are [sloppy](ch_syntax.html#strict-mode).
+    If we want the function body to be in strict mode, we have to [switch it on manually](ch_syntax.html#switching-on-strict-mode).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[28.3 Recommendations](#recommendations)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Avoid dynamic evaluation of code as much as you can:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It’s a security risk because it may enable an attacker to execute arbitrary
+    code with the privileges of your code.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It may be switched off – for example, in browsers, via [a Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Very often, JavaScript is dynamic enough so that you don’t need `eval()` or
+    similar. In the following example, what we are doing with `eval()` (line A) can
+    be achieved just as well without it (line B).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If you have to dynamically evaluate code:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Prefer `new Function()` over `eval()`: it always executes its code in global
+    context and a function provides a clean interface to the evaluated code.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Prefer indirect `eval` over direct `eval`: evaluating code in global context
+    is safer.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

@@ -1,0 +1,521 @@
+- en: 26 Exception handling
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_exception-handling.html](https://exploringjs.com/js/book/ch_exception-handling.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[26.1 Motivation: throwing and catching exceptions](#motivation-throwing-and-catching-exceptions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.2 `throw`](#throw)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.2.1 What values should we throw?](#what-values-should-we-throw)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.3 The `try` statement](#try-statement)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.3.1 The `try` block](#the-try-block)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.3.2 The `catch` clause](#the-catch-clause)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.3.3 The `finally` clause](#the-finally-clause)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.4 The superclass of all built-in exception classes: `Error`](#class-Error)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.4.1 `Error.prototype.name`](#errorprototypename)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.4.2 Error instance property `.message`](#error.message)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.4.3 Error instance property `.stack`](#error-stack)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.5 Chaining errors: the instance property `.cause` ^(ES2022)](#error-cause)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.5.1 Why would we want to chain errors?](#why-would-we-want-to-chain-errors)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.5.2 Should we store context data in `.cause`?](#should-we-store-context-data-in-cause)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.6 Subclasses of `Error`](#subclasses-of-error)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.6.1 The built-in subclasses of `Error`](#built-in-error-subclasses)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[26.6.2 Subclassing `Error`](#subclassing-error)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: This chapter covers how JavaScript handles exceptions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **Why doesn’t
+    JavaScript throw exceptions more often?**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: JavaScript didn’t support exceptions until ES3\. That explains why they are
+    used sparingly by the language and its standard library.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[26.1 Motivation: throwing and catching exceptions](#motivation-throwing-and-catching-exceptions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Consider the following code. It reads profiles stored in files into an Array
+    with instances of class `Profile`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s examine what happens in line B: An error occurred, but the best place
+    to handle the problem is not the current location, it’s line A. There, we can
+    skip the current file and move on to the next one.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Therefore:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In line B, we use a `throw` statement to indicate that there was a problem.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In line A, we use a `try-catch` statement to handle the problem.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'When we throw, the following constructs are active:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: One by one, `throw` exits the nested constructs, until it encounters a `try`
+    statement. Execution continues in the `catch` clause of that `try` statement.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[26.2 `throw`](#throw)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is the syntax of the `throw` statement:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[26.2.1 What values should we throw?](#what-values-should-we-throw)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Any value can be thrown in JavaScript. However, it’s best to use instances
+    of `Error` or a subclass because they support additional features such as stack
+    traces and error chaining (see [“The superclass of all built-in exception classes:
+    `Error`” (§26.4)](#class-Error)).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'That leaves us with the following options:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Using class `Error` directly. That is less limiting in JavaScript than in a
+    more static language because we can add our own properties to instances:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Using one of [the subclasses of `Error`](#built-in-error-subclasses) such as
+    `TypeError` or `RangeError`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Subclassing `Error` (more details are explained [later](#subclassing-error)):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[26.3 The `try` statement](#try-statement)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The maximal version of the `try` statement looks as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can combine these clauses as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`try-catch`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`try-finally`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`try-catch-finally`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[26.3.1 The `try` block](#the-try-block)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The `try` block can be considered the body of the statement. This is where we
+    execute the regular code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[26.3.2 The `catch` clause](#the-catch-clause)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If an exception is thrown somewhere inside the `try` block (which may happen
+    deeply nested inside the tree of function/method calls) then execution switches
+    to the `catch` clause where the parameter refers to the exception. After that,
+    execution normally continues after the `try` statement. That may change if:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: There is a `return`, `break`, or `throw` inside the `catch` block.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: There is a `finally` clause (which is always executed before the `try` statement
+    ends).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The following code demonstrates that the value that is thrown in line A is indeed
+    caught in line B.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[26.3.2.1 Omitting the `catch` binding ^(ES2019)](#omitting-catch-binding)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'We can omit the `catch` parameter if we are not interested in the value that
+    was thrown:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: That may occasionally be useful. For example, Node.js has the API function [`assert.throws(func)`](https://nodejs.org/api/assert.html#assert_assert_throws_fn_error_message)
+    that checks whether an error is thrown inside `func`. It could be implemented
+    as follows.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: However, a more complete implementation of this function would have a `catch`
+    parameter and would, for example, check that its type is as expected.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[26.3.3 The `finally` clause](#the-finally-clause)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The code inside the `finally` clause is always executed at the end of a `try`
+    statement – no matter what happens in the `try` block or the `catch` clause.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s look at a common use case for `finally`: We have created a resource and
+    want to always destroy it when we are done with it, no matter what happens while
+    working with it. We would implement that as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[26.3.3.1 `finally` is always executed](#finally-is-always-executed)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The `finally` clause is always executed, even if an error is thrown (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'And even if there is a `return` statement (line A):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Exception handling**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/exception-handling/call_function_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[26.4 The superclass of all built-in exception classes: `Error`](#class-Error)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is what `Error`’s instance properties and constructor look like:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The constructor has two parameters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`message` specifies an error message.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`options` was introduced in ECMAScript 2022\. It contains an object where one
+    property is currently supported:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.cause` specifies which exception (if any) caused the current error.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The subsections after the next one explain the instance properties `.message`
+    and `.stack` in more detail. The next section explains `.cause`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[26.4.1 `Error.prototype.name`](#errorprototypename)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Each built-in error class `E` has a property `E.prototype.name`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Therefore, there are two ways to get the name of the class of a built-in error
+    object:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[26.4.2 Error instance property `.message`](#error.message)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`.message` contains just the error message:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we omit the message then the empty string is used as a default value (inherited
+    from `Error.prototype.message`):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If we omit the message, it is the empty string:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[26.4.3 Error instance property `.stack`](#error-stack)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The instance property `.stack` is not an ECMAScript feature, but is widely supported
+    by JavaScript engines. It is usually a string, but its exact structure is not
+    standardized and varies between engines.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is what it looks like on the JavaScript engine V8:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: The first line of this *stack trace* (a trace of the call stack) shows that
+    the `Error` was created in line 2\. The last line shows that everything started
+    in line 11.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[26.5 Chaining errors: the instance property `.cause` ^(ES2022)](#error-cause)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: The instance property `.cause` is created via the options object in the second
+    parameter of `new Error()`. It specifies which other error caused the current
+    one.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[26.5.1 Why would we want to chain errors?](#why-would-we-want-to-chain-errors)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Sometimes, we catch errors that are thrown during a more deeply nested function
+    call and would like to attach more information to it:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: The statements inside the `try` clause may throw all kinds of errors. At the
+    locations where those errors are thrown, there is often no awareness of the file
+    that caused them. That’s why we attach that information in line A.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If an error is shown on the console (e.g. because it was caught or logged)
+    or if we use Node’s `util.inspect()` (line A), we can see the cause and its stack
+    trace:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: Alas, we don’t see the cause if we convert an error to a string or look at its
+    `.stack`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[26.5.2 Should we store context data in `.cause`?](#should-we-store-context-data-in-cause)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`error.cause` is not just for instances of `Error`; any data we store in it
+    is displayed properly:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: Some people recommend using `.cause` to provide data as context for an error.
+    What are the pros and cons of doing that?
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Pro: The context data is displayed nicely alongside the error.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Cons:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.cause` only supports arbitrary data because in JavaScript, we can `throw`
+    arbitrary data. Using it for non-thrown data means we are kind of misusing this
+    mechanism.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we use `.cause` for context data, we can’t chain exceptions anymore.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[26.6 Subclasses of `Error`](#subclasses-of-error)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[26.6.1 The built-in subclasses of `Error`](#built-in-error-subclasses)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Error` has the following subclasses – quoting [the ECMAScript specification](https://tc39.es/ecma262/#sec-native-error-types-used-in-this-standard):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[`AggregateError`](ch_promises.html#AggregateError) ^(ES2021) represents multiple
+    errors at once. In the standard library, only `Promise.any()` uses it.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`RangeError` indicates a value that is not in the set or range of allowable
+    values.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`ReferenceError` indicates that an invalid reference value has been detected.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`SyntaxError` indicates that a parsing error has occurred.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`TypeError` is used to indicate an unsuccessful operation when none of the
+    other *NativeError* objects are an appropriate indication of the failure cause.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`URIError` indicates that one of the global URI handling functions was used
+    in a way that is incompatible with its definition.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[26.6.2 Subclassing `Error`](#subclassing-error)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Since ECMAScript 2022, the `Error` constructor accepts two parameters (see
+    previous subsection). Therefore, we have two choices when subclassing it: We can
+    either omit the constructor in our subclass or we can invoke `super()` like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE

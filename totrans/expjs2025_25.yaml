@@ -1,0 +1,430 @@
+- en: 21 Unicode – a brief introduction (advanced)
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_unicode.html](https://exploringjs.com/js/book/ch_unicode.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[21.1 Code points vs. code units](#unicode-code-points-vs-code-units)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.1 Code points](#unicode-code-points)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.1.2 Encoding Unicode code points: UTF-32, UTF-16, UTF-8](#encoding-unicode-code-points-utf32-utf16-utf8)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2 Encodings used in web development: UTF-16 and UTF-8](#utf-in-web-dev)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2.1 Source code internally: UTF-16](#source-code-internally-utf16)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2.2 Strings: UTF-16](#strings-utf16)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.2.3 Source code in files: UTF-8](#source-code-in-files-utf8)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.3 Grapheme clusters – the real characters](#grapheme-clusters)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[21.3.1 Grapheme clusters vs. glyphs](#grapheme-clusters-vs-glyphs)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Unicode is a standard for representing and managing text in most of the world’s
+    writing systems. Virtually all modern software that works with text, supports
+    Unicode. The standard is maintained by the Unicode Consortium. A new version of
+    the standard is published every year (with new emojis, etc.). Unicode version
+    1.0.0 was published in October 1991.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.1 Code points vs. code units](#unicode-code-points-vs-code-units)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Two concepts are crucial for understanding Unicode:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Code points* are numbers that represent the atomic parts of Unicode text.
+    Most of them represent visible symbols but they can also have other meanings such
+    as specifying an aspect of a symbol (the accent of a letter, the skin tone of
+    an emoji, etc.).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Code units* are numbers that encode code points, to store or transmit Unicode
+    text. One or more code units encode a single code point. Each code unit has the
+    same size, which depends on the *encoding format* that is used. The most popular
+    format, UTF-8, has 8-bit code units.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[21.1.1 Code points](#unicode-code-points)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The first version of Unicode had 16-bit code points. Since then, the number
+    of characters has grown considerably and the size of code points was extended
+    to 21 bits. These 21 bits are partitioned in 17 planes, with 16 bits each:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Plane 0: **Basic Multilingual Plane (BMP)**, 0x0000–0xFFFF'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Contains characters for almost all modern languages (Latin characters, Asian
+    characters, etc.) and many symbols.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Plane 1: Supplementary Multilingual Plane (SMP), 0x10000–0x1FFFF'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Supports historic writing systems (e.g., Egyptian hieroglyphs and cuneiform)
+    and additional modern writing systems.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Supports emojis and many other symbols.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Plane 2: Supplementary Ideographic Plane (SIP), 0x20000–0x2FFFF'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Contains additional CJK (Chinese, Japanese, Korean) ideographs.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Plane 3–13: Unassigned'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Plane 14: Supplementary Special-Purpose Plane (SSP), 0xE0000–0xEFFFF'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Contains non-graphical characters such as tag characters and glyph variation
+    selectors.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Plane 15–16: Supplementary Private Use Area (S PUA A/B), 0x0F0000–0x10FFFF'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Available for character assignment by parties outside the ISO and the Unicode
+    Consortium. Not standardized.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Planes 1-16 are called supplementary planes or **astral planes**.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s check the code points of a few characters:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: The hexadecimal numbers of the code points tell us that the first three characters
+    reside in plane 0 (within 16 bits), while the emoji resides in plane 1.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.1.2 Encoding Unicode code points: UTF-32, UTF-16, UTF-8](#encoding-unicode-code-points-utf32-utf16-utf8)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The main ways of encoding code points are three *Unicode Transformation Formats*
+    (UTFs): UTF-32, UTF-16, UTF-8\. The number at the end of each format indicates
+    the size (in bits) of its code units.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.1.2.1 UTF-32 (Unicode Transformation Format 32)](#utf32-unicode-transformation-format-32)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: UTF-32 uses 32 bits to store code units, resulting in one code unit per code
+    point. This format is the only one with *fixed-length encoding*; all others use
+    a varying number of code units to encode a single code point.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.1.2.2 UTF-16 (Unicode Transformation Format 16)](#utf-16)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'UTF-16 uses 16-bit code units. It encodes code points as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The BMP (first 16 bits of Unicode) is stored in single code units.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Astral planes: The BMP comprises 0x10_000 code points. Given that Unicode has
+    a total of 0x110_000 code points, we still need to encode the remaining 0x100_000
+    code points (20 bits). The BMP has two ranges of unassigned code points that provide
+    the necessary storage:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Most significant 10 bits (*leading surrogate*, *high surrogate*): 0xD800-0xDBFF'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Least significant 10 bits (*trailing surrogate*, *low surrogate*): 0xDC00-0xDFFF'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'As a consequence, each UTF-16 code unit is either:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: A BMP code point (a *scalar*)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A leading surrogate
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: A trailing surrogate
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If a surrogate appears on its own, without its partner, it is called a *lone
+    surrogate*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'This is how the bits of the code points are distributed among the surrogates:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Each character of a JavaScript string is a UTF-16 code unit. As an example,
+    consider code point 0x1F642 (🙂) that is represented by two UTF-16 code units –
+    0xD83D and 0xDE42:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Let’s derive the code units from the code point:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'In contrast, code point 0x03C0 (π) is part of the BMP and therefore represented
+    by a single UTF-16 code unit – 0x03C0:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.1.2.3 UTF-8 (Unicode Transformation Format 8)](#utf8-unicode-transformation-format-8)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'UTF-8 has 8-bit code units. It uses 1–4 code units to encode a code point:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Code points | Code units |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| 0000–007F | 0bbbbbbb (7 bits) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| 0080–07FF | 110bbbbb, 10bbbbbb (5+6 bits) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| 0800–FFFF | 1110bbbb, 10bbbbbb, 10bbbbbb (4+6+6 bits) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| 10000–1FFFFF | 11110bbb, 10bbbbbb, 10bbbbbb, 10bbbbbb (3+6+6+6 bits) |'
+  prefs: []
+  type: TYPE_TB
+- en: 'Notes:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The bit prefix of each code unit tells us:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Is it first in a series of code units? If yes, how many code units will follow?
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Is it second or later in a series of code units?
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The character mappings in the 0000–007F range are the same as ASCII, which leads
+    to a degree of backward compatibility with older software.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Three examples:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| Character | Code point | Code units |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| A | 0x0041 | 01000001 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| π | 0x03C0 | 11001111, 10000000 |'
+  prefs: []
+  type: TYPE_TB
+- en: '| 🙂 | 0x1F642 | 11110000, 10011111, 10011001, 10000010 |'
+  prefs: []
+  type: TYPE_TB
+- en: '[21.2 Encodings used in web development: UTF-16 and UTF-8](#utf-in-web-dev)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The Unicode encoding formats that are used in web development are: UTF-16 and
+    UTF-8.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.2.1 Source code internally: UTF-16](#source-code-internally-utf16)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The ECMAScript specification internally represents source code as UTF-16.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.2.2 Strings: UTF-16](#strings-utf16)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The characters in JavaScript strings are based on UTF-16 code units:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For more information on Unicode and strings, see [“Atoms of text: code points,
+    JavaScript characters, grapheme clusters” (§22.7)](ch_strings.html#atoms-of-text).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[21.2.3 Source code in files: UTF-8](#source-code-in-files-utf8)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: HTML and JavaScript files are almost always encoded as UTF-8 now.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, this is how HTML files usually start now:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[21.3 Grapheme clusters – the real characters](#grapheme-clusters)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The concept of a character becomes remarkably complex once we consider the
+    various writing systems of the world. That’s why there are several different Unicode
+    terms that all mean “character” in some way: *code point*, *grapheme cluster*,
+    *glyph*, etc.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In Unicode, a *code point* is an atomic part of text stored in a computer.
+  prefs: []
+  type: TYPE_NORMAL
+- en: However, a *grapheme cluster* corresponds most closely to a symbol displayed
+    on screen or paper. It is defined as “a horizontally segmentable unit of text”.
+    Therefore, [official Unicode documents](https://unicode.org/reports/tr29/#Grapheme_Cluster_Boundaries)
+    also call it a *user-perceived character*. One or more code points are needed
+    to encode a grapheme cluster.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, the Devanagari *kshi* is encoded by 4 code points. We use `Array.from()`
+    to split the string into an Array with code points:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/327b7f8b4b4d9c9c757e133802a9ace0.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'Many emojis are composed of multiple code points:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/a968a426ee730ce9975413b34be1f93a.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: 'Flag emojis are grapheme clusters and composed of two code points – for example,
+    the flag of Japan:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/0a7ad977809c49e13a21283b6356d9cb.png)'
+  prefs:
+  - PREF_BQ
+  type: TYPE_IMG
+- en: '[21.3.1 Grapheme clusters vs. glyphs](#grapheme-clusters-vs-glyphs)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'A symbol is an abstract concept and part of written language:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: It is represented in computer memory by a *grapheme cluster* – a sequence of
+    one or more code points (numbers).
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: It is drawn on screen via *glyphs*. A glyph is an image and usually stored in
+    a font. More than one glyph may be used to draw a single symbol – for example,
+    the symbol “é” may be drawn by combining the glyph “e” with the glyph “´”.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The distinction between a concept and its representation is subtle and can blur
+    when talking about Unicode.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “external”](../Images/38e6ff55e8d602659f3cdb8893e63f62.png) **More information
+    on grapheme clusters**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: For more information, see [“Let’s Stop Ascribing Meaning to Code Points”](https://manishearth.github.io/blog/2017/01/14/stop-ascribing-meaning-to-unicode-code-points/)
+    by Manish Goregaokar.
+  prefs: []
+  type: TYPE_NORMAL

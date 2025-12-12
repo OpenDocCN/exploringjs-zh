@@ -1,0 +1,854 @@
+- en: 36 Maps (Map) ES6
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_maps.html](https://exploringjs.com/js/book/ch_maps.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[36.1 Using Maps](#using-maps)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.1.1 Creating Maps](#creating-maps)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.1.2 Working with single entries](#working-with-single-entries)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.1.3 Determining the size of a Map and clearing it](#determining-the-size-of-a-map-and-clearing-it)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.1.4 Example: Counting characters](#example-counting-characters)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.2 Iterating over Maps](#iterating-over-maps)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.2.1 Looping over Maps](#looping-over-maps)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.2.2 Listed in insertion order: entries, keys, values](#maps-insertion-order-entries)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.3 Converting from and to Maps](#converting-from-and-to-maps)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.3.1 Converting keys, values, entries to Arrays](#converting-map-entries-to-arrays)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.3.2 Converting between Maps and Objects](#converting-between-maps-and-objects)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.4 Processing Maps](#processing-maps)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.4.1 Copying Maps](#copying-maps)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.4.2 Combining multiple Maps into a single Map](#combining-maps)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.4.3 Mapping and filtering Maps via iterator methods ^(ES2025)](#mapping-filtering-maps)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.5 A few more details about the keys of Maps (advanced)](#a-few-more-details-about-the-keys-of-maps-advanced)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.5.1 What keys are considered equal?](#map-key-equality)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.6 Quick reference: `Map`](#quickref-maps)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.6.1 `new Map()`](#new-map)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.6.2 `Map.*`](#map)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.6.3 `Map.prototype.*`: handling single entries](#mapprototype-handling-single-entries)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.6.4 `Map.prototype`: handling all entries](#mapprototype-handling-all-entries)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.6.5 `Map.prototype`: iterating and looping](#mapprototype-iterating-and-looping)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.7 FAQ: Maps](#faq-maps)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.7.1 When should I use a Map, and when should I use an object?](#when-should-i-use-a-map-and-when-should-i-use-an-object)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.7.2 When would I use an object as a key in a Map?](#when-would-i-use-an-object-as-a-key-in-a-map)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.7.3 Why do Maps preserve the insertion order of entries?](#why-do-maps-preserve-the-insertion-order-of-entries)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[36.7.4 Why do Maps have a `.size`, while Arrays have a `.length`?](#collection-size-vs-length)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Before ES6, JavaScript didn’t have a data structure for dictionaries and (ab)used
+    objects as dictionaries from strings to arbitrary values. ES6 brought Maps, which
+    are dictionaries from arbitrary values to arbitrary values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[36.1 Using Maps](#using-maps)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: An instance of `Map` maps keys to values. A single key-value mapping is called
+    an *entry*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[36.1.1 Creating Maps](#creating-maps)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: There are three common ways of creating Maps.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'First, we can use the constructor without any parameters to create an empty
+    Map:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Second, we can pass an iterable (e.g., an Array) over key-value “pairs” (Arrays
+    with two elements) to the constructor:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Third, the `.set()` method adds entries to a Map and is chainable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.1.2 Working with single entries](#working-with-single-entries)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`map.set()` and `map.get()` are for writing and reading values (given keys).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '`map.has()` checks if a Map has an entry with a given key. `map.delete()` removes
+    entries.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.1.3 Determining the size of a Map and clearing it](#determining-the-size-of-a-map-and-clearing-it)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`map.size` contains the number of entries in a Map. `map.clear()` removes all
+    entries of a Map.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.1.4 Example: Counting characters](#example-counting-characters)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`countChars()` returns a Map that maps characters to numbers of occurrences.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.2 Iterating over Maps](#iterating-over-maps)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'This is how Maps support iteration:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`new Map()` accepts an iterable over key-value pairs. That will be useful later
+    when we look at processing Maps and at converting from and to Maps.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The following methods return iterable iterators – whose methods will be useful
+    later when we look at processing Maps.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`map.keys()`: keys of `map`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`map.values()`: values of `map`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`map.entries()`: entries (key-value pairs) of `map`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`map[Symbol.iterator]()`: same as `map.entries()`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This method makes instances of `Map` iterable.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[36.2.1 Looping over Maps](#looping-over-maps)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Maps are iterables over key-value pairs. This is a common way of iterating
+    over them:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: In line A, we use destructuring to access the components of the key-value pairs
+    returned by the iterator.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following example loops over the iterable iterator returned by method `.keys()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.2.2 Listed in insertion order: entries, keys, values](#maps-insertion-order-entries)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Maps record in which order entries were created and honor that order when listing
+    keys, values or entries:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Maps listing their contents in insertion order has two benefits:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can use a Map when we have a use case where insertion order matters.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In testing, results become more deterministic and easier to check.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[36.3 Converting from and to Maps](#converting-from-and-to-maps)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[36.3.1 Converting keys, values, entries to Arrays](#converting-map-entries-to-arrays)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'On one hand, the values returned by `.keys()`, `.values()` and `.entries()`
+    are iterables – which enables us to use `Array.from()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On the other hand, the values returned by `.keys()`, `.values()` and `.entries()`
+    are also iterators – which enables us to use the iterator method `.toArray()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.3.2 Converting between Maps and Objects](#converting-between-maps-and-objects)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As long as a Map only uses strings and symbols as keys, we can convert it to
+    an object (via [`Object.fromEntries()`](ch_objects.html#Object.fromEntries)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also convert an object to a Map with string or symbol keys (via [`Object.entries()`](ch_objects.html#Object.entries)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.4 Processing Maps](#processing-maps)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[36.4.1 Copying Maps](#copying-maps)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As we have seen, Maps are iterables over key-value pairs. Therefore, we can
+    use the constructor to create a copy of a Map. That copy is *shallow*: keys and
+    values are the same; they are not copied/cloned themselves.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.4.2 Combining multiple Maps into a single Map](#combining-maps)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'There are no methods for combining Maps, which is why we must use a workaround.
+    Let’s combine the following two Maps:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'To combine `map1` and `map2`, we create a new Array and spread (`...`) the
+    entries (key-value pairs) of `map1` and `map2` into it (via iteration). Then we
+    convert the Array back into a Map. All of that is done in line A:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Combining Maps**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/maps/combine_maps_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[36.4.3 Mapping and filtering Maps via iterator methods ^(ES2025)](#mapping-filtering-maps)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can `.map()` and `.filter()` an Array, but there are no such operations
+    for a Map. The solution is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Convert the Map to an iterator over [key, value] pairs.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Map or filter the iterator.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: Convert the result back to a Map.
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: We’ll use the following Map to explore how that works.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Mapping `originalMap`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Filtering `originalMap`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: What if we can’t use iterator methods? Then we can switch to Array methods,
+    by
+  prefs: []
+  type: TYPE_NORMAL
+- en: replacing `originalMap.entries()`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: with `Array.from(originalMap)`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[36.5 A few more details about the keys of Maps (advanced)](#a-few-more-details-about-the-keys-of-maps-advanced)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Any value can be a key, even an object:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.5.1 What keys are considered equal?](#map-key-equality)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Most Map operations need to check whether a value is equal to one of the keys.
+    They do so via the internal operation [SameValueZero](https://tc39.es/ecma262/#sec-samevaluezero),
+    which works like `===` but considers `NaN` to be equal to itself.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'As a consequence, we can use `NaN` as a key in Maps, just like any other value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: Different objects are always considered to be different. That is something that
+    can’t be changed (yet – configuring key equality is on TC39’s long-term roadmap).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[36.6 Quick reference: `Map`](#quickref-maps)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Note: For the sake of conciseness, I’m pretending that all keys have the same
+    type `K` and that all values have the same type `V`.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[36.6.1 `new Map()`](#new-map)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`new Map(entries?)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'If we don’t provide the parameter `entries`, then an empty Map is created.
+    If we do provide an iterable over [key, value] pairs, then those pairs are added
+    as entries to the Map. For example:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[36.6.2 `Map.*`](#map)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Map.groupBy(items, computeGroupKey)` ES2024'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: The callback `computeGroupKey` returns a *group key* for each of the `items`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The result of `Map.groupBy()` is a Map where:'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The key of each entry is a group key and
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: its value is an Array with all items that have that group key.
+  prefs:
+  - PREF_IND
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[36.6.3 `Map.prototype.*`: handling single entries](#mapprototype-handling-single-entries)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Map.prototype.get(key)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Returns the `value` that `key` is mapped to in this Map. If there is no key
+    `key` in this Map, `undefined` is returned.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Map.prototype.set(key, value)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Maps the given key to the given value.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If there is already an entry whose key is `key`, it is updated. Otherwise, a
+    new entry is created.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: This method returns `this`, which means that we can chain it.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Map.prototype.has(key)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Returns whether the given key exists in this Map.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Map.prototype.delete(key)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If there is an entry whose key is `key`, it is removed and `true` is returned.
+    Otherwise, nothing happens and `false` is returned.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[36.6.4 `Map.prototype`: handling all entries](#mapprototype-handling-all-entries)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`get Map.prototype.size` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Returns how many entries this Map has.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Map.prototype.clear()` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Removes all entries from this Map.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[36.6.5 `Map.prototype`: iterating and looping](#mapprototype-iterating-and-looping)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Both iterating and looping happen in the order in which entries were added to
+    a Map.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Map.prototype.entries()` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Returns an iterable with one [key, value] pair for each entry in this Map. The
+    pairs are Arrays of length 2.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Map.prototype.forEach(callback, thisArg?)` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: The first parameter is a callback that is invoked once for each entry in this
+    Map.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `thisArg` is provided, `this` is set to it for each invocation. Otherwise,
+    `this` is set to `undefined`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Map.prototype.keys()` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Returns an iterable over all keys in this Map.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Map.prototype.values()` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Returns an iterable over all values in this Map.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Map.prototype[Symbol.iterator]()` ES6'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The default way of iterating over Maps. Same as `map.entries()`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[36.7 FAQ: Maps](#faq-maps)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[36.7.1 When should I use a Map, and when should I use an object?](#when-should-i-use-a-map-and-when-should-i-use-an-object)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If we need a dictionary-like data structure with keys that are neither strings
+    nor symbols, we have no choice: we must use a Map.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'If, however, our keys are either strings or symbols, we must decide whether
+    or not to use an object. A rough general guideline is:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Is there a fixed set of keys (known at development time)?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Then use an object `obj` and access the values via fixed keys:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Can the set of keys change at runtime?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Then use a Map `map` and access the values via keys stored in variables:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[36.7.2 When would I use an object as a key in a Map?](#when-would-i-use-an-object-as-a-key-in-a-map)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We normally want Map keys to be compared by value (two keys are considered
+    equal if they have the same content). That excludes objects. However, there is
+    one use case for objects as keys: externally attaching data to objects. But that
+    use case is served better by WeakMaps, where entries don’t prevent keys from being
+    garbage-collected (for details, see [the next chapter](ch_weakmaps.html#ch_weakmaps)).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[36.7.3 Why do Maps preserve the insertion order of entries?](#why-do-maps-preserve-the-insertion-order-of-entries)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: In principle, Maps entries are unordered. The main reason for ordering entries
+    is so that operations that list entries, keys, or values are deterministic. That
+    helps, for example, with testing.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[36.7.4 Why do Maps have a `.size`, while Arrays have a `.length`?](#collection-size-vs-length)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In JavaScript, indexable sequences (such as Arrays and strings) have a `.length`,
+    while unindexed collections (such as Maps and Sets) have a `.size`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.length` is based on indices; it is always the highest index plus one.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.size` counts the number of elements in a collection.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL

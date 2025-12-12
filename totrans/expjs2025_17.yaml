@@ -1,0 +1,809 @@
+- en: 14 Values
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_values.html](https://exploringjs.com/js/book/ch_values.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[14.1 What’s a type?](#whats-a-type)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.2 JavaScript’s type hierarchy](#javascripts-type-hierarchy)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.3 The types of the language specification](#the-types-of-the-language-specification)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.4 Primitive values vs. objects](#primitive-values-vs-objects)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.5 Primitive values (short: primitives)](#primitive-values-short-primitives)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.5.1 Primitives are immutable](#primitives-are-immutable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.5.2 Primitives are *passed by value*](#primitives-are-passed-by-value)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.5.3 Primitives are *compared by value*](#primitives-are-compared-by-value)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.6 Objects](#objects)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.6.1 Objects are mutable by default](#objects-are-mutable-by-default)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.6.2 Objects are *passed by identity*](#objects-are-passed-by-identity)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.6.3 Objects are *compared by identity*](#objects-are-compared-by-identity)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.6.4 Passing by reference vs. passing by identity (advanced)](#passing-by-reference-vs-passing-by-identity-advanced)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.6.5 Identity in the ECMAScript specification (advanced)](#identity-in-the-ecmascript-specification-advanced)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.7 The operators `typeof` and `instanceof`: what’s the type of a value?](#the-operators-typeof-and-instanceof-whats-the-type-of-a-value)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.7.1 `typeof`](#typeof-operator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.7.2 `instanceof`](#instanceof-operator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.8 Classes and constructor functions](#classes-and-constructor-functions)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.8.1 Constructor functions associated with primitive types](#constructor-functions-for-primitives)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.9 Converting between types](#converting-between-types)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.9.1 Explicit conversion between types](#explicit-conversion-between-types)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[14.9.2 Coercion (automatic conversion between types)](#coercion)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: In this chapter, we’ll examine what kinds of values JavaScript has.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “reading”](../Images/0fb62b2fc33a72829ae9fb174dedd0d2.png) **Supporting
+    tool: `===`**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this chapter, we’ll occasionally use the strict equality operator. `a ===
+    b` evaluates to `true` if `a` and `b` are equal. What exactly that means is explained
+    in [“Strict equality (`===` and `!==`)” (§15.5.1)](ch_operators.html#strict-equality).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.1 What’s a type?](#whats-a-type)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: For this chapter, I consider types to be sets of values – for example, the type
+    `boolean` is the set { `false`, `true` }.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.2 JavaScript’s type hierarchy](#javascripts-type-hierarchy)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '![](../Images/86e9cf484c901c5e9bd1b2ee4a0d1ba7.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 14.1: A partial hierarchy of JavaScript’s types. Missing are the classes
+    for errors, the classes associated with primitive types, and more.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Figure 14.1](#fig:type-hierarchy) shows JavaScript’s type hierarchy:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'JavaScript distinguishes two kinds of values: primitive values and objects.
+    We’ll soon see what the difference is.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The diagram hints at an important fact: Some objects are not instances of the
+    class `Object` ([more information](ch_classes.html#non-instances-of-object)).
+    However, such objects are rare. Virtually all objects we’ll encounter are indeed
+    instances of `Object`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[14.3 The types of the language specification](#the-types-of-the-language-specification)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The ECMAScript specification only knows a total of eight types. The names of
+    those types are (I’m using TypeScript’s names, not the spec’s names):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`undefined` with the only element `undefined`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`null` with the only element `null`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`boolean` with the elements `false` and `true`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`number`, the type of all numbers (e.g., `-123`, `3.141`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`bigint`, the type of all big integers (e.g., `-123n`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`string`, the type of all strings (e.g., `''abc''`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`symbol`, the type of all symbols (e.g., `Symbol(''My Symbol'')`)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`object`, the type of all objects (different from `Object`, the type of all
+    instances of class `Object` and its subclasses)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[14.4 Primitive values vs. objects](#primitive-values-vs-objects)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The specification makes an important distinction between values:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Primitive values* are the elements of the types `undefined`, `null`, `boolean`,
+    `number`, `bigint`, `string`, `symbol`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: All other values are *objects*.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In contrast to Java (that inspired JavaScript here), primitive values are not
+    second-class citizens. The difference between them and objects is more subtle.
+    In a nutshell:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Primitive values: are atomic building blocks of data in JavaScript.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They are *passed by value*: when primitive values are assigned to variables
+    or passed to functions, their contents are copied.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They are *compared by value*: when comparing two primitive values, their contents
+    are compared.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Objects: are compound pieces of data.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They are *passed by identity* (new term): when objects are assigned to variables
+    or passed to functions, their *identities* (think pointers) are copied.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'They are *compared by identity* (new term): when comparing two objects, their
+    identities are compared.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Other than that, primitive values and objects are quite similar: they both
+    have *properties* (key-value entries) and can be used in the same locations.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Next, we’ll look at primitive values and objects in more depth.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.5 Primitive values (short: primitives)](#primitive-values-short-primitives)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[14.5.1 Primitives are immutable](#primitives-are-immutable)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We can’t change, add, or remove properties of primitives:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[14.5.2 Primitives are *passed by value*](#primitives-are-passed-by-value)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Primitives are *passed by value*: variables (including parameters) store the
+    contents of the primitives. When assigning a primitive value to a variable or
+    passing it as an argument to a function, its content is copied.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **Observing
+    the difference between passing by value and passing by identity**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Due to primitive values being immutable and compared by value (see next subsection),
+    there is no way to observe the difference between passing by value and passing
+    by identity (as used for objects in JavaScript).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.5.3 Primitives are *compared by value*](#primitives-are-compared-by-value)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Primitives are *compared by value*: when comparing two primitive values, we
+    compare their contents.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: To see what’s so special about this way of comparing, read on and find out how
+    objects are compared.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.6 Objects](#objects)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: Objects are covered in detail in [“Objects” (§30)](ch_objects.html#ch_objects)
+    and the following chapter. Here, we mainly focus on how they differ from primitive
+    values.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Let’s first explore two common ways of creating objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Object literal:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'The object literal starts and ends with curly braces `{}`. It creates an object
+    with two properties. The first property has the key `''first''` (a string) and
+    the value `''Jane''`. The second property has the key `''last''` and the value
+    `''Doe''`. For more information on object literals, see [“Object literals: properties”
+    (§30.3.1)](ch_objects.html#object-literals).'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Array literal:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'The Array literal starts and ends with square brackets `[]`. It creates an
+    Array with two *elements*: `''strawberry''` and `''apple''`. For more information
+    on Array literals, see [“Creating, reading, writing Arrays” (§34.3.1)](ch_arrays.html#array-literals).'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[14.6.1 Objects are mutable by default](#objects-are-mutable-by-default)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'By default, we can freely change, add, and remove the properties of objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[14.6.2 Objects are *passed by identity*](#objects-are-passed-by-identity)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Objects are *passed by identity* (new term): Variables (including parameters)
+    store the *identities* of objects. The identity of an object is a *transparent
+    reference* (think pointer) to the object’s actual data on the *heap* (the shared
+    main memory of a JavaScript process). When assigning an object to a variable or
+    passing it as an argument to a function, its identity is copied.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Each object literal creates a fresh object on the heap and returns its identity:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'JavaScript uses *garbage collection* to automatically manage memory:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Now the old value `{ prop: ''value'' }` of `obj` is *garbage* (not used anymore).
+    JavaScript will automatically *garbage-collect* it (remove it from memory), at
+    some point in time (possibly never if there is enough free memory).'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.6.3 Objects are *compared by identity*](#objects-are-compared-by-identity)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Objects are *compared by identity* (new term): two variables are only equal
+    if they contain the same object identity. They are not equal if they refer to
+    different objects with the same content.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[14.6.4 Passing by reference vs. passing by identity (advanced)](#passing-by-reference-vs-passing-by-identity-advanced)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: If a parameter is *passed by reference*, it points to a variable and assigning
+    to the parameter changes the variable – e.g., in the following C++ code, the parameters
+    `x` and `y` are passed by reference. The invocation in line A affects the variables
+    `a` and `b` of the invoker.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: If a parameter is *passed by identity* (which is a new, new term), the identity
+    of an object (a transparent reference) is passed by value. Assigning to the parameter
+    only has a local effect. This approach is also called [*passing by sharing*](https://en.wikipedia.org/wiki/Evaluation_strategy#Call_by_sharing).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Acknowledgement:** The term *passing by identity* was [suggested](https://x.com/awbjs/status/1086919101635801088)
+    by Allen Wirfs-Brock in 2019.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.6.5 Identity in the ECMAScript specification (advanced)](#identity-in-the-ecmascript-specification-advanced)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The ECMAScript specification uses the term *identity* as follows ([source](https://tc39.es/ecma262/#sec-identity)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '*Values without identity* are equal to other values without identity if all
+    of their innate characteristics are the same – characteristics such as the magnitude
+    of an integer or the length of a sequence.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Values without identity may be manifest without prior reference by fully describing
+    their characteristics.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: In contrast, each *value with identity* is unique and therefore only equal to
+    itself. Values with identity are like values without identity but with an additional
+    unguessable, unchangeable, universally-unique characteristic called identity.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: References to existing values with identity cannot be manifest simply by describing
+    them, as the identity itself is indescribable; instead, references to these values
+    must be explicitly passed from one place to another.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Some values with identity are mutable and therefore can have their characteristics
+    (except their identity) changed in-place, causing all holders of the value to
+    observe the new characteristics.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'At the language level:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Values that have identity: objects and symbols created via `Symbol()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Values that don’t have identity: primitive values and symbols created via `Symbol.for()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[14.7 The operators `typeof` and `instanceof`: what’s the type of a value?](#the-operators-typeof-and-instanceof-whats-the-type-of-a-value)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'The two operators `typeof` and `instanceof` let us determine what type a given
+    value `x` has:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: How do they differ?
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`typeof` distinguishes the 7 types of the specification (minus one omission,
+    plus one addition).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`instanceof` tests which class created a given value.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![Icon “tip”](../Images/8440b17bb8219cda9f9405ac83c36db0.png) **Rule of thumb:
+    `typeof` is for primitive values; `instanceof` is for objects**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.7.1 `typeof`](#typeof-operator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '| `x` | `typeof x` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `undefined` | `''undefined''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `null` | `''object''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Boolean | `''boolean''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Number | `''number''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Bigint | `''bigint''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| String | `''string''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Symbol | `''symbol''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| Function | `''function''` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| All other objects | `''object''` |'
+  prefs: []
+  type: TYPE_TB
+- en: 'Table 14.1: The results of the `typeof` operator.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Table 14.1](#tbl:typeof-results) lists all results of `typeof`. They roughly
+    correspond to the 7 types of the language specification. Alas, there are two differences,
+    and they are language quirks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`typeof null` returns `''object''` and not `''null''`. That’s a bug. Unfortunately,
+    it can’t be fixed. TC39 tried to do that, but it broke too much code on the web.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`typeof` of a function should be `''object''` (functions are objects). Introducing
+    a separate category for functions is confusing.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'These are a few examples of using `typeof`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercises:
+    Two exercises on `typeof`**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/values/typeof_exrc.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Bonus: `exercises/values/is_object_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[14.7.2 `instanceof`](#instanceof-operator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This operator answers the question: has a value `x` been created by a class
+    `C`?'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'For example:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Primitive values are not instances of anything:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information on this operator, see [“The `instanceof` operator in detail
+    (advanced)” (§31.7.3)](ch_classes.html#instanceof-operator-details).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    `instanceof`**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/values/instanceof_exrc.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.8 Classes and constructor functions](#classes-and-constructor-functions)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'JavaScript’s original factories for objects are *constructor functions*: ordinary
+    functions that return “instances” of themselves if we invoke them via the `new`
+    operator.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: ES6 introduced *classes*, which are mainly better syntax for constructor functions.
+  prefs: []
+  type: TYPE_NORMAL
+- en: In this book, I’m using the terms *constructor function* and *class* interchangeably.
+  prefs: []
+  type: TYPE_NORMAL
+- en: Classes can be seen as partitioning the single type `object` of the specification
+    into subtypes – they give us more types than the limited 7 ones of the specification.
+    Each class is the type of the objects that were created by it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[14.8.1 Constructor functions associated with primitive types](#constructor-functions-for-primitives)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Each primitive type (except for the types `undefined` and `null`) has an associated
+    *constructor function* (think class):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: The constructor function `Boolean` is associated with booleans.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The constructor function `Number` is associated with numbers.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The constructor function `String` is associated with strings.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: The constructor function `Symbol` is associated with symbols.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Each of these functions plays several roles – for example, `Number`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'We can use it as a function and convert values to numbers:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Number.prototype` provides the properties for numbers – for example, method
+    `.toString()`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Number` is a namespace/container object for tool functions for numbers – for
+    example:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: Lastly, we can also use `Number` as a class and create number objects. These
+    objects are different from real numbers and should be avoided. They virtually
+    never show up in normal code. See the next subsection for more information.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[14.8.1.1 Wrapper classes for primitive values (advanced)](#wrapper-classes-for-primitive-values-advanced)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: If we new-invoke a constructor function associated with a primitive type, it
+    returns a so-called *wrapper object*. This is the standard way of converting a
+    primitive value to an object – by “wrapping” it.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'The primitive value is not an instance of the wrapper class:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The wrapper object is not a primitive value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can unwrap the wrapper object to get back the primitive value:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[14.9 Converting between types](#converting-between-types)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'There are two ways in which values are converted to other types in JavaScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Explicit conversion: via functions such as `String()`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '*Coercion* (automatic conversion): happens when an operation receives operands/parameters
+    that it can’t work with.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[14.9.1 Explicit conversion between types](#explicit-conversion-between-types)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The function associated with a primitive type explicitly converts values to
+    that type:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also use `Object()` to convert values to objects:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following table describes in more detail how this conversion works:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '| `x` | `Object(x)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| --- | --- |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `undefined` | `{}` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| `null` | `{}` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| boolean | `new Boolean(x)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| number | `new Number(x)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| bigint | An instance of `BigInt` (`new` throws `TypeError`) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| string | `new String(x)` |'
+  prefs: []
+  type: TYPE_TB
+- en: '| symbol | An instance of `Symbol` (`new` throws `TypeError`) |'
+  prefs: []
+  type: TYPE_TB
+- en: '| object | `x` |'
+  prefs: []
+  type: TYPE_TB
+- en: '[14.9.2 Coercion (automatic conversion between types)](#coercion)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: For many operations, JavaScript automatically converts the operands/parameters
+    if their types don’t fit. This kind of automatic conversion is called *coercion*.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, the multiplication operator coerces its operands to numbers:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Many built-in functions coerce, too. For example, `Number.parseInt()` coerces
+    its parameter to a string before parsing it. That explains the following result:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: The number `123.45` is converted to the string `'123.45'` before it is parsed.
+    Parsing stops before the first non-digit character, which is why the result is
+    `123`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Converting values to primitives**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/values/conversion_exrc.mjs`'
+  prefs: []
+  type: TYPE_NORMAL

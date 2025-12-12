@@ -1,0 +1,1654 @@
+- en: 32 Synchronous iteration ES6
+  prefs:
+  - PREF_H1
+  type: TYPE_NORMAL
+- en: 原文：[https://exploringjs.com/js/book/ch_sync-iteration.html](https://exploringjs.com/js/book/ch_sync-iteration.html)
+  prefs:
+  - PREF_BQ
+  type: TYPE_NORMAL
+- en: '[32.1 What is synchronous iteration about?](#motivation-sync-iteration)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.2 Core iteration roles: iterables and iterators](#iterable-iterator-iteratorresult)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3 Iterating over data](#iterating-over-data)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.1 Manually iterating over data](#manually-iterating-over-data)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.2 Using `while` to iterate manually](#using-while-to-iterate-manually)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.3 Retrieving an iterator via `Iterator.from()` ^(ES2024)](#retrieving-an-iterator-via-iteratorfrom-es2024)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.4 Iterating via iteration-based language constructs](#iterating-via-iterationbased-language-constructs)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.3.5 Converting iterables to Arrays: `[...i]` and `Array.from(i)`](#converting-iterables-to-arrays-i-and-arrayfromi)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.4 Processing iterables via generators](#processing-iterables-via-generators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.5 The inheritance of the iteration API (advanced)](#the-inheritance-of-the-iteration-api-advanced)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.5.1 Array iterators](#array-iterators)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.5.2 Generator objects](#generator-objects)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.6 Iterable iterators](#iterable-iterators)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.6.1 Why are the built-in iterators iterable?](#why-are-the-builtin-iterators-iterable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.6.2 An iterator returns itself when asked for an iterator](#an-iterator-returns-itself-when-asked-for-an-iterator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.6.3 Iteration quirk: two kinds of iterables](#one-time-iterable-vs-many-times-iterable)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.7 Class `Iterator` and iterator helper methods ^(ES2025)](#class-iterator)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.7.1 `Iterator.prototype.*` methods](#iteratorprototype-methods)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.7.2 The benefits of iterator helper methods](#benefits-of-iterator-helper-methods)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.7.3 `Iterator.from()`: creating API iterators](#Iterator.from)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.7.4 Iterator methods change how we use iteration](#iterator-methods-change-how-we-use-iteration)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.7.5 Upgrading a legacy iterable to the `Iterator` API](#upgrading-a-legacy-iterable-to-the-iterator-api)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.8 Grouping iterables ^(ES2024)](#grouping-sync-iterables)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.8.1 Choosing between `Map.groupBy()` and `Object.groupBy()`](#choosing-between-mapgroupby-and-objectgroupby)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.8.2 Example: handling cases](#example-handling-cases)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.8.3 Example: grouping by property value](#example-grouping-by-property-value)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.9 Quick reference: synchronous iteration](#quickref-sync-iteration)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.9.1 Synchronous iteration: data producers](#synchronous-iteration-data-producers)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.9.2 Synchronous iteration: data consumers](#synchronous-iteration-data-consumers)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.10 Quick reference: class `Iterator` ^(ES2025)](#quickref-iterator)'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.10.1 Creating iterators](#creating-iterators)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.10.2 `Iterator.*`](#iterator)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.10.3 `Iterator.prototype.*`: methods that pass indices to callbacks](#iteratorprototype-methods-that-pass-indices-to-callbacks)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.10.4 `Iterator.prototype.*`: methods that return iterators](#iteratorprototype-methods-that-return-iterators)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.10.5 `Iterator.prototype.*`: methods that return booleans](#iteratorprototype-methods-that-return-booleans)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.10.6 `Iterator.prototype.*`: methods that return other kinds of values](#iteratorprototype-methods-that-return-other-kinds-of-values)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.10.7 `Iterator.prototype.*`: other methods](#iteratorprototype-other-methods)'
+  prefs:
+  - PREF_IND
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: '[32.1 What is synchronous iteration about?](#motivation-sync-iteration)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Synchronous iteration is a *protocol* (interfaces plus rules for using them)
+    that connects two groups of entities in JavaScript:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '**Data sources:** On one hand, data comes in all shapes and sizes. In JavaScript’s
+    standard library, we have the linear data structure Array, the ordered collection
+    Set (elements are ordered by time of addition), the ordered dictionary Map (entries
+    are ordered by time of addition), and more. In libraries, we may find tree-shaped
+    data structures and more.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '**Data consumers:** On the other hand, we have a whole class of constructs
+    and algorithms that only need to access their input *sequentially*: one value
+    at a time, until all values were visited. Examples include the `for-of` loop and
+    spreading into Array literals (via `...`).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The iteration protocol connects these two groups via the interface `Iterable`:
+    data sources deliver their contents sequentially “through it”; data consumers
+    get their input from it.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/52bbdbeebda7e97eed377dd5c6cf02df.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 32.1: Data consumers such as the `for-of` loop use the interface `Iterable`.
+    Data sources such as `Arrays` implement that interface.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[Figure 32.1](#fig:iterable-implementers-clients) illustrates how iteration
+    works: data consumers use the interface `Iterable`; data sources implement it.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **The JavaScript
+    way of implementing interfaces**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: In JavaScript, an object *implements* an interface if it has all the methods
+    that it describes. The interfaces mentioned in this chapter only exist in the
+    ECMAScript specification.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Both sources and consumers of data profit from this arrangement:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: If we develop a new data structure, we only need to implement `Iterable` and
+    a raft of tools can immediately be applied to it.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If we write code that uses iteration, it automatically works with many sources
+    of data.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.2 Core iteration roles: iterables and iterators](#iterable-iterator-iteratorresult)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Two roles (described by interfaces) form the core of iteration ([figure 32.2](#fig:iteration-protocol)):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: An *iterable* is an object whose contents can be traversed sequentially.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An *iterator* is the pointer used for the traversal.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '![](../Images/18a5343baba7051a9127cee5ee460844.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 32.2: Iteration has two main interfaces: `Iterable` and `Iterator`.
+    The former has a method that returns the latter.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'These are type definitions (in TypeScript’s notation) for the interfaces of
+    the iteration protocol:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE0]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The interfaces are used as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We ask an `Iterable` for an iterator via the method whose key is `Symbol.iterator`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: An iterator extends the abstract class `Iterator` and returns the iterated values
+    via its method `.next()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Note: Before ECMAScript 2025, `Iterator` was simply an interface. No globally
+    accessible class `Iterator` existed.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The values are not returned directly, but wrapped in objects with two properties:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.value` is the iterated value.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.done` indicates if the end of the iteration has been reached yet. It is `true`
+    after the last iterated value and `false` beforehand.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.3 Iterating over data](#iterating-over-data)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[32.3.1 Manually iterating over data](#manually-iterating-over-data)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is an example of using the iteration protocol:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE1]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.3.2 Using `while` to iterate manually](#using-while-to-iterate-manually)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following code demonstrates how to use a `while` loop to iterate over an
+    iterable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE2]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE3]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Using sync iteration manually**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/sync-iteration/sync_iteration_manually_exrc.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.3.3 Retrieving an iterator via `Iterator.from()` ^(ES2024)](#retrieving-an-iterator-via-iteratorfrom-es2024)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The built-in static method `Iterator.from()` provides us with a more elegant
+    way of retrieving iterators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE4]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.3.4 Iterating via iteration-based language constructs](#iterating-via-iterationbased-language-constructs)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: We have seen how to use the iteration protocol manually and it is relatively
+    cumbersome. But the protocol is not meant to be used directly – it is meant to
+    be used via higher-level language constructs built on top of it. We’ll notice
+    that we never see iterators when we do so. They are only used internally.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.3.4.1 Iterating over Arrays](#iterating-over-arrays)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The most important iteration-based language construct is the `for-of` loop:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE5]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Output:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE6]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Another iteration-based construct is spreading into Array literals:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE7]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Destructuring](ch_destructuring.html#ch_destructuring) via Array patterns
+    also uses iteration under the hood:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE8]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.3.4.2 Iterating over Sets](#iterating-over-sets)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Sets are also iterable. Note that the iterating code is the same: It sees neither
+    Arrays nor Sets, only iterables.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE9]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.3.5 Converting iterables to Arrays: `[...i]` and `Array.from(i)`](#converting-iterables-to-arrays-i-and-arrayfromi)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'These are ways of converting iterables to Arrays:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE10]'
+  prefs: []
+  type: TYPE_PRE
+- en: I tend to prefer `Array.from()` because it’s more self-descriptive.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'More information: [“Converting iterables, iterators and Array-like values to
+    Arrays” (§34.6)](ch_arrays.html#converting-to-array)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: We can also create an iterator and use an iterator method to create an Array.
+    Iterator methods are explained later.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE11]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.4 Processing iterables via generators](#processing-iterables-via-generators)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'Synchronous generator functions and methods expose their yielded values via
+    iterators (that are also iterable) that they return:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE12]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Generators produce iterables, but they can also consume them. That makes them
+    a versatile tool for transforming iterables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE13]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'More information: [“Synchronous generators ^(ES6) (advanced)” (§33)](ch_sync-generators.html#ch_sync-generators)'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.5 The inheritance of the iteration API (advanced)](#the-inheritance-of-the-iteration-api-advanced)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: All of the iterators created by JavaScript’s standard library have a common
+    prototype which the ECMAScript specification calls [`%IteratorPrototype%`](https://tc39.es/ecma262/#sec-%iteratorprototype%-object)
+    and uses internally. We can access it from JavaScript via `Iterator.prototype`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.5.1 Array iterators](#array-iterators)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'We create an Array iterator like this:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE14]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This object has a prototype with two properties. Let’s call it `ArrayIteratorPrototype`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE15]'
+  prefs: []
+  type: TYPE_PRE
+- en: The prototype of `ArrayIteratorPrototype` is `%IteratorPrototype%`. This object
+    has a method whose key is `Symbol.iterator`. Therefore, all built-in iterators
+    are iterable.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE16]'
+  prefs: []
+  type: TYPE_PRE
+- en: The prototype of `Iterator.prototype` is `Object.prototype`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE17]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[Figure 32.3](#fig:inheritance-array-iterator) contains a diagram for this
+    chain of prototypes.'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![](../Images/7114dc60cff41ea48eb99d0bb278db66.png)'
+  prefs: []
+  type: TYPE_IMG
+- en: 'Figure 32.3: A chain of prototypes (from bottom to top):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: First the result of `[][Symbol.iterator]()` (an instance of `%ArrayIterator%`)
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then `%ArrayIteratorPrototype%`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then `%IteratorPrototype%`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Finally `Object.prototype`
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.5.2 Generator objects](#generator-objects)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Roughly, a generator object is an iterator for the values yielded by a generator
+    function `genFunc()`. We create it by calling `genFunc()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE18]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'A generator object is an iterator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE19]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.6 Iterable iterators](#iterable-iterators)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[32.6.1 Why are the built-in iterators iterable?](#why-are-the-builtin-iterators-iterable)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'As we have seen, all built-in iterators are iterable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE20]'
+  prefs: []
+  type: TYPE_PRE
+- en: That has the benefit of us being able to iterate over the iterator’s values
+    – e.g., via `for-of` and `Array.from()`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Another benefit is that generators become more versatile. On one hand, we can
+    use them to implement iterators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE21]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'On the other hand, we can use them to implement iterables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE22]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.6.2 An iterator returns itself when asked for an iterator](#an-iterator-returns-itself-when-asked-for-an-iterator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'If an iterator is iterable: What are the iterators it produces? It simply returns
+    itself when asked for an iterator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE23]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.6.3 Iteration quirk: two kinds of iterables](#one-time-iterable-vs-many-times-iterable)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Alas, iterable iterators mean that there are two kinds of iterables:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'An iterable iterator is a *one-time iterable*: It always returns the same iterator
+    (itself) when `[Symbol.iterator]()` is called (iteration continues).'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'A normal iterable (an Array, a Set, etc.) is a *many-times iterable*: It always
+    returns a fresh iterator (iteration restarts).'
+  prefs:
+  - PREF_OL
+  type: TYPE_NORMAL
+- en: 'With a one-time iterable, each time we iterate, we remove more elements, until,
+    eventually, no more are left:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE24]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'With a many-times iterable, each iteration starts fresh:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE25]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The following code is another demonstration of the difference:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE26]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.7 Class `Iterator` and iterator helper methods ^(ES2025)](#class-iterator)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: 'We have already seen that `%IteratorPrototype%` is the prototype of all built-in
+    iterators. ECMAScript 2025 introduces a class `Iterator`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Iterator.prototype` refers to `%IteratorPrototype%`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`%IteratorPrototype%.constructor` refers to `Iterator`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The class provides the following functionality:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Iterator.from(iterable)` returns an iterator for `iterable`. We’ll explore
+    it in detail [later](#Iterator.from).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Iterator.prototype` contains various helper methods that are inherited by
+    iterators.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.7.1 `Iterator.prototype.*` methods](#iteratorprototype-methods)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The following iterator helper methods work like the Array methods with the
+    same names:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Methods that return iterators:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.filter(filterFn)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.map(mapFn)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.flatMap(mapFn)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Methods that return booleans:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.some(fn)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.every(fn)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Methods that return other values:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.find(fn)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.reduce(reducer, initialValue?)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Methods that return no values:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.forEach(fn)`'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'These helper methods are unique to iterators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`iterator.drop(limit)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Returns an iterator without the first `limit` elements of `iterator`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.take(limit)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Returns an iterator with the first `limit` elements of `iterator`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterator.toArray()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Collects all remaining elements of `iterator` in an Array and returns it.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'For a brief description of each method, see [“Quick reference: class `Iterator`
+    ^(ES2025)” (§32.10)](#quickref-iterator). These are examples of the methods in
+    action:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE27]'
+  prefs: []
+  type: TYPE_PRE
+- en: The Array method `arr.values()` returns an iterator over the elements of `arr`.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercises:
+    Working with iterators**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Implementing `.at()` for iterators: `exercises/sync-iteration/iterator-at_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Implementing `.findIndex()` for iterators: `exercises/sync-iteration/iterator-find-index_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Implementing `.slice()` for iterators: `exercises/sync-iteration/slice-iterator_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Adding indices to iterator elements: `exercises/sync-iteration/add-index-to-iterator_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Using `iterator.reduce()` to compute the length of an iterator: `exercises/sync-iteration/iterator-length_test.mjs`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.7.2 The benefits of iterator helper methods](#benefits-of-iterator-helper-methods)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '[32.7.2.1 Benefit: more operations for data structures that support iteration](#benefit-more-operations-for-data-structures-that-support-iteration)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: With iterator helper methods, any data structure that supports iteration automatically
+    gains functionality.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'For example, Sets don’t support the operations `filter` and `map`, but we can
+    get them via iterator methods:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE28]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that `new Set()` accepts iterables and therefore iterable iterators (line
+    A and line B).
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'DOM collections also don’t have the methods `.filter()` and `.map()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE29]'
+  prefs: []
+  type: TYPE_PRE
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Implementing `.filter()` and `.map()` for Sets via iterator methods**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/sync-iteration/set-operations-via-iterators_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.7.2.2 Benefit: no intermediate Arrays and incremental processing](#benefit-no-intermediate-arrays-and-incremental-processing)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'If we chain operations that return Arrays (line A, line B, line C) then each
+    operation produces a new Array:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE30]'
+  prefs: []
+  type: TYPE_PRE
+- en: The regular expression in line A contains [a lookbehind assertion](ch_regexps.html#regexp-lookbehind-assertions)
+    which ensures that the lines returned by `.split()` includes line terminators.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In contrast, each operation (line A, line B, line C) in the following code
+    returns an iterator and no intermediate Arrays are created:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE31]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'Example of using `quoteNonEmptyLinesIter()`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE32]'
+  prefs: []
+  type: TYPE_PRE
+- en: Note that the empty lines between the three lines of text were filtered out.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'In addition to no intermediate Arrays being created, iterators also give us
+    incremental processing:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE33]'
+  prefs: []
+  type: TYPE_PRE
+- en: In contrast, `quoteNonEmptyLinesArray()` first splits all lines, then filters
+    all lines and then maps all lines. Incremental processing matters when dealing
+    with a large amount of data. Iterator helper methods complement generators as
+    tools for incremental processing.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.7.3 `Iterator.from()`: creating API iterators](#Iterator.from)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: All built-in iterables automatically support the new API because their iterators
+    already have `Iterator.prototype` as a prototype (and are therefore instances
+    of `Iterator`). However, that’s not the case for all iterables in libraries and
+    user code.
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Terminology:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Entities that support the `Iterator` API: *API iterators* and *API iterables*'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Entities that don’t: *legacy iterators* and *legacy iterables*'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: How does `Iterator.from(obj)` work?
+  prefs: []
+  type: TYPE_NORMAL
+- en: If `obj` is iterable, then it creates an iterator by calling `obj[Symbol.iterator]()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If the new iterator is an instance of `Iterator`, it is returned as is.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, it is wrapped so that it becomes an instance of `Iterator`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: If `obj` is an iterator, `Iterator.from()` ensures that it is an instance of
+    `Iterator` and returns it.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'In the following example, we use `Iterator.from()` to convert a legacy iterator
+    to an API iterator:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE34]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.7.4 Iterator methods change how we use iteration](#iterator-methods-change-how-we-use-iteration)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The iterator methods change how we use iteration:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Previously, we never saw iterators and always worked with iterables, e.g. via
+    `for-of` or `Array.from()`.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Now, using iterators is useful, too, and we have to be aware of how to create
+    them.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'It’s interesting how our focus shifts with methods such as `Array.prototype.keys()`
+    that return iterable iterators: Before iterator methods, we used the result as
+    an iterable. With iterator methods, we also use them as iterators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE35]'
+  prefs: []
+  type: TYPE_PRE
+- en: For more information, see [“Creating iterators” (§32.10.1)](#creating-iterators).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.7.5 Upgrading a legacy iterable to the `Iterator` API](#upgrading-a-legacy-iterable-to-the-iterator-api)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'This is an example of a legacy iterable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE36]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'If we want `ValueIterable` to support the `Iterator` API, we have to make its
+    iterators instances of `Iterator`:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE37]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'This is another option (albeit a less efficient one):'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE38]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can also create a class for iterators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE39]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.8 Grouping iterables ^(ES2024)](#grouping-sync-iterables)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '`Map.groupBy()` groups the items of an iterable into Map entries whose keys
+    are provided by a callback:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE40]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'The items to be grouped can come from any iterable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE41]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'There is also `Object.groupBy()` which produces an object instead of a Map:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE42]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.8.1 Choosing between `Map.groupBy()` and `Object.groupBy()`](#choosing-between-mapgroupby-and-objectgroupby)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: Do you want group keys other than strings and symbols?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then you need a Map. Objects can only have strings and symbols as keys.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Do you want to destructure the result of `.groupBy()` (see example later in
+    this section)?
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Then you need an object.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Otherwise, you are free to choose what you prefer.
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.8.2 Example: handling cases](#example-handling-cases)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'The Promise combinator [`Promise.allSettled()`](ch_promises.html#Promise.allSettled)
+    returns Arrays such as the following one:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE43]'
+  prefs: []
+  type: TYPE_PRE
+- en: 'We can group the Array elements as follows:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE44]'
+  prefs: []
+  type: TYPE_PRE
+- en: For this use case, `Object.groupBy()` works better because we can use destructuring
+    (line A).
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.8.3 Example: grouping by property value](#example-grouping-by-property-value)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'In the next example, we’d like to group persons by country:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE45]'
+  prefs: []
+  type: TYPE_PRE
+- en: For this use case, `Map.groupBy()` is a better choice because we can use arbitrary
+    keys in Maps whereas in objects, keys are limited to strings and symbols.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
+    Using `Map.groupBy()` for an Array of objects**'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`exercises/sync-iteration/count-cities_test.mjs`'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.9 Quick reference: synchronous iteration](#quickref-sync-iteration)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[32.9.1 Synchronous iteration: data producers](#synchronous-iteration-data-producers)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'These data structures are iterable:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Strings
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Arrays
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sets
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Maps
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '(Browsers: DOM data structures)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following data structures have the methods `.keys()`, `.values()`, and
+    `.entries()` that return iterables that are not Arrays:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: Arrays
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Sets
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: Maps
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: As an aside – the following static methods list property keys, values and entries
+    (they are not normal methods because those can be accidentally overridden). They
+    return Arrays.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`Object.keys(obj)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.values(obj)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Object.entries(obj)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Synchronous generator functions and methods expose their yielded values via
+    iterable objects that they return:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE46]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.9.2 Synchronous iteration: data consumers](#synchronous-iteration-data-consumers)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: This section lists constructs that consume data via synchronous iteration.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.9.2.1 Language constructs that iterate](#language-constructs-that-iterate)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'The `for-of` loop:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE47]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Spreading (via `...`) into Array literals and function calls:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE48]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Destructuring via an Array pattern:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE49]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`yield*`:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE50]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[32.9.2.2 Converting iterables to data structures](#converting-iterables-to-data-structures)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[`Object.fromEntries()`](ch_objects.html#Object.fromEntries):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE51]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[`Array.from()`](ch_arrays.html#Array.from):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE52]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Alternative – [spreading](ch_arrays.html#spreading-into-array-literals):'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE53]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[`new Map()`](ch_maps.html#ch_maps) and [`new WeakMap()`](ch_weakmaps.html#ch_weakmaps):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE54]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[`new Set()`](ch_sets.html#ch_sets) and [`new WeakSet()`](ch_weaksets.html#ch_weaksets):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE55]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[32.9.2.3 Converting iterables over Promises to Promises](#converting-iterables-over-promises-to-promises)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[Promise combinator functions](ch_promises.html#promise-combinators): `Promise.all()`
+    etc.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE56]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[32.9.2.4 Grouping an iterable into a Map or an object](#grouping-an-iterable-into-a-map-or-an-object)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '[“`Map.groupBy(items, computeGroupKey)`”](ch_maps.html#qref-Map.groupBy)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[“`Object.groupBy(items, computeGroupKey)`”](ch_objects.html#qref-Object.groupBy)'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.10 Quick reference: class `Iterator` ^(ES2025)](#quickref-iterator)'
+  prefs:
+  - PREF_H3
+  type: TYPE_NORMAL
+- en: '[32.10.1 Creating iterators](#creating-iterators)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: The methods of class `Iterator` let us process data incrementally. Let’s explore
+    where we can use them.
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[32.10.1.1 Getting iterators from iterables](#getting-iterators-from-iterables)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: '`Iterator.from(iterable)` always returns instances of `Iterator` (converting
+    non-instances to instances as needed).'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`iterable[Symbol.iterator]()` returns an iterator:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: With all built-in data structures, the result is an instance of `Iterator`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: With other, older iterable objects, the result may not be an instance of `Iterator`.
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.10.1.2 Built-in methods that return iterators](#builtin-methods-that-return-iterators)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Arrays, Typed Arrays, Sets and Maps have additional methods that return iterators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: 'Arrays (similarly: Typed Arrays):'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Array.prototype.keys()` returns an iterator over numbers.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Array.prototype.values()` returns an iterator.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Array.prototype.entries()` returns an iterator over key-value pairs. The keys
+    are numbers.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Sets:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Set.prototype.values()` returns an iterator.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Set.prototype.keys()` returns an iterator. Equivalent to `.values()`.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Set.prototype.entries()` returns an iterator over value-value pairs (i.e.,
+    both components of the pair are the same value).'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'Maps:'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Map.prototype.keys()` returns an iterator.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Map.prototype.values()` returns an iterator.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`Map.prototype.entries()` returns an iterator over key-value pairs.'
+  prefs:
+  - PREF_IND
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: 'The following methods return iterators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`String.prototype.matchAll()` returns an iterator over match objects.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.10.1.3 Other sources of iterators](#other-sources-of-iterators)'
+  prefs:
+  - PREF_H5
+  type: TYPE_NORMAL
+- en: 'Generators also return iterators:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '[PRE57]'
+  prefs: []
+  type: TYPE_PRE
+- en: '[32.10.2 `Iterator.*`](#iterator)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Iterator.from(iterableOrIterator)` returns an iterator that is guaranteed
+    to be an instance of `Iterator`. If the parameter is a legacy iterable or a legacy
+    iterator, it wraps the result so that it becomes an instance of `Iterator`.'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.10.3 `Iterator.prototype.*`: methods that pass indices to callbacks](#iteratorprototype-methods-that-pass-indices-to-callbacks)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: 'Some of the iterator methods keep a counter for the iterated values and pass
+    it on to their callbacks:'
+  prefs: []
+  type: TYPE_NORMAL
+- en: '`.every()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.filter()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.find()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.flatMap()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.forEach()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.map()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.reduce()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '`.some()`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[32.10.4 `Iterator.prototype.*`: methods that return iterators](#iteratorprototype-methods-that-return-iterators)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Iterator.prototype.drop(limit)` ES2025'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE58]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns an iterator that with all values of `iterator`, except for
+    the first `limit` ones. That is, iteration starts when the iteration counter is
+    `limit`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE59]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Iterator.prototype.filter(filterFn)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2025 | Callback gets counter
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE60]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns an iterator whose values are the values of `iterator` for
+    which `filterFn` returns `true`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE61]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Iterator.prototype.flatMap(mapFn)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2025 | Callback gets counter
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE62]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns an iterator whose values are the values of the iterables
+    or iterators that are the results of applying `mapFn` to the values of `iterator`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE63]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'For more information see the section on the Array method with the same name:
+    [“`.flatMap()`: Each input element produces zero or more output elements ^(ES2019)”
+    (§34.14.3)](ch_arrays.html#Array.prototype.flatMap).'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Iterator.prototype.map(mapFn)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2025 | Callback gets counter
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE64]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns an iterator whose values are the result of applying `mapFn`
+    to the values of `iterator`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE65]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Iterator.prototype.take(limit)` ES2025'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE66]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns an iterator with the first `limit` values of `iterator`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE67]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[32.10.5 `Iterator.prototype.*`: methods that return booleans](#iteratorprototype-methods-that-return-booleans)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Iterator.prototype.every(fn)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2025 | Callback gets counter
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE68]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns `true` if `fn` returns `true` for every value of `iterator`.
+    Otherwise, it returns `false`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE69]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Iterator.prototype.some(fn)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2025 | Callback gets counter
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE70]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns `true` if `fn` returns `true` for at least one value of
+    `iterator`. Otherwise, it returns `false`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE71]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[32.10.6 `Iterator.prototype.*`: methods that return other kinds of values](#iteratorprototype-methods-that-return-other-kinds-of-values)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Iterator.prototype.find(fn)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2025 | Callback gets counter
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE72]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns the first value of `iterator` for which `fn` returns `true`.
+    If there is no such value, it returns `undefined`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE73]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '`Iterator.prototype.reduce(reducer, initialValue?)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2025 | Callback gets counter
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE74]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method uses the function `reducer` to combine the values of `iterator`
+    into a single value.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: 'Example – concatenating the strings of an iterator:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE75]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'Example – computing the minimum of a Set of numbers:'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE76]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: 'For more information see the section on the Array method with the same name:
+    [“`.reduce()`: computing a summary for an Array” (§34.15)](ch_arrays.html#Array.prototype.reduce).'
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '`Iterator.prototype.toArray()` ES2025'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: '[PRE77]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method returns the values of `iterator` in an Array.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE78]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: '[32.10.7 `Iterator.prototype.*`: other methods](#iteratorprototype-other-methods)'
+  prefs:
+  - PREF_H4
+  type: TYPE_NORMAL
+- en: '`Iterator.prototype.forEach(fn)`'
+  prefs:
+  - PREF_UL
+  type: TYPE_NORMAL
+- en: ES2025 | Callback gets counter
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE79]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
+- en: This method applies `fn` to each value in `iterator`.
+  prefs:
+  - PREF_IND
+  type: TYPE_NORMAL
+- en: '[PRE80]'
+  prefs:
+  - PREF_IND
+  type: TYPE_PRE
