@@ -1,735 +1,1111 @@
 - en: 44 Async functions ES2017
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 44 异步函数 ES2017
 - en: 原文：[https://exploringjs.com/js/book/ch_async-functions.html](https://exploringjs.com/js/book/ch_async-functions.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/js/book/ch_async-functions.html](https://exploringjs.com/js/book/ch_async-functions.html)
 - en: '[44.1 Async functions: the basics](#async-functions-the-basics)'
+  id: totrans-2
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.1 异步函数：基础知识](#async-functions-the-basics)'
 - en: '[44.1.1 The `await` operator makes Promises synchronous](#await-operator)'
+  id: totrans-3
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.1.1 `await`运算符使Promise同步](#await-operator)'
 - en: '[44.1.2 Returning a value from an async function resolves the function’s result](#async-function-return)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.1.2 从异步函数返回值解析函数的结果](#async-function-return)'
 - en: '[44.1.3 Asynchronous callable entities](#async-callables)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.1.3 异步可调用实体](#async-callables)'
 - en: '[44.2 What values can be used with `await`?](#what-values-can-be-used-with-await)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.2 `await`可以使用哪些值？](#what-values-can-be-used-with-await)'
 - en: '[44.2.1 Awaiting fulfilled Promises](#awaiting-fulfilled-promises)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.2.1 等待被解决的Promise](#awaiting-fulfilled-promises)'
 - en: '[44.2.2 Awaiting rejected Promises](#awaiting-rejected-promises)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.2.2 等待被拒绝的Promise](#awaiting-rejected-promises)'
 - en: '[44.2.3 Awaiting non-Promise values](#awaiting-nonpromise-values)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.2.3 等待非Promise值](#awaiting-nonpromise-values)'
 - en: '[44.3 Where can `await` be used?](#where-can-await-be-used)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.3 `await`在哪里可以使用？](#where-can-await-be-used)'
 - en: '[44.3.1 Using `await` at the top levels of modules ^(ES2022)](#using-await-at-the-top-levels-of-modules-es2022)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.3.1 在模块的最高级别使用`await`^(ES2022)](#using-await-at-the-top-levels-of-modules-es2022)'
 - en: '[44.3.2 Awaiting is shallow](#awaiting-is-shallow)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.3.2 等待是浅层的](#awaiting-is-shallow)'
 - en: '[44.3.3 Example: `.map()` with an async function as a callback](#map-with-async-callback)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.3.3 示例：使用异步函数作为回调的`.map()`](#map-with-async-callback)'
 - en: '[44.4 `return` in async functions](#return-in-async-functions)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.4 异步函数中的`return`](#return-in-async-functions)'
 - en: '[44.4.1 The result of an async function is always a Promise](#the-result-of-an-async-function-is-always-a-promise)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.4.1 异步函数的结果始终是一个Promise](#the-result-of-an-async-function-is-always-a-promise)'
 - en: '[44.4.2 Returning a Promise resolves the result Promise](#returning-a-promise-resolves-the-result-promise)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.4.2 返回一个Promise解析结果Promise](#returning-a-promise-resolves-the-result-promise)'
 - en: '[44.5 Async functions start synchronously, settle asynchronously](#async-funcs-start-sync-settle-async)'
+  id: totrans-17
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.5 异步函数同步开始，异步解决](#async-funcs-start-sync-settle-async)'
 - en: '[44.6 Tips for using async functions](#tips-for-using-async-functions)'
+  id: totrans-18
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.6 使用异步函数的技巧](#tips-for-using-async-functions)'
 - en: '[44.6.1 We don’t need `await` if we “fire and forget”](#fire-and-forget-await)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.6.1 如果我们“发射并忘记”，则不需要`await`](#fire-and-forget-await)'
 - en: '[44.6.2 It can make sense to `await` and ignore the result](#it-can-make-sense-to-await-and-ignore-the-result)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.6.2 有时可以`await`并忽略结果](#it-can-make-sense-to-await-and-ignore-the-result)'
 - en: '[44.6.3 The pros and cons of `return await`](#return-await)'
+  id: totrans-21
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.6.3 `return await`的优缺点](#return-await)'
 - en: '[44.7 Concurrency and `await` (advanced)](#concurrency-and-await)'
+  id: totrans-22
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.7 并发和`await`（高级）](#concurrency-and-await)'
 - en: '[44.7.1 `await`: running Promise-based functions sequentially](#await-sequentially)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.7.1 `await`：按顺序运行基于Promise的函数](#await-sequentially)'
 - en: '[44.7.2 `await`: running Promise-based functions concurrently](#await-concurrently)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[44.7.2 `await`：并发运行基于Promise的函数](#await-concurrently)'
 - en: '*Async functions* provide better syntax for code that uses Promises. Promises
     are therefore required knowledge for understanding async functions. They are explained
     in [the previous chapter](ch_promises.html#ch_promises).'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '*异步函数*提供了更好的语法来编写使用Promise的代码。因此，Promise是理解异步函数的必备知识。它们在[上一章](ch_promises.html#ch_promises)中有解释。'
 - en: '[44.1 Async functions: the basics](#async-functions-the-basics)'
+  id: totrans-26
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[44.1 异步函数：基础知识](#async-functions-the-basics)'
 - en: 'Consider the following async function:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下异步函数：
 - en: '[PRE0]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Two keywords are important:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 两个关键字很重要：
 - en: The keyword `async` before `function` means that this is an async function.
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`function`之前的`async`关键字表示这是一个异步函数。
 - en: The `await` operator is applied to Promises and either extracts fulfillment
     values or throws rejection values. More on it soon.
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`await`运算符应用于Promise，要么提取履行值，要么抛出拒绝值。关于它的更多信息将在后面介绍。'
 - en: 'The previous, rather synchronous-looking code is equivalent to the following
     code that uses Promises directly:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 之前的代码看起来相当同步，等价于以下直接使用Promise的代码：
 - en: '[PRE1]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Both `fetchJsonAsync()` and `fetchJsonViaPromises()` are called in exactly
     the same way – e.g., like this:'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: '`fetchJsonAsync()`和`fetchJsonViaPromises()`的调用方式完全相同——例如，像这样：'
 - en: '[PRE2]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **Async functions
     are as Promise-based as functions that use Promises directly**'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“详情”](../Images/38ba63de820aae6f94a019538ae0f222.png) **异步函数与直接使用Promise的函数一样基于Promise**'
 - en: From the outside, it is virtually impossible to tell the difference between
     an async function and a function that returns a Promise.
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 从外部来看，几乎无法区分async函数和返回Promise的函数之间的差异。
 - en: '[44.1.1 The `await` operator makes Promises synchronous](#await-operator)'
+  id: totrans-38
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.1.1 `await`运算符使Promise同步](#await-operator)'
 - en: 'Inside the body of an async function, we write Promise-based code as if it
     were synchronous. We only need to apply the `await` operator whenever a value
     is a Promise. That operator pauses the async function and resumes it once the
     Promise is settled:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 在async函数的主体内部，我们像同步代码一样编写基于Promise的代码。我们只需要在值是Promise时应用`await`运算符。该运算符暂停async函数，并在Promise解决后恢复：
 - en: If the Promise is fulfilled, `await` returns the fulfillment value.
+  id: totrans-40
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果Promise被解决，`await`返回解决值。
 - en: '[PRE3]'
+  id: totrans-41
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: If the Promise is rejected, `await` throws the rejection value.
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果Promise被拒绝，`await`会抛出拒绝值。
 - en: '[PRE4]'
+  id: totrans-43
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[44.1.2 Returning a value from an async function resolves the function’s result](#async-function-return)'
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.1.2 从async函数返回值解决函数的结果](#async-function-return)'
 - en: 'The result of an async function is always a Promise:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: async函数的结果始终是一个Promise：
 - en: 'Any value that is returned (explicitly or implicitly) is used to resolve that
     Promise:'
+  id: totrans-46
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 任何返回的值（显式或隐式）都用于解决那个Promise：
 - en: '[PRE5]'
+  id: totrans-47
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Any exception that is thrown is used to reject the Promise:'
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 任何抛出的异常都用于拒绝Promise：
 - en: '[PRE6]'
+  id: totrans-49
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[44.1.3 Asynchronous callable entities](#async-callables)'
+  id: totrans-50
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.1.3 异步可调用实体](#async-callables)'
 - en: JavaScript has the following async versions of synchronous callable entities.
     Their roles are always either real function or method.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: JavaScript有以下同步可调用实体的异步版本。它们的作用始终是真实函数或方法。
 - en: '[PRE7]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **Asynchronous
     functions vs. async functions**'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: '![Icon “details”](../Images/38ba63de820aae6f94a019538ae0f222.png) **异步函数与async函数的比较**'
 - en: 'The difference between the terms *asynchronous function* and *async function*
     is subtle, but important:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: “异步函数”和“async函数”这两个术语之间的区别细微但很重要：
 - en: An *asynchronous function* is any function that delivers its result asynchronously
     – for example, a callback-based function or a Promise-based function.
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**异步函数**是指任何异步传递其结果的函数——例如，基于回调的函数或基于Promise的函数。'
 - en: An *async function* is defined via special syntax, involving the keywords `async`
     and `await`. It is also called async/await due to these two keywords. Async functions
     are based on Promises and therefore also asynchronous functions (which is somewhat
     confusing).
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '**async函数**通过特殊语法定义，涉及关键字`async`和`await`。由于这两个关键字，它也被称为async/await。Async函数基于Promise，因此也是异步函数（这有点令人困惑）。'
 - en: 'That being said: These two terms are also often used interchangeably.'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 也就是说：这两个术语也经常互换使用。
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Fetch API via async functions**'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：通过async函数使用Fetch
+    API**'
 - en: '`exercises/async-functions/fetch_json2_test.mjs`'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/async-functions/fetch_json2_test.mjs`'
 - en: '[44.2 What values can be used with `await`?](#what-values-can-be-used-with-await)'
+  id: totrans-60
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[44.2 `await`可以使用哪些值？](#what-values-can-be-used-with-await)'
 - en: 'The `await` operator can only be used inside async functions and async generators
     (which are explained in [“Asynchronous generators” (§45.2)](ch_async-iteration.html#async-generators)).
     Its operand is usually a Promise and leads to the following steps being performed:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: '`await`运算符只能在async函数和async生成器（在[“异步生成器”（§45.2）](ch_async-iteration.html#async-generators)中解释）内部使用。其操作数通常是Promise，并导致以下步骤执行：'
 - en: The current async function is paused.
+  id: totrans-62
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当前async函数处于暂停状态。
 - en: 'When and if the Promise is settled, the async function is resumed:'
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当Promise解决时，async函数会恢复：
 - en: If the Promise is fulfilled, `await` returns the fulfillment value.
+  id: totrans-64
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果Promise被解决，`await`返回解决值。
 - en: If the Promise is rejected, `await` throws the rejection value.
+  id: totrans-65
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果Promise被拒绝，`await`会抛出拒绝值。
 - en: For more information on what exactly pausing and resuming means, see [“Async
     functions start synchronously, settle asynchronously” (§44.5)](#async-funcs-start-sync-settle-async).
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于暂停和恢复的确切含义的更多信息，请参阅[“异步函数同步开始，异步解决”（§44.5）](#async-funcs-start-sync-settle-async)。
 - en: Read on to find out how `await` handles various values.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 继续阅读以了解`await`如何处理各种值。
 - en: '[44.2.1 Awaiting fulfilled Promises](#awaiting-fulfilled-promises)'
+  id: totrans-68
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.2.1 等待解决的Promise](#awaiting-fulfilled-promises)'
 - en: 'If its operand is a fulfilled Promise, `await` returns its fulfillment value:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果其操作数是一个已解决的Promise，`await`返回其解决值：
 - en: '[PRE8]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'The value of `await` is delivered asynchronously:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: '`await`的值异步传递：'
 - en: '[PRE9]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Output:'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE10]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'In line A, we can’t use `setTimeout()`. We have to use `queueMicrotask()` because
     Promise-related tasks are so-called *microtasks* which are different from normal
     tasks and always handled before them (via a *microtask queue*). For more information,
     see the MDN article [“In depth: Microtasks and the JavaScript runtime environment”](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide/In_depth).'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行A中，我们不能使用`setTimeout()`。我们必须使用`queueMicrotask()`，因为与Promise相关的任务被称为所谓的*微观任务*，它们与正常任务不同，并且总是先于它们处理（通过一个*微观任务队列*）。更多信息，请参阅MDN文章[“深入：微观任务和JavaScript运行时环境”](https://developer.mozilla.org/en-US/docs/Web/API/HTML_DOM_API/Microtask_guide/In_depth)。
 - en: '[44.2.2 Awaiting rejected Promises](#awaiting-rejected-promises)'
+  id: totrans-76
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.2.2 等待拒绝的Promises](#awaiting-rejected-promises)'
 - en: 'If its operand is a rejected Promise, then `await` throws the rejection value:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果其操作数是一个拒绝的Promise，那么`await`会抛出拒绝值：
 - en: '[PRE11]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[44.2.3 Awaiting non-Promise values](#awaiting-nonpromise-values)'
+  id: totrans-79
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.2.3 等待非Promise值](#awaiting-nonpromise-values)'
 - en: 'Non-Promise values can also be awaited and are simply passed on:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 非Promise值也可以被`await`，并且简单地传递：
 - en: '[PRE12]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Even in this case, the result of `await` is delivered asynchronously:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使在这种情况下，`await`的结果也是异步传递的：
 - en: '[PRE13]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Output:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE14]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[44.3 Where can `await` be used?](#where-can-await-be-used)'
+  id: totrans-86
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[44.3 `await`在哪里可以使用？](#where-can-await-be-used)'
 - en: '[44.3.1 Using `await` at the top levels of modules ^(ES2022)](#using-await-at-the-top-levels-of-modules-es2022)'
+  id: totrans-87
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.3.1 在模块的最高级别使用`await`^(ES2022)](#using-await-at-the-top-levels-of-modules-es2022)'
 - en: 'We can use `await` at the top levels of modules – for example:'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以在模块的最高级别使用`await`——例如：
 - en: '[PRE15]'
+  id: totrans-89
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: For more information on this feature, see [“Top-level `await` in modules ^(ES2022)
     (advanced)” (§29.15)](ch_modules.html#top-level-await).
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于这个特性的更多信息，请参阅[“模块中的顶级`await`^(ES2022)（高级）”（§29.15）](ch_modules.html#top-level-await)。
 - en: '[44.3.2 Awaiting is shallow](#awaiting-is-shallow)'
+  id: totrans-91
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.3.2 `await`是浅层的](#awaiting-is-shallow)'
 - en: If we are inside an async function and want to pause it via `await`, we must
     do so directly within that function; we can’t use it inside a nested function,
     such as a callback. That is, pausing is *shallow*.
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在异步函数内部，并想通过`await`暂停它，我们必须直接在该函数内部这样做；我们无法在嵌套函数（如回调）内部使用它。也就是说，暂停是*浅层的*。
 - en: 'Let’s examine what that means. In the following code, we try to await inside
     a nested function:'
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们来看看这意味着什么。在下面的代码中，我们尝试在嵌套函数内部使用`await`：
 - en: '[PRE16]'
+  id: totrans-94
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: However, that isn’t even valid syntax because `await` is not allowed inside
     synchronous functions such as `nestedFunc()`. What happens if we make `nestedFunc()`
     an async function?
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，这甚至不是一个有效的语法，因为`await`不允许在同步函数（如`nestedFunc()`）内部使用。如果我们把`nestedFunc()`变成一个异步函数会发生什么？
 - en: '[PRE17]'
+  id: totrans-96
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: This time, the `await` in line A pauses `nestedFunc()`, not `f()`. `nestedFunc()`
     returns a Promise, which is wrapped in an Array in line B. Note [the top-level
     `await`](ch_modules.html#top-level-await) in line C.
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 这次，行A中的`await`暂停了`nestedFunc()`，而不是`f()`。`nestedFunc()`返回一个Promise，它在行B中被包裹在一个数组中。注意行C中的[顶级`await`](ch_modules.html#top-level-await)。
 - en: 'To make this code work, we must await the result of `nestedFunc()`:'
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: 要使此代码工作，我们必须等待`nestedFunc()`的结果：
 - en: '[PRE18]'
+  id: totrans-99
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'To summarize: `await` only affects the immediately surrounding function (which
     must be an async function).'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 总结一下：`await`只影响立即周围的函数（该函数必须是异步函数）。
 - en: '[44.3.3 Example: `.map()` with an async function as a callback](#map-with-async-callback)'
+  id: totrans-101
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.3.3 示例：使用异步函数作为回调的`.map()`](#map-with-async-callback)'
 - en: 'What happens if we use an async function as a callback for `.map()`? Then the
     result is an Array of Promises:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将异步函数用作`.map()`的回调会发生什么？那么结果是一个Promise数组：
 - en: '[PRE19]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'We can use [`Promise.all()`](ch_promises.html#Promise.all) to convert that
     Array of Promises to a Promise for an Array and await that Promise:'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用[`Promise.all()`](ch_promises.html#Promise.all)将Promise数组转换为Promise数组，并等待该Promise：
 - en: '[PRE20]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: We use that technique in the following code, which downloads files via [`fetch()`](ch_promises.html#fetch-api).
     The content of each file is its filename.
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在以下代码中使用这种技术，该代码通过[`fetch()`](ch_promises.html#fetch-api)下载文件。每个文件的内容是其文件名。
 - en: '[PRE21]'
+  id: totrans-107
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '![Icon “exercise”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **Exercise:
     Mapping and filtering asynchronously**'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“练习”](../Images/4fc2ec98bb44cc1f4de7c6a46d9dd043.png) **练习：异步映射和过滤**'
 - en: '`exercises/async-functions/map_async_test.mjs`'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: '`exercises/async-functions/map_async_test.mjs`'
 - en: '[44.4 `return` in async functions](#return-in-async-functions)'
+  id: totrans-110
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[44.4 异步函数中的`return`](#return-in-async-functions)'
 - en: '[44.4.1 The result of an async function is always a Promise](#the-result-of-an-async-function-is-always-a-promise)'
+  id: totrans-111
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.4.1 异步函数的结果始终是Promise](#the-result-of-an-async-function-is-always-a-promise)'
 - en: 'If we call an async function, the result is always a Promise – even if the
     async function throws an exception. Inside the async function, we can fulfill
     the result Promise by returning non-Promise values (line A):'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们调用一个异步函数，结果总是一个 Promise - 即使异步函数抛出异常。在异步函数内部，我们可以通过返回非 Promise 值（行 A）来履行结果
+    Promise：
 - en: '[PRE22]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'As usual, if we don’t explicitly return anything, `undefined` is returned for
     us:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 通常，如果我们没有明确返回任何内容，则会自动返回 `undefined`：
 - en: '[PRE23]'
+  id: totrans-115
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'We reject the result Promise via `throw` (line A):'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们通过 `throw`（行 A）拒绝结果 Promise：
 - en: '[PRE24]'
+  id: totrans-117
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '[44.4.2 Returning a Promise resolves the result Promise](#returning-a-promise-resolves-the-result-promise)'
+  id: totrans-118
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.4.2 返回一个 Promise 解决结果 Promise](#returning-a-promise-resolves-the-result-promise)'
 - en: 'If we return a Promise `q` then it resolves the result Promise `p` of the async
     function: `p` adopts the state of `q` (`q` basically replaces `p`). Resolving
     never nests Promises.'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们返回一个 Promise `q`，那么它将解决异步函数的结果 Promise `p`：`p` 采用 `q` 的状态（`q` 实际上替换了 `p`）。解决永远不会嵌套
+    Promise。
 - en: 'Returning a fulfilled Promise fulfills the result Promise:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回一个已解决的 Promise 会履行结果 Promise：
 - en: '[PRE25]'
+  id: totrans-121
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'Returning a rejected Promise has the same effect as throwing an exception:'
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 返回一个拒绝的 Promise 与抛出异常具有相同的效果：
 - en: '[PRE26]'
+  id: totrans-123
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'The behavior of `return` is similar to how a Promise `q` is treated in the
     following situations:'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: '`return` 的行为与以下情况中如何处理 Promise `q` 类似：'
 - en: '`return q` inside `promise.then((result) => { ··· })`'
+  id: totrans-125
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`return q` 在 `promise.then((result) => { ··· })` 内部'
 - en: '`return q` inside `promise.catch((err) => { ··· })`'
+  id: totrans-126
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`return q` 在 `promise.catch((err) => { ··· })` 内部'
 - en: '`resolve(q)` inside `new Promise((resolve, reject) => { ··· })`'
+  id: totrans-127
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`resolve(q)` 在 `new Promise((resolve, reject) => { ··· })` 内部'
 - en: '[44.5 Async functions start synchronously, settle asynchronously](#async-funcs-start-sync-settle-async)'
+  id: totrans-128
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[44.5 异步函数同步启动，异步解决](#async-funcs-start-sync-settle-async)'
 - en: 'Async functions are executed as follows:'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 异步函数的执行如下：
 - en: The Promise `resultPromise` for the result is created when the async function
     is started.
+  id: totrans-130
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当异步函数开始时，会创建结果 Promise `resultPromise`。
 - en: 'Then the body is executed. There are two ways in which execution can leave
     the body:'
+  id: totrans-131
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后执行主体。执行可以离开主体的两种方式：
 - en: '**A permanent exit** happens when `resultPromise` is settled:'
+  id: totrans-132
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当 `resultPromise` 解决时，会发生**永久退出**：
 - en: '`return` resolves `resultPromise`.'
+  id: totrans-133
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`return` 解决 `resultPromise`。'
 - en: '`throw` rejects `resultPromise`.'
+  id: totrans-134
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`throw` 拒绝 `resultPromise`。'
 - en: '**A temporary exit** happens when there is an `await` whose operand is a Promise
     `p`:'
+  id: totrans-135
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当存在一个操作数为 Promise `p` 的 `await` 时，会发生**临时退出**：
 - en: The async function is paused and execution leaves it (similarly to how `yield`
     works in [sync generators](ch_sync-generators.html#ch_sync-generators)).
+  id: totrans-136
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 异步函数暂停，执行离开它（类似于 [同步生成器](ch_sync-generators.html#ch_sync-generators) 中的 `yield`
+    的工作方式）。
 - en: It is resumed asynchronously (in a new task) once `p` is settled.
+  id: totrans-137
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一旦 `p` 解决，它就会异步地（在一个新任务中）恢复。
 - en: Promise `resultPromise` is returned after the first (permanent or temporary)
     exit.
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在第一次（永久或临时）退出后返回 Promise `resultPromise`。
 - en: Note that the notification of the settlement of `resultPromise` happens asynchronously,
     as is always the case with Promises.
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`resultPromise` 解决的通知是异步发生的，这与 Promise 总是如此的情况一样。
 - en: The following code demonstrates that an async function is started synchronously
     (line A), then the current task finishes (line C), then the result Promise is
     settled – asynchronously (line B).
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码演示了异步函数是同步启动的（行 A），然后当前任务完成（行 C），然后结果 Promise 解决 - 异步（行 B）。
 - en: '[PRE27]'
+  id: totrans-141
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'Output:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出：
 - en: '[PRE28]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: '[44.6 Tips for using async functions](#tips-for-using-async-functions)'
+  id: totrans-144
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[44.6 使用异步函数的技巧](#tips-for-using-async-functions)'
 - en: '[44.6.1 We don’t need `await` if we “fire and forget”](#fire-and-forget-await)'
+  id: totrans-145
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.6.1 如果我们“发射并忘记”，则不需要 `await`](#fire-and-forget-await)'
 - en: '`await` is not required when working with a Promise-based function; we only
     need it if we want to pause and wait until the returned Promise is settled. If
     we only want to start an asynchronous operation, then we don’t need it:'
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: 在使用基于 Promise 的函数时，不需要 `await`；我们只需要它来暂停并等待返回的 Promise 解决。如果我们只想启动一个异步操作，那么我们不需要它：
 - en: '[PRE29]'
+  id: totrans-147
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: In this code, we don’t await `.write()` because we don’t care when it is finished.
     We do, however, want to wait until `.close()` is done.
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: 在此代码中，我们没有等待 `.write()`，因为我们不关心它何时完成。然而，我们确实想要等待 `.close()` 完成。
 - en: 'Note: Each invocation of `.write()` starts synchronously. That prevents race
     conditions.'
+  id: totrans-149
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意：每次调用 `.write()` 都是同步开始的。这防止了竞争条件。
 - en: '[44.6.2 It can make sense to `await` and ignore the result](#it-can-make-sense-to-await-and-ignore-the-result)'
+  id: totrans-150
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.6.2 它可以在 `await` 和忽略结果时有意义](#it-can-make-sense-to-await-and-ignore-the-result)'
 - en: 'It can occasionally make sense to use `await`, even if we ignore its result
     – for example:'
+  id: totrans-151
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时使用 `await` 是有意义的，即使我们忽略了它的结果 – 例如：
 - en: '[PRE30]'
+  id: totrans-152
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: Here, we are using `await` to join a long-running asynchronous operation. That
     ensures that the logging really happens *after* that operation is done.
+  id: totrans-153
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，我们使用 `await` 来连接一个长时间运行的异步操作。这确保了日志确实是在该操作完成后发生的。
 - en: '[44.6.3 The pros and cons of `return await`](#return-await)'
+  id: totrans-154
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.6.3 `return await` 的优缺点](#return-await)'
 - en: 'If we await a Promise before returning it, we unwrap it before immediately
     wrapping it again:'
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在返回之前等待一个 Promise，我们会在立即重新包装之前先解包它：
 - en: '[PRE31]'
+  id: totrans-156
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: 'Since `return` resolves the result Promise of `f()`, the following code is
     simpler and equivalent:'
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于 `return` 解决了 `f()` 的结果 Promise，以下代码更简单且等效：
 - en: '[PRE32]'
+  id: totrans-158
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'There are, however, three reasons to stick with `return await`:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，有三个原因让我们坚持使用 `return await`：
 - en: The code fragment is easier to move around.
+  id: totrans-160
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 代码片段更容易移动。
 - en: 'We don’t depend on a feature of Promises that is slightly obscure: resolving
     unwraps Promises.'
+  id: totrans-161
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们不依赖于 Promise 的一个稍微晦涩的功能：解析解包 Promise。
 - en: It behaves better inside a `try-catch` statement (see below).
+  id: totrans-162
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它在 `try-catch` 语句（见下文）中表现更好。
 - en: 'Let’s explore the last reason. If we await the rejected Promise in line A before
     returning it, it causes an exception:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们探索最后一个原因。如果我们在线 A 等待被拒绝的 Promise 返回之前，它会导致异常：
 - en: '[PRE33]'
+  id: totrans-164
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'If, on the other hand, we return without `await`, no exception is thrown and
     the result Promise of `f()` adopts the state of the rejected Promise:'
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反地，如果我们不使用 `await` 返回，则不会抛出异常，并且 `f()` 的结果 Promise 会采用被拒绝的 Promise 的状态：
 - en: '[PRE34]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '[44.7 Concurrency and `await` (advanced)](#concurrency-and-await)'
+  id: totrans-167
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[44.7 并发和 `await`（高级）](#concurrency-and-await)'
 - en: 'In the next two subsections, we’ll use the helper function `returnAfterPause()`:'
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 在接下来的两个小节中，我们将使用辅助函数 `returnAfterPause()`：
 - en: '[PRE35]'
+  id: totrans-169
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '[44.7.1 `await`: running Promise-based functions sequentially](#await-sequentially)'
+  id: totrans-170
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.7.1 `await`：按顺序运行基于 Promise 的函数](#await-sequentially)'
 - en: 'If we prefix the invocations of multiple Promise-based functions with `await`,
     then those functions are executed sequentially:'
+  id: totrans-171
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在多个基于 Promise 的函数调用前加上 `await`，那么这些函数将按顺序执行：
 - en: '[PRE36]'
+  id: totrans-172
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'Output:'
+  id: totrans-173
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出结果：
 - en: '[PRE37]'
+  id: totrans-174
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: That is, `returnAfterPause('second')` is only started after `returnAfterPause('first')`
     is completely finished.
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 即，`returnAfterPause('second')` 仅在 `returnAfterPause('first')` 完全完成后才开始。
 - en: '[44.7.2 `await`: running Promise-based functions concurrently](#await-concurrently)'
+  id: totrans-176
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[44.7.2 `await`：并发运行基于 Promise 的函数](#await-concurrently)'
 - en: 'If we want to run multiple Promise-based functions concurrently, we can use
     the utility method `Promise.all()`:'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要并发运行多个基于 Promise 的函数，我们可以使用实用方法 `Promise.all()`：
 - en: '[PRE38]'
+  id: totrans-178
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: 'Output:'
+  id: totrans-179
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出结果：
 - en: '[PRE39]'
+  id: totrans-180
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: Here, both asynchronous functions are started at the same time. Once both are
     settled, `await` gives us either an Array of fulfillment values or – if at least
     one Promise is rejected – an exception.
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这里，两个异步函数同时启动。一旦两者都确定，`await` 会给我们一个满足值的数组，或者 – 如果至少有一个 Promise 被拒绝 – 一个异常。
 - en: 'Recall from [earlier](ch_promises.html#focus-on-async-start) that what counts
     is when we start a Promise-based computation; not how we process its result. Therefore,
     the following code is as “concurrent” as the previous one:'
+  id: totrans-182
   prefs: []
   type: TYPE_NORMAL
+  zh: 回想一下 [之前](ch_promises.html#focus-on-async-start)，重要的是我们何时启动基于 Promise 的计算；而不是我们如何处理其结果。因此，以下代码与之前的代码一样“并发”：
 - en: '[PRE40]'
+  id: totrans-183
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'Output:'
+  id: totrans-184
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出结果：
 - en: '[PRE41]'
+  id: totrans-185
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
