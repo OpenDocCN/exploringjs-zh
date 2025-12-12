@@ -1,497 +1,763 @@
 - en: 24 Typing Arrays
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 24 数组类型
 - en: 原文：[https://exploringjs.com/ts/book/ch_typing-arrays.html](https://exploringjs.com/ts/book/ch_typing-arrays.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_typing-arrays.html](https://exploringjs.com/ts/book/ch_typing-arrays.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (广告，请勿屏蔽。)
 - en: '[24.1 Ways of typing Arrays](#ways-of-typing-arrays)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.1 数组类型化方法](#ways-of-typing-arrays)'
 - en: '[24.1.1 Array types: Array type literal `T[]` vs. generic type `Array<T>`](#array-types-array-type-literal-t-vs-generic-type-array-t)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.1.1 数组类型：数组类型字面量 `T[]` 与泛型类型 `Array<T>`](#array-types-array-type-literal-t-vs-generic-type-array-t)'
 - en: '[24.1.2 Tuple types: tuple type literals](#tuple-types-tuple-type-literals)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.1.2 数组元组类型：元组类型字面量](#tuple-types-tuple-type-literals)'
 - en: '[24.1.3 Objects that are also Array-ish: interfaces with index signatures](#objects-that-are-also-array-ish-interfaces-with-index-signatures)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.1.3 同时也是数组类型的对象：具有索引签名的接口](#objects-that-are-also-array-ish-interfaces-with-index-signatures)'
 - en: '[24.2 Pitfall: type inference doesn’t always get Array types right](#pitfall-type-inference-doesn-t-always-get-array-types-right)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.2 陷阱：类型推断并不总是正确推断数组类型](#pitfall-type-inference-doesn-t-always-get-array-types-right)'
 - en: '[24.2.1 Inferring types of Arrays is difficult](#inferring-types-of-arrays-is-difficult)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.2.1 数组类型推断困难](#inferring-types-of-arrays-is-difficult)'
 - en: '[24.2.2 Type inference for non-empty Array literals](#type-inference-for-non-empty-array-literals)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.2.2 非空数组字面量的类型推断](#type-inference-for-non-empty-array-literals)'
 - en: '[24.2.3 Type inference for empty Array literals](#type-inference-for-empty-array-literals)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.2.3 空数组字面量的类型推断](#type-inference-for-empty-array-literals)'
 - en: '[24.3 Const assertions for Arrays and their effect on type inference](#const-assertions-for-arrays-and-their-effect-on-type-inference)'
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.3 数组的常量断言及其对类型推断的影响](#const-assertions-for-arrays-and-their-effect-on-type-inference)'
 - en: '[24.3.1 `as const` pitfall: A const tuple is not assignable to a mutable type](#as-const-pitfall-a-const-tuple-is-not-assignable-to-a-mutable-type)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.3.1 `as const` 陷阱：常量元组不能赋值给可变类型](#as-const-pitfall-a-const-tuple-is-not-assignable-to-a-mutable-type)'
 - en: '[24.3.2 `as const` pitfall: The inferred type is very narrow](#as-const-pitfall-the-inferred-type-is-very-narrow)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.3.2 `as const` 陷阱：推断的类型非常狭窄](#as-const-pitfall-the-inferred-type-is-very-narrow)'
 - en: '[24.3.3 More information on read-only Arrays and tuples](#more-information-on-read-only-arrays-and-tuples)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.3.3 关于只读数组和元组的更多信息](#more-information-on-read-only-arrays-and-tuples)'
 - en: '[24.4 Array pitfall: checking if an element exists](#array-pitfall-checking-if-an-element-exists)'
+  id: totrans-15
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.4 数组陷阱：检查元素是否存在](#array-pitfall-checking-if-an-element-exists)'
 - en: '[24.5 Why are there two notations? Why does TypeScript prefer `T[]`?](#why-are-there-two-notations-why-does-typescript-prefer-t)'
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.5 为什么有两种表示法？TypeScript 为什么更喜欢 `T[]`？](#why-are-there-two-notations-why-does-typescript-prefer-t)'
 - en: '[24.5.1 Why I prefer the notation `Array<T>`](#why-i-prefer-the-notation-array-t)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.5.1 为什么我更喜欢 `Array<T>` 的表示法](#why-i-prefer-the-notation-array-t)'
 - en: '[24.5.2 One point in favor of `T[]`](#one-point-in-favor-of-t)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.5.2 支持 `T[]` 的一个观点](#one-point-in-favor-of-t)'
 - en: '[24.5.3 Syntactic caveat: The `[]` in `T[]` binds strongly](#syntactic-caveat-the-in-t-binds-strongly)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.5.3 语法注意事项：`T[]` 中的 `[]` 强烈绑定](#syntactic-caveat-the-in-t-binds-strongly)'
 - en: '[24.5.4 Linting Array notations](#linting-array-notations)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[24.5.4 检查数组表示法](#linting-array-notations)'
 - en: In this chapter, we examine how Arrays can be typed in TypeScript.
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨如何在 TypeScript 中对数组进行类型化。
 - en: '[24.1 Ways of typing Arrays](#ways-of-typing-arrays)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[24.1 数组类型化方法](#ways-of-typing-arrays)'
 - en: 'TypeScript has two kinds of Array types:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 有两种数组类型：
 - en: 'Array types: All elements have the same type. The length of the Array varies.'
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组类型：所有元素具有相同的类型。数组的长度可变。
 - en: 'Tuple types: The length of the Array is fixed. The elements do not necessarily
     have the same type.'
+  id: totrans-25
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组元组类型：数组的长度是固定的。元素不一定具有相同的类型。
 - en: '[24.1.1 Array types: Array type literal `T[]` vs. generic type `Array<T>`](#array-types-array-type-literal-t-vs-generic-type-array-t)'
+  id: totrans-26
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.1.1 数组类型：数组类型字面量 `T[]` 与泛型类型 `Array<T>`](#array-types-array-type-literal-t-vs-generic-type-array-t)'
 - en: 'An Array type literal consists of the element type followed by `[]`. In the
     following code, the Array type literal is `string[]`:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组类型字面量由元素类型后跟 `[]` 组成。在以下代码中，数组类型字面量是 `string[]`：
 - en: '[PRE0]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'An Array type literal is equivalent to using the generic type `Array`:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组类型字面量相当于使用泛型类型 `Array`：
 - en: '[PRE1]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'If the element type is more complicated, we need parentheses for Array type
     literals:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果元素类型更复杂，我们需要为数组类型字面量使用括号：
 - en: '[PRE2]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'The generic type `Array` works better in this case:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这种情况下，泛型类型 `Array` 工作得更好：
 - en: '[PRE3]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: '[24.1.2 Tuple types: tuple type literals](#tuple-types-tuple-type-literals)'
+  id: totrans-35
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.1.2 数组元组类型：元组类型字面量](#tuple-types-tuple-type-literals)'
 - en: 'If the Array has a fixed length and each element has a different, fixed type
     that depends on its position, then we can use tuple type literals such as `[string,
     string, boolean]`:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果数组有固定长度，并且每个元素都有不同的、固定的类型，该类型取决于其位置，那么我们可以使用元组类型字面量，如`[string, string, boolean]`：
 - en: '[PRE4]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[24.1.3 Objects that are also Array-ish: interfaces with index signatures](#objects-that-are-also-array-ish-interfaces-with-index-signatures)'
+  id: totrans-38
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.1.3 既是数组又是类似数组的对象：具有索引签名的接口](#objects-that-are-also-array-ish-interfaces-with-index-signatures)'
 - en: 'If an interface only has an index signature, we can use it for Arrays:'
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个接口只有一个索引签名，我们可以将其用于数组：
 - en: '[PRE5]'
+  id: totrans-40
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'An interface that has both an index signature and property signatures, only
     works for objects (because indexed elements and properties need to be defined
     at the same time):'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 具有索引签名和属性签名的接口仅适用于对象（因为索引元素和属性需要同时定义）：
 - en: '[PRE6]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[24.2 Pitfall: type inference doesn’t always get Array types right](#pitfall-type-inference-doesn-t-always-get-array-types-right)'
+  id: totrans-43
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[24.2 陷阱：类型推断并不总是正确推断数组类型](#pitfall-type-inference-doesn-t-always-get-array-types-right)'
 - en: '[24.2.1 Inferring types of Arrays is difficult](#inferring-types-of-arrays-is-difficult)'
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.2.1 推断数组类型困难](#inferring-types-of-arrays-is-difficult)'
 - en: 'Due to the two kinds of Array types, it is impossible for TypeScript to always
     guess the right type. As an example, consider the following Array literal that
     is assigned to the variable `fields`:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于有两种数组类型，TypeScript不可能总是猜对正确的类型。例如，考虑以下分配给变量`fields`的数组字面量：
 - en: '[PRE7]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'What is the best type for `fields`? The following are all reasonable choices:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: '`fields`的最佳类型是什么？以下都是合理的选择：'
 - en: '[PRE8]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[PRE9]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[PRE10]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[PRE11]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[PRE12]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '[PRE13]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '[24.2.2 Type inference for non-empty Array literals](#type-inference-for-non-empty-array-literals)'
+  id: totrans-54
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.2.2 非空数组字面量的类型推断](#type-inference-for-non-empty-array-literals)'
 - en: 'When we use non-empty Array literals, TypeScript’s default is to infer Array
     types (not tuple types):'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 当我们使用非空数组字面量时，TypeScript的默认做法是推断数组类型（而不是元组类型）：
 - en: '[PRE14]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Alas, that’s not always what we want:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，这并不总是我们想要的：
 - en: '[PRE15]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: We need the keyword `readonly` in this line so that `pair3` (see below) is accepted.
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这一行我们需要使用关键字`readonly`，这样`pair3`（见下文）才能被接受。
 - en: 'We can fix the error in line B via a type annotation:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过类型注解来修复行B中的错误：
 - en: '[PRE16]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'Another option is a const assertion (`as const`):'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个选项是const断言（`as const`）：
 - en: '[PRE17]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: More on const assertions soon.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于const断言的更多内容即将介绍。
 - en: '[24.2.3 Type inference for empty Array literals](#type-inference-for-empty-array-literals)'
+  id: totrans-65
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.2.3 空数组字面量的类型推断](#type-inference-for-empty-array-literals)'
 - en: 'If we initialize a variable with an empty Array literal, then TypeScript initially
     infers the type `any[]` and incrementally updates that type as we make changes:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们用一个空数组字面量初始化变量，那么TypeScript最初推断出类型`any[]`，并在我们进行更改时逐步更新该类型：
 - en: '[PRE18]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'Interestingly, the error in line A goes away if we remove line B: TypeScript
     only complains about `any[]` if that type is observed in some manner.'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，如果我们删除行B，行A中的错误就会消失：TypeScript只有在以某种方式观察到该类型时才会对`any[]`类型提出抱怨。
 - en: 'If we use assignment instead of `.push()`, things work the same:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用赋值而不是`.push()`，效果相同：
 - en: '[PRE19]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'In contrast, if the Array literal has at least one element, then the element
     type is fixed and doesn’t change later:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 相反，如果数组字面量至少有一个元素，那么元素类型是固定的，以后不会改变：
 - en: '[PRE20]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '[24.3 Const assertions for Arrays and their effect on type inference](#const-assertions-for-arrays-and-their-effect-on-type-inference)'
+  id: totrans-73
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[24.3 数组的const断言及其对类型推断的影响](#const-assertions-for-arrays-and-their-effect-on-type-inference)'
 - en: 'We can suffix an Array literal with [a const assertion](ch_readonly.html#const-assertions):'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以在数组字面量后添加一个const断言（[const断言](ch_readonly.html#const-assertions)）：
 - en: '[PRE21]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: 'We are declaring that `rockCategories` won’t change. That has the following
     effects:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们声明`rockCategories`不会改变。这有以下影响：
 - en: 'The Array becomes `readonly` – we can’t use operations that change it:'
+  id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组变为`readonly` – 我们不能使用改变它的操作：
 - en: '[PRE22]'
+  id: totrans-78
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'TypeScript infers a tuple. Compare:'
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript推断出元组。比较：
 - en: '[PRE23]'
+  id: totrans-80
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: TypeScript infers narrow literal types (`'igneous'` etc.) instead of more general
     types. That is, the inferred tuple type is not `[string, string, string]`.
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript推断出狭窄的字面量类型（如`'igneous'`等），而不是更通用的类型。也就是说，推断出的元组类型不是`[string, string,
+    string]`。
 - en: 'Here are more examples of Array literals with and without const assertions:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里有一些带有和不带有const断言的数组字面量的示例：
 - en: '[PRE24]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '[24.3.1 `as const` pitfall: A const tuple is not assignable to a mutable type](#as-const-pitfall-a-const-tuple-is-not-assignable-to-a-mutable-type)'
+  id: totrans-84
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.3.1 `as const`陷阱：const元组不可赋值给可变类型](#as-const-pitfall-a-const-tuple-is-not-assignable-to-a-mutable-type)'
 - en: '[PRE25]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'A mutable tuple does not have this issue:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 可变元组没有这个问题：
 - en: '[PRE26]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: 'Lesson for us: If possible, we should use `readonly` for tuple parameters of
     functions and methods.'
+  id: totrans-88
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的教训：如果可能的话，我们应该为函数和方法的元组参数使用 `readonly`。
 - en: '[24.3.2 `as const` pitfall: The inferred type is very narrow](#as-const-pitfall-the-inferred-type-is-very-narrow)'
+  id: totrans-89
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.3.2 `as const` 陷阱：推断的类型非常狭窄](#as-const-pitfall-the-inferred-type-is-very-narrow)'
 - en: 'The inferred type of a const-asserted Array literal is as narrow as possible.
     That causes an issue for `let`-declared variables: We cannot assign any tuple
     other than the one that we used for intialization:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 常量断言的数组字面量的推断类型尽可能狭窄。这导致 `let` 声明的变量出现问题：我们不能分配任何除了我们用于初始化的元组之外的元组：
 - en: '[PRE27]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: '[24.3.3 More information on read-only Arrays and tuples](#more-information-on-read-only-arrays-and-tuples)'
+  id: totrans-92
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.3.3 关于只读数组和元组的更多信息](#more-information-on-read-only-arrays-and-tuples)'
 - en: See [“Read-only accessibility (`readonly` etc.)” (§25)](ch_readonly.html#ch_readonly).
+  id: totrans-93
   prefs: []
   type: TYPE_NORMAL
+  zh: 见 [“只读访问权限 (`readonly` 等)`](ch_readonly.html#ch_readonly)。
 - en: '[24.4 Array pitfall: checking if an element exists](#array-pitfall-checking-if-an-element-exists)'
+  id: totrans-94
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[24.4 数组陷阱：检查元素是否存在](#array-pitfall-checking-if-an-element-exists)'
 - en: 'With [the compiler option `noUncheckedIndexedAccess`](ch_tsconfig-json.html#noUncheckedIndexedAccess),
     TypeScript always infers the type `undefined | T` for elements of an `Array<T>`:'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用 [编译器选项 `noUncheckedIndexedAccess`](ch_tsconfig-json.html#noUncheckedIndexedAccess)，TypeScript
+    总是推断 `Array<T>` 元素的类型为 `undefined | T`：
 - en: '[PRE28]'
+  id: totrans-96
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'Even checking `.length` in line A doesn’t change that. However, the `in` operator
     works better:'
+  id: totrans-97
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使在行 A 中检查 `.length` 也不会改变这一点。然而，`in` 操作符表现更好：
 - en: '[PRE29]'
+  id: totrans-98
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: 'Alternatively, we can check for `undefined` after accessing the Array element:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者，我们可以在访问数组元素后检查 `undefined`：
 - en: '[PRE30]'
+  id: totrans-100
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[24.5 Why are there two notations? Why does TypeScript prefer `T[]`?](#why-are-there-two-notations-why-does-typescript-prefer-t)'
+  id: totrans-101
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[24.5 为什么有两种表示法？为什么 TypeScript 倾向于 `T[]`？](#why-are-there-two-notations-why-does-typescript-prefer-t)'
 - en: 'The following two notations for an Array of strings are completely equivalent:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于字符串数组，以下两种表示法完全等价：
 - en: '`string[]`'
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`string[]`'
 - en: '`Array<string>`'
+  id: totrans-104
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array<string>`'
 - en: Why are there two notations?
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么有两种表示法？
 - en: '[TypeScript 0.9](https://devblogs.microsoft.com/typescript/announcing-typescript-0-9/)
     introduced generics to the language and enabled the notation `Array<T>`.'
+  id: totrans-106
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[TypeScript 0.9](https://devblogs.microsoft.com/typescript/announcing-typescript-0-9/)
+    将泛型引入语言，并启用了 `Array<T>` 的表示法。'
 - en: Before that, `T[]` was the only notation for Arrays.
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在此之前，`T[]` 是数组的唯一表示法。
 - en: 'So it looks like TypeScript simply stuck with the status quo when version 0.9
     came along: It still exclusively uses `T[]` – e.g., when inferring types or even
     when displaying a type that was written `Array<T>`.'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，看起来 TypeScript 在 0.9 版本发布时只是坚持了现状：它仍然只独家使用 `T[]` – 例如，在推断类型或甚至显示被写成 `Array<T>`
+    的类型时。
 - en: 'Even though I have read once or twice that JSX is the cause of TypeScript’s
     preference, I don’t think that’s the case:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使我已经读过一两次说 JSX 是 TypeScript 倾向的原因，但我并不认为这是事实：
 - en: 'The `Array<T>` notation is compatible with JSX: It only exists at the type
     level and can be used without any problems in `.jsx` files.'
+  id: totrans-110
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array<T>` 表示法与 JSX 兼容：它仅存在于类型级别，可以在 `.jsx` 文件中无任何问题使用。'
 - en: 'JSX does, however, make one syntax impossible to use – [type assertions via
     angle brackets](https://www.typescriptlang.org/docs/handbook/jsx.html#the-as-operator):'
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然而，JSX 确实使一种语法变得无法使用 – [通过尖括号进行类型断言](https://www.typescriptlang.org/docs/handbook/jsx.html#the-as-operator)：
 - en: '[PRE31]'
+  id: totrans-112
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: '[24.5.1 Why I prefer the notation `Array<T>`](#why-i-prefer-the-notation-array-t)'
+  id: totrans-113
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.5.1 为什么我喜欢 `Array<T>` 的表示法](#why-i-prefer-the-notation-array-t)'
 - en: 'I find it often looks better – especially if constructs related to element
     types get more complicated:'
+  id: totrans-114
   prefs: []
   type: TYPE_NORMAL
+  zh: 我发现它通常看起来更好 – 尤其是当与元素类型相关的结构变得更加复杂时：
 - en: '[PRE32]'
+  id: totrans-115
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'More reasons:'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多原因：
 - en: '`Array<T>` looks similar to `Set<T>` and `Map<K,V>`.'
+  id: totrans-117
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Array<T>` 看起来与 `Set<T>` 和 `Map<K,V>` 类似。'
 - en: '`T[]` can be confused with `[T]` (tuples that have a single component whose
     type is `T`) – especially by people new to TypeScript.'
+  id: totrans-118
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`T[]` 可能会与 `[T]`（具有单个组件且类型为 `T` 的元组）混淆 – 尤其是新接触 TypeScript 的人。'
 - en: 'If we want to create an empty Array without a type annotation then that syntax
     is more consistent with the angle bracket type notation:'
+  id: totrans-119
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们想要创建一个没有类型注解的空数组，那么这种语法与尖括号类型表示法更一致：
 - en: '[PRE33]'
+  id: totrans-120
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: '[24.5.2 One point in favor of `T[]`](#one-point-in-favor-of-t)'
+  id: totrans-121
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.5.2 `T[]` 的一个优点](#one-point-in-favor-of-t)'
 - en: Because TypeScript always uses `T[]`, code that uses that notation is more consistent
     with language tooling.
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为 TypeScript 总是使用 `T[]`，使用该表示法的代码与语言工具更一致。
 - en: '[24.5.3 Syntactic caveat: The `[]` in `T[]` binds strongly](#syntactic-caveat-the-in-t-binds-strongly)'
+  id: totrans-123
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.5.3 语法注意事项：`T[]` 中的 `[]` 强烈绑定](#syntactic-caveat-the-in-t-binds-strongly)'
 - en: 'The square brackets in `T[]` bind strongly. Therefore, we need to parenthesize
     any type `T` that consists of more than a single token – e.g. (line A, line B):'
+  id: totrans-124
   prefs: []
   type: TYPE_NORMAL
+  zh: '`T[]` 中的方括号具有强绑定性。因此，我们需要为任何由多个标记组成的类型 `T` 添加括号 – 例如（行 A，行 B）:'
 - en: '[PRE34]'
+  id: totrans-125
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '[24.5.4 Linting Array notations](#linting-array-notations)'
+  id: totrans-126
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[24.5.4 数组符号的代码检查](#linting-array-notations)'
 - en: 'typescript-eslint has the rule [`array-type`](https://typescript-eslint.io/rules/array-type/)
     for enforcing a consistent Array notation style. The options are:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: typescript-eslint 有一个名为 `array-type` 的规则，用于强制执行一致的数组符号风格。选项包括：
 - en: Always `T[]`
+  id: totrans-128
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 总是使用 `T[]`
 - en: Always `Array<T>`
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 总是使用 `Array<T>`
 - en: '`T[]` for single-token `T`; otherwise `Array<T>`'
+  id: totrans-130
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`T[]` 用于单个标记的 `T`；否则使用 `Array<T>`'

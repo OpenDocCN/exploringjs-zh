@@ -1,466 +1,711 @@
 - en: 19 Unions of object types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 19 对象类型联合
 - en: 原文：[https://exploringjs.com/ts/book/ch_unions-object-types.html](https://exploringjs.com/ts/book/ch_unions-object-types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_unions-object-types.html](https://exploringjs.com/ts/book/ch_unions-object-types.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[19.1 From unions of object types to discriminated unions](#discriminated-unions)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.1 从对象类型联合到区分联合](#discriminated-unions)'
 - en: '[19.1.1 Example: a union of objects](#example-a-union-of-objects)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.1.1 示例：对象的联合](#example-a-union-of-objects)'
 - en: '[19.1.2 `FileEntry` as a discriminated union](#fileentry-as-a-discriminated-union)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.1.2 `FileEntry`作为区分联合](#fileentry-as-a-discriminated-union)'
 - en: '[19.1.3 Discriminated unions are related to algebraic data types](#discriminated-unions-are-related-to-algebraic-data-types)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.1.3 区分联合与代数数据类型的关系](#discriminated-unions-are-related-to-algebraic-data-types)'
 - en: '[19.1.4 `readFile()` for the new `FileEnty`](#readfile-for-the-new-fileenty)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.1.4 新`FileEnty`的`readFile()`](#readfile-for-the-new-fileenty)'
 - en: '[19.1.5 Pros and cons of discriminated unions](#pros-and-cons-of-discriminated-unions)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.1.5 区分联合的优缺点](#pros-and-cons-of-discriminated-unions)'
 - en: '[19.2 Deriving types from discriminated unions](#deriving-types-from-discriminated-unions)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.2 从区分联合推导类型](#deriving-types-from-discriminated-unions)'
 - en: '[19.2.1 Extracting the values of the discriminant (the type tags)](#extracting-discriminant-values)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.2.1 提取区分值（类型标签）](#extracting-discriminant-values)'
 - en: '[19.2.2 Maps for the elements of discriminated unions](#maps-for-the-elements-of-discriminated-unions)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.2.2 区分联合元素的映射](#maps-for-the-elements-of-discriminated-unions)'
 - en: '[19.2.3 Extracting a subtype of a discriminated union](#extracting-subtype-of-discriminated-union)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.2.3 从区分联合中提取子类型](#extracting-subtype-of-discriminated-union)'
 - en: '[19.3 Class hierarchies vs. discriminated unions](#class-hierarchies-vs-discriminated-unions)'
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.3 类层次结构与区分联合](#class-hierarchies-vs-discriminated-unions)'
 - en: '[19.3.1 A class hierarchy for syntax trees](#a-class-hierarchy-for-syntax-trees)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.3.1 语法树的类层次结构](#a-class-hierarchy-for-syntax-trees)'
 - en: '[19.3.2 A discriminated union for syntax trees](#a-discriminated-union-for-syntax-trees)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.3.2 语法树的区分联合](#a-discriminated-union-for-syntax-trees)'
 - en: '[19.3.3 Comparing classes and discriminated unions](#comparing-classes-and-discriminated-unions)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.3.3 比较类和区分联合](#comparing-classes-and-discriminated-unions)'
 - en: '[19.4 Defining discriminated unions via classes](#defining-discriminated-unions-via-classes)'
+  id: totrans-17
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[19.4 通过类定义区分联合](#defining-discriminated-unions-via-classes)'
 - en: In this chapter, we explore what unions of object types can be used for in TypeScript.
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨了在 TypeScript 中对象类型联合的用途。
 - en: 'In this chapter, *object type* means:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，*对象类型*指的是：
 - en: Object literal type
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对象字面量类型
 - en: Interface type
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 接口类型
 - en: Mapped type (such as `Record`)
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 映射类型（如`Record`）
 - en: '[19.1 From unions of object types to discriminated unions](#discriminated-unions)'
+  id: totrans-23
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[19.1 从对象类型联合到区分联合](#discriminated-unions)'
 - en: 'Unions of object types are often a good choice if a single type has multiple
     representations – e.g. a type `Shape` that can be either a `Triangle`, a `Rectangle`
     or a `Circle`:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 当一个类型有多个表示形式时，对象类型的联合通常是一个不错的选择——例如，一个可以是`Triangle`、`Rectangle`或`Circle`的`Shape`类型：
 - en: '[PRE0]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '[19.1.1 Example: a union of objects](#example-a-union-of-objects)'
+  id: totrans-26
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.1.1 示例：对象的联合](#example-a-union-of-objects)'
 - en: 'The following types define a simple virtual file system:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下类型定义了一个简单的虚拟文件系统：
 - en: '[PRE1]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'A function `readFile()` for `VirtualFileSystem` would work as follows (line
     A and line B):'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个用于`VirtualFileSystem`的`readFile()`函数将如下工作（行 A 和行 B）：
 - en: '[PRE2]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'This is an implementation of `readFile()`:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是对`readFile()`的一个实现：
 - en: '[PRE3]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Initially, the type of `fileEntry` is `FileEntry` and therefore:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 初始时，`fileEntry`的类型是`FileEntry`，因此：
 - en: '[PRE4]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: We have to narrow its type to one of the elements of this union type before
     we can access properties. And TypeScript lets us do that via the `in` operator
     (line A, line B, line C).
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们可以访问属性之前，我们必须将类型缩小到这个联合类型的一个元素。TypeScript 允许我们通过`in`运算符（行 A，行 B，行 C）来做这件事。
 - en: 'Additionally, we check statically if we covered all possible cases, by checking
     if `fileEntry` is assignable to the type `never` (line D). That is done via the
     following class:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 此外，我们通过检查`fileEntry`是否可以赋值给类型`never`来静态地检查我们是否覆盖了所有可能的案例。这是通过以下类来完成的：
 - en: '[PRE5]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'For more information on this technique and a longer and better implementation
     of `UnexpectedValueError`, see [“Use case for `never`: exhaustiveness checks at
     compile time” (§15.4)](ch_never.html#exhaustiveness-checks).'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: '更多关于这种技术以及`UnexpectedValueError`的更长和更好的实现信息，请参阅“`never`的使用场景：编译时的完备性检查”（§15.4）[“Use
+    case for `never`: exhaustiveness checks at compile time” (§15.4)](ch_never.html#exhaustiveness-checks)。'
 - en: '[19.1.2 `FileEntry` as a discriminated union](#fileentry-as-a-discriminated-union)'
+  id: totrans-39
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.1.2 `FileEntry`作为区分联合](#fileentry-as-a-discriminated-union)'
 - en: 'A *discriminated union* is a union of object types that all have one property
     in common – whose value indicates the type of a union element. Let’s convert `FileEntry`
     to a discriminated union:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: '*判别式联合*是具有一个共同属性的对象类型的联合，该属性的值指示联合元素的类型。让我们将 `FileEntry` 转换为判别式联合：'
 - en: '[PRE6]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: The property of a discriminated union that has the type information is called
     a *discriminant* or a *type tag*. The discriminant of `FileEntry` is `.kind`.
     Other common names are `.tag`, `.key` and `.type`.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 具有类型信息的判别式联合的属性称为*判别器*或*类型标签*。`FileEntry` 的判别器是 `.kind`。其他常见名称包括 `.tag`、`.key`
+    和 `.type`。
 - en: On one hand, `FileEntry` is more verbose now. On the other hand, discriminants
     give us several benefits – as we’ll see soon.
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 一方面，`FileEntry` 现在更加冗长。另一方面，判别式给我们带来了几个好处——正如我们很快就会看到的。
 - en: '[19.1.3 Discriminated unions are related to algebraic data types](#discriminated-unions-are-related-to-algebraic-data-types)'
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.1.3 判别式联合与代数数据类型相关](#discriminated-unions-are-related-to-algebraic-data-types)'
 - en: As an aside, [discriminated unions](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions)
     are related to [algebraic data types](https://wiki.haskell.org/Algebraic_data_type)
     in functional programming languages. This is what `FileEntry` looks like as an
     algebraic data type in Haskell (if the TypeScript union elements had more properties,
     we’d probably use records in Haskell).
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为旁注，[判别式联合](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions)与函数式编程语言中的[代数数据类型](https://wiki.haskell.org/Algebraic_data_type)相关。这是
+    `FileEntry` 在 Haskell 中作为代数数据类型的样子（如果 TypeScript 联合元素有更多属性，我们可能会在 Haskell 中使用记录）。
 - en: '[PRE7]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '[19.1.4 `readFile()` for the new `FileEnty`](#readfile-for-the-new-fileenty)'
+  id: totrans-47
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.1.4 `readFile()` for the new `FileEntry`](#readfile-for-the-new-fileenty)'
 - en: 'Let’s adapt `readFile()` to the new shape of `FileEnty`:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们调整 `readFile()` 以适应新的 `FileEnty` 形状：
 - en: '[PRE8]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'This brings us to a first advantage of discriminated unions: We can use `switch`
     statements. And it’s immediately clear that `.kind` distinguishes the type union
     elements – we don’t have to look for property names that are unique to elements.'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 这使我们来到了判别式联合的第一个优点：我们可以使用 `switch` 语句。而且，立即很明显 `.kind` 区分了类型联合元素——我们不必寻找仅对元素唯一的属性名称。
 - en: 'Note that narrowing works as it did before: Once we have checked `.kind`, we
     can access all relevant properties.'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，缩窄与之前一样工作：一旦我们检查了 `.kind`，我们就可以访问所有相关属性。
 - en: '[19.1.5 Pros and cons of discriminated unions](#pros-and-cons-of-discriminated-unions)'
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.1.5 判别式联合的优缺点](#pros-and-cons-of-discriminated-unions)'
 - en: 'Con: Discriminating a union of object types makes it more verbose.'
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：区分对象类型的联合使其更加冗长。
 - en: 'Pro: We can handle cases via a `switch` statement.'
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：我们可以通过 `switch` 语句处理情况。
 - en: 'Pro: It’s immediately clear which property distinguishes the elements of the
     union.'
+  id: totrans-55
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：立即很明显哪个属性区分了联合的元素。
 - en: '[19.1.5.1 Pro: Inline union type elements come with descriptions](#pro-inline-union-type-elements-come-with-descriptions)'
+  id: totrans-56
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[19.1.5.1 优点：内联联合类型元素带有描述](#pro-inline-union-type-elements-come-with-descriptions)'
 - en: 'Another benefit is that, if the union elements are inlined (and not defined
     externally via types with names) then we can still see what each element does:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一个好处是，如果联合元素是内联的（而不是通过具有名称的类型在外部定义），我们仍然可以看到每个元素的作用：
 - en: '[PRE9]'
+  id: totrans-58
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[19.1.5.2 Pro: Union elements are not required to have unique properties](#pro-union-elements-are-not-required-to-have-unique-properties)'
+  id: totrans-59
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[19.1.5.2 优点：联合元素不需要具有唯一的属性](#pro-union-elements-are-not-required-to-have-unique-properties)'
 - en: 'Discriminated unions work even if all normal properties of union elements are
     the same:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使联合元素的所有正常属性都相同，判别式联合也可以工作：
 - en: '[PRE10]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[19.1.5.3 General benefit of unions of object types: descriptiveness](#general-benefit-of-unions-of-object-types-descriptiveness)'
+  id: totrans-62
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[19.1.5.3 对象类型联合的通用优点：描述性](#general-benefit-of-unions-of-object-types-descriptiveness)'
 - en: The following type definition is terse; but can you tell how it works?
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下类型定义简洁；但你能否知道它是如何工作的？
 - en: '[PRE11]'
+  id: totrans-64
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'If we use a discriminated union, the code becomes much more self-descriptive:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用判别式联合，代码将变得更加自我描述：
 - en: '[PRE12]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'This is a function that uses `OutputPathDef`:'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个使用 `OutputPathDef` 的函数：
 - en: '[PRE13]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: '[19.2 Deriving types from discriminated unions](#deriving-types-from-discriminated-unions)'
+  id: totrans-69
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[19.2 从判别式联合推导类型](#deriving-types-from-discriminated-unions)'
 - en: 'In this section, we explore how we can derive types from discriminated unions.
     As an example, we work with the following discriminated union:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们探讨如何从判别式联合推导类型。作为一个例子，我们处理以下判别式联合：
 - en: '[PRE14]'
+  id: totrans-71
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[19.2.1 Extracting the values of the discriminant (the type tags)](#extracting-discriminant-values)'
+  id: totrans-72
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.2.1 提取判别式的值（类型标签）](#extracting-discriminant-values)'
 - en: 'To extract the values of the discriminant, we can use [an indexed access type](ch_computing-with-types-overview.html#indexed-access-types)
     (`T[K]`):'
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 要提取区分值的值，我们可以使用 [索引访问类型](ch_computing-with-types-overview.html#indexed-access-types)
+    (`T[K]`)：
 - en: '[PRE15]'
+  id: totrans-74
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: Because indexed access types are [distributive](ch_computing-with-types-overview.html#distributivity-of-indexed-access-types)
     over unions, `T['kind']` is applied to each element of `Content` and the result
     is a union of string literal types.
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于索引访问类型在联合上是 [分配的](ch_computing-with-types-overview.html#distributivity-of-indexed-access-types)，`T['kind']`
+    被应用于 `Content` 的每个元素，结果是字符串字面量类型的联合。
 - en: '[19.2.2 Maps for the elements of discriminated unions](#maps-for-the-elements-of-discriminated-unions)'
+  id: totrans-76
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.2.2 为区分联合的元素创建映射](#maps-for-the-elements-of-discriminated-unions)'
 - en: 'If we use the type `ContentKind` from the previous subsection, we can define
     an exhaustive map for the elements of `Content`:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用前一小节中的类型 `ContentKind`，我们可以为 `Content` 的元素定义一个详尽的映射：
 - en: '[PRE16]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'If the map should not be exhaustive, we can use the utility type `Partial`:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果映射不需要是详尽的，我们可以使用实用类型 `Partial`：
 - en: '[PRE17]'
+  id: totrans-80
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[19.2.3 Extracting a subtype of a discriminated union](#extracting-subtype-of-discriminated-union)'
+  id: totrans-81
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.2.3 从区分联合中提取子类型](#extracting-subtype-of-discriminated-union)'
 - en: 'Sometimes, we don’t need all of a discriminated union. We can write out own
     utility type for extracting a subtype of `Content`:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，我们不需要区分联合的所有内容。我们可以编写自己的实用类型来提取 `Content` 的子类型：
 - en: '[PRE18]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'We use [a conditional type](ch_conditional-types.html#ch_conditional-types)
     to loop over the union type `U`:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用 [条件类型](ch_conditional-types.html#ch_conditional-types) 来遍历联合类型 `U`：
 - en: 'Line B: If property `.kind` of a union element has a type that is assignable
     to `SubKinds` then we keep the element. If not then we omit it (by returning `never`).'
+  id: totrans-85
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 B：如果一个联合元素的属性 `.kind` 的类型可以被分配给 `SubKinds`，那么我们保留该元素。如果不能，则省略它（通过返回 `never`）。
 - en: 'The `extends` in line A ensures that we don’t make a typo when we extract:
     Our discriminant values `SubKinds` must be a subset of `GetKind<Union>` (see earlier
     subsection).'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 行 A 中的 `extends` 确保我们在提取时不会出错：我们的区分值 `SubKinds` 必须是 `GetKind<Union>` 的子集（参见前面的子节）。
 - en: 'Let’s use `ExtractSubtype`:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用 `ExtractSubtype`：
 - en: '[PRE19]'
+  id: totrans-88
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'As an alternative to our own `ExtractSubtype`, we can also use the built-in
     utility type `Extract`:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为我们自己的 `ExtractSubtype` 的替代，我们也可以使用内置实用类型 `Extract`：
 - en: '[PRE20]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '`Extract` returns all elements of the union `Content` that are assignable to
     the following type:'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Extract` 返回联合 `Content` 中所有可以分配给以下类型的元素：'
 - en: '[PRE21]'
+  id: totrans-92
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '[19.3 Class hierarchies vs. discriminated unions](#class-hierarchies-vs-discriminated-unions)'
+  id: totrans-93
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[19.3 类层次结构与区分联合的比较](#class-hierarchies-vs-discriminated-unions)'
 - en: 'To compare class hierarchies with discriminated unions, we use both to define
     syntax trees for representing expressions such as:'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 要比较类层次结构与区分联合，我们使用两者来定义表示表达式（如）的语法树：
 - en: '[PRE22]'
+  id: totrans-95
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'A syntax tree is either:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 语法树可以是：
 - en: A number value
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一个数值
 - en: The addition of two syntax trees
+  id: totrans-98
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 两个语法树的加法
 - en: '[19.3.1 A class hierarchy for syntax trees](#a-class-hierarchy-for-syntax-trees)'
+  id: totrans-99
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.3.1 语法树的类层次结构](#a-class-hierarchy-for-syntax-trees)'
 - en: 'The following code uses an abstract class and two subclasses to represent syntax
     trees:'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码使用一个抽象类和两个子类来表示语法树：
 - en: '[PRE23]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'The operation `evaluate` handles the two cases “number value” and “addition”
     in the corresponding classes – via polymorphism. Here it is in action:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 操作 `evaluate` 在相应的类中处理两个情况：“数值”和“加法”——通过多态。这里就是它的作用：
 - en: '[PRE24]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: '[19.3.2 A discriminated union for syntax trees](#a-discriminated-union-for-syntax-trees)'
+  id: totrans-104
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.3.2 关于语法树的区分联合](#a-discriminated-union-for-syntax-trees)'
 - en: 'The following code uses a discriminated union with two elements to represent
     syntax trees:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下代码使用具有两个元素的区分联合来表示语法树：
 - en: '[PRE25]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'The operation `evaluate` handles the two cases “number value” and “addition”
     in a single location, via `switch`. Here it is in action:'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 操作 `evaluate` 在单个位置处理两个情况：“数值”和“加法”，通过 `switch`。这里就是它的作用：
 - en: '[PRE26]'
+  id: totrans-108
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: We don’t need the type annotation in line A, but it helps ensure that the data
     has the correct structure. If we don’t do it here, we’ll find out about problems
     later.
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不需要在行 A 中的类型注解，但它有助于确保数据具有正确的结构。如果我们在这里不这样做，我们会在以后发现问题。
 - en: '[19.3.3 Comparing classes and discriminated unions](#comparing-classes-and-discriminated-unions)'
+  id: totrans-110
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[19.3.3 比较类和区分联合](#comparing-classes-and-discriminated-unions)'
 - en: With classes, we check the types of instances via `instanceof`. With discriminated
     unions, we use discriminants to do so. In a way, they are runtime type information.
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用类时，我们通过 `instanceof` 检查实例的类型。对于区分联合，我们使用区分值来这样做。从某种意义上说，它们是运行时类型信息。
 - en: 'Each approach does one kind of extensibility well:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 每种方法都擅长一种类型的可扩展性：
 - en: With classes, we have to modify each class if we want to add a new operation.
     However, adding a new type does not require any changes to existing code.
+  id: totrans-113
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用类时，如果我们想添加一个新操作，我们必须修改每个类。然而，添加新类型不需要对现有代码进行任何更改。
 - en: With discriminated unions, we have to modify each function if we want to add
     a new type. In contrast, adding new operations is simple.
+  id: totrans-114
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用区分联合时，如果我们想添加一个新类型，我们必须修改每个函数。相比之下，添加新操作很简单。
 - en: '[19.4 Defining discriminated unions via classes](#defining-discriminated-unions-via-classes)'
+  id: totrans-115
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[19.4 定义通过类实现的区分联合](#defining-discriminated-unions-via-classes)'
 - en: 'It’s also possible to define a discriminated union via classes – e.g.:'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 也可以通过类来定义区分联合——例如：
 - en: '[PRE27]'
+  id: totrans-117
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: Why would we want to do that? We can define and inherit methods for the elements
     of the union.
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们为什么要这样做呢？我们可以为联合的元素定义和继承方法。
 - en: The abstract class `AbstractColor` is only needed if we want to share methods
     between the union classes.
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 抽象类 `AbstractColor` 只在我们要在联合类之间共享方法时才需要。

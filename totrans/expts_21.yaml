@@ -1,237 +1,361 @@
 - en: 17 Adding special values to types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 17 向类型中添加特殊值
 - en: 原文：[https://exploringjs.com/ts/book/ch_special-values.html](https://exploringjs.com/ts/book/ch_special-values.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_special-values.html](https://exploringjs.com/ts/book/ch_special-values.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (请勿阻塞，广告。)
 - en: '[17.1 Adding special values in band](#adding-special-values-in-band)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[17.1 在波段中添加特殊值](#adding-special-values-in-band)'
 - en: '[17.1.1 Adding `null` or `undefined` to a type](#adding-null-or-undefined-to-a-type)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[17.1.1 向类型中添加`null`或`undefined`](#adding-null-or-undefined-to-a-type)'
 - en: '[17.1.2 Adding a symbol to a type](#adding-symbol-to-type)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[17.1.2 向类型中添加符号](#adding-symbol-to-type)'
 - en: '[17.2 Adding special values out of band](#adding-special-values-out-of-band)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[17.2 在波段外添加特殊值](#adding-special-values-out-of-band)'
 - en: '[17.2.1 Discriminated unions](#discriminated-unions-1)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[17.2.1 区分联合](#discriminated-unions-1)'
 - en: '[17.2.2 Other kinds of union types](#other-kinds-of-union-types)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[17.2.2 其他类型的联合](#other-kinds-of-union-types)'
 - en: 'One way of understanding types is as sets of values. Sometimes there are two
     levels of values:'
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 理解类型的一种方式是将其视为值的集合。有时存在两个级别的值：
 - en: 'Base level: normal values'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 基础级别：正常值
 - en: 'Meta level: special values'
+  id: totrans-11
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 元素级别：特殊值
 - en: In this chapter, we examine how we can add special values to base-level types.
+  id: totrans-12
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨如何向基础类型添加特殊值。
 - en: '[17.1 Adding special values in band](#adding-special-values-in-band)'
+  id: totrans-13
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[17.1 在波段中添加特殊值](#adding-special-values-in-band)'
 - en: One way of adding special values is to create a new type which is a superset
     of the base type where some values are special. These special values are called
     [*sentinels*](https://en.wikipedia.org/wiki/Sentinel_value). They exist [*in band*](https://en.wikipedia.org/wiki/In-band_signaling)
     (think inside the same channel) and are siblings of normal values.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 添加特殊值的一种方法是通过创建一个新的类型，它是基础类型的超集，其中一些值是特殊的。这些特殊值被称为[*哨兵值*](https://en.wikipedia.org/wiki/Sentinel_value)。它们存在于[*波段内*](https://en.wikipedia.org/wiki/In-band_signaling)（想象在同一个通道内）并且是正常值的兄弟。
 - en: 'As an example, consider the following interface for a stream of text lines:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，考虑以下文本流接口：
 - en: '[PRE0]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: At the moment, `.getNextLine()` only handles text lines, but not ends of files
     (EOFs). How could we add support for EOF?
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 目前，`.getNextLine()`只处理文本行，但不处理文件结束（EOF）。我们如何添加对EOF的支持？
 - en: 'Possibilities include:'
+  id: totrans-18
   prefs: []
   type: TYPE_NORMAL
+  zh: 可能性包括：
 - en: An additional method `.isEof()` that needs to be called before calling `.getNextLine()`.
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 需要在调用`.getNextLine()`之前调用的附加方法`.isEof()`。
 - en: '`.getNextLine()` throws an exception when it reaches an EOF.'
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当`.getNextLine()`遇到EOF时，它会抛出异常。
 - en: A sentinel value for EOF.
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: EOF的哨兵值。
 - en: The next two subsections describe two ways in which we can introduce sentinel
     values.
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 下两个小节描述了两种我们可以引入哨兵值的方法。
 - en: '[17.1.1 Adding `null` or `undefined` to a type](#adding-null-or-undefined-to-a-type)'
+  id: totrans-23
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[17.1.1 向类型中添加`null`或`undefined`](#adding-null-or-undefined-to-a-type)'
 - en: 'When using strict TypeScript, no simple object type (defined via interfaces,
     object patterns, classes, etc.) includes `null`. That makes it a good sentinel
     value that we can add to the base type `string` via a union type:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 当使用严格的TypeScript时，没有简单的对象类型（通过接口、对象模式、类等定义）包括`null`。这使得它成为一个很好的哨兵值，我们可以通过联合类型将其添加到基础类型`string`中：
 - en: '[PRE1]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Now, whenever we are using the value returned by `.getNextLine()`, TypeScript
     forces us to consider both possibilities: strings and `null` – for example:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，无论何时我们使用`.getNextLine()`返回的值，TypeScript都会强制我们考虑两种可能性：字符串和`null`——例如：
 - en: '[PRE2]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'In line A, we can’t use the string method `.startsWith()` because `line` might
     be `null`. We can fix this as follows:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行A中，我们不能使用字符串方法`.startsWith()`，因为`line`可能是`null`。我们可以这样修复：
 - en: '[PRE3]'
+  id: totrans-29
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: Now, when execution reaches line A, we can be sure that `line` is not `null`.
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在，当执行到达行A时，我们可以确信`line`不是`null`。
 - en: '[17.1.2 Adding a symbol to a type](#adding-symbol-to-type)'
+  id: totrans-31
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[17.1.2 向类型中添加符号](#adding-symbol-to-type)'
 - en: We can also use values other than `null` as sentinels. Symbols are best suited
     for this task because each one of them has a unique identity and no other value
     can be mistaken for it.
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以使用除了`null`之外的其他值作为哨兵。符号最适合这项任务，因为每个符号都有一个唯一的身份，没有其他值可以与之混淆。
 - en: 'This is how to use a symbol to represent EOF:'
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是如何使用符号来表示EOF：
 - en: '[PRE4]'
+  id: totrans-34
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: Why do we need `typeof` and can’t use `EOF` directly? That’s because `EOF` is
     a value, not a type. The type operator `typeof` converts `EOF` to a type.
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么我们需要`typeof`而不能直接使用`EOF`？那是因为`EOF`是一个值，不是一个类型。类型运算符`typeof`将`EOF`转换为类型。
 - en: '[17.1.2.1 Example: a symbol as an error value](#example-a-symbol-as-an-error-value)'
+  id: totrans-36
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[17.1.2.1 示例：符号作为错误值](#example-a-symbol-as-an-error-value)'
 - en: 'The following function `parseNumber()` uses the symbol `couldNotParseNumber`
     as an error value:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数`parseNumber()`使用符号`couldNotParseNumber`作为错误值：
 - en: '[PRE5]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: '[17.2 Adding special values out of band](#adding-special-values-out-of-band)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[17.2 超出范围的特殊值添加](#adding-special-values-out-of-band)'
 - en: 'What do we do if potentially *any* value can be returned by a method? How do
     we ensure that base values and meta values don’t get mixed up? This is an example
     where that might happen:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果方法可能返回 *任何* 值，我们该怎么办？我们如何确保基本值和元值不会混淆？这是一个可能会发生这种情况的例子：
 - en: '[PRE6]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: Whatever value we pick for `EOF`, there is a risk of someone creating an `ValueStream<typeof
     EOF>` and adding that value to the stream.
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 无论我们为 `EOF` 选择什么值，都存在有人创建一个 `ValueStream<typeof EOF>` 并将此值添加到流中的风险。
 - en: The solution is to keep normal values and special values separate, so that they
     can’t be mixed up. Special values existing separately is called [*out of band*](https://en.wikipedia.org/wiki/Out-of-band_data)
     (think different channel).
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 解决方案是将普通值和特殊值分开，这样它们就不会混淆。特殊值独立存在被称为 [*超出范围*](https://en.wikipedia.org/wiki/Out-of-band_data)（想象不同的频道）。
 - en: '[17.2.1 Discriminated unions](#discriminated-unions-1)'
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[17.2.1 判别联合类型](#discriminated-unions-1)'
 - en: A [*discriminated union*](ch_unions-object-types.html#discriminated-unions)
     is a union of several object types that all have at least one property in common,
     the so-called *discriminant*. The discriminant must have a different value for
     each object type – we can think of it as the ID of the object type.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: '[*判别联合类型*](ch_unions-object-types.html#discriminated-unions) 是几种具有至少一个共同属性（所谓的
+    *判别属性*）的对象类型的联合。判别属性必须对每种对象类型具有不同的值——我们可以将其视为对象类型的 ID。'
 - en: '[17.2.1.1 Example: `ValueStreamValue`](#example-valuestreamvalue)'
+  id: totrans-46
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[17.2.1.1 示例：`ValueStreamValue`](#example-valuestreamvalue)'
 - en: In the following example, `ValueStreamValue<T>` is a discriminated union and
     its discriminant is `.type`.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 在以下示例中，`ValueStreamValue<T>` 是一个判别联合类型，其判别属性是 `.type`。
 - en: '[PRE7]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: '[PRE8]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: Initially, the type of `value` is `ValueStreamValue<T>` (line A). Then we exclude
     the value `'eof'` for the discriminant `.type` and its type is narrowed to `NormalValue<T>`
     (line B). That’s why we can access property `.data` in line C.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 初始时，`value` 的类型是 `ValueStreamValue<T>`（行 A）。然后我们排除了用于 `.type` 的判别值 `'eof'`，其类型被缩小到
+    `NormalValue<T>`（行 B）。这就是为什么我们可以在行 C 访问属性 `.data` 的原因。
 - en: '[17.2.1.2 Example: `IteratorResult`](#example-iteratorresult)'
+  id: totrans-51
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[17.2.1.2 示例：`IteratorResult`](#example-iteratorresult)'
 - en: 'When deciding how to implement [iterators](https://exploringjs.com/js/book/ch_sync-iteration.html),
     TC39 didn’t want to use a fixed sentinel value. Otherwise, code would break if
     that value appeared in an iterable. One solution would have been to pick a sentinel
     value when starting an iteration. TC39 instead opted for a discriminated union
     with the common property `.done`:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 当决定如何实现 [迭代器](https://exploringjs.com/js/book/ch_sync-iteration.html) 时，TC39
+    不想使用一个固定的哨兵值。否则，如果该值出现在可迭代对象中，代码就会出错。一个解决方案是在开始迭代时选择一个哨兵值。TC39 选择了具有公共属性 `.done`
+    的判别联合类型：
 - en: '[PRE9]'
+  id: totrans-53
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[17.2.2 Other kinds of union types](#other-kinds-of-union-types)'
+  id: totrans-54
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[17.2.2 其他类型的联合类型](#other-kinds-of-union-types)'
 - en: Other kinds of union types can be as convenient as discriminated unions, as
     long as we have the means to distinguish the member types of the union.
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 只要我们有区分联合类型成员类型的手段，其他类型的联合类型可以像判别联合类型一样方便。
 - en: 'One possibility is to distinguish the member types via unique properties:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 一种可能性是通过独特的属性来区分成员类型：
 - en: '[PRE10]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Another possibility is to distinguish the member types via `typeof` and/or
     instance checks:'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一种可能性是通过 `typeof` 和/或实例检查来区分成员类型：
 - en: '[PRE11]'
+  id: totrans-59
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'

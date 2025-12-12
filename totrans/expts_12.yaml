@@ -1,268 +1,392 @@
 - en: 9 Publishing npm packages with TypeScript
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 9 使用 TypeScript 发布 npm 包
 - en: 原文：[https://exploringjs.com/ts/book/ch_typescript-npm-packages.html](https://exploringjs.com/ts/book/ch_typescript-npm-packages.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_typescript-npm-packages.html](https://exploringjs.com/ts/book/ch_typescript-npm-packages.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[9.1 File system layout](#file-system-layout)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.1 文件系统布局](#file-system-layout)'
 - en: '[9.1.1 `.gitignore`](#gitignore)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.1.1 `.gitignore`](#gitignore)'
 - en: '[9.1.2 Unit tests](#unit-tests)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.1.2 单元测试](#unit-tests)'
 - en: '[9.2 `tsconfig.json`](#tsconfig.json)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.2 `tsconfig.json`](#tsconfig.json)'
 - en: '[9.2.1 Where does the output go?](#where-does-the-output-go)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.2.1 输出在哪里？](#where-does-the-output-go)'
 - en: '[9.2.2 Output](#output)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.2.2 输出](#output)'
 - en: '[9.3 `package.json`](#package.json)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.3 `package.json`](#package.json)'
 - en: '[9.3.1 Using `.js` for ESM modules](#using-js-for-esm-modules)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.3.1 使用 `.js` 为 ESM 模块](#using-js-for-esm-modules)'
 - en: '[9.3.2 Which files should be uploaded to the npm registry?](#which-files-should-be-uploaded-to-the-npm-registry)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.3.2 应上传哪些文件到 npm 注册表？](#which-files-should-be-uploaded-to-the-npm-registry)'
 - en: '[9.3.3 Package exports](#package-exports)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.3.3 包导出](#package-exports)'
 - en: '[9.3.4 Package imports](#package-imports)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.3.4 包导入](#package-imports)'
 - en: '[9.3.5 Package scripts](#package-scripts)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.3.5 包脚本](#package-scripts)'
 - en: '[9.3.6 Development dependencies](#development-dependencies)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.3.6 开发依赖](#development-dependencies)'
 - en: '[9.3.7 Bin scripts: shell commands written in JavaScript](#bin-scripts)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.3.7 二进制脚本：用 JavaScript 编写的 shell 命令](#bin-scripts)'
 - en: '[9.4 Linting npm packages](#linting-npm-packages)'
+  id: totrans-17
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.4 Linting npm 包](#linting-npm-packages)'
 - en: '[9.5 Further reading](#further-reading-3)'
+  id: totrans-18
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[9.5 进一步阅读](#further-reading-3)'
 - en: 'In this chapter, we’ll create an ESM-based library package for npm via TypeScript:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将通过 TypeScript 创建一个基于 ESM 的 npm 库包：
 - en: The described setup has worked well for me since TypeScript 4.7 (2022-05-24).
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从 TypeScript 4.7（2022-05-24）以来，所描述的设置一直对我很好。
 - en: We’ll only use tsc, but the setup is ready for other tools. For more information,
     see [“Compiling TypeScript with tools other than tsc” (§8.8)](ch_tsconfig-json.html#compiling-without-tsc).
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们只会使用 tsc，但设置已准备好用于其他工具。更多信息，请参阅[“使用 tsc 之外的工具编译 TypeScript”（§8.8）](ch_tsconfig-json.html#compiling-without-tsc)。
 - en: 'If you want to create a package with an executable and not a library, check
     out [“Bin scripts: shell commands written in JavaScript” (§9.3.7)](#bin-scripts).'
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果你想要创建一个包含可执行文件而不是库的包，请查看[“二进制脚本：用 JavaScript 编写的 shell 命令”（§9.3.7）](#bin-scripts)。
 - en: '![Icon “GitHub”](../Images/25fa4b537bb7b3fd4dddaa93103f1bda.png) **Example
     package:** [`@rauschma/helpers`](https://github.com/rauschma/helpers)'
+  id: totrans-23
   prefs: []
   type: TYPE_IMG
+  zh: '![图标“GitHub”](../Images/25fa4b537bb7b3fd4dddaa93103f1bda.png) **示例包：**[`@rauschma/helpers`](https://github.com/rauschma/helpers)'
 - en: This package uses the setup described in this chapter.
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 此包使用本章中描述的设置。
 - en: '[9.1 File system layout](#file-system-layout)'
+  id: totrans-25
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[9.1 文件系统布局](#file-system-layout)'
 - en: 'Our npm package has the following file system layout:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们的 npm 包具有以下文件系统布局：
 - en: '[PRE0]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Comments:'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: 注释：
 - en: It’s usually a good idea to include a `README.md` and a `LICENSE`
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 通常包括一个 `README.md` 和一个 `LICENSE` 是一个好主意。
 - en: '`package.json` describes the package and is described [later](#package.json).'
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`package.json` 描述了包，将在[后面](#package.json)描述。'
 - en: '`tsconfig.json` configures TypeScript and is described [later](#tsconfig.json).'
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`tsconfig.json` 配置 TypeScript，将在[后面](#tsconfig.json)描述。'
 - en: '`docs/api/` is for API documentation generated via TypeDoc. See [“Documenting
     TypeScript APIs via doc comments and TypeDoc” (§11)](ch_jsdoc.html#ch_jsdoc).'
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`docs/api/` 是通过 TypeDoc 生成的 API 文档。请参阅[“通过文档注释和 TypeDoc 记录 TypeScript API”（§11）](ch_jsdoc.html#ch_jsdoc)。'
 - en: '`src/` is for the TypeScript source code.'
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`src/` 是 TypeScript 源代码的位置。'
 - en: '`src/test/` is for integration tests – tests that span multiple modules. More
     on unit tests soon.'
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`src/test/` 是用于集成测试的位置——跨越多个模块的测试。关于单元测试的更多信息即将到来。'
 - en: Why don’t we put `src/` and `test/` next to each other? That would have the
     negative consequence that output files would be more deeply nested in the project
     directory than input files ([more information](ch_tsconfig-json.html#src-test-siblings)).
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 为什么我们不把 `src/` 和 `test/` 放在一起？那样会有一个负面后果，即输出文件会比输入文件在项目目录中更深地嵌套（[更多信息](ch_tsconfig-json.html#src-test-siblings)）。
 - en: '`dist/` is where TypeScript writes its output.'
+  id: totrans-36
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dist/` 是 TypeScript 写入其输出的位置。'
 - en: '[9.1.1 `.gitignore`](#gitignore)'
+  id: totrans-37
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.1.1 `.gitignore`](#gitignore)'
 - en: I’m using Git for version control. This is my `.gitignore` (located inside `my-package/`)
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 我使用 Git 进行版本控制。这是我的 `.gitignore`（位于 `my-package/` 内）
 - en: '[PRE1]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: Why these entries?
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么有这些条目？
 - en: '`node_modules`: The most common practice currently seems to be *not* to check
     in the `node_modules` directory.'
+  id: totrans-41
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`node_modules`：目前最常见的做法似乎是不将 `node_modules` 目录提交到版本控制中。'
 - en: '`dist`: The compilation output of TypeScript is not checked into Git, but it
     is uploaded to the npm registry. More on that later.'
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`dist`: TypeScript的编译输出不会提交到Git，但会上传到npm注册表。关于这一点稍后详细说明。'
 - en: '`.DS_Store`: This entry is about me being lazy as a macOS user. Since it’s
     only need on that operating system, you can argue that Mac people should add it
     via a global configuration setting and keep it out of project-specific gitignores.'
+  id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`.DS_Store`：这个条目是关于我作为一个懒惰的macOS用户。由于它只在该操作系统上需要，你可以争论说Mac用户应该通过全局配置设置来添加它，并将其从项目特定的gitignores中排除。'
 - en: '[9.1.2 Unit tests](#unit-tests)'
+  id: totrans-44
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.1.2 单元测试](#unit-tests)'
 - en: 'I have started to put the unit tests for a particular module next to that module:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 我已经开始将特定模块的单元测试放在该模块旁边：
 - en: '[PRE2]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Given that unit tests help with understanding how a module works, it’s useful
     if they are easy to find.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于单元测试有助于理解模块的工作方式，如果它们容易找到，那么它们就很有用。
 - en: '[9.1.2.1 Tip for tests: self-reference the package](#self-referencing-exports)'
+  id: totrans-48
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[9.1.2.1 测试技巧：自我引用包](#self-referencing-exports)'
 - en: 'If an npm package has `"exports"`, it can *self-reference* them via its package
     name:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个npm包有`"exports"`，它可以通过其包名来*自我引用*：
 - en: '[PRE3]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'The Node.js documentation has [more information](https://nodejs.org/api/packages.html#self-referencing-a-package-using-its-name)
     on self-referencing and notes: “Self-referencing is available only if `package.json`
     has `"exports"`, and will allow importing only what that `"exports"` (in the `package.json`)
     allows.”'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js文档有更多关于[自我引用的信息](https://nodejs.org/api/packages.html#self-referencing-a-package-using-its-name)，并指出：“只有当`package.json`有`"exports"`时，才能进行自我引用，并且只允许导入`"exports"`（在`package.json`中）允许的内容。”
 - en: 'Benefits of self-referencing:'
+  id: totrans-52
   prefs: []
   type: TYPE_NORMAL
+  zh: 自我引用的好处：
 - en: It is useful for tests (which can demonstrate how importing packages would use
     the code).
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于测试（可以展示导入包将如何使用代码）来说，这很有用。
 - en: It checks if your package exports are set up properly.
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它检查你的包导出是否设置正确。
 - en: '[9.2 `tsconfig.json`](#tsconfig.json)'
+  id: totrans-55
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[9.2 `tsconfig.json`](#tsconfig.json)'
 - en: '[“Summary: Assemble your `tsconfig.json` by answering four questions” (§8.12)](ch_tsconfig-json.html#tsconfig-summary)
     helps us with creating a `tsconfig.json` file by asking us four questions. Let’s
     answer these questions for our npm package:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: '[“摘要：通过回答四个问题来组装`tsconfig.json`”（§8.12）](ch_tsconfig-json.html#tsconfig-summary)通过询问我们四个问题帮助我们创建`tsconfig.json`文件。让我们为我们的npm包回答这些问题：'
 - en: 'Q: Do you want to transpile new JavaScript to older JavaScript?'
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'Q: 你是否希望将新的JavaScript转换为较旧的JavaScript？'
 - en: 'A: No. If we can constrain ourselves to JavaScript features supported by our
     target platforms then the output is simpler and more similar to the input.'
+  id: totrans-58
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'A: 不。如果我们能限制自己只使用目标平台支持的JavaScript功能，那么输出会更简单，更接近输入。'
 - en: 'Q: Should TypeScript only allow JavaScript features at the non-type level?'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'Q: TypeScript是否只应允许非类型级别的JavaScript功能？'
 - en: 'A: Yes because that keeps things simple and lets us use [type stripping](ch_tsconfig-json.html#type-stripping)
     should we want to. It’s a forward-looking way of writing TypeScript.'
+  id: totrans-60
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'A: 是的，因为这使事情变得简单，并允许我们在需要时使用[类型剥离](ch_tsconfig-json.html#type-stripping)。这是一种前瞻性的编写TypeScript的方式。'
 - en: 'Q: Which filename extension do you want to use in local imports?'
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'Q: 你想在本地导入中使用哪种文件名扩展名？'
 - en: 'A: ESM requires filename extensions and TypeScript traditionally does not change
     module specifiers during transpilation. Therefore, TypeScript ESM code initially
     used `.js`. Now TypeScript transpilation can change `.ts` to `.js`. Therefore,
@@ -270,210 +394,316 @@
     on some platforms (Node.js, Deno, Bun, etc.). The only caveat is that we still
     have to use `.js` when we self-reference modules (see previous section) or use
     `import()`.'
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'A: ESM需要文件名扩展名，而TypeScript传统上在转换期间不会更改模块指定符。因此，TypeScript ESM代码最初使用`.js`。现在TypeScript转换可以将`.ts`转换为`.js`。因此，我们可以使用`.ts`
+    – 优点是相同的代码在某些平台上（Node.js、Deno、Bun等）也可以在不进行转换的情况下运行。唯一的缺点是当我们自我引用模块（见上一节）或使用`import()`时，我们仍然必须使用`.js`。'
 - en: 'Q: What files should tsc emit?'
+  id: totrans-63
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'Q: tsc应该输出哪些文件？'
 - en: 'A: `.js`, `.js.map`, `.d.ts`, `.d.ts.map` (more information on that soon)'
+  id: totrans-64
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'A: `.js`、`.js.map`、`.d.ts`、`.d.ts.map`（关于这一点稍后详细介绍）'
 - en: '[9.2.1 Where does the output go?](#where-does-the-output-go)'
+  id: totrans-65
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.2.1 输出在哪里？](#where-does-the-output-go)'
 - en: '`tsconfig.json`:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: '`tsconfig.json`：'
 - en: '[PRE4]'
+  id: totrans-67
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Consequences of these settings:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些设置的后果：
 - en: 'Input: `src/util.ts`'
+  id: totrans-69
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：`src/util.ts`
 - en: 'Output: `dist/util.js`'
+  id: totrans-70
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出：`dist/util.js`
 - en: 'Input: `src/test/integration_test.ts`'
+  id: totrans-71
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：`src/test/integration_test.ts`
 - en: 'Output: `dist/test/integration_test.js`'
+  id: totrans-72
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出：`dist/test/integration_test.js`
 - en: What if we want `src/` and `test/` to sit next to each other? See [“Putting
     `src/` and `test/` next to each other” (§8.4.1.1)](ch_tsconfig-json.html#src-test-siblings)
     for more information.
+  id: totrans-73
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想将 `src/` 和 `test/` 放在一起，请参阅[“将 `src/` 和 `test/` 放在一起”（§8.4.1.1）](ch_tsconfig-json.html#src-test-siblings)
+    获取更多信息。
 - en: '[9.2.2 Output](#output)'
+  id: totrans-74
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.2.2 输出](#output)'
 - en: 'Given a TypeScript file `util.ts`, tsc writes the following output to `dist/`:'
+  id: totrans-75
   prefs: []
   type: TYPE_NORMAL
+  zh: 给定一个 TypeScript 文件 `util.ts`，tsc 将以下输出写入 `dist/`：
 - en: '[PRE5]'
+  id: totrans-76
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Purposes of these files:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些文件的目的：
 - en: '`util.js`: JavaScript code contained in `util.ts`'
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`util.js`：包含在 `util.ts` 中的 JavaScript 代码'
 - en: '`util.js.map`: *source map* for the JavaScript code. It enables the following
     functionality when running `util.js`:'
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`util.js.map`：JavaScript 代码的 *源映射*。当运行 `util.js` 时，它启用以下功能：'
 - en: In a debugger, we see the TypeScript code.
+  id: totrans-80
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在调试器中，我们看到 TypeScript 代码。
 - en: Stack traces contain TypeScript source code locations.
+  id: totrans-81
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 调试信息包含 TypeScript 源代码位置。
 - en: '`util.d.ts`: types defined in `util.ts`'
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`util.d.ts`：在 `util.ts` 中定义的类型'
 - en: '`util.d.ts.map`: *declaration map* – a source map for `util.d.ts`. It enables
     TypeScript editors that support it to (e.g.) jump to the TypeScript source code
     of the definition of a type. I find that useful for libraries. It’s why I include
     the TypeScript source in their packages.'
+  id: totrans-83
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`util.d.ts.map`：*声明映射* – `util.d.ts` 的源映射。它使得支持它的 TypeScript 编辑器（例如）能够跳转到类型定义的
+    TypeScript 源代码。我发现这对于库来说很有用。这就是为什么我将 TypeScript 源代码包含在它们的包中。'
 - en: '[9.3 `package.json`](#package.json)'
+  id: totrans-84
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[9.3 `package.json`](#package.json)'
 - en: 'Some settings in `package.json` also affect TypeScript. We’ll look at those
     next. Related material:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json` 中的某些设置也会影响 TypeScript。我们将在下一节中查看这些设置。相关材料：'
 - en: 'Chapter [“Packages: JavaScript’s units for software distribution”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
     of “Shell scripting with Node.js” provides a comprehensive look at npm packages.'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “使用 Node.js 进行 Shell 脚本编写”中的[“包：JavaScript 的软件分发单元”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)章节提供了对
+    npm 包的全面概述。
 - en: You can also take a look the the [`package.json`](https://github.com/rauschma/helpers/blob/main/package.json)
     of `@rauschma/helpers`.
+  id: totrans-87
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 您也可以查看 `@rauschma/helpers` 的 `package.json` 文件[链接](https://github.com/rauschma/helpers/blob/main/package.json)。
 - en: '[9.3.1 Using `.js` for ESM modules](#using-js-for-esm-modules)'
+  id: totrans-88
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.3.1 使用 `.js` 为 ESM 模块](#using-js-for-esm-modules)'
 - en: 'By default, `.js` files are interpreted as CommonJS modules. The following
     setting lets us use that filename extension for ESM modules:'
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，`.js` 文件被解释为 CommonJS 模块。以下设置让我们可以使用该文件扩展名来使用 ESM 模块：
 - en: '[PRE6]'
+  id: totrans-90
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '[9.3.2 Which files should be uploaded to the npm registry?](#which-files-should-be-uploaded-to-the-npm-registry)'
+  id: totrans-91
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.3.2 应上传哪些文件到 npm 注册表？](#which-files-should-be-uploaded-to-the-npm-registry)'
 - en: 'We have to specify which files should be uploaded to the npm registry. While
     there is also the `.npmignore` file, explicitly listing what’s *included* is safer.
     That is done via the `package.json` property `"files"`:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们必须指定应上传到 npm 注册表的文件。虽然也存在 `.npmignore` 文件，但明确列出要 *包含* 的内容更安全。这是通过 `package.json`
+    属性 `"files"` 实现的：
 - en: '[PRE7]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: In `.gitignore`, we have ignored directory `dist/` because it contains information
     that can be generated automatically. However, here it is explicitly included because
     most of its contents have to be in the npm package.
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `.gitignore` 文件中，我们已经忽略了 `dist/` 目录，因为它包含可以自动生成的信息。然而，在这里我们明确地将其包含在内，因为其大部分内容必须包含在
+    npm 包中。
 - en: 'Patterns that start with exclamation marks (`!`) define which files to exclude.
     In this case, we exclude the tests:'
+  id: totrans-95
   prefs: []
   type: TYPE_NORMAL
+  zh: 以感叹号 (`!`) 开头的模式定义了要排除的文件。在这种情况下，我们排除了测试：
 - en: Some of them sit next to modules in `src/`.
+  id: totrans-96
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 其中一些位于 `src/` 的模块旁边。
 - en: The remaining tests are located in `src/test/`.
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 剩余的测试位于 `src/test/`。
 - en: '[9.3.3 Package exports](#package-exports)'
+  id: totrans-98
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.3.3 包导出](#package-exports)'
 - en: 'If we want a package to support old code, there are several `package.json`
     properties, we have to take into consideration:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想让包支持旧代码，有几个 `package.json` 属性，我们必须考虑：
 - en: '`"main"`: previously used by Node.js'
+  id: totrans-100
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"main"`：之前由 Node.js 使用'
 - en: '`"module"`: previously used by bundlers'
+  id: totrans-101
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"module"`：之前由打包器使用'
 - en: '`"types"`: previously used by TypeScript'
+  id: totrans-102
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"types"`：之前由 TypeScript 使用'
 - en: '`"typesVersions"`: previously used by TypeScript'
+  id: totrans-103
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"typesVersions"`：之前由 TypeScript 使用'
 - en: 'In contrast, for modern code, we only need:'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: 相比之下，对于现代代码，我们只需要：
 - en: '[PRE8]'
+  id: totrans-105
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Before we get into details, there are two questions we have to consider:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们深入了解细节之前，有两个问题我们必须考虑：
 - en: Is our package only going to be imported via a bare import or is it going to
     support subpath imports?
+  id: totrans-107
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们的包是否只通过裸导入导入，还是它将支持子路径导入？
 - en: '[PRE9]'
+  id: totrans-108
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'If we export subpaths: Are they going to have filename extensions or not?'
+  id: totrans-109
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们导出子路径：它们是否将具有文件扩展名？
 - en: 'Tips for answering the latter question:'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: 回答后一个问题的小贴士：
 - en: The extensionless style has a long tradition. That hasn’t changed much with
     ESM, even though it requires filename extensions for local imports.
+  id: totrans-111
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 无扩展名风格有着悠久的历史。尽管ESM要求本地导入使用文件扩展名，但这一点并没有太大变化。
 - en: 'Downside of the extensionless style (quoting [the Node.js documentation](https://nodejs.org/api/packages.html#extensions-in-subpaths)):
     “With import maps now providing a standard for package resolution in browsers
     and other JavaScript runtimes, using the extensionless style can result in bloated
@@ -482,285 +712,429 @@
     possible instead of a separate map entry per package subpath export. This also
     mirrors the requirement of using the full specifier path in relative and absolute
     import specifiers.”'
+  id: totrans-112
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 无扩展名风格的不利之处（引用[Node.js文档](https://nodejs.org/api/packages.html#extensions-in-subpaths)）：“随着导入映射现在为浏览器和其他JavaScript运行时提供包解析的标准，使用无扩展名风格可能会导致导入映射定义膨胀。显式文件扩展名可以通过使导入映射能够利用包文件夹映射来映射多个子路径，而不是为每个包子路径导出单独的映射条目，从而避免这个问题。这也反映了在相对和绝对导入指定符中使用完整指定符路径的要求。”
 - en: 'This is how I currently decide:'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 我目前是这样决定的：
 - en: Most of my packages don’t have any subpaths at all.
+  id: totrans-114
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我的大部分包根本没有任何子路径。
 - en: If the package is a collection of modules, I export them with extensions.
+  id: totrans-115
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果包是模块的集合，我使用扩展名导出它们。
 - en: If the modules are more like different versions of the package (think synchronous
     vs. asynchronous) then I export them without extensions.
+  id: totrans-116
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果模块更像是包的不同版本（例如，同步与异步），那么我导出它们时不使用扩展名。
 - en: However, I don’t have strong preferences and may change my mind in the future.
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，我没有强烈的偏好，未来可能会改变主意。
 - en: '[9.3.3.1 Specifying package exports](#specifying-package-exports)'
+  id: totrans-118
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[9.3.3.1 指定包导出](#specifying-package-exports)'
 - en: '[PRE10]'
+  id: totrans-119
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'Notes:'
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意事项：
 - en: If there aren’t many modules then multiple single-file entries are more self-explanatory
     than one subtree entry.
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果模块不多，多个单文件条目比一个子树条目更易于理解。
 - en: By default, `.d.ts` files must sit next to `.js` files. But that can be changed
     via [the `types` import condition](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#packagejson-exports-imports-and-self-referencing).
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 默认情况下，`.d.ts`文件必须位于`.js`文件旁边。但可以通过[`types`导入条件](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-7.html#packagejson-exports-imports-and-self-referencing)来更改这一点。
 - en: 'For more information on this topic, see section [“Package exports: controlling
     what other packages see”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html#package-exports-controlling-what-other-packages-see)
     in “Exploring JavaScript”.'
+  id: totrans-123
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于这个主题的更多信息，请参阅“探索JavaScript”中的[“包导出：控制其他包可见的内容”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html#package-exports-controlling-what-other-packages-see)部分。
 - en: '[9.3.4 Package imports](#package-imports)'
+  id: totrans-124
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.3.4 包导入](#package-imports)'
 - en: 'Node’s package imports are also supported by TypeScript. They let us define
     aliases for paths. Those aliases have the benefit that they start at the top level
     of the package. This is an example:'
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript也支持Node的包导入。它们允许我们为路径定义别名。这些别名的优点是它们从包的顶级开始。以下是一个例子：
 - en: '[PRE11]'
+  id: totrans-126
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'We can use this package import as follows:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以这样使用包导入：
 - en: '[PRE12]'
+  id: totrans-128
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: Package imports are especially helpful when the JavaScript output files are
     more deeply nested than the TypeScript input files. In that case we can’t use
     relative paths to access files at the top level.
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: 包导入在JavaScript输出文件比TypeScript输入文件更深嵌套时特别有用。在这种情况下，我们无法使用相对路径来访问顶级文件。
 - en: For more information on package imports, see [the Node.js documentation](https://nodejs.org/api/packages.html#imports).
+  id: totrans-130
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于包导入的更多信息，请参阅[Node.js文档](https://nodejs.org/api/packages.html#imports)。
 - en: '[9.3.5 Package scripts](#package-scripts)'
+  id: totrans-131
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.3.5 包脚本](#package-scripts)'
 - en: '[Package scripts](https://docs.npmjs.com/cli/v11/using-npm/scripts) lets us
     define aliases such as `build` for shell commands and execute them via `npm run
     build`. We can get a list of those aliases via `npm run` (without a script name).'
+  id: totrans-132
   prefs: []
   type: TYPE_NORMAL
+  zh: '[包脚本](https://docs.npmjs.com/cli/v11/using-npm/scripts)允许我们为shell命令定义别名，例如`build`，并通过`npm
+    run build`执行它们。我们可以通过`npm run`（不带脚本名称）来获取这些别名的列表。'
 - en: 'These are commands I find useful for my library projects:'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些是我认为对我的库项目有用的命令：
 - en: '[PRE13]'
+  id: totrans-134
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Explanations:'
+  id: totrans-135
   prefs: []
   type: TYPE_NORMAL
+  zh: 说明：
 - en: '`build`: I clear directory `dist/` before each build. Why? When renaming TypeScript
     files, the old output files are not deleted. That is especially problematic with
     test files and regularly bites me. Whenever that happens, I can fix things via
     `npm run build`.'
+  id: totrans-136
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`build`: 在每次构建之前，我都会清理目录 `dist/`。为什么？当重命名 TypeScript 文件时，旧输出文件不会被删除。这对于测试文件尤其成问题，并且经常让我头疼。每当这种情况发生时，我可以通过
+    `npm run build` 来修复问题。'
 - en: '`test`, `testall`:'
+  id: totrans-137
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`test`, `testall`:'
 - en: '`--enable-source-maps` enables source map support in Node.js and therefore
     accurate line numbers in stack traces.'
+  id: totrans-138
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`--enable-source-maps` 启用 Node.js 中的源映射支持，因此堆栈跟踪中的行号更准确。'
 - en: The test runner [Mocha](https://mochajs.org) supports several testing styles.
     I prefer `--ui qunit` ([example](https://github.com/rauschma/helpers/blob/main/src/string/string_test.ts)).
+  id: totrans-139
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 测试运行器 [Mocha](https://mochajs.org) 支持多种测试风格。我更喜欢 `--ui qunit` ([示例](https://github.com/rauschma/helpers/blob/main/src/string/string_test.ts))。
 - en: '`publishd`: We publish an npm package via `npm publish`. `npm run publishd`
     invokes the “dry run” version of that command that doesn’t make any changes but
     provides helpful feedback – e.g., it shows which files are going to be part of
     the package.'
+  id: totrans-140
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`publishd`: 我们通过 `npm publish` 发布 npm 包。`npm run publishd` 调用该命令的“dry run”版本，它不会进行任何更改，但会提供有用的反馈——例如，它显示哪些文件将成为包的一部分。'
 - en: '`prepublishOnly`: Before `npm publish` uploads files to the npm registry, it
     invokes this script. By building before publishing, we ensure that no stale files
     and no old files are uploaded.'
+  id: totrans-141
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`prepublishOnly`: 在 `npm publish` 将文件上传到 npm 注册表之前，它会调用此脚本。通过在发布前构建，我们确保不会上传过时文件和旧文件。'
 - en: Why the named separators? The make the output of `npm run` easier to read.
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么使用命名的分隔符？这样做可以使 `npm run` 的输出更容易阅读。
 - en: '[9.3.6 Development dependencies](#development-dependencies)'
+  id: totrans-143
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.3.6 开发依赖项](#development-dependencies)'
 - en: 'Even if a package of mine has no normal dependencies, it tends to have the
     following development dependencies:'
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: 即使我的包没有正常依赖项，它往往有以下开发依赖项：
 - en: '[PRE14]'
+  id: totrans-145
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'Explanations:'
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: 说明：
 - en: '`@types/node`: In unit tests, I’m using `node:assert` for assertions such as
     `assert.deepEqual()`. This dependency provides types for that and other Node modules.'
+  id: totrans-147
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`@types/node`: 在单元测试中，我使用 `node:assert` 进行断言，例如 `assert.deepEqual()`。此依赖项提供了该类型和其他
+    Node 模块的类型。'
 - en: '`shx`: provides cross-platform versions of Unix shell commands. I’m often using:'
+  id: totrans-148
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`shx`: 提供跨平台的 Unix shell 命令版本。我经常使用：'
 - en: '[PRE15]'
+  id: totrans-149
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: I also install the following two command line tools locally inside my projects
     so that they are guaranteed to be there. The neat thing about `npm run` is that
     it adds locally installed commands to the shell path – which means that they can
     be used in package scripts as if they were installed globally.
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 我还在我的项目中本地安装以下两个命令行工具，以确保它们一定可用。`npm run` 的好处是它会将本地安装的命令添加到 shell 路径——这意味着它们可以在包脚本中使用，就像它们是全球安装的一样。
 - en: '`mocha` and `@types/mocha`: I still prefer [Mocha](https://mochajs.org)’s API
     and CLI user experience but [Node’s built-in test runner](https://nodejs.org/api/test.html)
     has become an interesting alternative.'
+  id: totrans-151
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`mocha` 和 `@types/mocha`: 我仍然更喜欢 [Mocha](https://mochajs.org) 的 API 和 CLI 用户体验，但
+    [Node 的内置测试运行器](https://nodejs.org/api/test.html) 已成为有趣的替代方案。'
 - en: '`typedoc`: I’m using [TypeDoc](ch_jsdoc.html#ch_jsdoc) to generate API documentation.'
+  id: totrans-152
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`typedoc`: 我使用 [TypeDoc](ch_jsdoc.html#ch_jsdoc) 来生成 API 文档。'
 - en: '[9.3.7 Bin scripts: shell commands written in JavaScript](#bin-scripts)'
+  id: totrans-153
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[9.3.7 Bin 脚本：用 JavaScript 编写的 shell 命令](#bin-scripts)'
 - en: 'A `package.json` can contain the property `"bin"` which sets up executables.
     Check out my project [TSConfigurator](https://github.com/rauschma/tsconfigurator)
     for a full example. That project has the following property in `package.json`:'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: '`package.json` 可以包含 `"bin"` 属性，该属性设置可执行文件。查看我的项目 [TSConfigurator](https://github.com/rauschma/tsconfigurator)
+    以获取完整示例。该项目在 `package.json` 中具有以下属性：'
 - en: '[PRE16]'
+  id: totrans-155
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'We can constrain the Node.js versions with which the bin scripts can be used:'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用 Node.js 版本来限制 bin 脚本的使用：
 - en: '[PRE17]'
+  id: totrans-157
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'The following package script is useful (invoked from `"build"`, after `"tsc"`):'
+  id: totrans-158
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下包脚本很有用（从 `"build"` 调用，在 `"tsc"` 之后）：
 - en: '[PRE18]'
+  id: totrans-159
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: If a package provides an executable and not a library, we don’t need to emit
     `.d.ts` files. If we use type stripping for `.js`, we may not need `.js.map` files
     either.
+  id: totrans-160
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个包提供可执行文件而不是库，我们不需要发出 `.d.ts` 文件。如果我们对 `.js` 使用类型剥离，我们可能也不需要 `.js.map` 文件。
 - en: '[9.4 Linting npm packages](#linting-npm-packages)'
+  id: totrans-161
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[9.4 检查 npm 包](#linting-npm-packages)'
 - en: 'Linting the public interfaces of packages:'
+  id: totrans-162
   prefs: []
   type: TYPE_NORMAL
+  zh: 检查包的公共接口：
 - en: '[publint](https://publint.dev): “Lints npm packages to ensure the widest compatibility
     across environments, such as Vite, Webpack, Rollup, Node.js, etc.”'
+  id: totrans-163
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[publint](https://publint.dev)：确保 npm 包在 Vite、Webpack、Rollup、Node.js 等各种环境中具有最广泛的兼容性。'
 - en: '[arethetypeswrong](https://github.com/arethetypeswrong/arethetypeswrong.github.io):
     “This project attempts to analyze npm package contents for issues with their TypeScript
     types, particularly ESM-related module resolution issues.”'
+  id: totrans-164
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[arethetypeswrong](https://github.com/arethetypeswrong/arethetypeswrong.github.io)：该项目试图分析
+    npm 包内容中 TypeScript 类型的问题，特别是与 ESM 相关的模块解析问题。'
 - en: '[npm-package-json-lint](https://npmpackagejsonlint.org): “Configurable linter
     for `package.json` files”'
+  id: totrans-165
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[npm-package-json-lint](https://npmpackagejsonlint.org)：`package.json` 文件的“可配置的检查器”'
 - en: '[vitest-package-exports](https://github.com/antfu/vitest-package-exports):
     “[…] get all exported APIs of a package and prevent unintended breaking changes”.
     Despite its name, this tool [does not require Vitest](https://github.com/antfu/vitest-package-exports?tab=readme-ov-file#does-this-requires-vitest).'
+  id: totrans-166
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[vitest-package-exports](https://github.com/antfu/vitest-package-exports)：[...]
+    获取一个包的所有导出 API 并防止意外的破坏性更改。尽管其名称如此，此工具[不需要 Vitest](https://github.com/antfu/vitest-package-exports?tab=readme-ov-file#does-this-requires-vitest)。'
 - en: 'Linting npm packages internally:'
+  id: totrans-167
   prefs: []
   type: TYPE_NORMAL
+  zh: 在内部 linting npm 包：
 - en: '[installed-check](https://github.com/voxpelli/node-installed-check): “Verifies
     that installed modules comply with the requirements [the Node.js [`"engines"`](https://docs.npmjs.com/cli/v11/configuring-npm/package-json#engines)
     version range] specified in `package.json`.”'
+  id: totrans-168
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[installed-check](https://github.com/voxpelli/node-installed-check)：验证已安装的模块是否符合
+    `package.json` 中指定的要求[Node.js 的 `engines` 版本范围](https://docs.npmjs.com/cli/v11/configuring-npm/package-json#engines)。'
 - en: '[Knip](https://knip.dev): “Finds and fixes unused files, dependencies and exports.”
     Supports JavaScript and TypeScript.'
+  id: totrans-169
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Knip](https://knip.dev)：查找并修复未使用的文件、依赖和导出。支持 JavaScript 和 TypeScript。'
 - en: '[Node Modules Inspector](https://github.com/antfu/node-modules-inspector):
     “Visualize your `node_modules`, inspect dependencies, and more.”'
+  id: totrans-170
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Node Modules Inspector](https://github.com/antfu/node-modules-inspector)：可视化你的
+    `node_modules`，检查依赖项，等等。'
 - en: '[Madge](https://www.npmjs.com/package/madge): create a visual graph of module
     dependencies, find circular dependencies, and more.'
+  id: totrans-171
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Madge](https://www.npmjs.com/package/madge)：创建模块依赖关系的可视化图，查找循环依赖，等等。'
 - en: '[9.5 Further reading](#further-reading-3)'
+  id: totrans-172
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[9.5 进一步阅读](#further-reading-3)'
 - en: 'JavaScript modules (ESM): Chapter [“Modules”](https://exploringjs.com/js/book/ch_modules.html)
     in “Exploring JavaScript”'
+  id: totrans-173
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript 模块（ESM）：在《探索 JavaScript》中，第 [“模块”](https://exploringjs.com/js/book/ch_modules.html)
+    章节中
 - en: 'npm packages: Chapter [“Packages: JavaScript’s units for software distribution”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
     in “Shell scripting with Node.js”'
+  id: totrans-174
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: npm 包：在《使用 Node.js 的 Shell 脚本》中，第 [“包：JavaScript 的软件分发单元”](https://exploringjs.com/nodejs-shell-scripting/ch_packages.html)
+    章节中
 - en: 'Also useful:'
+  id: totrans-175
   prefs: []
   type: TYPE_NORMAL
+  zh: 也很有用：
 - en: 'Chapter [“Modules: Packages”](https://nodejs.org/api/packages.html) of the
     Node.js documentation'
+  id: totrans-176
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Node.js 文档中的 [“模块：包”](https://nodejs.org/api/packages.html) 章节内容
 - en: Section [“`package.json "exports"`”](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports)
     of the TypeScript Handbook
+  id: totrans-177
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 手册中的 [“`package.json "exports"`”](https://www.typescriptlang.org/docs/handbook/modules/reference.html#packagejson-exports)
+    部分

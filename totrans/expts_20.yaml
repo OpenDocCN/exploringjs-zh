@@ -1,295 +1,455 @@
 - en: 16 Symbols in TypeScript
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 16 TypeScript 中的符号
 - en: 原文：[https://exploringjs.com/ts/book/ch_symbols.html](https://exploringjs.com/ts/book/ch_symbols.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_symbols.html](https://exploringjs.com/ts/book/ch_symbols.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (广告，请勿屏蔽。)
 - en: '[16.1 Types for symbols](#types-for-symbols)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[16.1 符号的类型](#types-for-symbols)'
 - en: '[16.1.1 `symbol` and `typeof MY_SYMBOL`](#symbol-and-typeof-my-symbol)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[16.1.1 `symbol` 和 `typeof MY_SYMBOL`](#symbol-and-typeof-my-symbol)'
 - en: '[16.1.2 The type `unique symbol`](#the-type-unique-symbol)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[16.1.2 类型 `unique symbol`](#the-type-unique-symbol)'
 - en: '[16.2 Unions of symbol types](#unions-of-symbol-types)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[16.2 符号类型的联合](#unions-of-symbol-types)'
 - en: '[16.3 Symbols as special values](#symbols-as-special-values)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[16.3 符号作为特殊值](#symbols-as-special-values)'
 - en: '[16.4 Symbols as enum values](#symbols-as-enum-values)'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[16.4 符号作为枚举值](#symbols-as-enum-values)'
 - en: '[16.5 Further reading](#further-reading-6)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[16.5 进一步阅读](#further-reading-6)'
 - en: In this chapter, we examine how TypeScript handles JavaScript symbols at the
     type level.
+  id: totrans-10
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨 TypeScript 在类型级别上如何处理 JavaScript 符号。
 - en: If you want to refresh your knowledge of JavaScript symbols, you can check out
     chapter [“Symbols”](https://exploringjs.com/js/book/ch_symbols.html) of “Exploring
     JavaScript”.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你想刷新你对 JavaScript 符号的了解，可以查看“Exploring JavaScript”中的第 [“Symbols”](https://exploringjs.com/js/book/ch_symbols.html)
+    章。
 - en: '[16.1 Types for symbols](#types-for-symbols)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[16.1 符号的类型](#types-for-symbols)'
 - en: '[16.1.1 `symbol` and `typeof MY_SYMBOL`](#symbol-and-typeof-my-symbol)'
+  id: totrans-13
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[16.1.1 `symbol` 和 `typeof MY_SYMBOL`](#symbol-and-typeof-my-symbol)'
 - en: 'Type inference usually gives us:'
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型推断通常给我们：
 - en: broader, more general types for `let`
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 更宽、更一般的 `let` 类型
 - en: narrower, more specific types for `const`
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 更窄、更具体的 `const` 类型
 - en: 'For example:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如：
 - en: '[PRE0]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'That is also true for symbols:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 这也适用于符号：
 - en: '[PRE1]'
+  id: totrans-20
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '`symbol` is the type of all symbols. `typeof SYM2` is the type of one specific
     symbol. There is no way for us to create another value that matches `typeof SYM2`:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: '`symbol` 是所有符号的类型。`typeof SYM2` 是一个特定符号的类型。我们无法创建另一个与 `typeof SYM2` 匹配的值：'
 - en: '[PRE2]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Note the type `unique symbol` in the error message. We’ll get to what it is
     soon.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意错误信息中的类型 `unique symbol`。我们很快就会了解到它是什么。
 - en: 'Out inability to create a new symbol that is equal to the original `SYM2` is
     a JavaScript phenomenon:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们无法创建一个与原始 `SYM2` 相等的新的符号，这是 JavaScript 的一个现象：
 - en: '[PRE3]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Symbols are similar to object literals in this regard:'
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这方面，符号与对象字面量类似：
 - en: '[PRE4]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[16.1.1.1 Pitfall: assignment broadens the type of a symbol](#pitfall-assignment-broadens-the-type-of-a-symbol)'
+  id: totrans-28
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[16.1.1.1 陷阱：赋值扩展符号的类型](#pitfall-assignment-broadens-the-type-of-a-symbol)'
 - en: If we assign a variable `SYM` with the type `typeof SYM` to another variable
     `X`, then the type of the latter is broadened to `symbol` – even when we declare
     it with `const`.
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将具有 `typeof SYM` 类型的变量 `SYM` 赋值给另一个变量 `X`，那么后者的类型将扩展到 `symbol` – 即使我们在声明时使用了
+    `const`。
 - en: '[PRE5]'
+  id: totrans-30
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Related GitHub issue: [`“unique symbol` lost on assignment to `const` despite
     type assertion”](https://github.com/microsoft/TypeScript/issues/55901)'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 相关 GitHub 问题：[“unique symbol” 在赋值给 `const` 时丢失，尽管有类型断言](https://github.com/microsoft/TypeScript/issues/55901)
 - en: '[16.1.2 The type `unique symbol`](#the-type-unique-symbol)'
+  id: totrans-32
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[16.1.2 类型 `unique symbol`](#the-type-unique-symbol)'
 - en: The type `unique symbol` is a subtype of `symbol`. It means that this particular
     location holds a symbol with a particular type. It is very similar to `typeof
     SOME_SYMBOL` but does not name the particular symbol. Each location of `unique
     symbol` is different and incompatible with all other locations (similar to `typeof
     SOME_SYMBOL`).
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: 类型 `unique symbol` 是 `symbol` 的子类型。这意味着这个特定位置持有具有特定类型的符号。它与 `typeof SOME_SYMBOL`
+    非常相似，但不命名特定的符号。每个 `unique symbol` 的位置都是不同的，并且与其他所有位置不兼容（类似于 `typeof SOME_SYMBOL`）。
 - en: '`unique symbol` can be used in `const` variable declaration and `static readonly`
     properties. If we want to express uniqueness elsewhere, we have to use `typeof
     S` – as we have done previously. Given that `unique symbol` is basically another
     way of expressing `typeof S`, it’s not very useful'
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: '`unique symbol` 可以用于 `const` 变量声明和 `static readonly` 属性。如果我们想在其他地方表达唯一性，我们必须使用
+    `typeof S` – 就像我们之前做的那样。鉴于 `unique symbol` 实际上是以另一种方式表达 `typeof S`，它并不非常有用'
 - en: '[PRE6]'
+  id: totrans-35
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'The previous code is completely equivalent to:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 之前的代码完全等同于：
 - en: '[PRE7]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'There is one more location where we can use `unique symbol` – as the type of
     a read-only property. That is done to declare the types of well-known symbols
     such as `Symbol.iterator` (file `lib.es2015.iterable.d.ts`):'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以在另一个位置使用 `unique symbol` – 作为只读属性的类型。这样做是为了声明诸如 `Symbol.iterator`（文件 `lib.es2015.iterable.d.ts`）之类的已知符号的类型：
 - en: '[PRE8]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Why is the name of the interface `SymbolConstructor`? That’s due to how symbols
     are set up in file `lib.es2015.symbol.d.ts`:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么接口的名称是 `SymbolConstructor`？这是因为符号在文件 `lib.es2015.symbol.d.ts` 中的设置方式：
 - en: '[PRE9]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[16.1.2.1 We can’t create properties whose type is `unique symbol`](#assignable-to-unique-symbol-property)'
+  id: totrans-42
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[16.1.2.1 我们不能创建类型为 `unique symbol` 的属性](#assignable-to-unique-symbol-property)'
 - en: 'Consider the following type:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下类型：
 - en: '[PRE10]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'We can’t create an object that is assignable to `Obj`:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不能创建一个可以分配给 `Obj` 的对象：
 - en: '[PRE11]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: In the previous subsection `SymbolConstructor.iterator` was not meant for yet-to-be-created
     objects. It was meant for a single global value that already existed.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 在前面的子节 `SymbolConstructor.iterator` 并不是为尚未创建的对象设计的。它是为已经存在的单个全局值设计的。
 - en: '[16.2 Unions of symbol types](#unions-of-symbol-types)'
+  id: totrans-48
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[16.2 符号类型的联合](#unions-of-symbol-types)'
 - en: 'We can use symbols to define union types:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用符号来定义联合类型：
 - en: '[PRE12]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'We have to use `typeof` to go from program level to type level:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们必须使用 `typeof` 从程序级别到类型级别：
 - en: 'Program level: `ACTIVE`'
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 程序级别：`ACTIVE`
 - en: 'Type level: `typeof ACTIVE`'
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型级别：`typeof ACTIVE`
 - en: How does a symbol-based union type compare to a string-based union type such
     as the one below?
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于符号的联合类型与以下字符串联合类型如何比较？
 - en: '[PRE13]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'To make it easier to compare `ActSym` with `ActStr`, let’s define the latter
     in a more complicated way (which we normally wouldn’t do):'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了更容易比较 `ActSym` 和 `ActStr`，让我们以更复杂的方式定义后者（我们通常不会这样做）：
 - en: '[PRE14]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: What are the pros and cons of a string-based union type?
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于字符串的联合类型的优缺点是什么？
 - en: 'Pro: No need to import constants, we can simply mention the strings (see last
     line above).'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 优点：无需导入常量，我们可以简单地提及字符串（见上面最后一行）。
 - en: 'Con: The union values are not type-safe. Strings are compared by value (not
     by identity), which is why a value can be mistaken to be a member of `ActStr`
     when it actually isn’t. That kind of mistake cannot happen with symbol-based type
     unions.'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 缺点：联合值不是类型安全的。字符串是通过值（而不是身份）进行比较的，这就是为什么一个值可能会被错误地认为是 `ActStr` 的成员，而实际上它不是。这种错误不会在基于符号的类型联合中发生。
 - en: '[16.3 Symbols as special values](#symbols-as-special-values)'
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[16.3 符号作为特殊值](#symbols-as-special-values)'
 - en: '`undefined` and `null` are often used as special “non-values” that are different
     from the actual values of a type:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: '`undefined` 和 `null` 经常被用作与类型实际值不同的特殊“非值”：'
 - en: '[PRE15]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'However, a symbol can be a better, more self-explanatory alternative:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，符号可以是一个更好、更易于理解的替代方案：
 - en: '[PRE16]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: For more information on this topic, see [“Adding special values to types” (§17)](ch_special-values.html#ch_special-values).
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于这个主题的更多信息，请参阅[“Adding special values to types” (§17)](ch_special-values.html#ch_special-values)。
 - en: '[16.4 Symbols as enum values](#symbols-as-enum-values)'
+  id: totrans-67
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[16.4 符号作为枚举值](#symbols-as-enum-values)'
 - en: 'Symbols also work well if we want to create an enum with new, unique values:'
+  id: totrans-68
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想要创建具有新、唯一值的枚举，符号也工作得很好：
 - en: '[PRE17]'
+  id: totrans-69
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: Why the intermediate step of declaring the variables `Active` and `Inactive`
     in the first two lines? Why don’t we create the symbols in line A and line B?
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么在第一行和第二行中声明变量 `Active` 和 `Inactive` 是一个中间步骤？为什么不在行 A 和行 B 中创建符号？
 - en: 'If we do that then:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们这样做的话：
 - en: '`Activation.Active` will have the type `symbol`, not the type `typeof Active`.'
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Activation.Active` 将具有 `symbol` 类型，而不是 `typeof Active` 类型。'
 - en: '`Activation.Inactive` will have the type `symbol`, not the type `typeof Inactive`.'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Activation.Inactive` 将具有 `symbol` 类型，而不是 `typeof Inactive` 类型。'
 - en: As a result, `ActivationType` will be `symbol`. For a longer explanation, see
     [“Symbols as property values” (§26.4.5)](ch_enums.html#enum-object-with-symbols).
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，`ActivationType` 将是 `symbol`。对于更长的解释，请参阅[“Symbols as property values” (§26.4.5)](ch_enums.html#enum-object-with-symbols)。
 - en: '[16.5 Further reading](#further-reading-6)'
+  id: totrans-75
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[16.5 进一步阅读](#further-reading-6)'
 - en: 'TypeScript: chapter [“Symbols”](https://www.typescriptlang.org/docs/handbook/symbols.html)
     in the TypeScript Handbook'
+  id: totrans-76
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript：在 TypeScript 手册中的[“Symbols”](https://www.typescriptlang.org/docs/handbook/symbols.html)章节
 - en: 'JavaScript: chapter [“Symbols”](https://exploringjs.com/js/book/ch_symbols.html)
     in “Exploring JavaScript”'
+  id: totrans-77
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript：在“Exploring JavaScript”中的[“Symbols”](https://exploringjs.com/js/book/ch_symbols.html)章节

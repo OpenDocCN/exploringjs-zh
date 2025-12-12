@@ -1,463 +1,709 @@
 - en: 25 Read-only accessibility (readonly etc.)
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 25   只读可访问性 (readonly 等)
 - en: 原文：[https://exploringjs.com/ts/book/ch_readonly.html](https://exploringjs.com/ts/book/ch_readonly.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_readonly.html](https://exploringjs.com/ts/book/ch_readonly.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (请勿阻止，广告。)
 - en: '[25.1 `const` variable declarations: only the binding is immutable](#const-variable-declarations-only-the-binding-is-immutable)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.1   `const` 变量声明：只有绑定是不可变的](#const-variable-declarations-only-the-binding-is-immutable)'
 - en: '[25.2 Read-only object properties](#read-only-object-properties)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.2   只读对象属性](#read-only-object-properties)'
 - en: '[25.2.1 No change after initialization](#no-change-after-initialization)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.2.1   初始化后无变化](#no-change-after-initialization)'
 - en: '[25.2.2 `readonly` doesn’t affect assignability](#readonly-doesn-t-affect-assignability)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.2.2   `readonly` 不影响可赋值性](#readonly-doesn-t-affect-assignability)'
 - en: '[25.2.3 Read-only index signatures](#read-only-index-signatures)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.2.3   只读索引签名](#read-only-index-signatures)'
 - en: '[25.2.4 Utility type `Readonly<T>`](#utility-type-readonly-t)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.2.4   工具类型 `Readonly<T>`](#utility-type-readonly-t)'
 - en: '[25.3 Class properties](#class-properties)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.3   类属性](#class-properties)'
 - en: '[25.4 Read-only Arrays](#read-only-arrays)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.4   只读数组](#read-only-arrays)'
 - en: '[25.5 Read-only tuples](#read-only-tuples)'
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.5   只读元组](#read-only-tuples)'
 - en: '[25.6 `ReadonlySet` and `ReadonlyMap`](#readonlyset-and-readonlymap)'
+  id: totrans-12
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.6   `ReadonlySet` 和 `ReadonlyMap`](#readonlyset-and-readonlymap)'
 - en: '[25.7 Const assertions (`as const`)](#const-assertions)'
+  id: totrans-13
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.7   Const 断言 (`as const`)](#const-assertions)'
 - en: '[25.8 Usage recommendations](#usage-recommendations)'
+  id: totrans-14
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.8   使用建议](#usage-recommendations)'
 - en: '[25.8.1 You need `ReadonlyArray` if you want to accept read-only tuples](#you-need-readonlyarray-if-you-want-to-accept-read-only-tuples)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.8.1   如果你想要接受只读元组，你需要 `ReadonlyArray`](#you-need-readonlyarray-if-you-want-to-accept-read-only-tuples)'
 - en: '[25.8.2 A downside of using the type `ReadonlyArray`](#a-downside-of-using-the-type-readonlyarray)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.8.2   使用类型 `ReadonlyArray` 的缺点](#a-downside-of-using-the-type-readonlyarray)'
 - en: '[25.9 Further reading](#further-reading-8)'
+  id: totrans-17
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.9   进一步阅读](#further-reading-8)'
 - en: '[25.9.1 Sources of this chapter](#sources-of-this-chapter-3)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[25.9.1   本章来源](#sources-of-this-chapter-3)'
 - en: In this chapter, we look at how can make things “read-only” in TypeScript –
     mainly via the keyword `readonly`.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨如何在 TypeScript 中使事物变为“只读”状态——主要通过关键字 `readonly`。
 - en: '[25.1 `const` variable declarations: only the binding is immutable](#const-variable-declarations-only-the-binding-is-immutable)'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.1   `const` 变量声明：只有绑定是不可变的](#const-variable-declarations-only-the-binding-is-immutable)'
 - en: 'In JavaScript, if a variable is declared via `const`, the binding becomes immutable
     but not the bound value:'
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 JavaScript 中，如果一个变量通过 `const` 声明，绑定变为不可变，但绑定的值不是：
 - en: '[PRE0]'
+  id: totrans-22
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: TypeScript’s read-only accessibility is similar. However, it is only checked
     at compile time; it does not affect the emitted JavaScript in any way.
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 的只读可访问性与之类似。然而，它仅在编译时进行检查；它不会以任何方式影响输出的 JavaScript。
 - en: '[25.2 Read-only object properties](#read-only-object-properties)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.2   只读对象属性](#read-only-object-properties)'
 - en: 'We can use the keyword `readonly` to make object properties immutable:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用关键字 `readonly` 使对象属性不可变：
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'Making a property immutable has the following consequences:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 将属性变为不可变具有以下后果：
 - en: '[PRE2]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[25.2.1 No change after initialization](#no-change-after-initialization)'
+  id: totrans-29
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[25.2.1   初始化后无变化](#no-change-after-initialization)'
 - en: 'If a property `.count` is read-only, we can initialize it via an object literal
     but not change it afterwards. If we want to change its value, we have to create
     a new object (line A):'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个属性 `.count` 是只读的，我们可以通过对象字面量来初始化它，但不能之后更改它。如果我们想更改其值，我们必须创建一个新的对象（行 A）：
 - en: '[PRE3]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'This mutating version of `toIncremented()` produces a compile-time error:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: '`toIncremented()` 的这个变异版本会产生编译时错误：'
 - en: '[PRE4]'
+  id: totrans-33
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: '[25.2.2 `readonly` doesn’t affect assignability](#readonly-doesn-t-affect-assignability)'
+  id: totrans-34
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[25.2.2   `readonly` 不影响可赋值性](#readonly-doesn-t-affect-assignability)'
 - en: 'Somewhat surprisingly, `readonly` does not affect assignability:'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 比较令人惊讶的是，`readonly` 不影响可赋值性：
 - en: '[PRE5]'
+  id: totrans-36
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'We can, however, detect it via type equality:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，我们可以通过类型相等性来检测它：
 - en: '[PRE6]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: There already is [a pull request](https://github.com/microsoft/TypeScript/pull/58296)
     for the compiler option `--enforceReadonly` which would change this behavior.
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 已经有一个针对编译器选项 `--enforceReadonly` 的 [pull request](https://github.com/microsoft/TypeScript/pull/58296)，这将改变此行为。
 - en: '[25.2.3 Read-only index signatures](#read-only-index-signatures)'
+  id: totrans-40
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[25.2.3   只读索引签名](#read-only-index-signatures)'
 - en: 'In addition to properties, index signatures can also be modified by `readonly`.
     The following built-in type describes Array-like objects:'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 除了属性外，索引签名也可以通过 `readonly` 进行修改。以下是一个描述类似数组的内置类型：
 - en: '[PRE7]'
+  id: totrans-42
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Line A is a read-only index signature. One example of `ArrayLike` being used:
     The type of the parameter of `Array.from()`.'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 行A是一个只读索引签名。`ArrayLike`使用的一个例子：`Array.from()`参数的类型。
 - en: '[PRE8]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'If the index signature is read-only, we can’t use indexed access to change
     values:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果索引签名是只读的，我们就不能使用索引访问来更改值：
 - en: '[PRE9]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[25.2.4 Utility type `Readonly<T>`](#utility-type-readonly-t)'
+  id: totrans-47
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[25.2.4 实用类型`Readonly<T>`](#utility-type-readonly-t)'
 - en: 'The utility type `Readonly<T>` makes all properties of `T` read-only:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 实用类型`Readonly<T>`使`T`的所有属性变为只读：
 - en: '[PRE10]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[25.3 Class properties](#class-properties)'
+  id: totrans-50
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.3 类属性](#class-properties)'
 - en: 'Classes can also have read-only properties. Those must be initialized directly
     or in the constructor and can’t be changed afterward. That’s why the mutating
     increment `.incMut()` doesn’t work:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 类也可以有只读属性。这些属性必须直接或在构造函数中初始化，之后不能更改。这就是为什么可变增加`.incMut()`不起作用的原因：
 - en: '[PRE11]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '[25.4 Read-only Arrays](#read-only-arrays)'
+  id: totrans-53
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.4 只读数组](#read-only-arrays)'
 - en: 'There are two ways in which, e.g. an Array of strings can be declared to be
     read-only:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两种方式可以将字符串数组等声明为只读：
 - en: '[PRE12]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '`ReadonlyArray` is only a type: In contrast to `Array`, it does not exist at
     runtime. This is how we can use this type:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: '`ReadonlyArray`仅是一个类型：与`Array`不同，它在运行时不存在。这就是我们可以使用此类型的方式：'
 - en: '[PRE13]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: We create a normal Array and give it the type `ReadonlyArray<string>`. That’s
     how to make Arrays that are read-only at the type level.
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们创建一个普通的数组，并给它类型`ReadonlyArray<string>`。这就是在类型级别使数组变为只读的方法。
 - en: 'In the last line, we can see that type `ReadonlyArray` does not only make properties
     and the index signature `readonly` – it is also missing mutating methods:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 在最后一行，我们可以看到类型`ReadonlyArray`不仅使属性和索引签名`readonly`，它还缺少可变方法：
 - en: '[PRE14]'
+  id: totrans-60
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: 'If we wanted to create Arrays that are read-only at runtime, we could use the
     following approach:'
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想在运行时创建只读的数组，我们可以使用以下方法：
 - en: '[PRE15]'
+  id: totrans-62
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: We don’t implement `ReadonlyArray<T>` because we don’t provide indexed access
     via square brackets, only via `.at()`. The former could be done via [Proxies](https://exploringjs.com/deep-js/ch_proxies.html)
     but that would lead to less elegant and performant code.
+  id: totrans-63
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们没有实现`ReadonlyArray<T>`，因为我们不通过方括号提供索引访问，只通过`.at()`。前者可以通过[代理](https://exploringjs.com/deep-js/ch_proxies.html)实现，但这会导致代码不够优雅且性能较差。
 - en: '[25.5 Read-only tuples](#read-only-tuples)'
+  id: totrans-64
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.5 只读元组](#read-only-tuples)'
 - en: 'In normal tuples, we can assign different values to the elements, but not the
     length:'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 在普通元组中，我们可以为元素分配不同的值，但不能改变长度：
 - en: '[PRE16]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'If a tuple is read-only, we can’t assign different values to either elements
     or `.length`:'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果元组是只读的，我们就不能为元素或`.length`分配不同的值：
 - en: '[PRE17]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'We set up the read-only tuple once (at the beginning) and can’t change it later.
     The type of a read-only tuple is a subtype of `ReadonlyArray`:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们设置只读元组一次（在开始时）并且之后不能更改。只读元组的类型是`ReadonlyArray`的子类型：
 - en: '[PRE18]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '[25.6 `ReadonlySet` and `ReadonlyMap`](#readonlyset-and-readonlymap)'
+  id: totrans-71
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.6 `ReadonlySet`和`ReadonlyMap`](#readonlyset-and-readonlymap)'
 - en: 'Similar to type `ReadonlyArray` being a read-only version of `Array`, there
     are also read-only versions of `Set` and `Map`:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 与类型`ReadonlyArray`是`Array`的只读版本类似，也存在`Set`和`Map`的只读版本：
 - en: '[PRE19]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'This is how we could use `ReadonlySet`:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们如何使用`ReadonlySet`的方式：
 - en: '[PRE20]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'This is a wrapper class that makes a Set read-only at runtime:'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个包装类，它使集合在运行时变为只读：
 - en: '[PRE21]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '[25.7 Const assertions (`as const`)](#const-assertions)'
+  id: totrans-78
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.7 常量断言（`as const`）](#const-assertions)'
 - en: 'The const assertion `as const` is an annotation for values that only affects
     their types. It can be applied to:'
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: '`const`断言`as const`是对值的注释，它仅影响它们的类型。它可以应用于：'
 - en: References to enum members
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 枚举成员的引用
 - en: Boolean literals
+  id: totrans-81
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 布尔字面量
 - en: String literals
+  id: totrans-82
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 字符串字面量
 - en: Object literals
+  id: totrans-83
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对象字面量
 - en: Array literals
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组字面量
 - en: 'It has two effects:'
+  id: totrans-85
   prefs: []
   type: TYPE_NORMAL
+  zh: 它有两个效果：
 - en: 'A value with a non-primitive type becomes read-only:'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 非原始类型的值变为只读：
 - en: 'Object: all properties become read-only'
+  id: totrans-87
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对象：所有属性变为只读
 - en: 'Array: becomes read-only tuple'
+  id: totrans-88
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 数组：变为只读元组
 - en: The inferred type become narrower – e.g. `'abc'` (not `string`)
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 推断的类型变得更窄——例如`'abc'`（不是`string`）
 - en: 'This is how objects are affected – note the `readonly` and the narrower type
     (`123` vs. `number`):'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是对象受到影响的方式——注意`readonly`和更窄的类型（`123`与`number`相比）：
 - en: '[PRE22]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'This is how Arrays are affected – note the `readonly` and the narrower types
     (`''a''` and `''b''` vs. `string`):'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是数组受到影响的方式——注意`readonly`和更窄的类型（`'a'`和`'b'`与`string`相比）：
 - en: '[PRE23]'
+  id: totrans-93
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'Since primitive values are already immutable, `as const` only leads to a narrower
     type being inferred:'
+  id: totrans-94
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于原始值已经是不可变的，`as const`只会导致推断出更窄的类型：
 - en: '[PRE24]'
+  id: totrans-95
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'Switching from `let` to `const` also narrows the type:'
+  id: totrans-96
   prefs: []
   type: TYPE_NORMAL
+  zh: 从`let`到`const`的转换也会缩小类型：
 - en: '[PRE25]'
+  id: totrans-97
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '[25.8 Usage recommendations](#usage-recommendations)'
+  id: totrans-98
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.8 使用建议](#usage-recommendations)'
 - en: '[25.8.1 You need `ReadonlyArray` if you want to accept read-only tuples](#you-need-readonlyarray-if-you-want-to-accept-read-only-tuples)'
+  id: totrans-99
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[25.8.1 如果你想要接受只读元组，则需要 `ReadonlyArray`](#you-need-readonlyarray-if-you-want-to-accept-read-only-tuples)'
 - en: Even though `readonly` does not affect assignability, read-only tuples are a
     subtype of `ReadonlyArray` and therefore not compatible with `Array` because the
     latter type has methods that the former doesn’t have. Let’s examine what that
     means for functions and generic types.
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管 `readonly` 不会影响可赋值性，但只读元组是 `ReadonlyArray` 的子类型，因此与 `Array` 不兼容，因为后者类型具有前者没有的方法。让我们看看这对函数和泛型类型意味着什么。
 - en: '[25.8.1.1 Functions](#functions)'
+  id: totrans-101
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[25.8.1.1 函数](#functions)'
 - en: 'The following function `sum()` can’t be applied to read-only tuples:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下函数 `sum()` 不能应用于只读元组：
 - en: '[PRE26]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[PRE27]'
+  id: totrans-104
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: '[25.8.1.2 Generic types](#generic-types-1)'
+  id: totrans-105
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[25.8.1.2 泛型类型](#generic-types-1)'
 - en: 'If a type `T` is constrained to a normal array type then it doesn’t match the
     type of an `as const` literal:'
+  id: totrans-106
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果类型 `T` 被限制为普通数组类型，那么它就不匹配 `as const` 文字的类型：
 - en: '[PRE28]'
+  id: totrans-107
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'We can change that by switching to `ReadonlyArray`:'
+  id: totrans-108
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过切换到 `ReadonlyArray` 来改变这一点：
 - en: '[PRE29]'
+  id: totrans-109
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: '[25.8.2 A downside of using the type `ReadonlyArray`](#a-downside-of-using-the-type-readonlyarray)'
+  id: totrans-110
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[25.8.2 使用类型 `ReadonlyArray` 的缺点](#a-downside-of-using-the-type-readonlyarray)'
 - en: 'There is one downside of using the type `ReadonlyArray`: You can’t pass on
     the data to locations that do not use that type (of which there are many) – e.g.:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用类型 `ReadonlyArray` 有一个缺点：你不能将数据传递到不使用该类型的位置（其中有很多）——例如：
 - en: '[PRE30]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[25.9 Further reading](#further-reading-8)'
+  id: totrans-113
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[25.9 进一步阅读](#further-reading-8)'
 - en: Chapter [“Protecting objects from being changed”](https://exploringjs.com/js/book/ch_objects.html#protecting-objects)
     in “Exploring JavaScript”
+  id: totrans-114
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “探索 JavaScript”中的章节 [“保护对象不被更改”](https://exploringjs.com/js/book/ch_objects.html#protecting-objects)
 - en: '[25.9.1 Sources of this chapter](#sources-of-this-chapter-3)'
+  id: totrans-115
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[25.9.1 本章的来源](#sources-of-this-chapter-3)'
 - en: 'The following sections of the official TypeScript Handbook were sources of
     this chapter:'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章节的以下部分来自官方 TypeScript 手册：
 - en: '[`readonly` and `const`](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#readonly-and-const)'
+  id: totrans-117
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`readonly` 和 `const`](https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes-func.html#readonly-and-const)'
 - en: '[Utility Types > `Readonly<Type>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#readonlytype)'
+  id: totrans-118
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[实用类型 > `Readonly<Type>`](https://www.typescriptlang.org/docs/handbook/utility-types.html#readonlytype)'
 - en: '[Class Members > Fields > `readonly`](https://www.typescriptlang.org/docs/handbook/2/classes.html#readonly)'
+  id: totrans-119
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[类成员 > 字段 > `readonly`](https://www.typescriptlang.org/docs/handbook/2/classes.html#readonly)'
 - en: '[Object Types > Property Modifiers > `readonly` Properties](https://www.typescriptlang.org/docs/handbook/2/objects.html#readonly-properties)'
+  id: totrans-120
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[对象类型 > 属性修饰符 > `readonly` 属性](https://www.typescriptlang.org/docs/handbook/2/objects.html#readonly-properties)'
 - en: '[The `ReadonlyArray` Type](https://www.typescriptlang.org/docs/handbook/2/objects.html#the-readonlyarray-type)'
+  id: totrans-121
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`ReadonlyArray` 类型](https://www.typescriptlang.org/docs/handbook/2/objects.html#the-readonlyarray-type)'
 - en: '[`readonly` Tuple Types](https://www.typescriptlang.org/docs/handbook/2/objects.html#readonly-tuple-types)'
+  id: totrans-122
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[`readonly` 元组类型](https://www.typescriptlang.org/docs/handbook/2/objects.html#readonly-tuple-types)'

@@ -1,345 +1,527 @@
 - en: 22 Class-related types
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 22   与类相关的类型
 - en: 原文：[https://exploringjs.com/ts/book/ch_class-related-types.html](https://exploringjs.com/ts/book/ch_class-related-types.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_class-related-types.html](https://exploringjs.com/ts/book/ch_class-related-types.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[22.1 The two prototype chains of classes](#the-two-prototype-chains-of-classes)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[22.1   类的两个原型链](#the-two-prototype-chains-of-classes)'
 - en: '[22.2 Interfaces for instances of classes](#interfaces-for-instances-of-classes)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[22.2   类实例的接口](#interfaces-for-instances-of-classes)'
 - en: '[22.3 Interfaces for classes](#interfaces-for-classes)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[22.3   类的接口](#interfaces-for-classes)'
 - en: '[22.3.1 Example: converting from and to JSON](#example-converting-from-and-to-json)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[22.3.1   示例：从 JSON 转换到和从 JSON 转换](#example-converting-from-and-to-json)'
 - en: '[22.3.2 Example: TypeScript’s built-in interfaces for the class `Object` and
     for its instances](#example-typescript-s-built-in-interfaces-for-the-class-object-and-for-its-instances)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[22.3.2   示例：TypeScript 为类 `Object` 及其实例提供的内置接口](#example-typescript-s-built-in-interfaces-for-the-class-object-and-for-its-instances)'
 - en: '[22.4 Classes as types](#classes-as-types)'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[22.4   类作为类型](#classes-as-types)'
 - en: '[22.4.1 Pitfall: classes work structurally, not nominally](#pitfall-classes-work-structurally-not-nominally)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[22.4.1   陷阱：类按结构工作，而不是按名义](#pitfall-classes-work-structurally-not-nominally)'
 - en: '[22.5 Further reading](#further-reading-7)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[22.5   进一步阅读](#further-reading-7)'
 - en: In this chapter, we examine types related to classes and their instances.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨与类及其实例相关的类型。
 - en: '[22.1 The two prototype chains of classes](#the-two-prototype-chains-of-classes)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[22.1   类的两个原型链](#the-two-prototype-chains-of-classes)'
 - en: 'Consider this class:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑这个类：
 - en: '[PRE0]'
+  id: totrans-14
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '![](../Images/f0091b5ecd0cda2b8e4df5b426d81e52.png)'
+  id: totrans-15
   prefs: []
   type: TYPE_IMG
+  zh: '![](../Images/f0091b5ecd0cda2b8e4df5b426d81e52.png)'
 - en: 'Figure 22.1: Objects created by class `Counter`. Left-hand side: the class
     and its superclass `Object`. Right-hand side: The instance `myCounter`, the prototype
     properties of `Counter`, and the prototype methods of the superclass `Object`.'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 图 22.1：由类 `Counter` 创建的对象。左侧：类及其超类 `Object`。右侧：实例 `myCounter`、`Counter` 的原型属性和超类
+    `Object` 的原型方法。
 - en: 'The diagram in [figure 22.1](#fig:diagram-class-counter) shows the runtime
     structure of class `Counter`. There are two prototype chains of objects in this
     diagram:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 图 22.1 显示了类 `Counter` 的运行时结构。图中包含两个对象的原型链：
 - en: 'Class (left-hand side): The static prototype chain consists of the objects
     that make up class `Counter`. The prototype object of class `Counter` is its superclass,
     `Object`.'
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类（左侧）：类的静态原型链由构成类 `Counter` 的对象组成。类 `Counter` 的原型对象是其超类 `Object`。
 - en: 'Instance (right-hand side): The instance prototype chain consists of the objects
     that make up the instance `myCounter`. The chain starts with the instance `myCounter`
     and continues with `Counter.prototype` (which holds the prototype methods of class
     `Counter`) and `Object.prototype` (which holds the prototype methods of class
     `Object`).'
+  id: totrans-19
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 实例（右侧）：实例原型链由构成实例 `myCounter` 的对象组成。链从实例 `myCounter` 开始，接着是 `Counter.prototype`（包含类
+    `Counter` 的原型方法）和 `Object.prototype`（包含类 `Object` 的原型方法）。
 - en: In this chapter, we’ll first explore instance objects and then classes as objects.
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们将首先探讨实例对象，然后是作为对象的类。
 - en: '[22.2 Interfaces for instances of classes](#interfaces-for-instances-of-classes)'
+  id: totrans-21
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[22.2   类实例的接口](#interfaces-for-instances-of-classes)'
 - en: 'Interfaces specify services that objects provide. For example:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 接口指定对象提供的服务。例如：
 - en: '[PRE1]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'TypeScript’s interfaces work [structurally](ch_what-is-a-type.html#nominal-vs-structural-type-systems):
     In order for an object to implement an interface, it only needs to have the right
     properties with the right types. We can see that in the following example:'
+  id: totrans-24
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 的接口按结构工作[结构化](ch_what-is-a-type.html#nominal-vs-structural-type-systems)：为了使一个对象实现接口，它只需要具有正确的属性和正确的类型。我们可以在以下示例中看到这一点：
 - en: '[PRE2]'
+  id: totrans-25
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: Structural interfaces are convenient because we can create interfaces even for
     objects that already exist (i.e., we can introduce them after the fact).
+  id: totrans-26
   prefs: []
   type: TYPE_NORMAL
+  zh: 结构化接口很方便，因为我们甚至可以为已经存在的对象创建接口（即，我们可以在事后引入它们）。
 - en: 'If we know ahead of time that an object must implement a given interface, it
     often makes sense to check early if it does, in order to avoid surprises later.
     We can do that for instances of classes via `implements`:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们事先知道一个对象必须实现给定的接口，那么在后期避免意外通常是有意义的，我们可以通过 `implements` 为类的实例这样做：
 - en: '[PRE3]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Comments:'
+  id: totrans-29
   prefs: []
   type: TYPE_NORMAL
+  zh: 注释：
 - en: We can `implement` any object type (not just interfaces).
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以实现任何对象类型（不仅仅是接口）。
 - en: TypeScript does not distinguish between inherited properties (such as `.increment`)
     and own properties (such as `.value`).
+  id: totrans-31
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript不区分继承属性（如`.increment`）和自身属性（如`.value`）。
 - en: As an aside, private properties are ignored by interfaces and can’t be specified
     via them. This is expected given that private data is for internal purposes only.
+  id: totrans-32
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 作为旁注，接口会忽略私有属性，并且不能通过它们来指定。考虑到私有数据仅用于内部目的，这是预期的。
 - en: '[22.3 Interfaces for classes](#interfaces-for-classes)'
+  id: totrans-33
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[22.3 类接口](#interfaces-for-classes)'
 - en: Classes themselves are also objects (functions). Therefore, we can use interfaces
     to specify their properties. The main use case here is describing factories for
     objects. The next section gives an example.
+  id: totrans-34
   prefs: []
   type: TYPE_NORMAL
+  zh: 类本身也是对象（函数）。因此，我们可以使用接口来指定它们的属性。这里的主要用例是描述对象的工厂。下一节将给出一个示例。
 - en: '[22.3.1 Example: converting from and to JSON](#example-converting-from-and-to-json)'
+  id: totrans-35
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[22.3.1 示例：从JSON转换为以及转换为JSON](#example-converting-from-and-to-json)'
 - en: 'The following two interfaces can be used for classes that support their instances
     being converted from and to JSON:'
+  id: totrans-36
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下两个接口可以用于支持其实例从JSON转换为以及转换为JSON的类：
 - en: '[PRE4]'
+  id: totrans-37
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'We use these interfaces in the following code:'
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们在以下代码中使用这些接口：
 - en: '[PRE5]'
+  id: totrans-39
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'This is how we can check right away if class `Person` (as an object) implements
     the interface `JsonStatic`:'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是我们如何立即检查类`Person`（作为一个对象）是否实现了接口`JsonStatic`：
 - en: '[PRE6]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'If you don’t want to use a library (with the utility types `Assert` and `Assignable`)
     for this purpose, you can use the following pattern:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你不想为此目的使用库（带有`Assert`和`Assignable`实用类型），你可以使用以下模式：
 - en: '[PRE7]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: The downside of this pattern is that it produces extra JavaScript code.
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种模式的缺点是它会产生额外的JavaScript代码。
 - en: '[22.3.1.1 Can we do better?](#can-we-do-better)'
+  id: totrans-45
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[22.3.1.1 我们能做得更好吗？](#can-we-do-better)'
 - en: 'It would be nice to avoid an external check – e.g., like this:'
+  id: totrans-46
   prefs: []
   type: TYPE_NORMAL
+  zh: 避免外部检查会更好——例如，像这样：
 - en: '[PRE8]'
+  id: totrans-47
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: In line B, we use [the `satisfies` operator](ch_satisfies.html#ch_satisfies),
     which enforces that the value `Person` is assignable to `JsonStatic` while preserving
     the type of that value. That is important because `Person` should not be limited
     to what’s defined in `JsonStatic`.
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行B中，我们使用了[`satisfies`运算符](ch_satisfies.html#ch_satisfies)，它强制值`Person`可以赋值给`JsonStatic`，同时保留该值的类型。这很重要，因为`Person`不应该仅限于`JsonStatic`中定义的内容。
 - en: 'Alas, this alternative approach is even more verbose and doesn’t compile. One
     of the compiler errors is in line C:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 可惜，这种替代方法甚至更加冗长，并且无法编译。编译器错误之一在行C：
 - en: Type alias 'Person' circularly references itself.
+  id: totrans-50
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 类型别名'Person'循环引用自身。
 - en: Why? Type `Person` is mentioned in line A. Even if we rename the type `Person`
     to `TPerson`, that error doesn’t go away.
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么？在行A中提到了`Person`类型。即使我们将类型`Person`重命名为`TPerson`，这个错误也不会消失。
 - en: '[22.3.2 Example: TypeScript’s built-in interfaces for the class `Object` and
     for its instances](#example-typescript-s-built-in-interfaces-for-the-class-object-and-for-its-instances)'
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[22.3.2 示例：TypeScript为`Object`类及其实例提供的内置接口](#example-typescript-s-built-in-interfaces-for-the-class-object-and-for-its-instances)'
 - en: 'It is instructive to take a look at TypeScript’s built-in types:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 看一下TypeScript的内置类型是有教育意义的：
 - en: 'On one hand, interface `ObjectConstructor` is for the class pointed to by the
     global variable `Object`:'
+  id: totrans-54
   prefs: []
   type: TYPE_NORMAL
+  zh: 一方面，接口`ObjectConstructor`是用于由全局变量`Object`指向的类：
 - en: '[PRE9]'
+  id: totrans-55
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'On the other hand, interface `Object` (which is mentioned in line A and line
     B) is for instances of `Object`:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，接口`Object`（在行A和行B中提到）是用于`Object`的实例：
 - en: '[PRE10]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: 'In other words – the name `Object` is used twice, at two different [language
     levels](ch_typescript-essentials.html#language-levels):'
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说——`Object`这个名字在两个不同的[语言级别](ch_typescript-essentials.html#language-levels)被使用：
 - en: At the dynamic level, for a global variable.
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在动态级别，对于全局变量。
 - en: At the static level, for a type.
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在静态级别，对于类型。
 - en: '[22.4 Classes as types](#classes-as-types)'
+  id: totrans-61
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[22.4 类作为类型](#classes-as-types)'
 - en: 'Consider the following class:'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下类：
 - en: '[PRE11]'
+  id: totrans-63
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: This class definition creates two things.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个类定义创建了两个东西。
 - en: 'First, a constructor function named `Color` (that can be invoked via `new`):'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，一个名为`Color`的构造函数（可以通过`new`来调用）：
 - en: '[PRE12]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'Second, an interface named `Color` that matches instances of `Color`:'
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 其次，一个名为`Color`的接口，它与`Color`的实例相匹配：
 - en: '[PRE13]'
+  id: totrans-68
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: 'Here is proof that `Color` really is an interface:'
+  id: totrans-69
   prefs: []
   type: TYPE_NORMAL
+  zh: 这里是`Color`确实是一个接口的证明：
 - en: '[PRE14]'
+  id: totrans-70
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[22.4.1 Pitfall: classes work structurally, not nominally](#pitfall-classes-work-structurally-not-nominally)'
+  id: totrans-71
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[22.4.1 陷阱：类在结构上工作，而不是名义上](#pitfall-classes-work-structurally-not-nominally)'
 - en: 'There is one pitfall, though: Using `Color` as a static type is not a very
     strict check:'
+  id: totrans-72
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管如此，有一个陷阱：将`Color`用作静态类型不是一个非常严格的检查：
 - en: '[PRE15]'
+  id: totrans-73
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'Why doesn’t TypeScript complain in line A? That’s due to [structural typing](ch_what-is-a-type.html#nominal-vs-structural-type-systems):
     Instances of `Person` and of `Color` have the same structure and are therefore
     statically compatible.'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么TypeScript在行A中没有抱怨？这是因为[结构化类型](ch_what-is-a-type.html#nominal-vs-structural-type-systems)：`Person`和`Color`的实例具有相同的结构，因此它们在静态上是兼容的。
 - en: '[22.4.1.1 Switching off structural typing](#switching-off-structural-typing)'
+  id: totrans-75
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[22.4.1.1 关闭结构化类型](#switching-off-structural-typing)'
 - en: 'We can turn `Color` into [a nominal type](ch_what-is-a-type.html#nominal-vs-structural-type-systems)
     by adding a private field (or a `private` property):'
+  id: totrans-76
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以通过添加一个私有字段（或一个`private`属性）将`Color`转换为一个[命名类型](ch_what-is-a-type.html#nominal-vs-structural-type-systems)：
 - en: '[PRE16]'
+  id: totrans-77
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'This way of switching off structural typing is called *branding*. Note that
     the private fields of `Color` and `Person` are incompatible even though they have
     the same name and the same type. That reflects how JavaScript works: We cannot
     access the private field of `Color` from `Person` and vice versa.'
+  id: totrans-78
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种关闭结构化类型的方式被称为*品牌化*。请注意，尽管`Color`和`Person`的私有字段具有相同的名称和类型，但它们是不兼容的。这反映了JavaScript的工作方式：我们不能从`Person`访问`Color`的私有字段，反之亦然。
 - en: '[22.4.1.2 Use case for branding: migrating from an object type to a class](#use-case-for-branding-migrating-from-an-object-type-to-a-class)'
+  id: totrans-79
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[22.4.1.2 使用品牌化案例：从对象类型迁移到类](#use-case-for-branding-migrating-from-an-object-type-to-a-class)'
 - en: 'Let’s say we want to migrate the following code from the object type in line
     A to a class:'
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 假设我们想要将以下代码从行A中的对象类型迁移到一个类中：
 - en: '[PRE17]'
+  id: totrans-81
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'In our first attempt, invoking `storePerson()` with an object literal still
     works:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我们的第一次尝试中，使用对象字面量调用`storePerson()`仍然有效：
 - en: '[PRE18]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'Once we brand `Person`, we get a compiler error:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 一旦我们对`Person`进行品牌化，就会得到一个编译器错误：
 - en: '[PRE19]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: 'This is how we fix the error:'
+  id: totrans-86
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是我们修复错误的方法：
 - en: '[PRE20]'
+  id: totrans-87
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: '[22.5 Further reading](#further-reading-7)'
+  id: totrans-88
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[22.5 进一步阅读](#further-reading-7)'
 - en: '[Chapter “Classes”](https://exploringjs.com/js/book/ch_classes.html) in “Exploring
     JavaScript”'
+  id: totrans-89
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “探索JavaScript”中的[“类”章节](https://exploringjs.com/js/book/ch_classes.html)

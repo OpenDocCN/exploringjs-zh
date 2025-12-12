@@ -1,1056 +1,1613 @@
 - en: 26 Enums and enum patterns
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 26 枚举和枚举模式
 - en: 原文：[https://exploringjs.com/ts/book/ch_enums.html](https://exploringjs.com/ts/book/ch_enums.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_enums.html](https://exploringjs.com/ts/book/ch_enums.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (广告，请勿遮挡。)
 - en: '[26.1 Making sense of enums](#making-sense-of-enums)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.1 理解枚举](#making-sense-of-enums)'
 - en: '[26.1.1 Use case 1: namespace for constants with primitive values](#use-case-1-namespace-for-constants-with-primitive-values)'
+  id: totrans-4
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.1.1 用例 1：具有原始值的常量命名空间](#use-case-1-namespace-for-constants-with-primitive-values)'
 - en: '[26.1.2 Use case 2: custom type with unique values](#use-case-2-custom-type-with-unique-values)'
+  id: totrans-5
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.1.2 用例 2：具有唯一值的自定义类型](#use-case-2-custom-type-with-unique-values)'
 - en: '[26.1.3 Use case 3: namespace for constants with object values](#use-case-3-namespace-for-constants-with-object-values)'
+  id: totrans-6
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.1.3 用例 3：具有对象值的常量命名空间](#use-case-3-namespace-for-constants-with-object-values)'
 - en: '[26.2 TypeScript enums](#typescript-enums)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2 TypeScript 枚举](#typescript-enums)'
 - en: '[26.2.1 Number enums](#number-enums)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.1 数字枚举](#number-enums)'
 - en: '[26.2.2 String enums](#string-enums)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.2 字符串枚举](#string-enums)'
 - en: '[26.2.3 Heterogeneous enums](#heterogeneous-enums)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.3 异构枚举](#heterogeneous-enums)'
 - en: '[26.2.4 Omitting initializers](#omitting-initializers)'
+  id: totrans-11
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.4 省略初始化器](#omitting-initializers)'
 - en: '[26.2.5 Quoting enum member names](#quoting-enum-member-names)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.5 引用枚举成员名称](#quoting-enum-member-names)'
 - en: '[26.2.6 Casing of enum member names](#casing-of-enum-member-names)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.6 枚举成员名称的大小写](#casing-of-enum-member-names)'
 - en: '[26.2.7 An enum defines a value and a type](#an-enum-defines-a-value-and-a-type)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.7 枚举定义了一个值和一个类型](#an-enum-defines-a-value-and-a-type)'
 - en: '[26.2.8 Values accepted by enum types](#values-accepted-by-enum-types)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.8 枚举类型接受的值](#values-accepted-by-enum-types)'
 - en: '[26.2.9 Enums at runtime](#enums-at-runtime)'
+  id: totrans-16
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.9 运行时枚举](#enums-at-runtime)'
 - en: '[26.2.10 Handling the enum use cases with enums](#handling-the-enum-use-cases-with-enums)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.2.10 使用枚举处理枚举用例](#handling-the-enum-use-cases-with-enums)'
 - en: '[26.3 TypeScript const enums](#typescript-const-enums)'
+  id: totrans-18
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.3 TypeScript 常量枚举](#typescript-const-enums)'
 - en: '[26.3.1 Const enums at runtime](#const-enums-at-runtime)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.3.1 运行时常量枚举](#const-enums-at-runtime)'
 - en: '[26.3.2 Downsides of const enums](#downsides-of-const-enums)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.3.2 常量枚举的缺点](#downsides-of-const-enums)'
 - en: '[26.4 Enum pattern: enum objects](#enum-pattern-enum-objects)'
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4 枚举模式：枚举对象](#enum-pattern-enum-objects)'
 - en: '[26.4.1 Ways of improving object literals](#ways-of-improving-object-literals)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.1 提高对象字面量方式的方法](#ways-of-improving-object-literals)'
 - en: '[26.4.2 A helper function for creating enum objects](#a-helper-function-for-creating-enum-objects)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.2 创建枚举对象的辅助函数](#a-helper-function-for-creating-enum-objects)'
 - en: '[26.4.3 Handling the enum use cases with enum objects](#handling-the-enum-use-cases-with-enum-objects)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.3 使用枚举对象处理枚举用例](#handling-the-enum-use-cases-with-enum-objects)'
 - en: '[26.4.4 Using the members of enum objects at the type level](#using-the-members-of-enum-objects-at-the-type-level)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.4 在类型级别使用枚举对象的成员](#using-the-members-of-enum-objects-at-the-type-level)'
 - en: '[26.4.5 Symbols as property values](#enum-object-with-symbols)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.5 作为属性值的符号](#enum-object-with-symbols)'
 - en: '[26.4.6 Use case: an enum as a namespace for constants with object values](#use-case-an-enum-as-a-namespace-for-constants-with-object-values)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.4.6 用例：枚举作为具有对象值的常量命名空间](#use-case-an-enum-as-a-namespace-for-constants-with-object-values)'
 - en: '[26.5 Enum pattern: enum classes](#enum-pattern-enum-classes)'
+  id: totrans-28
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.5 枚举模式：枚举类](#enum-pattern-enum-classes)'
 - en: '[26.6 Enum pattern: string literal unions](#enum-pattern-string-literal-unions)'
+  id: totrans-29
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.6 枚举模式：字符串字面量联合](#enum-pattern-string-literal-unions)'
 - en: '[26.6.1 Reifying string literal unions](#reifying-string-literal-unions)'
+  id: totrans-30
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.6.1 实现字符串字面量联合](#reifying-string-literal-unions)'
 - en: '[26.7 More things we can do with enums](#more-things-we-can-do-with-enums)'
+  id: totrans-31
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.7 更多我们可以用枚举做的事情](#more-things-we-can-do-with-enums)'
 - en: '[26.7.1 Enum values as keys in Maps](#enum-values-as-keys-in-maps)'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.7.1 枚举值作为 Maps 中的键](#enum-values-as-keys-in-maps)'
 - en: '[26.7.2 Mapping between keys (strings) of enum members and their values](#mapping-between-keys-strings-of-enum-members-and-their-values)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.7.2 枚举成员的键（字符串）和它们的值之间的映射](#mapping-between-keys-strings-of-enum-members-and-their-values)'
 - en: '[26.7.3 Iterating over enum members](#iterating-over-enum-members)'
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.7.3 迭代枚举成员](#iterating-over-enum-members)'
 - en: '[26.7.4 Specifying bit vectors](#specifying-bit-vectors)'
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.7.4 指定位向量](#specifying-bit-vectors)'
 - en: '[26.7.5 Type validation for enums via Zod](#type-validation-for-enums-via-zod)'
+  id: totrans-36
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.7.5 通过 Zod 对枚举进行类型验证](#type-validation-for-enums-via-zod)'
 - en: '[26.8 Recommendations](#recommendations)'
+  id: totrans-37
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[26.8 建议](#recommendations)'
 - en: TypeScript has built-in support for *enums* which are basically namespaces for
     constants. In this chapter we explore how they work, what patterns we can use
     instead and how to choose between them.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 内置了对 *枚举* 的支持，枚举基本上是常量的命名空间。在本章中，我们探讨它们是如何工作的，我们可以使用哪些模式，以及如何在这之间进行选择。
 - en: '[26.1 Making sense of enums](#making-sense-of-enums)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.1 理解枚举的意义](#making-sense-of-enums)'
 - en: For TypeScript, it has become desirable to only use JavaScript at the non-type
     level because that makes compilation easier to understand and faster (thanks to
     a technique called [*type stripping*](ch_tsconfig-json.html#type-stripping)).
     That coding style can be enforced via the compiler option [`erasableSyntaxOnly`](ch_tsconfig-json.html#erasableSyntaxOnly)).
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于 TypeScript，在非类型级别上只使用 JavaScript 已经变得很有吸引力，因为这使得编译过程更容易理解且更快（归功于一种称为 [*类型剥离*](ch_tsconfig-json.html#type-stripping)
+    的技术）。这种编码风格可以通过编译器选项 `erasableSyntaxOnly`（ch_tsconfig-json.html#erasableSyntaxOnly)
+    来强制执行。
 - en: '*Enums* are one of the few non-type features that are not JavaScript. That’s
     why, after examining how they work, we’ll also look into JavaScript alternatives:
     patterns that we can use instead of enums. In order to find them, we’ll focus
     on three use cases.'
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: '*枚举* 是少数几个非类型特性之一，它不是 JavaScript。这就是为什么，在检查了它们的工作原理之后，我们还将探讨 JavaScript 的替代方案：我们可以用来替代枚举的模式。为了找到它们，我们将关注三个用例。'
 - en: '[26.1.1 Use case 1: namespace for constants with primitive values](#use-case-1-namespace-for-constants-with-primitive-values)'
+  id: totrans-42
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.1.1 使用用例 1：具有原始值的常量命名空间](#use-case-1-namespace-for-constants-with-primitive-values)'
 - en: 'This use case is about grouping related constants – think lookup table – e.g.:'
+  id: totrans-43
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个用例是关于分组相关常量——想想查找表——例如：
 - en: '[PRE0]'
+  id: totrans-44
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: We’d like to have a namespace for these constants and access them via `Color.Red`
     etc.
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们希望为这些常量创建一个命名空间，并通过 `Color.Red` 等方式访问它们。
 - en: '[26.1.2 Use case 2: custom type with unique values](#use-case-2-custom-type-with-unique-values)'
+  id: totrans-46
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.1.2 使用用例 2：具有唯一值的自定义类型](#use-case-2-custom-type-with-unique-values)'
 - en: 'Sometimes, we want to define a custom type that has a limited set of values
     – e.g. to express program states:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，我们想要定义一个具有有限值集的自定义类型——例如，用于表达程序状态：
 - en: '[PRE1]'
+  id: totrans-48
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'For this use case, we want to be able to [check exhaustiveness](ch_never.html#exhaustiveness-checks):
     When we handle cases (e.g. via `switch`), TypeScript should warn us during type
     checking if we forget a case:'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于这个用例，我们希望能够 [检查完备性](ch_never.html#exhaustiveness-checks)：当我们处理情况（例如，通过 `switch`）时，TypeScript
+    应在类型检查期间警告我们是否忘记了某个情况：
 - en: '[PRE2]'
+  id: totrans-50
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'This is a simple version of `UnexpectedValueError`:'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `UnexpectedValueError` 的简单版本：
 - en: '[PRE3]'
+  id: totrans-52
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'How does it work? TypeScript infers the type `never` if there are no more values
     a variable can have. So that’s the type of `status` after `switch` checked all
     values it can have. The constructor `UnexpectedValueError` produces a type error
     if its parameter does *not* have the type `never`. For more information and a
     more sophisticated version of `UnexpectedValueError`, see [“Use case for `never`:
     exhaustiveness checks at compile time” (§15.4)](ch_never.html#exhaustiveness-checks).'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 它是如何工作的？如果变量没有更多的值可以具有，TypeScript 会推断出类型 `never`。因此，这是 `status` 在 `switch` 检查了它所有可能的值之后的类型。构造函数
+    `UnexpectedValueError` 如果其参数 *没有* 类型 `never`，则会产生类型错误。有关更多信息和一个更复杂的 `UnexpectedValueError`
+    版本，请参阅 [“`never` 的用例：编译时的完备性检查”（§15.4）](ch_never.html#exhaustiveness-checks)。
 - en: '[26.1.3 Use case 3: namespace for constants with object values](#use-case-3-namespace-for-constants-with-object-values)'
+  id: totrans-54
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.1.3 使用用例 3：具有对象值的常量命名空间](#use-case-3-namespace-for-constants-with-object-values)'
 - en: 'This is an example of such constants:'
+  id: totrans-55
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个此类常量的例子：
 - en: '[PRE4]'
+  id: totrans-56
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Interestingly, this use case expands both use case 1 and use case 2:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，这个用例扩展了用例 1 和用例 2：
 - en: On one hand, we can look up more values.
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一方面，我们可以查找更多的值。
 - en: 'On the other hand, we can define a type for the constants and then get type
     members with more information:'
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 另一方面，我们可以为常量定义一个类型，然后获取具有更多信息的类型成员：
 - en: '[PRE5]'
+  id: totrans-60
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: TypeScript enums do not support this use case. But there are enum patterns that
     do.
+  id: totrans-61
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 枚举不支持这种用例。但有一些枚举模式可以做到。
 - en: '[26.2 TypeScript enums](#typescript-enums)'
+  id: totrans-62
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.2 TypeScript 枚举](#typescript-enums)'
 - en: '[26.2.1 Number enums](#number-enums)'
+  id: totrans-63
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.1 数字枚举](#number-enums)'
 - en: 'This is a numeric enum:'
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个数字枚举：
 - en: '[PRE6]'
+  id: totrans-65
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: 'This enum looks and works similarly to an object literal:'
+  id: totrans-66
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个枚举看起来和功能与对象字面量类似：
 - en: It has the *members* `No` and `Yes`.
+  id: totrans-67
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它有 *成员* `No` 和 `Yes`。
 - en: 'Each member has a name and (in this case) is explicitly assigned a value via
     an *initializer*: an equal sign followed by a value. We access those values via
     the dot operator:'
+  id: totrans-68
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 每个成员都有一个名称，并且（在这种情况下）通过一个 *初始化器* 显式地分配了一个值：一个等号后跟一个值。我们通过点操作符访问这些值：
 - en: '[PRE7]'
+  id: totrans-69
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: As in object literals, trailing commas are allowed and ignored.
+  id: totrans-70
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在对象字面量中，允许并忽略尾随逗号。
 - en: 'This is how `NoYes` is used:'
+  id: totrans-71
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是 `NoYes` 的使用方式：
 - en: '[PRE8]'
+  id: totrans-72
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '[26.2.2 String enums](#string-enums)'
+  id: totrans-73
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.2 字符串枚举](#string-enums)'
 - en: 'Instead of numbers, we can also use strings as enum member values:'
+  id: totrans-74
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以使用字符串作为枚举成员值：
 - en: '[PRE9]'
+  id: totrans-75
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[26.2.3 Heterogeneous enums](#heterogeneous-enums)'
+  id: totrans-76
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.3 异构枚举](#heterogeneous-enums)'
 - en: 'The last kind of enum is called *heterogeneous*. The member values of a heterogeneous
     enum are a mix of numbers and strings:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: 最后一种枚举称为 *异构枚举*。异构枚举的成员值是数字和字符串的混合：
 - en: '[PRE10]'
+  id: totrans-78
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: Heterogeneous enums are not used often because they have few applications.
+  id: totrans-79
   prefs: []
   type: TYPE_NORMAL
+  zh: 异构枚举不常用，因为它们的应用很少。
 - en: Alas, TypeScript only supports numbers and strings as enum member values. Other
     values, such as symbols, are not allowed.
+  id: totrans-80
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，TypeScript 只支持数字和字符串作为枚举成员值。其他值，如符号，是不允许的。
 - en: '[26.2.4 Omitting initializers](#omitting-initializers)'
+  id: totrans-81
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.4 省略初始化器](#omitting-initializers)'
 - en: 'We can also completely omit initializers – in which case TypeScript automatically
     assigns numbers:'
+  id: totrans-82
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以完全省略初始化器——在这种情况下，TypeScript 会自动分配数字：
 - en: '[PRE11]'
+  id: totrans-83
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: 'It’s also possible to only omit some of the initializers. However, my recommendation
     is to avoid that and either omit none or all. We won’t go into the details of
     how exactly partial omissions work, but this is a quick example:'
+  id: totrans-84
   prefs: []
   type: TYPE_NORMAL
+  zh: 也可能只省略一些初始化器。然而，我的建议是避免这样做，要么一个都不省略，要么全部省略。我们不会深入探讨部分省略的确切工作方式，但这是一个快速示例：
 - en: '[PRE12]'
+  id: totrans-85
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: '[26.2.5 Quoting enum member names](#quoting-enum-member-names)'
+  id: totrans-86
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.5 引用枚举成员名称](#quoting-enum-member-names)'
 - en: 'Similar to JavaScript objects, we can quote the names of enum members:'
+  id: totrans-87
   prefs: []
   type: TYPE_NORMAL
+  zh: 与 JavaScript 对象类似，我们可以引用枚举成员的名称：
 - en: '[PRE13]'
+  id: totrans-88
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: There is no way to compute the names of enum members. Object literals support
     computed property keys via square brackets.
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 没有方法可以计算枚举成员的名称。对象字面量支持通过方括号计算属性键。
 - en: '[26.2.6 Casing of enum member names](#casing-of-enum-member-names)'
+  id: totrans-90
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.6 枚举成员名称的大小写](#casing-of-enum-member-names)'
 - en: 'There are several precedents for naming constants (in enums or elsewhere):'
+  id: totrans-91
   prefs: []
   type: TYPE_NORMAL
+  zh: 在枚举或其他地方命名常量有几个先例：
 - en: 'Traditionally, JavaScript has used all-caps names, which is a convention it
     inherited from Java and C:'
+  id: totrans-92
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 传统上，JavaScript 使用全大写名称，这是它从 Java 和 C 继承的约定：
 - en: '`Number.MAX_VALUE`'
+  id: totrans-93
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Number.MAX_VALUE`'
 - en: '`Math.SQRT2`'
+  id: totrans-94
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Math.SQRT2`'
 - en: 'Well-known symbols are camel-cased and start with lowercase letters because
     they are related to property names:'
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 已知符号是驼峰式命名，以小写字母开头，因为它们与属性名称相关：
 - en: '`Symbol.asyncIterator`'
+  id: totrans-96
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Symbol.asyncIterator`'
 - en: The TypeScript manual uses camel-cased names that start with uppercase letters.
     This is the standard TypeScript style and we used it for the `NoYes` enum.
+  id: totrans-97
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 手册使用以大写字母开头的驼峰式命名。这是 TypeScript 的标准样式，我们也在 `NoYes` 枚举中使用了它。
 - en: '[26.2.7 An enum defines a value and a type](#an-enum-defines-a-value-and-a-type)'
+  id: totrans-98
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.7 枚举定义了一个值和一个类型](#an-enum-defines-a-value-and-a-type)'
 - en: 'Consider the following enum:'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下枚举：
 - en: '[PRE14]'
+  id: totrans-100
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[26.2.7.1 The enum `ShapeKind` as a value](#the-enum-shapekind-as-a-value)'
+  id: totrans-101
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.7.1 枚举 `ShapeKind` 作为值](#the-enum-shapekind-as-a-value)'
 - en: 'On one hand, `ShapeKind` is a value:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 一方面，`ShapeKind` 是一个值：
 - en: '[PRE15]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: '[26.2.7.2 The enum `ShapeKind` as a type](#the-enum-shapekind-as-a-type)'
+  id: totrans-104
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.7.2 枚举 `ShapeKind` 作为类型](#the-enum-shapekind-as-a-type)'
 - en: 'On the other hand, `ShapeKind` is also a type – whose structure is quite different
     from its value:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，`ShapeKind` 也是一个类型——其结构与它的值相当不同：
 - en: '[PRE16]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: 'In other words: Even though the value of an enum is similar to an object, its
     type is quite different from an object type (whose keys are the types of the property
     keys, etc.).'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说：尽管枚举的值类似于对象，但其类型与对象类型（其键是属性键的类型等）相当不同。
 - en: '[26.2.7.3 `ShapeKind` as a namespace for enum member types](#shapekind-as-a-namespace-for-enum-member-types)'
+  id: totrans-108
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.7.3 `ShapeKind` 作为枚举成员类型的命名空间](#shapekind-as-a-namespace-for-enum-member-types)'
 - en: 'Even though `ShapeKind` is basically a union type, it is additionally a namespace
     for the types of its members – e.g., the type `ShapeKind.Circle` is assignable
     to and from the literal number type `0`:'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管 `ShapeKind` 基本上是一个联合类型，但它还额外是一个其成员类型的命名空间——例如，类型 `ShapeKind.Circle` 可以赋值给和来自字面量数字类型
+    `0`：
 - en: '[PRE17]'
+  id: totrans-110
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: 'That means we can use enum member types at the type level – e.g. for parameters:'
+  id: totrans-111
   prefs: []
   type: TYPE_NORMAL
+  zh: 这意味着我们可以在类型级别使用枚举成员类型——例如，用于参数：
 - en: '[PRE18]'
+  id: totrans-112
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: 'Or for discriminants in discriminated unions:'
+  id: totrans-113
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者用于区分联合中的判别符：
 - en: '[PRE19]'
+  id: totrans-114
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: '[26.2.8 Values accepted by enum types](#values-accepted-by-enum-types)'
+  id: totrans-115
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.8 枚举类型接受的值](#values-accepted-by-enum-types)'
 - en: '[26.2.8.1 Values accepted by number enum types](#values-accepted-by-number-enum-types)'
+  id: totrans-116
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.8.1 数字枚举类型接受的值](#values-accepted-by-number-enum-types)'
 - en: 'If a parameter has a number enum type, it accepts both enum member values and
     numbers:'
+  id: totrans-117
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个参数具有数字枚举类型，它接受枚举成员值和数字：
 - en: '[PRE20]'
+  id: totrans-118
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: 'However, we can only use numbers that are values of enum members:'
+  id: totrans-119
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，我们只能使用枚举成员的值：
 - en: '[PRE21]'
+  id: totrans-120
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: '[26.2.8.2 Values accepted by string enum types](#values-accepted-by-string-enum-types)'
+  id: totrans-121
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.8.2 字符串枚举类型接受的值](#values-accepted-by-string-enum-types)'
 - en: 'If a parameter has a string enum type, member values are considered to be unique
     – it does not accept strings:'
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个参数具有字符串枚举类型，成员值被认为是唯一的——它不接受字符串：
 - en: '[PRE22]'
+  id: totrans-123
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: '[26.2.9 Enums at runtime](#enums-at-runtime)'
+  id: totrans-124
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.9 运行时的枚举](#enums-at-runtime)'
 - en: TypeScript compiles enums to JavaScript objects.
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript将枚举编译为JavaScript对象。
 - en: '[26.2.9.1 Number enums at runtime](#number-enums-at-runtime)'
+  id: totrans-126
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.9.1 在运行时对枚举进行编号](#number-enums-at-runtime)'
 - en: 'As an example, take the following enum:'
+  id: totrans-127
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，考虑以下枚举：
 - en: '[PRE23]'
+  id: totrans-128
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'TypeScript compiles this enum to:'
+  id: totrans-129
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript将此枚举编译为：
 - en: '[PRE24]'
+  id: totrans-130
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'In this code, the following assignments are made:'
+  id: totrans-131
   prefs: []
   type: TYPE_NORMAL
+  zh: 在此代码中，执行以下赋值：
 - en: '[PRE25]'
+  id: totrans-132
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: 'There are two groups of assignments:'
+  id: totrans-133
   prefs: []
   type: TYPE_NORMAL
+  zh: 有两组赋值：
 - en: 'Mappings: The first two assignments map enum member names to values.'
+  id: totrans-134
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 映射：前两个赋值将枚举成员名称映射到值。
 - en: 'Reverse mappings: The second two assignments map values to names.'
+  id: totrans-135
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 反向映射：最后两个赋值将值映射到名称。
 - en: 'TypeScript lets us use the reverse mappings to look up an enum key, given an
     enum value:'
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript允许我们使用反向映射来查找枚举键，给定枚举值：
 - en: '[PRE26]'
+  id: totrans-137
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[26.2.9.2 String enums at runtime](#string-enums-at-runtime)'
+  id: totrans-138
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.9.2 运行时的字符串枚举](#string-enums-at-runtime)'
 - en: String-based enums have a simpler representation at runtime.
+  id: totrans-139
   prefs: []
   type: TYPE_NORMAL
+  zh: 基于字符串的枚举在运行时具有更简单的表示形式。
 - en: Consider the following enum.
+  id: totrans-140
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下枚举。
 - en: '[PRE27]'
+  id: totrans-141
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: 'It is compiled to this JavaScript code:'
+  id: totrans-142
   prefs: []
   type: TYPE_NORMAL
+  zh: 它被编译成以下JavaScript代码：
 - en: '[PRE28]'
+  id: totrans-143
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: TypeScript does not support reverse mappings for string-based enums.
+  id: totrans-144
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript不支持基于字符串的枚举的反向映射。
 - en: '[26.2.10 Handling the enum use cases with enums](#handling-the-enum-use-cases-with-enums)'
+  id: totrans-145
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.2.10 使用枚举处理枚举用例](#handling-the-enum-use-cases-with-enums)'
 - en: Let’s get back to the use cases mentioned at the beginning of this chapter.
+  id: totrans-146
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们回到本章开头提到的用例。
 - en: '[26.2.10.1 Use case: namespace for constants with primitive values](#use-case-namespace-for-constants-with-primitive-values)'
+  id: totrans-147
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.10.1 用例：具有原始值的常量的命名空间](#use-case-namespace-for-constants-with-primitive-values)'
 - en: 'We can use an enum as a namespace for constants with primitive values:'
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用枚举作为具有原始值的常量的命名空间：
 - en: '[PRE29]'
+  id: totrans-149
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: Enums work well for this use case – but their values can only be numbers or
     strings.
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: 枚举适用于此用例——但它们的值只能是数字或字符串。
 - en: '[26.2.10.2 Use case: custom type with unique values](#use-case-custom-type-with-unique-values)'
+  id: totrans-151
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.2.10.2 用例：具有唯一值的自定义类型](#use-case-custom-type-with-unique-values)'
 - en: 'The following enum defines a custom type with unique values:'
+  id: totrans-152
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下枚举定义了一个具有唯一值的自定义类型：
 - en: '[PRE30]'
+  id: totrans-153
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: 'Benefit of explicitly specify string values via `=`: We get more type safety
     and can’t accidentally use string equal to enum values where a `Status` is expected.'
+  id: totrans-154
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过`=`显式指定字符串值的优点：我们获得更多的类型安全，并且不会意外地使用与枚举值相等的字符串，而期望`Status`。
 - en: Note that we don’t need to explicitly define a type – `Status` is already a
     type.
+  id: totrans-155
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，我们不需要显式定义类型——`Status`已经是一个类型。
 - en: 'Exhaustiveness checks for enums are supported:'
+  id: totrans-156
   prefs: []
   type: TYPE_NORMAL
+  zh: 支持枚举的完备性检查：
 - en: '[PRE31]'
+  id: totrans-157
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: '[26.3 TypeScript const enums](#typescript-const-enums)'
+  id: totrans-158
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.3 TypeScript const 枚举](#typescript-const-enums)'
 - en: If an enum is prefixed with the keyword `const`, it doesn’t have a representation
     at runtime. Instead, the values of its member are used directly.
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果枚举以关键字`const`开头，则它在运行时没有表示。相反，直接使用其成员的值。
 - en: '[26.3.1 Const enums at runtime](#const-enums-at-runtime)'
+  id: totrans-160
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.3.1 运行时的const枚举](#const-enums-at-runtime)'
 - en: 'Consider the following const enum:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下const枚举：
 - en: '[PRE32]'
+  id: totrans-162
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: 'If we compile it, the const enum is not represented at runtime. Only the values
     of its members remain:'
+  id: totrans-163
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们编译它，const枚举在运行时不表示。只有其成员的值保留：
 - en: '[PRE33]'
+  id: totrans-164
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: 'Compare that to the compilation output of a normal enum `Vegetable`:'
+  id: totrans-165
   prefs: []
   type: TYPE_NORMAL
+  zh: 将其与正常枚举`Vegetable`的编译输出进行比较：
 - en: '[PRE34]'
+  id: totrans-166
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '[26.3.2 Downsides of const enums](#downsides-of-const-enums)'
+  id: totrans-167
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.3.2 const枚举的缺点](#downsides-of-const-enums)'
 - en: 'For most projects, it is better to avoid const enums:'
+  id: totrans-168
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于大多数项目，最好避免使用const枚举：
 - en: Similarly to normal enums, they are not allowed if the compiler option [`erasableSyntaxOnly`](ch_tsconfig-json.html#erasableSyntaxOnly)
     is active.
+  id: totrans-169
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 与正常枚举类似，如果编译器选项`[`erasableSyntaxOnly`](ch_tsconfig-json.html#erasableSyntaxOnly)处于活动状态，则不允许使用它们。
 - en: If a library package exports a const enum, clients won’t be able to use the
     compiler option [`isolatedModules`](ch_tsconfig-json.html#isolatedModules).
+  id: totrans-170
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果一个库包导出一个const枚举，客户端将无法使用编译器选项`[`isolatedModules`](ch_tsconfig-json.html#isolatedModules)。
 - en: Enum values at compile time can differ from enum values at runtime – which can
     lead to surprising bugs.
+  id: totrans-171
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 编译时的枚举值可以与运行时的枚举值不同——这可能导致意外的错误。
 - en: '[The TypeScript handbook](https://www.typescriptlang.org/docs/handbook/enums.html#const-enum-pitfalls)
     describes these and other pitfalls in more detail.'
+  id: totrans-172
   prefs: []
   type: TYPE_NORMAL
+  zh: '[TypeScript手册](https://www.typescriptlang.org/docs/handbook/enums.html#const-enum-pitfalls)更详细地描述了这些和其他陷阱。'
 - en: '[26.4 Enum pattern: enum objects](#enum-pattern-enum-objects)'
+  id: totrans-173
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.4 枚举模式：枚举对象](#enum-pattern-enum-objects)'
 - en: 'It’s time to look at plain JavaScript patterns that we can use instead of enums.
     One common pattern is to define “enum objects” via object literals:'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 是时候看看我们可以用代替枚举的纯JavaScript模式了。一个常见的模式是通过对象字面量定义“枚举对象”：
 - en: '[PRE35]'
+  id: totrans-175
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '[26.4.1 Ways of improving object literals](#ways-of-improving-object-literals)'
+  id: totrans-176
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.1 改进对象字面量的方法](#ways-of-improving-object-literals)'
 - en: 'We have just seen the basic form of enum objects. There are several ways in
     which we can improve that pattern:'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们刚刚看到了枚举对象的基本形式。我们可以通过几种方式改进这个模式：
 - en: Const object via `{} as const`
+  id: totrans-178
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 通过`{} as const`创建常量对象
 - en: Frozen object via `Object.freeze({})`
+  id: totrans-179
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 通过`Object.freeze({})`创建冻结对象
 - en: '`null` prototype via `{__proto__: null}`'
+  id: totrans-180
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '通过`{__proto__: null}`设置`null`原型'
 - en: '#1 is required if we want to derive a type from an enum object. The other two
     improvements are optional. They produce better results but also add visual clutter.'
+  id: totrans-181
   prefs: []
   type: TYPE_NORMAL
+  zh: '#1是必须的，如果我们想从一个枚举对象中推导出类型。其他两个改进是可选的。它们会产生更好的结果，但也会增加视觉上的杂乱。'
 - en: '[26.4.1.1 `as const` object literal: deriving a type for enum values and keys](#as-const-object-literal-deriving-a-type-for-enum-values-and-keys)'
+  id: totrans-182
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.1.1 `as const`对象字面量：为枚举值和键推导类型](#as-const-object-literal-deriving-a-type-for-enum-values-and-keys)'
 - en: 'If we apply `as const` to an object literal, we get more specific property
     values at the type level:'
+  id: totrans-183
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将`as const`应用于对象字面量，我们将在类型级别获得更具体的属性值：
 - en: '[PRE36]'
+  id: totrans-184
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: '**Deriving a type for the property values.** How is that useful? It enables
     us to create a type for the property values of `Tree`:'
+  id: totrans-185
   prefs: []
   type: TYPE_NORMAL
+  zh: '**为属性值推导类型。**这有什么用？它使我们能够为`Tree`的属性值创建类型：'
 - en: '[PRE37]'
+  id: totrans-186
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: Being able to create a type for enum object values will help us with the use
     case “custom type with unique values”.
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: 能够为枚举对象值创建类型将帮助我们处理“具有唯一值的自定义类型”用例。
 - en: 'The helper type `ValueOf` looks like this:'
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 辅助类型`ValueOf`看起来是这样的：
 - en: '[PRE38]'
+  id: totrans-189
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: The [*indexed access type* `Obj[K]`](ch_computing-with-types-overview.html#indexed-access-types)
     contains the values of all properties whose keys are in `K`.
+  id: totrans-190
   prefs: []
   type: TYPE_NORMAL
+  zh: '[*索引访问类型* `Obj[K]`](ch_computing-with-types-overview.html#indexed-access-types)
+    包含所有键在`K`中的属性的值。'
 - en: '**Deriving a type for the property keys.** We can also derive a type for the
     keys of `Tree`. But for that, we don’t need `as const`:'
+  id: totrans-191
   prefs: []
   type: TYPE_NORMAL
+  zh: '**为属性键推导类型。**我们还可以为`Tree`的键推导类型。但为此，我们不需要`as const`：'
 - en: '[PRE39]'
+  id: totrans-192
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: '[26.4.1.2 Frozen object literal: no modifications at runtime](#frozen-object-literal-no-modifications-at-runtime)'
+  id: totrans-193
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.1.2 冻结对象字面量：运行时无修改](#frozen-object-literal-no-modifications-at-runtime)'
 - en: 'At the JavaScript level, we can freeze objects:'
+  id: totrans-194
   prefs: []
   type: TYPE_NORMAL
+  zh: 在JavaScript级别上，我们可以冻结对象：
 - en: '[PRE40]'
+  id: totrans-195
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: 'That helps us at runtime because `TreeFrozen` can’t be changed:'
+  id: totrans-196
   prefs: []
   type: TYPE_NORMAL
+  zh: 这有助于我们在运行时，因为`TreeFrozen`不能被改变：
 - en: '[PRE41]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'At the type level, `Object.freeze()` has the same effect as `as const`:'
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 在类型级别上，`Object.freeze()`与`as const`具有相同的效果：
 - en: '[PRE42]'
+  id: totrans-199
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: '[26.4.1.3 Object literal with `null` prototype: no inherited properties](#object-literal-with-null-prototype-no-inherited-properties)'
+  id: totrans-200
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.1.3 具有`null`原型的对象字面量：无继承属性](#object-literal-with-null-prototype-no-inherited-properties)'
 - en: 'We can use the pseudo property key `__proto__` to set the prototype of `constants`
     to `null`. That is a good practice because then we don’t have to deal with inherited
     properties:'
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用伪属性键`__proto__`将`constants`的原型设置为`null`。这是一个好习惯，因为这样我们就不必处理继承属性：
 - en: 'Consider the following two versions of `Tree`:'
+  id: totrans-202
   prefs: []
   type: TYPE_NORMAL
+  zh: 考虑以下两个版本的`Tree`：
 - en: '[PRE43]'
+  id: totrans-203
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: 'We can’t use the `in` operator to check if the enum `Tree` has a given key
     because it also considers inherited properties – which are not enum members:'
+  id: totrans-204
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们不能使用`in`运算符来检查枚举`Tree`是否具有给定的键，因为它还考虑了继承属性——这些属性不是枚举成员：
 - en: '[PRE44]'
+  id: totrans-205
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: 'We can also read inherited properties and that looks like as if the enum `Tree`
     has more members than it does:'
+  id: totrans-206
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以读取继承属性，这看起来就像枚举`Tree`有比实际更多的成员：
 - en: '[PRE45]'
+  id: totrans-207
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'However, `Object.keys()` and `Object.values()` are safe to use – they only
     consider own (non-inherited) properties:'
+  id: totrans-208
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，`Object.keys()`和`Object.values()`是安全的，因为它们只考虑自己的（非继承的）属性：
 - en: '[PRE46]'
+  id: totrans-209
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: '[26.4.1.4 Isn’t `__proto__` deprecated?](#isn-t-proto-deprecated)'
+  id: totrans-210
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.1.4 `__proto__`不是已经被弃用了吗？](#isn-t-proto-deprecated)'
 - en: Note that `__proto__` also exists as a getter and a setter in `Object.prototype`.
     This feature is deprecated in favor of `Object.getPrototypeOf()` and `Object.setPrototypeOf()`.
     However, that is different from using this name in an object literal – which is
     not deprecated.
+  id: totrans-211
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，`__proto__`也存在于`Object.prototype`中，作为一个getter和setter。这个特性已被弃用，转而使用`Object.getPrototypeOf()`和`Object.setPrototypeOf()`。然而，这与在对象字面量中使用此名称是不同的——它没有被弃用。
 - en: 'For more information, check out these sections of “Exploring JavaScript”:'
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息，请参阅“探索JavaScript”的以下部分：
 - en: '[“The pitfalls of using an object as a dictionary”](https://exploringjs.com/js/book/ch_objects.html#the-pitfalls-of-using-an-object-as-a-dictionary)'
+  id: totrans-213
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“使用对象作为字典的陷阱”](https://exploringjs.com/js/book/ch_objects.html#the-pitfalls-of-using-an-object-as-a-dictionary)'
 - en: '[“Tips for working with prototypes”](https://exploringjs.com/js/book/ch_objects.html#tips-for-working-with-prototypes)'
+  id: totrans-214
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“与原型一起工作的技巧”](https://exploringjs.com/js/book/ch_objects.html#tips-for-working-with-prototypes)'
 - en: '[“`Object.prototype.__proto__` (accessor)”](https://exploringjs.com/js/book/ch_classes.html#Object.prototype.__proto__)'
+  id: totrans-215
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“`Object.prototype.__proto__` (访问器)”](https://exploringjs.com/js/book/ch_classes.html#Object.prototype.__proto__)'
 - en: '[26.4.1.5 Caveat of `{__proto__}`: additional property at type level](#caveat-of-proto-additional-property-at-type-level)'
+  id: totrans-216
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.1.5 `{__proto__}`的注意事项：类型级别的额外属性](#caveat-of-proto-additional-property-at-type-level)'
 - en: 'If an object literal uses `.__proto__` then TypeScript includes that property
     at the type level:'
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果一个对象字面量使用`.__proto__`，那么TypeScript会在类型级别包含该属性：
 - en: '[PRE47]'
+  id: totrans-218
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: I’d prefer that weren’t the case – given that `.__proto__` is not a real property
     ([related GitHub issue](https://github.com/microsoft/TypeScript/issues/38385)).
+  id: totrans-219
   prefs: []
   type: TYPE_NORMAL
+  zh: 我希望情况不是这样——鉴于`.__proto__`不是一个真正的属性（[相关GitHub问题](https://github.com/microsoft/TypeScript/issues/38385)）。
 - en: 'As a consequence, we have to manually exclude the key `''__proto__''` when
     deriving a type from `TreeProtoNull` via `ValueOf` (line A):'
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为结果，我们必须手动排除`TreeProtoNull`通过`ValueOf`（行A）推导类型时的键`'__proto__'`。
 - en: '[PRE48]'
+  id: totrans-221
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: Another workaround is to create a helper function for creating enums that sets
     the prototype to null at runtime but doesn’t use expose `.__proto__` at the type
     level. We’ll do that next.
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一种解决方案是创建一个辅助函数来创建枚举，该函数在运行时将原型设置为`null`，但在类型级别上不暴露`.__proto__`。我们将在下一节中这样做。
 - en: '[26.4.2 A helper function for creating enum objects](#a-helper-function-for-creating-enum-objects)'
+  id: totrans-223
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.2 创建枚举对象的辅助函数](#a-helper-function-for-creating-enum-objects)'
 - en: 'This is what the enum object pattern looks like if we use all of the improvements
     mentioned in the previous subsections:'
+  id: totrans-224
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是我们使用前一小节中提到的所有改进后的枚举对象模式的样子：
 - en: '[PRE49]'
+  id: totrans-225
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: Note that we don’t need `as const` because `Object.freeze()` has the same effect.
+  id: totrans-226
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，我们不需要`as const`，因为`Object.freeze()`具有相同的效果。
 - en: 'A helper function can make this code slightly less verbose. The result has
     a type with specific property value types, from which we can derive a type for
     `Tree`:'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个辅助函数可以使这段代码稍微不那么冗长。结果有一个具有特定属性值类型的类型，我们可以从中推导出`Tree`的类型：
 - en: '[PRE50]'
+  id: totrans-228
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: 'This is the helper function:'
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是辅助函数：
 - en: '[PRE51]'
+  id: totrans-230
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: '[26.4.3 Handling the enum use cases with enum objects](#handling-the-enum-use-cases-with-enum-objects)'
+  id: totrans-231
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.3 使用枚举对象处理枚举用例](#handling-the-enum-use-cases-with-enum-objects)'
 - en: '[26.4.3.1 Use case: namespace for constants with primitive values](#use-case-namespace-for-constants-with-primitive-values-1)'
+  id: totrans-232
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.3.1 用例：具有原始值常量的命名空间](#use-case-namespace-for-constants-with-primitive-values-1)'
 - en: 'For this use case, an object literal is a very good alternative:'
+  id: totrans-233
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于这个用例，一个对象字面量是一个非常好的替代方案：
 - en: '[PRE52]'
+  id: totrans-234
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: We can use a `null` prototype and freezing but they are not required in this
     case.
+  id: totrans-235
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用`null`原型和冻结，但在这个情况下它们不是必需的。
 - en: '[26.4.3.2 Use case: custom type with unique values](#use-case-custom-type-with-unique-values-1)'
+  id: totrans-236
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.3.2 用例：具有唯一值的自定义类型](#use-case-custom-type-with-unique-values-1)'
 - en: 'Let’s use an object literal to define the value part of an enum (we’ll get
     to the type part next):'
+  id: totrans-237
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们使用对象字面量来定义枚举的值部分（我们将在下一部分讨论类型部分）：
 - en: '[PRE53]'
+  id: totrans-238
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: 'Thanks to `as const` in line A, we can derive a type from `Status`:'
+  id: totrans-239
   prefs: []
   type: TYPE_NORMAL
+  zh: 多亏了行A中的`as const`，我们可以从`Status`推导出一个类型：
 - en: '[PRE54]'
+  id: totrans-240
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: The utility type `ValueOf` was defined [previously](#enums-ValueOf).
+  id: totrans-241
   prefs: []
   type: TYPE_NORMAL
+  zh: 实用类型`ValueOf`是在[之前](#enums-ValueOf)定义的。
 - en: 'Why is this type called `StatusType` and not `Status`? Since the namespaces
     of values and types are separate in TypeScript, we could indeed use the same name.
     However, I’ve had issues when using Visual Studio Code to rename value and type:
     You can’t do both at the same time and VSC gets confused because importing `Status`
     imports both value and type.'
+  id: totrans-242
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么这个类型叫`StatusType`而不是`Status`？由于TypeScript中值和类型的命名空间是分开的，我们确实可以使用相同的名称。然而，我在使用Visual
+    Studio Code重命名值和类型时遇到了问题：你不能同时进行这两项操作，VSC会因此困惑，因为导入`Status`会同时导入值和类型。
 - en: A benefit of using the name `StatusType` and not `TStatus` is that the former
     shows up in auto-completions for `Status`.
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用名称`StatusType`而不是`TStatus`的好处是，前者会在`Status`的自动完成中显示。
 - en: '[26.4.3.3 Exhaustiveness checks](#exhaustiveness-checks-1)'
+  id: totrans-244
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.3.3 穷举性检查](#exhaustiveness-checks-1)'
 - en: 'TypeScript supports exhaustiveness checks for unions of literal types. And
     that’s what `StatusType` is. Therefore, we can use the same pattern as we did
     with enums:'
+  id: totrans-245
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript支持对字面量类型联合的穷举性检查。这正是`StatusType`所做的事情。因此，我们可以使用与枚举相同的模式：
 - en: '[PRE55]'
+  id: totrans-246
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: Note that in line A, the type of `status` is `StatusType`, not `Status` (which
     is a value).
+  id: totrans-247
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，在行 A 中，`status` 的类型是 `StatusType`，而不是 `Status`（它是一个值）。
 - en: '[26.4.4 Using the members of enum objects at the type level](#using-the-members-of-enum-objects-at-the-type-level)'
+  id: totrans-248
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.4 在类型级别使用枚举对象的成员](#using-the-members-of-enum-objects-at-the-type-level)'
 - en: 'An enum defines a value, a type and types for members. For enum objects, we
     have to create the latter two manually. We have already derived a type from an
     enum object. How about the types for members? Consider the following enum object:'
+  id: totrans-249
   prefs: []
   type: TYPE_NORMAL
+  zh: 枚举定义了一个值、一个类型以及成员的类型。对于枚举对象，我们必须手动创建后两者。我们已经从一个枚举对象中推导出了一个类型。那么成员的类型呢？考虑以下枚举对象：
 - en: '[PRE56]'
+  id: totrans-250
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE56]'
 - en: 'The members `ShapeKind.Circle` and `ShapeKind.Rectangle` only exist as values,
     not as types:'
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: 成员 `ShapeKind.Circle` 和 `ShapeKind.Rectangle` 只作为值存在，而不是作为类型：
 - en: '[PRE57]'
+  id: totrans-252
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE57]'
 - en: 'Therefore, if we want to use those values at the type level, we have to apply
     `typeof` to them (line A and line B):'
+  id: totrans-253
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，如果我们想在类型级别使用这些值，我们必须对它们应用 `typeof`（行 A 和行 B）：
 - en: '[PRE58]'
+  id: totrans-254
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE58]'
 - en: '[26.4.5 Symbols as property values](#enum-object-with-symbols)'
+  id: totrans-255
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.5 符号作为属性值](#enum-object-with-symbols)'
 - en: 'One downside of using strings as the property values of an enum object is that
     they are not unique: A derived type accepts both the property values and strings
     created via string literals (if they are equal to them). We can get more type
     safety if we use symbols:'
+  id: totrans-256
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用字符串作为枚举对象的属性值的一个缺点是它们不是唯一的：派生类型接受属性值和通过字符串字面量创建的字符串（如果它们相等的话）。如果我们使用符号，我们可以获得更多的类型安全性：
 - en: '[PRE59]'
+  id: totrans-257
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE59]'
 - en: The utility type `ValueOf` was defined [previously](#enums-ValueOf).
+  id: totrans-258
   prefs: []
   type: TYPE_NORMAL
+  zh: 实用类型 `ValueOf` 之前已经定义过 [此处](#enums-ValueOf)。
 - en: 'This seems overly complicated: Why the intermediate step of first declaring
     variables for the symbols before using them? Why not create the symbols inside
     the object literal? Alas, that’s a current limitation of symbols in `as const`
     objects – they don’t produce unique types ([related GitHub issue](https://github.com/microsoft/TypeScript/issues/54100)):'
+  id: totrans-259
   prefs: []
   type: TYPE_NORMAL
+  zh: 这似乎过于复杂：为什么在使用之前先声明符号的变量？为什么不直接在对象字面量中创建符号？唉，这是 `as const` 对象中符号的当前限制——它们不会产生唯一类型（[相关
+    GitHub 问题](https://github.com/microsoft/TypeScript/issues/54100)）：
 - en: '[PRE60]'
+  id: totrans-260
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE60]'
 - en: '[26.4.6 Use case: an enum as a namespace for constants with object values](#use-case-an-enum-as-a-namespace-for-constants-with-object-values)'
+  id: totrans-261
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.4.6 使用枚举作为具有对象值的常量的命名空间](#use-case-an-enum-as-a-namespace-for-constants-with-object-values)'
 - en: 'Sometimes, it’s useful to have an enum-like construct for looking up richer
     data – stored in objects. That’s something enums can’t do, but it is possible
     via enum objects:'
+  id: totrans-262
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，有一个类似于枚举的结构来查找更丰富的数据是有用的——存储在对象中。这是枚举无法做到的，但通过枚举对象是可能的：
 - en: '[PRE61]'
+  id: totrans-263
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE61]'
 - en: Because each property value of `TextStyle` has the property `.key` with a unique
     value, `TextStyleType` is a [discriminated union](ch_unions-object-types.html#discriminated-unions).
+  id: totrans-264
   prefs: []
   type: TYPE_NORMAL
+  zh: 因为 `TextStyle` 的每个属性值都有具有唯一值的 `.key` 属性，所以 `TextStyleType` 是一个 [区分联合](ch_unions-object-types.html#discriminated-unions)。
 - en: '[26.4.6.1 Exhaustiveness check](#exhaustiveness-check)'
+  id: totrans-265
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.4.6.1 完备性检查](#exhaustiveness-check)'
 - en: 'Due to `TextStyleType` being a discriminated union, we can do an exhaustiveness
     check:'
+  id: totrans-266
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于 `TextStyleType` 是一个区分联合，我们可以进行完备性检查：
 - en: '[PRE62]'
+  id: totrans-267
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE62]'
 - en: In the `default` case, after we have checked all values that `textStyle.key`
     can have, `textStyle` itself has the type `never`.
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 `default` 情况下，在我们检查了 `textStyle.key` 可以有的所有值之后，`textStyle` 本身具有 `never` 类型。
 - en: '[26.5 Enum pattern: enum classes](#enum-pattern-enum-classes)'
+  id: totrans-269
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.5 枚举模式：枚举类](#enum-pattern-enum-classes)'
 - en: 'We can also use a class as an enum – a pattern that is borrowed from Java:'
+  id: totrans-270
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们还可以使用类作为枚举——这是从 Java 借用的一个模式：
 - en: '[PRE63]'
+  id: totrans-271
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE63]'
 - en: 'We can create a type with the static properties of `TextStyle`:'
+  id: totrans-272
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以创建一个具有 `TextStyle` 静态属性的类型：
 - en: '[PRE64]'
+  id: totrans-273
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE64]'
 - en: 'An upside of enum classes is that we can use methods to add behavior to enum
     values. A downside is that there is no simple way to get an exhaustiveness check:
     With an `as const` enum object whose property values are objects, we can create
@@ -1058,363 +1615,544 @@
     However, each static property of class `TextStyle` simply has the type `TextStyle`
     (the type of the instances of `TextStyle`) and that prevents us from creating
     a discriminated union.'
+  id: totrans-274
   prefs: []
   type: TYPE_NORMAL
+  zh: 枚举类的优点之一是我们可以使用方法为枚举值添加行为。缺点是没有任何简单的方法来进行完备性检查：对于具有对象属性值的 `as const` 枚举对象，我们可以创建一个关联的区分联合类型——在那里我们可以检查完备性。然而，类
+    `TextStyle` 的每个静态属性只是具有 `TextStyle` 类型（`TextStyle` 实例的类型）并且这阻止了我们创建区分联合。
 - en: '`Object.keys()` and `Object.values()` ignore non-enumerable properties of `TextStyle`
     such as `.prototype` – which is why we can use them to enumerate keys and values
     – e.g.:'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Object.keys()`和`Object.values()`会忽略`TextStyle`的非可枚举属性，例如`.prototype` – 这就是为什么我们可以使用它们来枚举键和值
+    – 例如：'
 - en: '[PRE65]'
+  id: totrans-276
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE65]'
 - en: '[26.6 Enum pattern: string literal unions](#enum-pattern-string-literal-unions)'
+  id: totrans-277
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.6 枚举模式：字符串字面量联合](#enum-pattern-string-literal-unions)'
 - en: 'A union of string literal types is an interesting alternative to an enum when
     it comes to defining a type with a fixed set of members:'
+  id: totrans-278
   prefs: []
   type: TYPE_NORMAL
+  zh: 当涉及到定义具有固定成员集的类型时，字符串字面量联合是枚举的一个有趣替代品：
 - en: '[PRE66]'
+  id: totrans-279
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE66]'
 - en: What are the pros and cons of this pattern?
+  id: totrans-280
   prefs: []
   type: TYPE_NORMAL
+  zh: 这个模式的优缺点是什么？
 - en: 'Pros:'
+  id: totrans-281
   prefs: []
   type: TYPE_NORMAL
+  zh: 优点：
 - en: It’s a concise and simple solution.
+  id: totrans-282
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这是一个简洁且简单的解决方案。
 - en: It supports exhaustiveness checks.
+  id: totrans-283
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它支持详尽性检查。
 - en: Renaming members works reasonably well in Visual Studio Code.
+  id: totrans-284
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在Visual Studio Code中重命名成员效果相当好。
 - en: 'Cons:'
+  id: totrans-285
   prefs: []
   type: TYPE_NORMAL
+  zh: 缺点：
 - en: The type members are not unique. We could change that by using symbols but then
     we’d lose much of the convenience of string literal union types – e.g., we’d have
     to import the values.
+  id: totrans-286
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型成员不是唯一的。我们可以通过使用符号来改变这一点，但这样我们会失去许多字符串字面量联合类型的便利性 – 例如，我们不得不导入值。
 - en: We can’t use JSDoc comments for the elements of the union. That means we can’t
     `@deprecate` them either.
+  id: totrans-287
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们不能为联合的元素使用JSDoc注释。这意味着我们也不能`@deprecate`它们。
 - en: '[26.6.1 Reifying string literal unions](#reifying-string-literal-unions)'
+  id: totrans-288
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.6.1 将字符串字面量联合具体化](#reifying-string-literal-unions)'
 - en: '*Reification* means creating an entity at the object level (think JavaScript
     values) for an entity that exists at the meta level (think TypeScript types).
     We need to do that for string literal unions if, e.g., we want to iterate over
     their elements (which don’t exist at runtime). Other enum patterns support that
     out of the box.'
+  id: totrans-289
   prefs: []
   type: TYPE_NORMAL
+  zh: '*具体化*意味着在对象级别（想想JavaScript值）为在元级别（想想TypeScript类型）存在的实体创建一个实体。如果我们想迭代它们的元素（这些元素在运行时不存在），我们就需要这样做。其他枚举模式默认支持这一点。'
 - en: '[26.6.1.1 Deriving a string literal union from a Set](#deriving-a-string-literal-union-from-a-set)'
+  id: totrans-290
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.6.1.1 从集合推导字符串字面量联合](#deriving-a-string-literal-union-from-a-set)'
 - en: 'We can use a Set to reify a string literal union type:'
+  id: totrans-291
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用集合来具体化字符串字面量联合类型：
 - en: '[PRE67]'
+  id: totrans-292
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE67]'
 - en: '[26.6.1.2 Deriving a string literal union from an Array](#deriving-a-string-literal-union-from-an-array)'
+  id: totrans-293
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.6.1.2 从数组推导字符串字面量联合](#deriving-a-string-literal-union-from-an-array)'
 - en: 'When it comes to reifying a string literal union, a Set is often the best choice
     because we can check at runtime if a given string is a member. However, we can
     also use an Array to do so:'
+  id: totrans-294
   prefs: []
   type: TYPE_NORMAL
+  zh: 当涉及到将字符串字面量联合具体化时，集合通常是最佳选择，因为我们可以在运行时检查给定的字符串是否是成员。然而，我们也可以使用数组来做到这一点：
 - en: '[PRE68]'
+  id: totrans-295
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE68]'
 - en: '[26.7 More things we can do with enums](#more-things-we-can-do-with-enums)'
+  id: totrans-296
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.7 我们可以用枚举做更多的事情](#more-things-we-can-do-with-enums)'
 - en: In this section, we explore more things we can do with enums. We’ll mostly use
     enum objects but enums and other enum patterns will also be mentioned occasionally.
+  id: totrans-297
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本节中，我们探讨我们可以用枚举做更多的事情。我们将主要使用枚举对象，但偶尔也会提到枚举和其他枚举模式。
 - en: '[26.7.1 Enum values as keys in Maps](#enum-values-as-keys-in-maps)'
+  id: totrans-298
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.7.1 枚举值作为Map中的键](#enum-values-as-keys-in-maps)'
 - en: 'Sometimes we want use enum values to look up other values. Let’s explore how
     that works for the following enum object:'
+  id: totrans-299
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时我们希望使用枚举值来查找其他值。让我们探索以下枚举对象是如何工作的：
 - en: '[PRE69]'
+  id: totrans-300
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE69]'
 - en: The utility type `ValueOf` was defined [previously](#enums-ValueOf).
+  id: totrans-301
   prefs: []
   type: TYPE_NORMAL
+  zh: 实用类型`ValueOf`是在[之前](#enums-ValueOf)定义的。
 - en: 'The following Map uses the values of `Status` as keys:'
+  id: totrans-302
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下地图使用`Status`的值作为键：
 - en: '[PRE70]'
+  id: totrans-303
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE70]'
 - en: 'If you are wondering why we didn’t directly use the value of `statusPairs`
     as the argument of `new Map()` and omit the type parameters: TypeScript isn’t
     able to infer the type parameters if the keys are symbols and reports a compile-time
     error. With strings, the code would be simpler:'
+  id: totrans-304
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你想知道为什么我们没有直接使用`statusPairs`的值作为`new Map()`的参数并省略类型参数：TypeScript无法推断键为符号时的类型参数，并报告编译时错误。使用字符串时，代码会更简单：
 - en: '[PRE71]'
+  id: totrans-305
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE71]'
 - en: 'As a final step, check manually if we used all enum values:'
+  id: totrans-306
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为最后一步，手动检查我们是否使用了所有枚举值：
 - en: '[PRE72]'
+  id: totrans-307
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE72]'
 - en: In line A, we extract the type of the keys from `statusMap` and demand that
     it be equal to `StatusType`.
+  id: totrans-308
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行A中，我们从`statusMap`中提取键的类型，并要求它等于`StatusType`。
 - en: '[26.7.1.1 Exhaustiveness checks via `Record`](#exhaustiveness-checks-via-record)'
+  id: totrans-309
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.7.1.1 通过`Record`进行详尽性检查](#exhaustiveness-checks-via-record)'
 - en: 'TypeScript can check if a union type is used exhaustively if we use `Record`:'
+  id: totrans-310
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用`Record`，TypeScript可以检查联合类型是否被详尽使用。
 - en: '[PRE73]'
+  id: totrans-311
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE73]'
 - en: 'However, such a union type can only have elements that are subtypes of `string`,
     `number` or `symbol`. That means that `Record` works well for unions of string
     literal types:'
+  id: totrans-312
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，这种联合类型只能包含 `string`、`number` 或 `symbol` 的子类型元素。这意味着 `Record` 对于字符串字面量类型的联合工作得很好：
 - en: '[PRE74]'
+  id: totrans-313
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE74]'
 - en: '[26.7.2 Mapping between keys (strings) of enum members and their values](#mapping-between-keys-strings-of-enum-members-and-their-values)'
+  id: totrans-314
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.7.2 枚举成员键（字符串）与值之间的映射](#mapping-between-keys-strings-of-enum-members-and-their-values)'
 - en: Sometimes it’s useful to map enum keys to values or vice versa. One important
     use case for that is deserializing enums of symbols or objects from JSON and serializing
     them to JSON.
+  id: totrans-315
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时将枚举键映射到值或反之亦然很有用。这种用法的一个重要用例是从 JSON 中反序列化符号或对象的枚举并将其序列化为 JSON。
 - en: '[PRE75]'
+  id: totrans-316
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE75]'
 - en: '[26.7.2.1 From enum key to enum value](#from-enum-key-to-enum-value)'
+  id: totrans-317
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.7.2.1 从枚举键到枚举值](#from-enum-key-to-enum-value)'
 - en: 'One use case for mapping from the key of an enum member to its value, is parsing
     JSON data:'
+  id: totrans-318
   prefs: []
   type: TYPE_NORMAL
+  zh: 将枚举成员的键映射到其值的一个用例是解析 JSON 数据：
 - en: '[PRE76]'
+  id: totrans-319
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE76]'
 - en: It is possible to make both the type of `enumKey` and the return type more specific
     (see next subsection) but then we couldn’t parse values of type `string` anymore.
+  id: totrans-320
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使 `enumKey` 的类型和返回类型都更具体（见下一小节），但那时我们再也不能解析 `string` 类型的值了。
 - en: '[26.7.2.2 From enum value to enum key](#from-enum-value-to-enum-key)'
+  id: totrans-321
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.7.2.2 从枚举值到枚举键](#from-enum-value-to-enum-key)'
 - en: 'One use case for mapping from the value of an enum member to its key, is creating
     JSON data:'
+  id: totrans-322
   prefs: []
   type: TYPE_NORMAL
+  zh: 将枚举成员的值映射到其键的一个用例是创建 JSON 数据：
 - en: '[PRE77]'
+  id: totrans-323
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE77]'
 - en: '[26.7.3 Iterating over enum members](#iterating-over-enum-members)'
+  id: totrans-324
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.7.3 遍历枚举成员](#iterating-over-enum-members)'
 - en: One use case for iterating over enum members is creating a user interface that
     lists options collected in an enum. Which enum patterns do support iteration?
+  id: totrans-325
   prefs: []
   type: TYPE_NORMAL
+  zh: 遍历枚举成员的一个用例是创建一个列出枚举中收集的选项的用户界面。哪些枚举模式支持迭代？
 - en: We can only iterate over string enums – due to enums with number members having
     reverse mappings.
+  id: totrans-326
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们只能遍历字符串枚举——因为具有数字成员的枚举具有反向映射。
 - en: For an enum object `enumObj`, we can use `Object.keys(enumObj)` and `Object.values(enumObj)`.
+  id: totrans-327
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于枚举对象 `enumObj`，我们可以使用 `Object.keys(enumObj)` 和 `Object.values(enumObj)`。
 - en: For an enum class `enumClass`, we can use `Object.keys(enumClass)` and `Object.values(enumClass)`.
     The own property `enumClass.prototype` is not enumerable and therefore ignored
     by both methods.
+  id: totrans-328
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于枚举类 `enumClass`，我们可以使用 `Object.keys(enumClass)` 和 `Object.values(enumClass)`。枚举类的自有属性
+    `enumClass.prototype` 不可枚举，因此这两种方法都会忽略它。
 - en: If we want to iterate over the values of a string literal union, we have to
     [reify it via a Set or an Array](#reifying-string-literal-unions).
+  id: totrans-329
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果我们要遍历字符串字面量联合的值，我们必须通过 Set 或 Array 来[具体化它](#reifying-string-literal-unions)。
 - en: '[26.7.4 Specifying bit vectors](#specifying-bit-vectors)'
+  id: totrans-330
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.7.4 指定位向量](#specifying-bit-vectors)'
 - en: One use case for enums is specifying bit vectors (multiple independent bit flags).
+  id: totrans-331
   prefs: []
   type: TYPE_NORMAL
+  zh: 枚举的一个用例是指定位向量（多个独立的位标志）。
 - en: '[26.7.4.1 Specifying bit vectors via bit masks](#specifying-bit-vectors-via-bit-masks)'
+  id: totrans-332
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.7.4.1 通过位掩码指定位向量](#specifying-bit-vectors-via-bit-masks)'
 - en: 'The traditional way of specifying bit vectors is via bit masks:'
+  id: totrans-333
   prefs: []
   type: TYPE_NORMAL
+  zh: 指定位向量的传统方式是通过位掩码：
 - en: '[PRE78]'
+  id: totrans-334
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE78]'
 - en: For more information on this kind of bit manipulation, see section [“Bitwise
     operators”](https://exploringjs.com/js/book/ch_numbers.html#bitwise-operators)
     in “Exploring JavaScript”.
+  id: totrans-335
   prefs: []
   type: TYPE_NORMAL
+  zh: 关于此类位操作的更多信息，请参阅“探索 JavaScript”中的[“位运算符”](https://exploringjs.com/js/book/ch_numbers.html#bitwise-operators)部分。
 - en: '[26.7.4.2 Specifying bit vectors via Sets](#specifying-bit-vectors-via-sets)'
+  id: totrans-336
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[26.7.4.2 通过 Set 指定位向量](#specifying-bit-vectors-via-sets)'
 - en: Another option for specifying bit vectors is via Sets. I often prefer that option.
+  id: totrans-337
   prefs: []
   type: TYPE_NORMAL
+  zh: 指定位向量的另一种选项是通过 Set。我通常更喜欢这个选项。
 - en: '[PRE79]'
+  id: totrans-338
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE79]'
 - en: '[26.7.5 Type validation for enums via Zod](#type-validation-for-enums-via-zod)'
+  id: totrans-339
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[26.7.5 通过 Zod 对枚举进行类型验证](#type-validation-for-enums-via-zod)'
 - en: '[Zod](https://zod.dev/) is a tool for *validating* parsed data (often JSON)
     – checking if the runtime data matches an expected type. That increases type safety
     when working with untyped data.'
+  id: totrans-340
   prefs: []
   type: TYPE_NORMAL
+  zh: '[Zod](https://zod.dev/) 是一个用于 *验证* 解析数据的工具（通常是 JSON）——检查运行时数据是否与预期的类型匹配。这在使用无类型数据时增加了类型安全性。'
 - en: Zod also supports enums, but the recommendation is to use string literal unions.
     They have to be defined via Arrays of strings because Zod needs data that it can
     use at runtime.
+  id: totrans-341
   prefs: []
   type: TYPE_NORMAL
+  zh: Zod 也支持枚举，但建议使用字符串字面量联合。它们必须通过字符串数组定义，因为 Zod 需要它在运行时可以使用的数据。
 - en: '[PRE80]'
+  id: totrans-342
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE80]'
 - en: '[26.8 Recommendations](#recommendations)'
+  id: totrans-343
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[26.8 建议](#recommendations)'
 - en: How should we choose between enums and various enum patterns?
+  id: totrans-344
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们应该如何在枚举和各种枚举模式之间进行选择？
 - en: 'Let’s go through the use cases:'
+  id: totrans-345
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们来看看用例：
 - en: 'Namespace for constants with primitive values:'
+  id: totrans-346
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 带有原始值的常量的命名空间：
 - en: For this use case, enum objects are the best choice.
+  id: totrans-347
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于这个用例，枚举对象是最好的选择。
 - en: We can also use enums, as long as the primitive values are strings or numbers.
+  id: totrans-348
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只要原始值是字符串或数字，我们也可以使用枚举。
 - en: 'Custom type with unique values:'
+  id: totrans-349
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 具有唯一值的自定义类型：
 - en: I like enum objects with symbols for this use case. However, they are slightly
     verbose.
+  id: totrans-350
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我喜欢为这种用途使用带有符号的枚举对象。然而，它们稍微有点冗长。
 - en: One more lightweight alternative are string literal unions.
+  id: totrans-351
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 另一个轻量级的替代方案是字符串字面量联合。
 - en: Enums are also an option but it should be string enums because those are more
     type safe and logging their values (e.g. for debugging) works better.
+  id: totrans-352
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 枚举也是一个选项，但应该是字符串枚举，因为它们更安全，并且记录它们的值（例如，用于调试）效果更好。
 - en: 'Namespace for constants with object values:'
+  id: totrans-353
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 带有对象值的常量命名空间：
 - en: Use an enum object if you want exhaustiveness checks.
+  id: totrans-354
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果你想进行详尽的检查，请使用枚举对象。
 - en: Use an enum class if you want enum values to have methods.
+  id: totrans-355
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果你希望枚举值具有方法，请使用枚举类。
 - en: We can’t use enums for this use case.
+  id: totrans-356
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们不能为这个用例使用枚举。
 - en: 'Various considerations:'
+  id: totrans-357
   prefs: []
   type: TYPE_NORMAL
+  zh: 各种考虑因素：
 - en: As mentioned at the beginning of this chapter, with type stripping and `erasableSyntaxOnly`,
     we can’t use enums. Additionally, the code that enums are transpiled to is a bit
     difficult to read – especially if an enum has number members.
+  id: totrans-358
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如本章开头所述，使用类型剥离和 `erasableSyntaxOnly`，我们无法使用枚举。此外，枚举被转换成的代码有点难以阅读——特别是如果枚举有数字成员的话。
 - en: With string literal unions, there is no way to provide JSDoc comments for the
     members – which enables deprecation via `@deprecated`.
+  id: totrans-359
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 使用字符串字面量联合，无法为成员提供 JSDoc 注释——这可以通过 `@deprecated` 实现弃用。
 - en: If enum values are strings then comparing can be slower. However, that should
     only matter if your code does many comparisons.
+  id: totrans-360
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果枚举值是字符串，比较可能会更慢。然而，这只有在你的代码进行许多比较时才重要。
 - en: (I have heard of a TypeScript project where a switch away from strings improved
     performance significantly. Alas, I can’t find the link anymore – tips appreciated!)
+  id: totrans-361
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: （我听说有一个 TypeScript 项目，从字符串切换到其他类型显著提高了性能。遗憾的是，我再也找不到那个链接了——欢迎提供提示！）
 - en: Enums with strings, symbols and objects are easier to work with than those with
     numbers – because you see names when you log enum values.
+  id: totrans-362
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 带有字符串、符号和对象的枚举比带有数字的枚举更容易处理——因为当你记录枚举值时，你会看到名称。

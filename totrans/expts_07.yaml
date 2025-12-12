@@ -1,188 +1,284 @@
 - en: 5 Notation used in this book
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 5 本书使用的符号
 - en: 原文：[https://exploringjs.com/ts/book/ch_book-notation.html](https://exploringjs.com/ts/book/ch_book-notation.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_book-notation.html](https://exploringjs.com/ts/book/ch_book-notation.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[5.1 JavaScript level: `assert.*`](#javascript-level-assert)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[5.1 JavaScript 级别：`assert.*`](#javascript-level-assert)'
 - en: '[5.2 Type level: `assertType<T>(v)`](#notation-assertType)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[5.2 类型级别：`assertType<T>(v)`](#notation-assertType)'
 - en: '[5.3 Type level: `Assert<B>`](#notation-generic-type-Assert)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[5.3 类型级别：`Assert<B>`](#notation-generic-type-Assert)'
 - en: '[5.4 Type level: `@ts-expect-error`](#notation-ts-expect-error)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[5.4 类型级别：`@ts-expect-error`](#notation-ts-expect-error)'
 - en: '[5.5 Isn’t this book’s notation kind of ugly?](#isn-t-this-book-s-notation-kind-of-ugly)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[5.5 这本书的符号是不是有点丑？](#isn-t-this-book-s-notation-kind-of-ugly)'
 - en: 'This chapter explains functionality that is used in the code examples to explain
     results and errors. We have to consider two levels:'
+  id: totrans-8
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章解释了在代码示例中用于解释结果和错误的函数。我们必须考虑两个层次：
 - en: 'JavaScript level: values (e.g. returned by functions) and exceptions'
+  id: totrans-9
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript 级别：值（例如函数返回的值）和异常
 - en: 'Type level: types (e.g. constructed by generic types) and compiler errors'
+  id: totrans-10
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类型级别：类型（例如由泛型类型构造的）和编译器错误
 - en: 'The functions and generic types that help us, have to be imported: The import
     statements to do so are shown in this chapter, but omitted elsewhere in this book.'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 帮助我们的函数和泛型类型必须导入：用于导入的语句在本章中显示，但在本书的其他地方省略。
 - en: '[5.1 JavaScript level: `assert.*`](#javascript-level-assert)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[5.1 JavaScript 级别：`assert.*`](#javascript-level-assert)'
 - en: 'Expected results are checked via the following assertion functions from [the
     Node.js module `node:assert`](https://nodejs.org/api/assert.html):'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 通过以下断言函数检查预期结果，这些函数来自 [Node.js 模块 `node:assert`](https://nodejs.org/api/assert.html)：
 - en: '`assert.equal()` tests equality via `===`'
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`assert.equal()` 通过 `===` 测试相等性。'
 - en: '`assert.deepEqual()` tests equality by deeply comparing nested objects (incl.
     Arrays).'
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`assert.deepEqual()` 通过深度比较嵌套对象（包括数组）来测试相等性。'
 - en: '`assert.throws()` complains if the callback parameter does *not* throw an exception.'
+  id: totrans-16
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`assert.throws()` 如果回调参数没有抛出异常，则会抱怨。'
 - en: 'This is an example of using these assertions:'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是使用这些断言的一个例子：
 - en: '[PRE0]'
+  id: totrans-18
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: In the first line, the specifier of the imported module has the suffix `/strict`.
     That enables [strict assertion mode](https://nodejs.org/api/assert.html#assert_strict_assertion_mode),
     which uses `===` and not `==` for comparisons.
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在第一行，导入模块的指定器有后缀 `/strict`。这启用了 [严格断言模式](https://nodejs.org/api/assert.html#assert_strict_assertion_mode)，该模式使用
+    `===` 而不是 `==` 进行比较。
 - en: '[5.2 Type level: `assertType<T>(v)`](#notation-assertType)'
+  id: totrans-20
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[5.2 类型级别：`assertType<T>(v)`](#notation-assertType)'
 - en: Function `assertType()` is provided by the TypeScript library [`asserttt`](https://github.com/rauschma/asserttt).
+  id: totrans-21
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数 `assertType()` 由 TypeScript 库 `asserttt` 提供。
 - en: 'The function call `assertType<T>(v)` asserts that the (dynamic) value `v` has
     the (static) type `T`:'
+  id: totrans-22
   prefs: []
   type: TYPE_NORMAL
+  zh: 函数调用 `assertType<T>(v)` 断言（动态）值 `v` 具有类型 `T`：
 - en: '[PRE1]'
+  id: totrans-23
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[5.3 Type level: `Assert<B>`](#notation-generic-type-Assert)'
+  id: totrans-24
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[5.3 类型级别：`Assert<B>`](#notation-generic-type-Assert)'
 - en: '`asserttt` also provides the utility type `Assert<B>`, which asserts that the
     type `B` (usually an instantiated generic type) is `true`:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: '`asserttt` 还提供了实用类型 `Assert<B>`，它断言类型 `B`（通常是实例化的泛型类型）为 `true`：'
 - en: '[PRE2]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '`asserttt` has several *predicates* (generic types that construct booleans)
     that we can use with `Assert<>`. In the previous example, we have used:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: '`asserttt` 有几个 *谓词*（可以构造布尔值的泛型类型），我们可以与 `Assert<>` 一起使用。在上一个例子中，我们使用了：'
 - en: '`Equal<T1, T2>`'
+  id: totrans-28
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Equal<T1, T2>`'
 - en: '`Not<B>`'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`Not<B>`'
 - en: '[5.4 Type level: `@ts-expect-error`](#notation-ts-expect-error)'
+  id: totrans-30
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[5.4 类型级别：`@ts-expect-error`](#notation-ts-expect-error)'
 - en: 'In this book, `@ts-expect-error` is used to show TypeScript compiler errors:'
+  id: totrans-31
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本书中，`@ts-expect-error` 用于显示 TypeScript 编译器错误：
 - en: '[PRE3]'
+  id: totrans-32
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: How does TypeScript handle such a directive?
+  id: totrans-33
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 如何处理这样的指令？
 - en: If there is an error in a line after a `@ts-expect-error` comment then that
     error is ignored and compilation succeeds.
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果在 `@ts-expect-error` 注释之后的某一行存在错误，则该错误将被忽略，编译成功。
 - en: 'If there is no error then TypeScript complains:'
+  id: totrans-35
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果没有错误，TypeScript 会抱怨：
 - en: '[PRE4]'
+  id: totrans-36
   prefs:
   - PREF_IND
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'In other words: TypeScript checks that there is an error but not what error
     it is. All text after `@ts-expect-error` is ignored (including the colon).'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说：TypeScript 检查是否存在错误，但不检查错误的具体内容。`@ts-expect-error` 之后的所有文本（包括冒号）都将被忽略。
 - en: To get more thorough checks, I use the tool [`ts-expect-error`](https://www.npmjs.com/package/ts-expect-error)
     which checks if the suppressed error messages match the texts after `@ts-expect-error:`.
+  id: totrans-38
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了进行更彻底的检查，我使用了工具 `ts-expect-error`，该工具检查被抑制的错误消息是否与 `@ts-expect-error:` 之后的文字匹配。
 - en: '[5.5 Isn’t this book’s notation kind of ugly?](#isn-t-this-book-s-notation-kind-of-ugly)'
+  id: totrans-39
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[5.5   这本书的标记法是不是有点丑？](#isn-t-this-book-s-notation-kind-of-ugly)'
 - en: When it comes to displaying type information for TypeScript code, there are
     some very pretty approaches out there – e.g. [Shiki Twoslash](https://shikijs.github.io/twoslash/)
     which uses the [twoslash syntax](https://github.com/microsoft/TypeScript-Website/tree/v2/packages/ts-twoslasher).
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 当涉及到显示 TypeScript 代码的类型信息时，有一些非常漂亮的方法 – 例如 [Shiki Twoslash](https://shikijs.github.io/twoslash/)，它使用了
+    [twoslash 语法](https://github.com/microsoft/TypeScript-Website/tree/v2/packages/ts-twoslasher)。
 - en: This book uses in-code checks (as described above) even though that doesn’t
     look as nice. Why?
+  id: totrans-41
   prefs: []
   type: TYPE_NORMAL
+  zh: 尽管看起来不那么美观，这本书仍然使用代码中的检查（如上所述）。为什么？
 - en: This notation makes you think about types in terms of tests. That prepares you
     for [computed types](ch_computing-with-types-overview.html#ch_computing-with-types-overview)
     and for [coding exercises](ch_resources-on-typescript.html#coding-exercises) –
     whose notation is similar.
+  id: totrans-42
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这种标记法让你从测试的角度思考类型。这为你准备 [计算类型](ch_computing-with-types-overview.html#ch_computing-with-types-overview)
+    和 [编码练习](ch_resources-on-typescript.html#coding-exercises) – 其标记法类似。
 - en: The notation makes it possible to test the code examples automatically, via
     the [Markcheck](https://github.com/rauschma/markcheck) tool for Markdown. That
     ensures that they don’t contain errors. Twoslash only specifies which types to
     display; it does not check that those types are as expected.
+  id: totrans-43
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这种标记法使得可以通过 [Markcheck](https://github.com/rauschma/markcheck) 工具自动测试代码示例，确保它们不包含错误。Twoslash
+    只指定要显示的类型；它并不检查这些类型是否符合预期。
 - en: For printed books, HTML still isn’t where I’d like it to be. Thus, I can’t use
     Shiki Twoslash there.
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于印刷书籍，HTML 仍然不是我希望的样子。因此，我无法在那里使用 Shiki Twoslash。
 - en: 'Minor downside of Shiki Twoslash: You need to run the TypeScript type checker
     in order to render a book. With my notation, I only need to run it when I check
     the code examples.'
+  id: totrans-45
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Shiki Twoslash 的小缺点：你需要运行 TypeScript 类型检查器才能渲染一本书。使用我的标记法，我只有在检查代码示例时才需要运行它。

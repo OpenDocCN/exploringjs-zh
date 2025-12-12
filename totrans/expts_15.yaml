@@ -1,295 +1,437 @@
 - en: 12 Strategies for migrating to TypeScript
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 12 TypeScript 迁移策略
 - en: 原文：[https://exploringjs.com/ts/book/ch_migrating-to-typescript.html](https://exploringjs.com/ts/book/ch_migrating-to-typescript.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_migrating-to-typescript.html](https://exploringjs.com/ts/book/ch_migrating-to-typescript.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[12.1 Strategy: mixed JavaScript/TypeScript code bases](#strategy-mixed-javascript-typescript-code-bases)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[12.1 策略：混合 JavaScript/TypeScript 代码库](#strategy-mixed-javascript-typescript-code-bases)'
 - en: '[12.2 Strategy: adding type information to plain JavaScript files](#strategy-adding-type-information-to-plain-javascript-files)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[12.2 策略：向纯 JavaScript 文件添加类型信息](#strategy-adding-type-information-to-plain-javascript-files)'
 - en: '[12.3 Strategy: linting before activating a compiler option](#strategy-linting-before-activating-a-compiler-option)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[12.3 策略：在激活编译器选项之前进行代码检查](#strategy-linting-before-activating-a-compiler-option)'
 - en: '[12.4 Strategy: Too many errors? Use snapshot testing](#strategy-too-many-errors-use-snapshot-testing)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[12.4 策略：错误太多？使用快照测试](#strategy-too-many-errors-use-snapshot-testing)'
 - en: '[12.5 Tools that help with migrating to TypeScript](#tools-that-help-with-migrating-to-typescript)'
+  id: totrans-7
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[12.5 帮助迁移到 TypeScript 的工具](#tools-that-help-with-migrating-to-typescript)'
 - en: '[12.6 Conclusion and further reading](#conclusion-and-further-reading)'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[12.6 结论和进一步阅读](#conclusion-and-further-reading)'
 - en: This chapter gives an overview of strategies for migrating code bases from JavaScript
     to TypeScript. It also mentions material for further reading.
+  id: totrans-9
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章概述了将代码库从 JavaScript 迁移到 TypeScript 的策略，并提到了进一步阅读的材料。
 - en: '[12.1 Strategy: mixed JavaScript/TypeScript code bases](#strategy-mixed-javascript-typescript-code-bases)'
+  id: totrans-10
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[12.1 策略：混合 JavaScript/TypeScript 代码库](#strategy-mixed-javascript-typescript-code-bases)'
 - en: 'The TypeScript compiler supports a mix of JavaScript and TypeScript files if
     we use the compiler option `--allowJs`:'
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用编译器选项 `--allowJs`，TypeScript 编译器支持 JavaScript 和 TypeScript 文件的混合：
 - en: TypeScript files are compiled.
+  id: totrans-12
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 文件被编译。
 - en: JavaScript files are simply copied over to the output directory (after a few
     simple type checks).
+  id: totrans-13
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JavaScript 文件简单地复制到输出目录（经过一些简单的类型检查后）。
 - en: At first, there are only JavaScript files. Then, one by one, we switch files
     to TypeScript. While we do so, our code base keeps being compiled.
+  id: totrans-14
   prefs: []
   type: TYPE_NORMAL
+  zh: 起初，只有 JavaScript 文件。然后，一个接一个地，我们将文件转换为 TypeScript。在此过程中，我们的代码库持续被编译。
 - en: 'This is what `tsconfig.json` looks like:'
+  id: totrans-15
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是 `tsconfig.json` 的样子：
 - en: '[PRE0]'
+  id: totrans-16
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: '**More information:**'
+  id: totrans-17
   prefs: []
   type: TYPE_NORMAL
+  zh: '**更多信息：**'
 - en: '[“Incrementally Migrating JavaScript to TypeScript”](https://medium.com/@clayallsopp/incrementally-migrating-javascript-to-typescript-565020e49c88)
     by [Clay Allsopp](https://twitter.com/clayallsopp).'
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“逐步将 JavaScript 迁移到 TypeScript”](https://medium.com/@clayallsopp/incrementally-migrating-javascript-to-typescript-565020e49c88)
+    by [Clay Allsopp](https://twitter.com/clayallsopp).'
 - en: '[12.2 Strategy: adding type information to plain JavaScript files](#strategy-adding-type-information-to-plain-javascript-files)'
+  id: totrans-19
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[12.2 策略：向纯 JavaScript 文件添加类型信息](#strategy-adding-type-information-to-plain-javascript-files)'
 - en: 'This approach works as follows:'
+  id: totrans-20
   prefs: []
   type: TYPE_NORMAL
+  zh: 此方法如下操作：
 - en: We continue to use our current build infrastructure.
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们继续使用当前的构建基础设施。
 - en: We run the TypeScript compiler, but only as a type checker (compiler option
     `--noEmit`). In addition to the compiler option `--allowJs` (for allowing and
     copying JavaScript files), we also have to use the compiler option `--checkJs`
     (for type-checking JavaScript files).
+  id: totrans-22
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们运行 TypeScript 编译器，但仅作为类型检查器（编译器选项 `--noEmit`）。除了编译器选项 `--allowJs`（允许并复制 JavaScript
+    文件）外，我们还需要使用编译器选项 `--checkJs`（用于类型检查 JavaScript 文件）。
 - en: We add type information via JSDoc comments (see example below) and declaration
     files.
+  id: totrans-23
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们通过 JSDoc 注释（见下例）和声明文件添加类型信息。
 - en: Once TypeScript’s type checker doesn’t complain anymore, we use the compiler
     to build the code base. Switching from `.js` files to `.ts` files is not urgent
     now because the whole code base is already fully statically typed. We can even
     produce type files (filename extension `.d.ts`) now.
+  id: totrans-24
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 一旦 TypeScript 的类型检查器不再抱怨，我们使用编译器构建代码库。现在从 `.js` 文件切换到 `.ts` 文件并不紧急，因为整个代码库已经完全静态类型化。我们甚至现在可以生成类型文件（文件名扩展名
+    `.d.ts`）。
 - en: 'This is how we specify static types for plain JavaScript via JSDoc comments:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是我们通过 JSDoc 注释指定纯 JavaScript 的静态类型的方式：
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: '[PRE2]'
+  id: totrans-27
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '**More information:**'
+  id: totrans-28
   prefs: []
   type: TYPE_NORMAL
+  zh: '**更多信息：**'
 - en: '[“Type-checking JavaScript files” (§6.8)](ch_typescript-workflows.html#check-js)'
+  id: totrans-29
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“类型检查 JavaScript 文件” (§6.8)](ch_typescript-workflows.html#check-js)'
 - en: '[“How we gradually migrated to TypeScript at Unsplash”](https://medium.com/unsplash/how-we-gradually-migrated-to-typescript-at-unsplash-7a34caa24ef1)
     by [Oliver Joseph Ash](https://twitter.com/OliverJAsh)'
+  id: totrans-30
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“如何在 Unsplash 逐步迁移到 TypeScript”](https://medium.com/unsplash/how-we-gradually-migrated-to-typescript-at-unsplash-7a34caa24ef1)
+    by [Oliver Joseph Ash](https://twitter.com/OliverJAsh)'
 - en: '[12.3 Strategy: linting before activating a compiler option](#strategy-linting-before-activating-a-compiler-option)'
+  id: totrans-31
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[12.3 策略：在激活编译器选项之前进行linting](#strategy-linting-before-activating-a-compiler-option)'
 - en: 'Projects that migrate to TypeScript often start with the default type checking
     and then add more checks, in stages – e.g.:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 迁移到TypeScript的项目通常从默认的类型检查开始，然后分阶段添加更多检查 - 例如：
 - en: 'Initially: default checks'
+  id: totrans-33
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 初始状态：默认检查
 - en: Activate `strictNullChecks` (prevents `undefined` and `null` from being used
     unless the type is `T | undefined` or `T | null`, respectively)
+  id: totrans-34
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 激活`strictNullChecks`（防止除非类型是`T | undefined`或`T | null`，否则使用`undefined`和`null`)
 - en: Activate `noImplicitAny` (prevents omitting types for parameters and more)
+  id: totrans-35
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 激活`noImplicitAny`（防止省略参数的类型等）
 - en: Activate `strict` (includes the previous two compiler options – which can be
     removed – and adds [additional ones](https://www.typescriptlang.org/tsconfig/#strict))
+  id: totrans-36
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 激活`strict`（包括前两个编译器选项 - 可以删除 - 并添加[额外的选项](https://www.typescriptlang.org/tsconfig/#strict))
 - en: 'In contrast to compiler options, we can activate linting options on a per-file
     basis. This helps when switching from less strict type checking to stricter type
     checking: We can lint before making the switch. These are examples of useful rules
     that the TypeScript linter [typescript-eslint](https://typescript-eslint.io) provides:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 与编译器选项相比，我们可以按文件激活linting选项。这在从较宽松的类型检查切换到更严格的类型检查时很有帮助：我们可以在切换之前进行linting。以下是一些TypeScript
+    linter [typescript-eslint](https://typescript-eslint.io)提供的有用规则的示例：
 - en: 'Preparing for `noImplicitAny`:'
+  id: totrans-38
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 准备`noImplicitAny`：
 - en: '[`no-unsafe-call`](https://typescript-eslint.io/rules/no-unsafe-call/)'
+  id: totrans-39
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[no-unsafe-call](https://typescript-eslint.io/rules/no-unsafe-call/)'
 - en: '[`no-unsafe-member-access`](https://typescript-eslint.io/rules/no-unsafe-member-access/)'
+  id: totrans-40
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[no-unsafe-member-access](https://typescript-eslint.io/rules/no-unsafe-member-access/)'
 - en: '[`no-unsafe-argument`](https://typescript-eslint.io/rules/no-unsafe-argument/)'
+  id: totrans-41
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[no-unsafe-argument](https://typescript-eslint.io/rules/no-unsafe-argument/)'
 - en: '[`no-unsafe-assignment`](https://typescript-eslint.io/rules/no-unsafe-assignment/)'
+  id: totrans-42
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[no-unsafe-assignment](https://typescript-eslint.io/rules/no-unsafe-assignment/)'
 - en: '[`no-explicit-any`](https://typescript-eslint.io/rules/no-explicit-any/)'
+  id: totrans-43
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[no-explicit-any](https://typescript-eslint.io/rules/no-explicit-any/)'
 - en: 'Preparing for `erasableSyntaxOnly`:'
+  id: totrans-44
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 准备`erasableSyntaxOnly`：
 - en: '[`eslint-plugin-erasable-syntax-only`](https://github.com/JoshuaKGoldberg/eslint-plugin-erasable-syntax-only)'
+  id: totrans-45
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[eslint-plugin-erasable-syntax-only](https://github.com/JoshuaKGoldberg/eslint-plugin-erasable-syntax-only)'
 - en: '[12.4 Strategy: Too many errors? Use snapshot testing](#strategy-too-many-errors-use-snapshot-testing)'
+  id: totrans-46
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[12.4 策略：错误太多？使用快照测试](#strategy-too-many-errors-use-snapshot-testing)'
 - en: 'In large JavaScript projects, switching to TypeScript may produce too many
     errors – no matter which approach we choose. Then snapshot-testing the TypeScript
     errors may be an option:'
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 在大型JavaScript项目中，切换到TypeScript可能会产生过多的错误 - 无论我们选择哪种方法。然后，对TypeScript错误进行快照测试可能是一个选项：
 - en: We run the TypeScript compiler on the whole code base for the first time.
+  id: totrans-48
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们第一次在整个代码库上运行TypeScript编译器。
 - en: The errors produced by the compiler become our initial snapshot.
+  id: totrans-49
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 编译器产生的错误成为我们的初始快照。
 - en: 'As we work on the code base, we compare new error output with the previous
     snapshot:'
+  id: totrans-50
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在我们处理代码库时，我们将新的错误输出与之前的快照进行比较：
 - en: Sometimes existing errors disappear. Then we can create a new snapshot.
+  id: totrans-51
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有时现有的错误会消失。然后我们可以创建一个新的快照。
 - en: Sometimes new errors appear. Then we either have to fix these errors or create
     a new snapshot.
+  id: totrans-52
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有时会出现新的错误。然后我们要么修复这些错误，要么创建一个新的快照。
 - en: '**More information:**'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: '**更多信息：**'
 - en: '[“How to Incrementally Migrate 100k Lines of Code to Typescript”](https://dylanvann.com/incrementally-migrating-to-typescript/)
     by [Dylan Vann](https://twitter.com/atomarranger)'
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[“如何逐步迁移10k行代码到TypeScript”](https://dylanvann.com/incrementally-migrating-to-typescript/)
+    by [Dylan Vann](https://twitter.com/atomarranger)'
 - en: '[12.5 Tools that help with migrating to TypeScript](#tools-that-help-with-migrating-to-typescript)'
+  id: totrans-55
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[12.5 帮助迁移到TypeScript的工具](#tools-that-help-with-migrating-to-typescript)'
 - en: '[ts-migrate](https://github.com/airbnb/ts-migrate) helps with the first step
     of moving from JavaScript to TypeScript: “The resulting code will pass the build,
     but a followup is required to improve type safety. There will be lots of `//@ts-expect-error`,
     and `any` that will need to be fixed over time. In general, it is a lot nicer
     than starting from scratch.”'
+  id: totrans-56
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[ts-migrate](https://github.com/airbnb/ts-migrate)帮助从JavaScript迁移到TypeScript的第一步：“生成的代码将通过构建，但需要进一步改进类型安全性。会有很多`//@ts-expect-error`和`any`需要随着时间的推移进行修复。总的来说，这比从头开始要好得多。”'
 - en: '[type-coverage](https://github.com/plantain-00/type-coverage) shows which percentage
     of identifiers have the type `any`.'
+  id: totrans-57
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[type-coverage](https://github.com/plantain-00/type-coverage) 显示了有多少百分比的标识符具有
+    `any` 类型。'
 - en: '[12.6 Conclusion and further reading](#conclusion-and-further-reading)'
+  id: totrans-58
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[12.6 结论和进一步阅读](#conclusion-and-further-reading)'
 - en: 'We have taken a quick look at strategies for migrating to TypeScript. Two more
     tips:'
+  id: totrans-59
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们已经快速浏览了迁移到 TypeScript 的策略。还有两个小贴士：
 - en: 'Start your migration with experiments: Play with your code base and try out
     various strategies before committing to one of them.'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 从实验开始你的迁移：在你的代码库中玩耍，尝试各种策略，然后再决定采用其中之一。
 - en: 'Then lay out a clear plan for going forward. Discuss prioritization with your
     team:'
+  id: totrans-61
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 然后制定一个清晰的行动计划。与你的团队讨论优先级：
 - en: Sometimes finishing the migration quickly may take priority.
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有时，快速完成迁移可能更为重要。
 - en: Sometimes the code remaining fully functional during the migration may be more
     important.
+  id: totrans-63
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有时，在迁移过程中保持代码完全功能可能更为重要。
 - en: And so on…
+  id: totrans-64
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等……
 - en: '**Further reading:**'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: '**进一步阅读：**'
 - en: '[“Migrating from JavaScript”](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
     in the TypeScript Handbook'
+  id: totrans-66
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[从 JavaScript 迁移](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
+    在 TypeScript 手册中'

@@ -1,254 +1,387 @@
 - en: 15 The bottom type never
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 15 最低类型 `never`
 - en: 原文：[https://exploringjs.com/ts/book/ch_never.html](https://exploringjs.com/ts/book/ch_never.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_never.html](https://exploringjs.com/ts/book/ch_never.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: （广告，请勿拦截。）
 - en: '[15.1 `never` is a bottom type](#never-is-a-bottom-type)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[15.1 `never` 是一个底类型](#never-is-a-bottom-type)'
 - en: '[15.2 `never` is the empty set](#never-is-the-empty-set)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[15.2 `never` 是空集](#never-is-the-empty-set)'
 - en: '[15.3 Use case for `never`: filtering union types](#use-case-for-never-filtering-union-types)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[15.3 `never` 的用例：过滤联合类型](#use-case-for-never-filtering-union-types)'
 - en: '[15.4 Use case for `never`: exhaustiveness checks at compile time](#exhaustiveness-checks)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[15.4 `never` 的用例：编译时进行完备性检查](#exhaustiveness-checks)'
 - en: '[15.4.1 Exhaustiveness checks and `if`](#exhaustiveness-checks-and-if)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[15.4.1 完备性检查和 `if`](#exhaustiveness-checks-and-if)'
 - en: '[15.5 Use case for `never`: forbidding properties](#use-case-for-never-forbidding-properties)'
+  id: totrans-8
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[15.5 `never` 的用例：禁止属性](#use-case-for-never-forbidding-properties)'
 - en: '[15.6 Functions that return `never`](#functions-that-return-never)'
+  id: totrans-9
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[15.6 返回 `never` 的函数](#functions-that-return-never)'
 - en: '[15.7 Sources of this chapter](#sources-of-this-chapter-1)'
+  id: totrans-10
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[15.7 本章来源](#sources-of-this-chapter-1)'
 - en: In this chapter, we look at the special TypeScript type `never` which, roughly,
     is the type of things that never happen. As we’ll see, it has a surprising number
     of applications.
+  id: totrans-11
   prefs: []
   type: TYPE_NORMAL
+  zh: 在本章中，我们探讨特殊的 TypeScript 类型 `never`，它大致上表示永远不会发生的事情的类型。正如我们将看到的，它有令人惊讶的众多应用。
 - en: '[15.1 `never` is a bottom type](#never-is-a-bottom-type)'
+  id: totrans-12
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[15.1 `never` 是一个底类型](#never-is-a-bottom-type)'
 - en: 'If we interpret types as sets of values then:'
+  id: totrans-13
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们将类型解释为值的集合，那么：
 - en: 'Type `Sub` is a subtype of type `Sup` (`Sub <: Sup`)'
+  id: totrans-14
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '类型 `Sub` 是类型 `Sup` 的子类型（`Sub <: Sup`）。'
 - en: if `Sub` is a subset of `Sup` (`Sub ⊂ Sup`).
+  id: totrans-15
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `Sub` 是 `Sup` 的子集（`Sub ⊂ Sup`）。
 - en: 'Two kinds of types are special:'
+  id: totrans-16
   prefs: []
   type: TYPE_NORMAL
+  zh: 两种类型是特殊的：
 - en: A top type `T` includes all values and all types are subtypes of `T`.
+  id: totrans-17
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 顶级类型 `T` 包含所有值，所有类型都是 `T` 的子类型。
 - en: A bottom type `B` is the empty set and a subtype of all types.
+  id: totrans-18
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 底类型 `B` 是空集，并且是所有类型的子类型。
 - en: 'In TypeScript:'
+  id: totrans-19
   prefs: []
   type: TYPE_NORMAL
+  zh: 在 TypeScript 中：
 - en: '`any` and `unknown` are top types and explained in [“The top types `any` and
     `unknown`” (§14)](ch_any-unknown.html#ch_any-unknown).'
+  id: totrans-20
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`any` 和 `unknown` 是顶级类型，在[“顶级类型 `any` 和 `unknown`”（§14）](ch_any-unknown.html#ch_any-unknown)中进行了解释。'
 - en: '`never` is a bottom type.'
+  id: totrans-21
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`never` 是一个底类型。'
 - en: '[15.2 `never` is the empty set](#never-is-the-empty-set)'
+  id: totrans-22
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[15.2 `never` 是空集](#never-is-the-empty-set)'
 - en: 'When computing with types, type unions are sometimes used to represent sets
     of (type-level) values. Then the empty set is represented by `never`:'
+  id: totrans-23
   prefs: []
   type: TYPE_NORMAL
+  zh: 当使用类型进行计算时，类型联合有时用来表示（类型级别的）值的集合。那么空集由 `never` 表示：
 - en: '[PRE0]'
+  id: totrans-24
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: 'Similarly, if we use the type operator `&` to intersect two types that have
     no elements in common, we get the empty set:'
+  id: totrans-25
   prefs: []
   type: TYPE_NORMAL
+  zh: 同样，如果我们使用类型运算符 `&` 来交集两个没有共同元素的类型，我们得到空集：
 - en: '[PRE1]'
+  id: totrans-26
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'If we use the type operator `|` to compute the union of a type `T` and `never`
     then the result is `T`:'
+  id: totrans-27
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们使用类型运算符 `|` 来计算类型 `T` 和 `never` 的联合，结果是 `T`：
 - en: '[PRE2]'
+  id: totrans-28
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: '[15.3 Use case for `never`: filtering union types](#use-case-for-never-filtering-union-types)'
+  id: totrans-29
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[15.3 `never` 的用例：过滤联合类型](#use-case-for-never-filtering-union-types)'
 - en: 'We can use conditional types to filter union types:'
+  id: totrans-30
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用条件类型来过滤联合类型：
 - en: '[PRE3]'
+  id: totrans-31
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'We use two phenomena to make this work:'
+  id: totrans-32
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们使用两种现象来实现这一点：
 - en: When we apply a conditional type to a union type, it is *distributed* – applied
     to each element of the union.
+  id: totrans-33
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 当我们将条件类型应用于联合类型时，它是 *分配的* – 应用到联合的每个元素。
 - en: In the resulting union of types, the `never` types returned in the false branch
     of `KeepStrings` disappear (see previous section).
+  id: totrans-34
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在类型的结果联合中，`KeepStrings` 的假分支返回的 `never` 类型消失了（参见上一节）。
 - en: 'More information: [“Filtering union types by conditionally returning `never`”
     (§34.3)](ch_conditional-types.html#filtering-union-types)'
+  id: totrans-35
   prefs: []
   type: TYPE_NORMAL
+  zh: 更多信息：[“通过条件返回 `never` 过滤联合类型”（§34.3）](ch_conditional-types.html#filtering-union-types)
 - en: '[15.4 Use case for `never`: exhaustiveness checks at compile time](#exhaustiveness-checks)'
+  id: totrans-36
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[15.4 `never` 的用例：编译时进行完备性检查](#exhaustiveness-checks)'
 - en: 'With type inference, TypeScript keeps track of what values a variable still
     can have – e.g.:'
+  id: totrans-37
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用类型推断，TypeScript 会跟踪变量仍然可能具有的值 – 例如：
 - en: '[PRE4]'
+  id: totrans-38
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: In line A, `x` can still have the value `false` and `true`. After we return
     if `x` has the value `true`, it can still have the value `false` (line B). After
     we return if `x` has the value `false`, there are no more values this variable
     can have, which is why it has the type `never` (line C).
+  id: totrans-39
   prefs: []
   type: TYPE_NORMAL
+  zh: 在行 A 中，`x` 仍然可以有 `false` 和 `true` 的值。在我们返回 `x` 有 `true` 值之后，它仍然可以有 `false` 的值（行
+    B）。在我们返回 `x` 有 `false` 值之后，这个变量不再有其他值，这就是为什么它有 `never` 类型（行 C）。
 - en: 'This behavior is especially useful for enums and unions used like enums because
     it enables *exhaustiveness checks* (checking if we have exhaustively handled all
     cases):'
+  id: totrans-40
   prefs: []
   type: TYPE_NORMAL
+  zh: 这种行为对于像枚举一样使用的枚举和联合特别有用，因为它使 *完备性检查*（检查我们是否已全面处理所有情况）成为可能：
 - en: '[PRE5]'
+  id: totrans-41
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'The following pattern works well for JavaScript because it checks at runtime
     if `color` has an unexpected value:'
+  id: totrans-42
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下模式对 JavaScript 很有效，因为它在运行时检查 `color` 是否有意外值：
 - en: '[PRE6]'
+  id: totrans-43
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: How can we support this pattern at the type level so that we get a warning if
     we accidentally don’t consider all member of the enum `Color`? (The return type
     `string` also keeps us safe but with the technique we are about to see, we even
     get protection if there is no return time. Additionally, we are also protected
     from illegal values at runtime.)
+  id: totrans-44
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们如何从类型级别支持这种模式，以便在意外未考虑枚举 `Color` 的所有成员时发出警告？（返回类型 `string` 也使我们保持安全，但使用我们即将看到的技巧，即使没有返回值，我们也能得到保护。此外，我们还在运行时受到非法值的保护。）
 - en: 'Let’s first examine how the inferred value of `color` changes as we add cases:'
+  id: totrans-45
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们先看看当我们添加案例时，`color` 的推断值是如何变化的：
 - en: '[PRE7]'
+  id: totrans-46
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: Once again, the type records what values `color` still can have.
+  id: totrans-47
   prefs: []
   type: TYPE_NORMAL
+  zh: 再次强调，类型记录了 `color` 仍然可以具有的值。
 - en: 'The following implementation of the class `UnexpectedValueError` requires that
     the type of its actual argument be `never`:'
+  id: totrans-48
   prefs: []
   type: TYPE_NORMAL
+  zh: 以下 `UnexpectedValueError` 类的实现要求其实际参数的类型为 `never`：
 - en: '[PRE8]'
+  id: totrans-49
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: 'Now we get a compile-time warning if we forget a case because we have not eliminated
     all values that `color` can have:'
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 现在如果我们忘记了一个案例，因为我们没有消除 `color` 可以具有的所有值，我们会得到一个编译时警告：
 - en: '[PRE9]'
+  id: totrans-51
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: '[15.4.1 Exhaustiveness checks and `if`](#exhaustiveness-checks-and-if)'
+  id: totrans-52
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[15.4.1 关于 `if` 的完备性检查](#exhaustiveness-checks-and-if)'
 - en: 'The exhaustiveness check also works if we handle cases via `if`:'
+  id: totrans-53
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们通过 `if` 处理案例，完备性检查也适用：
 - en: '[PRE10]'
+  id: totrans-54
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[15.5 Use case for `never`: forbidding properties](#use-case-for-never-forbidding-properties)'
+  id: totrans-55
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[15.5 `never` 的用例：禁止属性](#use-case-for-never-forbidding-properties)'
 - en: 'Given that no other type is assignable to `never`, we can use it to forbid
     properties – e.g. those with string keys:'
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于没有其他类型可以赋值给 `never`，我们可以用它来禁止属性——例如具有字符串键的属性：
 - en: '[PRE11]'
+  id: totrans-57
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: For more information, see [“Forbidding properties via `never`” (§18.6)](ch_typing-objects.html#forbidding-properties-via-never).
+  id: totrans-58
   prefs: []
   type: TYPE_NORMAL
+  zh: 如需更多信息，请参阅[“通过 `never` 禁止属性”（§18.6）](ch_typing-objects.html#forbidding-properties-via-never)。
 - en: '[15.6 Functions that return `never`](#functions-that-return-never)'
+  id: totrans-59
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[15.6 返回 `never` 的函数](#functions-that-return-never)'
 - en: '`never` also serves as a marker for functions that never return – e.g.:'
+  id: totrans-60
   prefs: []
   type: TYPE_NORMAL
+  zh: '`never` 还可以作为永远不会返回的函数的标记——例如：'
 - en: '[PRE12]'
+  id: totrans-61
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: 'If we call such functions, TypeScript knows that execution ends and adjusts
     inferred types accordingly. For more information, see [“Return type `never`: functions
     that don’t return” (§27.4)](ch_typing-functions.html#return-type-never).'
+  id: totrans-62
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们调用这样的函数，TypeScript 就知道执行结束，并相应地调整推断的类型。有关更多信息，请参阅[“返回类型 `never`：不返回的函数”（§27.4）](ch_typing-functions.html#return-type-never)。
 - en: '[15.7 Sources of this chapter](#sources-of-this-chapter-1)'
+  id: totrans-63
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[15.7 本章来源](#sources-of-this-chapter-1)'
 - en: Section [“Better Support for `never`-Returning Functions”](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#better-support-for-never-returning-functions)
     in “Announcing TypeScript 3.7” by Daniel Rosenwasser for Microsoft
+  id: totrans-64
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在“宣布 TypeScript 3.7”中，丹尼尔·罗森沃瑟的章节[“对 `never` 返回函数的更好支持”](https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#better-support-for-never-returning-functions)。
 - en: Blog post [“The `never` type and error handling in TypeScript”](https://oida.dev/typescript-never-and-error-handling/)
     by Stefan Baumgartner
+  id: totrans-65
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 斯坦凡·鲍姆加特纳的博客文章[“TypeScript 中的 `never` 类型与错误处理”](https://oida.dev/typescript-never-and-error-handling/)。

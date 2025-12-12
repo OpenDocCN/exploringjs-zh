@@ -1,1781 +1,2656 @@
 - en: 8 Guide to tsconfig.json
+  id: totrans-0
   prefs:
   - PREF_H1
   type: TYPE_NORMAL
+  zh: 8 tsconfig.json 指南
 - en: 原文：[https://exploringjs.com/ts/book/ch_tsconfig-json.html](https://exploringjs.com/ts/book/ch_tsconfig-json.html)
+  id: totrans-1
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 原文：[https://exploringjs.com/ts/book/ch_tsconfig-json.html](https://exploringjs.com/ts/book/ch_tsconfig-json.html)
 - en: (Ad, please don’t block.)
+  id: totrans-2
   prefs: []
   type: TYPE_NORMAL
+  zh: (广告，请勿拦截。)
 - en: '[8.1 Features not covered by this chapter](#features-not-covered-by-this-chapter)'
+  id: totrans-3
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.1 本章未涵盖的功能](#features-not-covered-by-this-chapter)'
 - en: '[8.2 Extending base files via `extends`](#extending-base-files-via-extends)'
+  id: totrans-4
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.2 通过 `extends` 扩展基本文件](#extending-base-files-via-extends)'
 - en: '[8.3 Where are the input files?](#where-are-the-input-files)'
+  id: totrans-5
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.3 输入文件在哪里？](#where-are-the-input-files)'
 - en: '[8.4 What is the output?](#what-is-the-output)'
+  id: totrans-6
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.4 输出是什么？](#what-is-the-output)'
 - en: '[8.4.1 Where are the output files written?](#where-are-the-output-files-written)'
+  id: totrans-7
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.4.1 输出文件在哪里写入？](#where-are-the-output-files-written)'
 - en: '[8.4.2 Emitting source maps](#emitting-source-maps)'
+  id: totrans-8
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.4.2 输出源映射](#emitting-source-maps)'
 - en: '[8.4.3 Emitting `.d.ts` files (e.g. for libraries)](#emitting-d-ts-files-e-g-for-libraries)'
+  id: totrans-9
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.4.3 输出 `.d.ts` 文件（例如，用于库）](#emitting-d-ts-files-e-g-for-libraries)'
 - en: '[8.4.4 Fine-tuning emitted files](#fine-tuning-emitted-files)'
+  id: totrans-10
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.4.4 微调输出文件](#fine-tuning-emitted-files)'
 - en: '[8.5 Language and platform features](#language-and-platform-features)'
+  id: totrans-11
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.5 语言和平台功能](#language-and-platform-features)'
 - en: '[8.5.1 `target`](#target)'
+  id: totrans-12
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.5.1 `target`](#target)'
 - en: '[8.5.2 `lib`](#lib)'
+  id: totrans-13
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.5.2 `lib`](#lib)'
 - en: '[8.5.3 `skipLibCheck`](#skipLibCheck)'
+  id: totrans-14
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.5.3 `skipLibCheck`](#skipLibCheck)'
 - en: '[8.5.4 Types for the built-in Node.js APIs](#types-for-the-built-in-node-js-apis)'
+  id: totrans-15
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.5.4 内置 Node.js API 的类型](#types-for-the-built-in-node-js-apis)'
 - en: '[8.6 Module system](#module-system)'
+  id: totrans-16
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.6 模块系统](#module-system)'
 - en: '[8.6.1 How does TypeScript look for imported modules?](#how-does-typescript-look-for-imported-modules)'
+  id: totrans-17
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.6.1 TypeScript 是如何查找导入模块的？](#how-does-typescript-look-for-imported-modules)'
 - en: '[8.6.2 Running TypeScript directly (without generating JS files)](#running-typescript-directly)'
+  id: totrans-18
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.6.2 直接运行 TypeScript（不生成 JS 文件）](#running-typescript-directly)'
 - en: '[8.6.3 Importing JSON](#importing-json)'
+  id: totrans-19
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.6.3 导入 JSON](#importing-json)'
 - en: '[8.6.4 Importing other non-TypeScript artifacts](#importing-other-non-typescript-artifacts)'
+  id: totrans-20
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.6.4 导入其他非 TypeScript 艺术品](#importing-other-non-typescript-artifacts)'
 - en: '[8.7 Type checking](#type-checking)'
+  id: totrans-21
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7 类型检查](#type-checking)'
 - en: '[8.7.1 `strict`](#strict)'
+  id: totrans-22
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7.1 `strict`](#strict)'
 - en: '[8.7.2 `exactOptionalPropertyTypes`](#exactOptionalPropertyTypes)'
+  id: totrans-23
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7.2 `exactOptionalPropertyTypes`](#exactOptionalPropertyTypes)'
 - en: '[8.7.3 `noFallthroughCasesInSwitch`](#noFallthroughCasesInSwitch)'
+  id: totrans-24
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7.3 `noFallthroughCasesInSwitch`](#noFallthroughCasesInSwitch)'
 - en: '[8.7.4 `noImplicitOverride`](#noImplicitOverride)'
+  id: totrans-25
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7.4 `noImplicitOverride`](#noImplicitOverride)'
 - en: '[8.7.5 `noImplicitReturns`](#noImplicitReturns)'
+  id: totrans-26
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7.5 `noImplicitReturns`](#noImplicitReturns)'
 - en: '[8.7.6 `noPropertyAccessFromIndexSignature`](#noPropertyAccessFromIndexSignature)'
+  id: totrans-27
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7.6 `noPropertyAccessFromIndexSignature`](#noPropertyAccessFromIndexSignature)'
 - en: '[8.7.7 `noUncheckedIndexedAccess`](#noUncheckedIndexedAccess)'
+  id: totrans-28
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7.7 `noUncheckedIndexedAccess`](#noUncheckedIndexedAccess)'
 - en: '[8.7.8 Type checking options that have good defaults](#type-checking-options-that-have-good-defaults)'
+  id: totrans-29
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.7.8 具有良好默认值的类型检查选项](#type-checking-options-that-have-good-defaults)'
 - en: '[8.8 Compiling TypeScript with tools other than tsc](#compiling-without-tsc)'
+  id: totrans-30
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.8 使用除 tsc 之外的工具编译 TypeScript](#compiling-without-tsc)'
 - en: '[8.8.1 Using tsc only for type checking](#noEmit)'
+  id: totrans-31
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.8.1 仅使用 tsc 进行类型检查](#noEmit)'
 - en: '[8.8.2 Generating `.js` files via type stripping: `erasableSyntaxOnly` and
     `verbatimModuleSyntax`](#type-stripping)'
+  id: totrans-32
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.8.2 通过类型剥离生成 `.js` 文件：`erasableSyntaxOnly` 和 `verbatimModuleSyntax`](#type-stripping)'
 - en: '[8.8.3 `erasableSyntaxOnly`: no transpiled language features](#erasableSyntaxOnly)'
+  id: totrans-33
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.8.3 `erasableSyntaxOnly`：不转换语言功能](#erasableSyntaxOnly)'
 - en: '[8.8.4 `verbatimModuleSyntax`: enforcing `type` in imports and exports](#verbatimModuleSyntax)'
+  id: totrans-34
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.8.4 `verbatimModuleSyntax`：在导入和导出中强制执行 `type`](#verbatimModuleSyntax)'
 - en: '[8.8.5 `isolatedDeclarations`: generating `.d.ts` files more efficiently](#isolatedDeclarations)'
+  id: totrans-35
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.8.5 `isolatedDeclarations`：更有效地生成 `.d.ts` 文件](#isolatedDeclarations)'
 - en: '[8.9 Importing CommonJS from ESM](#importing-commonjs-from-esm)'
+  id: totrans-36
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.9 从 ESM 导入 CommonJS](#importing-commonjs-from-esm)'
 - en: '[8.9.1 `allowSyntheticDefaultImports`: type-checking default imports of CommonJS
     modules](#allowSyntheticDefaultImports)'
+  id: totrans-37
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.9.1 `allowSyntheticDefaultImports`：检查 CommonJS 模块的默认导入](#allowSyntheticDefaultImports)'
 - en: '[8.9.2 `esModuleInterop`: better compilation of TypeScript to CommonJS code](#esModuleInterop)'
+  id: totrans-38
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.9.2 `esModuleInterop`：更好的 TypeScript 到 CommonJS 代码的编译](#esModuleInterop)'
 - en: '[8.10 One more option with a good default](#one-more-option-with-a-good-default)'
+  id: totrans-39
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.10 一个有良好默认值的额外选项](#one-more-option-with-a-good-default)'
 - en: '[8.11 Visual Studio Code](#visual-studio-code)'
+  id: totrans-40
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.11 Visual Studio Code](#visual-studio-code)'
 - en: '[8.12 Summary: Assemble your `tsconfig.json` by answering four questions](#tsconfig-summary)'
+  id: totrans-41
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.12 总结：通过回答四个问题来组装你的 `tsconfig.json`](#tsconfig-summary)'
 - en: '[8.12.1 Do you want to transpile new JavaScript to older JavaScript?](#do-you-want-to-transpile-new-javascript-to-older-javascript)'
+  id: totrans-42
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.12.1 你是否想将新的 JavaScript 转译为旧版本的 JavaScript？](#do-you-want-to-transpile-new-javascript-to-older-javascript)'
 - en: '[8.12.2 Should TypeScript only allow JavaScript features at the non-type level?](#should-typescript-only-allow-javascript-features-at-the-non-type-level)'
+  id: totrans-43
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.12.2 TypeScript 是否只应允许非类型级别的 JavaScript 功能？](#should-typescript-only-allow-javascript-features-at-the-non-type-level)'
 - en: '[8.12.3 Which filename extension do you want to use in local imports?](#which-filename-extension-do-you-want-to-use-in-local-imports)'
+  id: totrans-44
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.12.3 在本地导入中你想使用哪种文件名扩展？](#which-filename-extension-do-you-want-to-use-in-local-imports)'
 - en: '[8.12.4 What files should tsc emit?](#what-files-should-tsc-emit)'
+  id: totrans-45
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.12.4 tsc 应该输出哪些文件？](#what-files-should-tsc-emit)'
 - en: '[8.13 Further reading](#further-reading-2)'
+  id: totrans-46
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.13 进一步阅读](#further-reading-2)'
 - en: '[8.13.1 `tsconfig.json` recommendations by other people](#tsconfig-recommendations)'
+  id: totrans-47
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.13.1 其他人的 `tsconfig.json` 建议](#tsconfig-recommendations)'
 - en: '[8.13.2 Sources of this chapter](#sources-of-this-chapter)'
+  id: totrans-48
   prefs:
   - PREF_IND
   - PREF_OL
   type: TYPE_NORMAL
+  zh: '[8.13.2 本章的来源](#sources-of-this-chapter)'
 - en: '![Icon “details”](../Images/837806d7ec89826c3784b2e685feb762.png) **Version:
     TypeScript 5.8**'
+  id: totrans-49
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“详情”](../Images/837806d7ec89826c3784b2e685feb762.png) **版本：TypeScript 5.8**'
 - en: This chapter covers `tsconfig.json` as supported by TypeScript 5.8.
+  id: totrans-50
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章涵盖了 TypeScript 5.8 支持的 `tsconfig.json`。
 - en: 'This chapter documents all common options of the TypeScript configuration file
     [`tsconfig.json`](https://www.typescriptlang.org/tsconfig/):'
+  id: totrans-51
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章记录了 TypeScript 配置文件 `tsconfig.json` 的所有常见选项：
 - en: This knowledge will enable you to understand and simplify your `tsconfig.json`.
+  id: totrans-52
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这项知识将使你能够理解和简化你的 `tsconfig.json`。
 - en: If you don’t have the time to read the chapter, you can jump to [the summary](#tsconfig-summary)
     at the end where I show a starter `tsconfig.json` file with all settings – along
     with four questions to determine which settings you can delete.
+  id: totrans-53
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果你没有时间阅读本章，你可以跳转到末尾的[总结](#tsconfig-summary)，在那里我展示了一个包含所有设置的起始 `tsconfig.json`
+    文件——以及四个问题，以确定你可以删除哪些设置。
 - en: I also link to [the `tsconfig.json` recommendations](#tsconfig-recommendations)
     by several well-known TypeScript programmers. (I went through them when I researched
     this chapter.)
+  id: totrans-54
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我还链接到了几位知名 TypeScript 程序员提供的[`tsconfig.json` 建议](#tsconfig-recommendations)。（我在研究本章时查阅了它们。）
 - en: '[8.1 Features not covered by this chapter](#features-not-covered-by-this-chapter)'
+  id: totrans-55
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.1 本章未涵盖的功能](#features-not-covered-by-this-chapter)'
 - en: This chapter only describes how to set up projects whose local modules are all
     ESM. It does give tips for importing CommonJS, though.
+  id: totrans-56
   prefs: []
   type: TYPE_NORMAL
+  zh: 本章仅描述如何设置所有本地模块都是 ESM 的项目。尽管如此，它也提供了一些导入 CommonJS 的技巧。
 - en: 'Not explained here:'
+  id: totrans-57
   prefs: []
   type: TYPE_NORMAL
+  zh: 未在此处解释：
 - en: Importing and type-checking plain JavaScript in your code base, namely the options
     [`allowJs`](https://www.typescriptlang.org/tsconfig/#allowJs) and [`checkJs`](https://www.typescriptlang.org/tsconfig/#checkJs).
+  id: totrans-58
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在你的代码库中导入和类型检查纯 JavaScript，即选项 `allowJs` 和 `checkJs`。
 - en: How to set up JSX. See [“JSX”](https://www.typescriptlang.org/docs/handbook/jsx.html)
     in the TypeScript Handbook.
+  id: totrans-59
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如何设置 JSX。请参阅 TypeScript 手册中的[“JSX”](https://www.typescriptlang.org/docs/handbook/jsx.html)。
 - en: '“Projects” (useful for monorepos): option `composite` etc. For more information
     on this topic, see:'
+  id: totrans-60
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “项目”（对 monorepos 有用）：选项 `composite` 等。有关此主题的更多信息，请参阅：
 - en: Chapter [“Project References”](https://www.typescriptlang.org/docs/handbook/project-references.html)
     in the TypeScript Handbook
+  id: totrans-61
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: TypeScript 手册中的[“项目引用”](https://www.typescriptlang.org/docs/handbook/project-references.html)章节
 - en: My blog post [“Simple monorepos via npm workspaces and TypeScript project references”](https://2ality.com/2021/07/simple-monorepos.html)
+  id: totrans-62
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我的博客文章[“通过 npm workspaces 和 TypeScript 项目引用创建简单的 monorepos”](https://2ality.com/2021/07/simple-monorepos.html)
 - en: '[8.2 Extending base files via `extends`](#extending-base-files-via-extends)'
+  id: totrans-63
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.2 通过 `extends` 扩展基础文件](#extending-base-files-via-extends)'
 - en: This option lets us refer to an existing `tsconfig.json` via a module specifier
     (as if we imported a JSON file). That file becomes the *base* that our tsconfig
     *extends*. That means that our tsconfig has all the option of the base, but can
     override any of them and can add options not mentioned in the base.
+  id: totrans-64
   prefs: []
   type: TYPE_NORMAL
+  zh: 此选项允许我们通过模块规范引用现有的 `tsconfig.json`（就像我们导入一个 JSON 文件一样）。该文件成为我们的 tsconfig 的 *基础*，它扩展了我们的
+    tsconfig。这意味着我们的 tsconfig 包含了基础的所有选项，但可以覆盖其中任何一个，也可以添加基础中没有提到的选项。
 - en: 'The GitHub repository [`tsconfig/bases`](https://github.com/tsconfig/bases)
     lists bases that are available under the npm namespace `@tsconfig` and can be
     used like this (after they were installed locally via npm):'
+  id: totrans-65
   prefs: []
   type: TYPE_NORMAL
+  zh: GitHub 仓库[tsconfig/bases](https://github.com/tsconfig/bases)列出了在 npm 命名空间 `@tsconfig`
+    下可用的基础，并且可以像这样使用（在它们通过 npm 本地安装后）：
 - en: '[PRE0]'
+  id: totrans-66
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE0]'
 - en: Alas, none of these files suit my needs. But they can serve as an inspiration
     for your tsconfig.
+  id: totrans-67
   prefs: []
   type: TYPE_NORMAL
+  zh: 殊可惜，这些文件都不符合我的需求。但它们可以作为你 tsconfig 的灵感来源。
 - en: '[8.3 Where are the input files?](#where-are-the-input-files)'
+  id: totrans-68
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.3 输入文件在哪里？](#where-are-the-input-files)'
 - en: '[PRE1]'
+  id: totrans-69
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE1]'
 - en: 'On one hand, we have to tell TypeScript what the input files are. These are
     the available options:'
+  id: totrans-70
   prefs: []
   type: TYPE_NORMAL
+  zh: 一方面，我们必须告诉 TypeScript 输入文件是什么。这些是可用的选项：
 - en: '`files`: an exhaustive array of all input files'
+  id: totrans-71
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`files`：所有输入文件的详尽数组'
 - en: '`include`: Specifies the input files via an array of patterns with wildcards
     that are interpreted as relative to `tsconfig.json`.'
+  id: totrans-72
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`include`：通过一个模式数组指定输入文件，这些模式被解释为相对于 `tsconfig.json` 的相对路径。'
 - en: '`exlude`: Specifies which files should be excluded from the `include` set of
     files – via an array of patterns.'
+  id: totrans-73
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`exclude`：指定应从 `include` 文件集中排除哪些文件 - 通过一个模式数组。'
 - en: '[8.4 What is the output?](#what-is-the-output)'
+  id: totrans-74
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.4 输出是什么？](#what-is-the-output)'
 - en: '[8.4.1 Where are the output files written?](#where-are-the-output-files-written)'
+  id: totrans-75
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.4.1 输出文件在哪里写入？](#where-are-the-output-files-written)'
 - en: '[PRE2]'
+  id: totrans-76
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE2]'
 - en: 'How TypeScript determines where to write an output file:'
+  id: totrans-77
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 如何确定输出文件的写入位置：
 - en: It takes the input path (relative to `tsconfig.json`),
+  id: totrans-78
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它采用输入路径（相对于 `tsconfig.json`），
 - en: removes the prefix specified by `rootDir` and
+  id: totrans-79
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 移除由 `rootDir` 指定的前缀
 - en: “appends” the result to `outDir`.
+  id: totrans-80
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: “追加”结果到 `outDir`。
 - en: 'As an example, consider the following `tsconfig.json`:'
+  id: totrans-81
   prefs: []
   type: TYPE_NORMAL
+  zh: 例如，考虑以下 `tsconfig.json`：
 - en: '[PRE3]'
+  id: totrans-82
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE3]'
 - en: 'Consequences of these settings:'
+  id: totrans-83
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些设置的后果：
 - en: 'Input: `src/util.ts`'
+  id: totrans-84
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：`src/util.ts`
 - en: 'Output: `dist/util.js`'
+  id: totrans-85
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出：`dist/util.js`
 - en: 'Input: `src/test/integration_test.ts`'
+  id: totrans-86
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：`src/test/integration_test.ts`
 - en: 'Output: `dist/test/integration_test.js`'
+  id: totrans-87
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出：`dist/test/integration_test.js`
 - en: '[8.4.1.1 Putting `src/` and `test/` next to each other](#src-test-siblings)'
+  id: totrans-88
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.4.1.1 将 `src/` 和 `test/` 放在一起](#src-test-siblings)'
 - en: I like the idea of having a separate directory `test/` that is a sibling of
     `src/`. However then the output files in `dist/` are more deeply nested inside
     the project’s directory than the input files in `src/` and `test/`. That means
     that we can’t access files such as `package.json` via relative module specifiers.
+  id: totrans-89
   prefs: []
   type: TYPE_NORMAL
+  zh: 我喜欢有一个单独的目录 `test/`，它是 `src/` 的兄弟目录。然而，`dist/` 中的输出文件在项目目录中比 `src/` 和 `test/`
+    中的输入文件更深地嵌套。这意味着我们不能通过相对模块规范访问文件，如 `package.json`。
 - en: '`tsconfig.json`:'
+  id: totrans-90
   prefs: []
   type: TYPE_NORMAL
+  zh: '`tsconfig.json`：'
 - en: '[PRE4]'
+  id: totrans-91
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE4]'
 - en: 'Consequences of these settings:'
+  id: totrans-92
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些设置的后果：
 - en: 'Input: `src/util.ts`'
+  id: totrans-93
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：`src/util.ts`
 - en: 'Output: `dist/src/util.js`'
+  id: totrans-94
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出：`dist/src/util.js`
 - en: 'Input: `test/integration_test.ts`'
+  id: totrans-95
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输入：`test/integration_test.ts`
 - en: 'Output: `dist/test/integration_test.js`'
+  id: totrans-96
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 输出：`dist/test/integration_test.js`
 - en: '[8.4.1.2 Default values of `rootDir`](#default-values-of-rootdir)'
+  id: totrans-97
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.4.1.2 `rootDir` 的默认值](#default-values-of-rootdir)'
 - en: The default value of `rootDir` depends on the input file paths. I find that
     too unpredictable and always specify it explicitly. It is the longest common prefix
     of the input file paths.
+  id: totrans-98
   prefs: []
   type: TYPE_NORMAL
+  zh: '`rootDir` 的默认值取决于输入文件路径。我发现这太不可预测了，所以我总是明确指定它。它是输入文件路径的最长公共前缀。'
 - en: '**Example 1:** Default value is `''src''` (relative to the project directory)'
+  id: totrans-99
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例 1**：默认值是 `''src''`（相对于项目目录）'
 - en: '`tsconfig.json`:'
+  id: totrans-100
   prefs: []
   type: TYPE_NORMAL
+  zh: '`tsconfig.json`：'
 - en: '[PRE5]'
+  id: totrans-101
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE5]'
 - en: 'Files:'
+  id: totrans-102
   prefs: []
   type: TYPE_NORMAL
+  zh: 文件：
 - en: '[PRE6]'
+  id: totrans-103
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE6]'
 - en: '**Example 2:** Default value is `''src/core/cli''`'
+  id: totrans-104
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例 2**：默认值是 `''src/core/cli''`'
 - en: '`tsconfig.json`:'
+  id: totrans-105
   prefs: []
   type: TYPE_NORMAL
+  zh: '`tsconfig.json`：'
 - en: '[PRE7]'
+  id: totrans-106
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE7]'
 - en: 'Files:'
+  id: totrans-107
   prefs: []
   type: TYPE_NORMAL
+  zh: 文件：
 - en: '[PRE8]'
+  id: totrans-108
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE8]'
 - en: '**Example 3:**'
+  id: totrans-109
   prefs: []
   type: TYPE_NORMAL
+  zh: '**示例 3**：'
 - en: '`tsconfig.json`: Default value is `''.''`'
+  id: totrans-110
   prefs: []
   type: TYPE_NORMAL
+  zh: '`tsconfig.json`：默认值是 `''.''`'
 - en: '[PRE9]'
+  id: totrans-111
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE9]'
 - en: 'Files:'
+  id: totrans-112
   prefs: []
   type: TYPE_NORMAL
+  zh: 文件：
 - en: '[PRE10]'
+  id: totrans-113
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE10]'
 - en: '[8.4.2 Emitting source maps](#emitting-source-maps)'
+  id: totrans-114
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.4.2 输出源映射](#emitting-source-maps)'
 - en: '[PRE11]'
+  id: totrans-115
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE11]'
 - en: '`sourceMap` produces source map files that point from the transpiled JavaScript
     to the original TypeScript. That helps with debugging and is usually a good idea.'
+  id: totrans-116
   prefs: []
   type: TYPE_NORMAL
+  zh: '`sourceMap` 生成指向从转换后的 JavaScript 到原始 TypeScript 的源映射文件。这有助于调试，通常是个好主意。'
 - en: '[8.4.3 Emitting `.d.ts` files (e.g. for libraries)](#emitting-d-ts-files-e-g-for-libraries)'
+  id: totrans-117
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.4.3 输出 `.d.ts` 文件（例如，用于库）](#emitting-d-ts-files-e-g-for-libraries)'
 - en: 'If we want TypeScript code to consume our transpiled TypeScript code, we usually
     should include `.d.ts` files:'
+  id: totrans-118
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们想让 TypeScript 代码消费我们的转换后的 TypeScript 代码，我们通常应该包括 `.d.ts` 文件：
 - en: '[PRE12]'
+  id: totrans-119
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE12]'
 - en: Optionally, we can include the TypeScript source code in our npm package and
     activate `declarationMap`. Then importers can, e.g., click on types or go to the
     definition of a value and their editor will send them to the original source code.
+  id: totrans-120
   prefs: []
   type: TYPE_NORMAL
+  zh: 可选地，我们可以在我们的 npm 包中包含 TypeScript 源代码并激活 `declarationMap`。然后导入者可以，例如，点击类型或转到值的定义，他们的编辑器将带他们到原始源代码。
 - en: '[8.4.3.1 Option `declarationDir`](#option-declarationdir)'
+  id: totrans-121
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.4.3.1 选项 `declarationDir`](#option-declarationdir)'
 - en: By default, each `.d.ts` file is put next to its `.js` file. If you want to
     change that, you can use option [`declarationDir`](https://www.typescriptlang.org/tsconfig/#declarationDir).
+  id: totrans-122
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，每个 `.d.ts` 文件都放在其 `.js` 文件旁边。如果您想更改这一点，可以使用选项 `['declarationDir'](https://www.typescriptlang.org/tsconfig/#declarationDir)`。
 - en: '[8.4.4 Fine-tuning emitted files](#fine-tuning-emitted-files)'
+  id: totrans-123
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.4.4 微调输出文件](#fine-tuning-emitted-files)'
 - en: '[PRE13]'
+  id: totrans-124
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE13]'
 - en: The values shown above are the defaults.
+  id: totrans-125
   prefs: []
   type: TYPE_NORMAL
+  zh: 上面的值是默认值。
 - en: '`newLine` configures the line endings for emitted files. Allowed values are:'
+  id: totrans-126
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`newLine` 配置输出文件的换行符。允许的值有：'
 - en: '`"lf"`: "n" (Unix)'
+  id: totrans-127
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"lf"`: "n" (Unix)'
 - en: '`"crlf"`: "rn" (Windows)'
+  id: totrans-128
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"crlf"`: "rn" (Windows)'
 - en: '`removeComments`: If active, all comments in TypeScript files are omitted in
     transpiled JavaScript files. I’m weakly in favor of sticking with the default
     and not removing comments:'
+  id: totrans-129
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`removeComments`: 如果启用，TypeScript 文件中的所有注释在转换后的 JavaScript 文件中都将被省略。我倾向于保持默认设置，不删除注释：'
 - en: It helps with reading transpiled JavaScript – especially if the TypeScript source
     code isn’t included.
+  id: totrans-130
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 这有助于阅读转换后的 JavaScript——特别是如果 TypeScript 源代码没有包含在内。
 - en: Bundlers remove comments.
+  id: totrans-131
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 打包器会删除注释。
 - en: On Node.js, the added burden doesn’t matter much.
+  id: totrans-132
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在 Node.js 上，增加的负担并不重要。
 - en: '[8.5 Language and platform features](#language-and-platform-features)'
+  id: totrans-133
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.5 语言和平台特性](#language-and-platform-features)'
 - en: '[PRE14]'
+  id: totrans-134
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE14]'
 - en: '[8.5.1 `target`](#target)'
+  id: totrans-135
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.5.1 `target`](#target)'
 - en: '`target` determines which newer JavaScript syntax is transpiled to older syntax.
     For example, if the target is `"ES5"` then an arrow function `() => {}` is transpiled
     to a function expression `function () {}`. Values can be:'
+  id: totrans-136
   prefs: []
   type: TYPE_NORMAL
+  zh: '`target` 决定了哪些较新的 JavaScript 语法会被转换成旧语法。例如，如果目标为 `"ES5"`，则箭头函数 `() => {}` 会被转换成函数表达式
+    `function () {}`。可用的值包括：'
 - en: '`"ESNext"`'
+  id: totrans-137
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"ESNext"`'
 - en: '`"ES5"`'
+  id: totrans-138
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"ES5"`'
 - en: '`"ES6"`'
+  id: totrans-139
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"ES6"`'
 - en: '`"ES2015"` (same as `"ES6"`)'
+  id: totrans-140
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"ES2015"` (等同于 `"ES6"`)'
 - en: '`"ES2016"`'
+  id: totrans-141
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"ES2016"`'
 - en: Etc.
+  id: totrans-142
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 等等。
 - en: '`"ESNext"` means that nothing is ever transpiled. I find that setting easiest
     to deal with. It’s also the best setting if you don’t use `tsc` and use type stripping
     (which never transpiles anything either).'
+  id: totrans-143
   prefs: []
   type: TYPE_NORMAL
+  zh: '`"ESNext"` 表示永远不会进行转换。我发现这种设置最容易处理。如果您不使用 `tsc` 并使用类型剥离（这也永远不会进行转换），这也是最好的设置。'
 - en: '[8.5.1.1 How to pick a good `"ES20YY"` target](#how-to-pick-a-good-es20yy-target)'
+  id: totrans-144
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.5.1.1 如何选择好的 `"ES20YY"` 目标](#how-to-pick-a-good-es20yy-target)'
 - en: 'If we want to transpile, we have to pick an ECMAScript version that works for
     our target platforms. There are two tables that provide good overviews:'
+  id: totrans-145
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们要进行转换，我们必须选择一个适用于我们的目标平台的 ECMAScript 版本。有两个表格提供了很好的概述：
 - en: 'For browsers: [`compat-table.github.io`](https://compat-table.github.io/compat-table/es2016plus/)'
+  id: totrans-146
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于浏览器：[兼容性表格](https://compat-table.github.io/compat-table/es2016plus/)
 - en: 'For Node.js: [`node.green`](https://node.green/)'
+  id: totrans-147
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 对于 Node.js：[node.green](https://node.green/)
 - en: Additionally, [the official tsconfig bases](https://github.com/tsconfig/bases)
     all provide values for `target`.
+  id: totrans-148
   prefs: []
   type: TYPE_NORMAL
+  zh: 此外，[官方 tsconfig 基础配置](https://github.com/tsconfig/bases)都为 `target` 提供了值。
 - en: '[8.5.2 `lib`](#lib)'
+  id: totrans-149
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.5.2 `lib`](#lib)'
 - en: '`lib` determines which types for built-in APIs are available – e.g. `Math`
     or methods of built-in types:'
+  id: totrans-150
   prefs: []
   type: TYPE_NORMAL
+  zh: '`lib` 决定了哪些内置 API 的类型可用——例如 `Math` 或内置类型的函数：'
 - en: There are categories such as `"ES2024"` and `"DOM"` and subcategories such as
     `"DOM.Iterable"` and `"ES2024.Promise"`.
+  id: totrans-151
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 有如 `"ES2024"` 和 `"DOM"` 这样的类别，以及如 `"DOM.Iterable"` 和 `"ES2024.Promise"` 这样的子类别。
 - en: 'Which values are available? We can look them up here:'
+  id: totrans-152
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 哪些值可用？我们可以在以下位置查找：
 - en: Auto-completion (e.g. in Visual Studio Code)
+  id: totrans-153
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 自动完成（例如在 Visual Studio Code 中）
 - en: '[TypeScript documentation](https://www.typescriptlang.org/tsconfig/#lib)'
+  id: totrans-154
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[TypeScript 文档](https://www.typescriptlang.org/tsconfig/#lib)'
 - en: '[TypeScript source code repository](https://github.com/microsoft/TypeScript/tree/main/src/lib)'
+  id: totrans-155
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[TypeScript 源代码仓库](https://github.com/microsoft/TypeScript/tree/main/src/lib)'
 - en: 'The values are case-insensitive: Visual Studio Code’s autocompletion suggestions
     contain many capital letters; the filenames contain none. `lib` values can be
     written either way.'
+  id: totrans-156
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 值不区分大小写：Visual Studio Code 的自动完成建议包含许多大写字母；文件名则不包含。`lib` 值可以以任何一种方式书写。
 - en: When does TypeScript support a given API? It must be “available un-prefixed/flagged
     in at least 2 browser *engines* (i.e. not just 2 chromium browsers)” ([source](https://github.com/microsoft/TypeScript/tree/main/src/lib)).
+  id: totrans-157
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 在何时支持某个特定的 API？它必须在至少 2 个浏览器 *引擎* 中无前缀/标记地可用（即不仅仅是 2 个铬浏览器）([来源](https://github.com/microsoft/TypeScript/tree/main/src/lib))。
 - en: '[8.5.2.1 Setting up `lib` via `target`](#setting-up-lib-via-target)'
+  id: totrans-158
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.5.2.1 通过 `target` 设置 `lib`](#setting-up-lib-via-target)'
 - en: '`target` determines the default value of `lib`: If the latter is omitted and
     `target` is `"ES20YY"` then `"ES20YY.Full"` is used. However, that is not a value
     we can use ourselves. If we want to replicate what removing `lib` does, we have
     to enumerate the contents of (e.g.) `es2024.full.d.ts` in the [TypeScript source
     code repository](https://github.com/microsoft/TypeScript/tree/main/src/lib) ourselves:'
+  id: totrans-159
   prefs: []
   type: TYPE_NORMAL
+  zh: '`target` 决定了 `lib` 的默认值：如果后者被省略且 `target` 是 `"ES20YY"`，则使用 `"ES20YY.Full"`。然而，这不是我们可以使用的值。如果我们想复制移除
+    `lib` 的效果，我们必须自己列出（例如）`es2024.full.d.ts` 在 [TypeScript 源代码仓库](https://github.com/microsoft/TypeScript/tree/main/src/lib)
+    中的内容：'
 - en: '[PRE15]'
+  id: totrans-160
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE15]'
 - en: 'In this file, we can observe an interesting phenomenon:'
+  id: totrans-161
   prefs: []
   type: TYPE_NORMAL
+  zh: 在这个文件中，我们可以观察到一种有趣的现象：
 - en: Category `"ES20YY"` usually includes all of its subcategories.
+  id: totrans-162
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类别 `"ES20YY"` 通常包括其所有子类别。
 - en: Category `"DOM"` doesn’t – e.g., subcategory `"DOM.Iterable"` is not yet part
     of it.
+  id: totrans-163
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 类别 `"DOM"` 还不包括 - 例如，子类别 `"DOM.Iterable"` 还不是它的一部分。
 - en: 'Among other things, `"DOM.Iterable"` enables iteration over NodeLists – e.g.:'
+  id: totrans-164
   prefs: []
   type: TYPE_NORMAL
+  zh: 在其他方面，`"DOM.Iterable"` 允许遍历 NodeList – 例如：
 - en: '[PRE16]'
+  id: totrans-165
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE16]'
 - en: '[8.5.3 `skipLibCheck`](#skipLibCheck)'
+  id: totrans-166
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.5.3 `skipLibCheck`](#skipLibCheck)'
 - en: '`skipLibCheck:false` – By default, TypeScript type-checks all `.d.ts` files.
     This is normally not necessary but helps when a project contains hand-written
     `.d.ts` files.'
+  id: totrans-167
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`skipLibCheck:false` – 默认情况下，TypeScript 会检查所有的 `.d.ts` 文件。这通常不是必需的，但当一个项目包含手写的
+    `.d.ts` 文件时，这很有帮助。'
 - en: '`skipLibCheck:true` – If we switch it off, then TypeScript will only type-check
     library functionality we use in our code. That saves time – which is why I went
     with `true`.'
+  id: totrans-168
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`skipLibCheck:true` – 如果我们将其关闭，那么 TypeScript 将只检查我们代码中使用的库功能。这可以节省时间 – 这也是为什么我选择了
+    `true`。'
 - en: '[8.5.4 Types for the built-in Node.js APIs](#types-for-the-built-in-node-js-apis)'
+  id: totrans-169
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.5.4 内置 Node.js API 的类型](#types-for-the-built-in-node-js-apis)'
 - en: 'The types for the Node.js APIs must be installed via [an npm package](https://www.npmjs.com/package/@types/node):'
+  id: totrans-170
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js API 的类型必须通过 [一个 npm 包](https://www.npmjs.com/package/@types/node) 安装：
 - en: '[PRE17]'
+  id: totrans-171
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE17]'
 - en: '[8.6 Module system](#module-system)'
+  id: totrans-172
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.6 模块系统](#module-system)'
 - en: '[8.6.1 How does TypeScript look for imported modules?](#how-does-typescript-look-for-imported-modules)'
+  id: totrans-173
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.6.1 TypeScript 如何查找导入的模块？](#how-does-typescript-look-for-imported-modules)'
 - en: 'These options affect how TypeScript looks for imported modules:'
+  id: totrans-174
   prefs: []
   type: TYPE_NORMAL
+  zh: 这些选项影响 TypeScript 查找导入模块的方式：
 - en: '[PRE18]'
+  id: totrans-175
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE18]'
 - en: '[8.6.1.1 Option `module`](#option-module)'
+  id: totrans-176
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.6.1.1 选项 `module`](#option-module)'
 - en: 'With this option, we specify systems for handling modules. If we set it up
     correctly, we also take care of the related option `moduleResolution`, for which
     it provides good defaults. The TypeScript documentation recommends either of the
     following two values:'
+  id: totrans-177
   prefs: []
   type: TYPE_NORMAL
+  zh: 使用此选项，我们指定处理模块的系统。如果我们正确设置它，我们也会照顾到相关的选项 `moduleResolution`，它为此提供了良好的默认值。TypeScript
+    文档建议以下两个值之一：
 - en: 'Node.js: `"NodeNext"` supports both CommonJS and the latest ESM features.'
+  id: totrans-178
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 'Node.js: `"NodeNext"` 支持CommonJS和最新的ESM功能。'
 - en: 'Implies `"moduleResolution": "NodeNext"`'
+  id: totrans-179
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '暗示 `"moduleResolution": "NodeNext"`'
 - en: 'Downside of `"NodeNext"`: It’s a moving target. But generally, functionality
     is only added.'
+  id: totrans-180
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"NodeNext"` 的缺点：它是一个移动的目标。但一般来说，功能只会增加。'
 - en: 'Upside of `"NodeNext"`: It supports a good mix of features – for example ([source](https://github.com/microsoft/TypeScript/pull/60761)):'
+  id: totrans-181
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"NodeNext"` 的优势：它支持良好的功能组合 – 例如 ([来源](https://github.com/microsoft/TypeScript/pull/60761))：'
 - en: '`"Node16"` does not support import attributes (which are needed for importing
     JSON files).'
+  id: totrans-182
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"Node16"` 不支持导入属性（这些属性对于导入JSON文件是必需的）。'
 - en: '`"Node18"` and `"Node20"` support the outdated import assertions.'
+  id: totrans-183
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"Node18"` 和 `"Node20"` 支持过时的导入断言。'
 - en: '`require(esm)` (which is only relevant for CommonJS code, not for ESM code)
     is only supported by `"Node20"` and `"NodeNext"`.'
+  id: totrans-184
   prefs:
   - PREF_IND
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`require(esm)`（这对于CommonJS代码相关，但不适用于ESM代码）仅由 `"Node20"` 和 `"NodeNext"` 支持。'
 - en: 'Bundlers: `"Preserve"` supports both CommonJS and the latest ESM features.
     It matches what most bundlers do.'
+  id: totrans-185
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '打包器: `"Preserve"` 支持CommonJS和最新的ESM功能。它与大多数打包器所做的一致。'
 - en: 'Implies `"moduleResolution": "bundler"`'
+  id: totrans-186
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '暗示 `"moduleResolution": "bundler"`'
 - en: Given that bundlers mostly mimic what Node.js does, I’m always using `"NodeNext"`
     and haven’t encountered any issues.
+  id: totrans-187
   prefs: []
   type: TYPE_NORMAL
+  zh: 由于打包器大多模仿Node.js的行为，我总是使用 `"NodeNext"` 并没有遇到任何问题。
 - en: Note that in both cases, TypeScript forces us to mention the complete names
     of local modules we import. We can’t omit filename extensions as was frequent
     practice when Node.js was only compiled to CommonJS. The new approach mirrors
     how pure-JavaScript ESM works.
+  id: totrans-188
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，在这两种情况下，TypeScript 都强迫我们提及我们导入的本地模块的完整名称。我们不能省略文件扩展名，正如当Node.js仅编译为CommonJS时常见的做法。
 - en: '`module:NodeNext` implies `target:ESNext` but in this case, I prefer to manually
     set up `target` because `module` and `target` are not as closely related as `module`
     and `moduleResolution`. Furthermore, `module:Bundler` does not imply anything.'
+  id: totrans-189
   prefs: []
   type: TYPE_NORMAL
+  zh: '`module:NodeNext`意味着`target:ESNext`，但在此情况下，我更喜欢手动设置`target`，因为`module`和`target`并不像`module`和`moduleResolution`那样紧密相关。此外，`module:Bundler`并不表示任何内容。'
 - en: '[8.6.1.2 Option `noUncheckedSideEffectImports`](#option-nouncheckedsideeffectimports)'
+  id: totrans-190
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.6.1.2 选项`noUncheckedSideEffectImports`](#option-nouncheckedsideeffectimports)'
 - en: 'By default, TypeScript does not complain if an empty import does not exist.
     The reason for this behavior is that this is a pattern supported by some bundlers
     to associate non-TypeScript artifacts with modules. And TypeScript only sees TypeScript
     files. This is what such an import looks like:'
+  id: totrans-191
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，如果不存在空导入，TypeScript不会报错。这种行为的原因是，这是某些打包器支持的一种模式，用于将非TypeScript工件与模块关联。而TypeScript只看到TypeScript文件。这样的导入看起来是这样的：
 - en: '[PRE19]'
+  id: totrans-192
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE19]'
 - en: Interestingly, TypeScript normally is also OK with emptily imported TypeScript
     files that don’t exist. It only complains if we import something from a non-existent
     file.
+  id: totrans-193
   prefs: []
   type: TYPE_NORMAL
+  zh: 有趣的是，TypeScript通常也对空导入的TypeScript文件表示默许。只有在从不存在文件导入时，它才会报错。
 - en: '[PRE20]'
+  id: totrans-194
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE20]'
 - en: Setting `noUncheckedSideEffectImports` to `true` changes that. I’m explaining
     an alternative for importing non-TypeScript artifacts [later](#importing-other-non-typescript-artifacts).
+  id: totrans-195
   prefs: []
   type: TYPE_NORMAL
+  zh: 将`noUncheckedSideEffectImports`设置为`true`会改变这一点。我将在[稍后](#importing-other-non-typescript-artifacts)解释导入非TypeScript工件的一个替代方案。
 - en: '[8.6.2 Running TypeScript directly (without generating JS files)](#running-typescript-directly)'
+  id: totrans-196
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.6.2 直接运行TypeScript（不生成JS文件）](#running-typescript-directly)'
 - en: '[PRE21]'
+  id: totrans-197
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE21]'
 - en: Most non-browser JavaScript platforms now can run TypeScript code directly,
     without transpiling it.
+  id: totrans-198
   prefs: []
   type: TYPE_NORMAL
+  zh: 大多数非浏览器JavaScript平台现在可以直接运行TypeScript代码，无需进行转译。
 - en: 'This mainly affects what filename extension we use when we import a local module.
     Traditionally, TypeScript does not change module specifiers and we have to use
     the filename extension `.js` in ESM modules (which is what works in the JavaScript
     that our TypeScript is compiled to):'
+  id: totrans-199
   prefs: []
   type: TYPE_NORMAL
+  zh: 这主要影响我们在导入本地模块时使用的文件名扩展名。传统上，TypeScript不会更改模块指定符，因此我们必须在ESM模块中使用文件名扩展名`.js`（这是我们的TypeScript编译成的JavaScript所使用的）：
 - en: '[PRE22]'
+  id: totrans-200
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE22]'
 - en: 'If we run TypeScript directly, that import statement looks like this:'
+  id: totrans-201
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们直接运行TypeScript，那么这个导入语句看起来是这样的：
 - en: '[PRE23]'
+  id: totrans-202
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE23]'
 - en: 'This is enabled via the following settings:'
+  id: totrans-203
   prefs: []
   type: TYPE_NORMAL
+  zh: 这可以通过以下设置启用：
 - en: '`allowImportingTsExtensions`: If this option is active, TypeScript won’t complain
     if we use the filename extension `.ts`.'
+  id: totrans-204
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`allowImportingTsExtensions`：如果此选项处于活动状态，TypeScript不会报错，如果我们使用文件名扩展名`.ts`。'
 - en: '`rewriteRelativeImportExtensions`: With this option, we can also transpile
     TypeScript code that is meant to be run directly. By default, TypeScript does
     not change the module specifiers of imports. This option comes with a few caveats:'
+  id: totrans-205
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`rewriteRelativeImportExtensions`：通过此选项，我们还可以转译旨在直接运行的TypeScript代码。默认情况下，TypeScript不会更改导入的模块指定符。此选项附带一些注意事项：'
 - en: Only relative paths are rewritten.
+  id: totrans-206
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 只有相对路径会被重写。
 - en: They are rewritten “naively” – without taking the options `baseUrl` and `paths`
     into consideration (which are beyond the scope of this chapter).
+  id: totrans-207
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 它们会被“天真地”重写——不考虑`baseUrl`和`paths`选项（这些选项超出了本章的范围）。
 - en: Paths that are routed via the `"exports"` and `"imports"` properties in `package.json`
     don’t look like relative paths and are therefore not rewritten either.
+  id: totrans-208
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在`package.json`中的`"exports"`和`"imports"`属性中路由的路径看起来不像相对路径，因此也不会被重写。
 - en: 'Related option:'
+  id: totrans-209
   prefs: []
   type: TYPE_NORMAL
+  zh: 相关选项：
 - en: If you want to use tsc only for type checking, then take a look at [the `noEmit`
     option](#noEmit).
+  id: totrans-210
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果你只想使用tsc进行类型检查，那么请查看[“noEmit”选项](#noEmit)。
 - en: '[8.6.2.1 Node’s built-in support for TypeScript](#typescript-in-nodejs)'
+  id: totrans-211
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.6.2.1 Node对TypeScript的内置支持](#typescript-in-nodejs)'
 - en: 'Node.js now supports TypeScript via *type stripping*:'
+  id: totrans-212
   prefs: []
   type: TYPE_NORMAL
+  zh: Node.js现在通过*类型剥离*支持TypeScript：
 - en: '[More information on type stripping and option `erasableSyntaxOnly` that helps
     with it](#erasableSyntaxOnly)'
+  id: totrans-213
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[关于类型剥离和帮助其的选项`erasableSyntaxOnly`的更多信息](#erasableSyntaxOnly)'
 - en: '[Node’s official documentation on its TypeScript support](https://nodejs.org/api/typescript.html)'
+  id: totrans-214
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[Node对TypeScript支持的官方文档](https://nodejs.org/api/typescript.html)'
 - en: '[8.6.3 Importing JSON](#importing-json)'
+  id: totrans-215
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.6.3 导入JSON](#importing-json)'
 - en: '[PRE24]'
+  id: totrans-216
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE24]'
 - en: 'The option `resolveJsonModule` enables us to import JSON files:'
+  id: totrans-217
   prefs: []
   type: TYPE_NORMAL
+  zh: 选项`resolveJsonModule`使我们能够导入JSON文件：
 - en: '[PRE25]'
+  id: totrans-218
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE25]'
 - en: '[8.6.4 Importing other non-TypeScript artifacts](#importing-other-non-typescript-artifacts)'
+  id: totrans-219
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.6.4 导入其他非TypeScript工件](#importing-other-non-typescript-artifacts)'
 - en: Whenever we import a file `basename.ext` whose extension `ext` TypeScript doesn’t
     know, it looks for a file `basename.d.ext.ts`. If it can’t find it, it raises
     an error. The TypeScript documentation has [a good example](https://www.typescriptlang.org/tsconfig/#allowArbitraryExtensions)
     of what such a file can look like.
+  id: totrans-220
   prefs: []
   type: TYPE_NORMAL
+  zh: 每当我们导入一个 TypeScript 不认识的扩展名为 `ext` 的文件 `basename.ext` 时，它会寻找一个 `basename.d.ext.ts`
+    文件。如果找不到，它会引发错误。TypeScript 文档有一个[很好的例子](https://www.typescriptlang.org/tsconfig/#allowArbitraryExtensions)说明此类文件可能的样子。
 - en: There are two ways in which we can prevent TypeScript from raising errors for
     unknown imports.
+  id: totrans-221
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们有两种方法可以防止 TypeScript 对未知导入引发错误。
 - en: First, we can use option `allowArbitraryExtensions` to prevent any kind of error
     reporting in this case.
+  id: totrans-222
   prefs: []
   type: TYPE_NORMAL
+  zh: 首先，我们可以使用选项 `allowArbitraryExtensions` 来防止在这种情况下报告任何类型的错误。
 - en: 'Second, we can create an *ambient module declaration* with a wildcard specifier
     – a `.d.ts` file that has to be somewhere among the files that TypeScript is aware
     of. The following example suppresses errors for all imports with the filename
     extension `.css`:'
+  id: totrans-223
   prefs: []
   type: TYPE_NORMAL
+  zh: 第二种方法，我们可以创建一个带有通配符指定符的 *环境模块声明* —— 一个必须位于 TypeScript 所知文件中的 `.d.ts` 文件。以下示例抑制了所有具有文件扩展名
+    `.css` 的导入的错误：
 - en: '[PRE26]'
+  id: totrans-224
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE26]'
 - en: '[8.7 Type checking](#type-checking)'
+  id: totrans-225
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.7   类型检查](#type-checking)'
 - en: '[PRE27]'
+  id: totrans-226
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE27]'
 - en: '`strict` is a must, in my opinion. With the remaining settings, you have to
     decide for yourself if you want the additional strictness for your code. You can
     start by adding all of them and see which ones cause too much trouble for your
     taste.'
+  id: totrans-227
   prefs: []
   type: TYPE_NORMAL
+  zh: 在我看来，`strict` 是必须的。在剩余的设置中，你必须自己决定是否想要为你的代码添加额外的严格性。你可以从添加所有这些设置开始，看看哪些设置给你带来了太多麻烦。
 - en: '[8.7.1 `strict`](#strict)'
+  id: totrans-228
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.7.1   `strict`](#strict)'
 - en: The compiler setting `strict` provides an important minimal setting for type
     checking. In principle, this setting would default to `true` but backward compatibility
     makes that impossible.
+  id: totrans-229
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器设置 `strict` 为类型检查提供了一个重要的最小设置。原则上，此设置默认为 `true`，但由于向后兼容性，这变得不可能。
 - en: '![Icon “tip”](../Images/0873709827ba4924e4afbb757e47a4df.png) **The compiler
     option `strict` in a nutshell**'
+  id: totrans-230
   prefs: []
   type: TYPE_NORMAL
+  zh: '![图标“提示”](../Images/0873709827ba4924e4afbb757e47a4df.png)   **编译器选项 `strict`
+    简要说明**'
 - en: '`strict` basically means: Type-check as much as possible, as correctly as possible.'
+  id: totrans-231
   prefs: []
   type: TYPE_NORMAL
+  zh: '`strict`基本上意味着：尽可能多地、尽可能正确地进行类型检查。'
 - en: '`strict` activates the following settings (which won’t be mentioned again in
     this chapter):'
+  id: totrans-232
   prefs: []
   type: TYPE_NORMAL
+  zh: '`strict` 激活以下设置（本章节中不再提及）：'
 - en: '`alwaysStrict`: always emit `"use strict"` in script files. That’s a legacy
     JavaScript feature that’s not needed in ECMAScript modules.'
+  id: totrans-233
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`alwaysStrict`: 总是在脚本文件中发出 `"use strict"`。这是一个过时的 JavaScript 功能，在 ECMAScript
+    模块中不再需要。'
 - en: '`noImplicitAny`: If `true`, we can omit types in some locations (mainly parameter
     definitions) and TypeScript will (implicitly) infer the type `any`. If `false`,
     we must provide explicit type annotations – which can use the type `any` (explicitly).
     For more information, see [“The compiler option `noImplicitAny`” (§14.2.3)](ch_any-unknown.html#noImplicitAny).'
+  id: totrans-234
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`noImplicitAny`: 如果设置为 `true`，我们可以在某些位置（主要是参数定义）省略类型，TypeScript 将（隐式地）推断类型
+    `any`。如果设置为 `false`，我们必须提供显式类型注解——这可以使用类型 `any`（显式地）。有关更多信息，请参阅[“编译器选项 `noImplicitAny`”（§14.2.3）](ch_any-unknown.html#noImplicitAny)。'
 - en: '`noImplicitThis`: If we use `this` in ordinary functions, we must explicitly
     declare its type.'
+  id: totrans-235
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`noImplicitThis`: 如果我们在普通函数中使用 `this`，我们必须显式声明其类型。'
 - en: '`strictBindCallApply`: If `true`, TypeScript will check that we pass correct
     arguments to `.call()`, `.apply()` and `.bind()`. If `false`, we can pass any
     arguments to those methods.'
+  id: totrans-236
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`strictBindCallApply`: 如果设置为 `true`，TypeScript 将检查我们是否向 `.call()`、`.apply()`
+    和 `.bind()` 方法传递了正确的参数。如果设置为 `false`，我们可以向这些方法传递任何参数。'
 - en: '`strictBuiltinIteratorReturn`: If active, built-in iterators have the `TReturn`
     type `undefined` (instead of `any`).'
+  id: totrans-237
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`strictBuiltinIteratorReturn`: 如果激活，内置迭代器具有 `TReturn` 类型 `undefined`（而不是 `any`）。'
 - en: '`strictFunctionTypes`: If `true`, compatibility between function types is handled
     more correctly.'
+  id: totrans-238
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`strictFunctionTypes`: 如果设置为 `true`，则函数类型之间的兼容性将得到更正确的处理。'
 - en: '`strictNullChecks`: If `true`, the values `undefined` and `null` are not elements
     of normal types `T`. If we want to accept them, we have to use the type `undefined
     | T` or `null | T`, respectively.'
+  id: totrans-239
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`strictNullChecks`: 如果设置为 `true`，则值 `undefined` 和 `null` 不是正常类型 `T` 的元素。如果我们想接受它们，我们必须使用类型
+    `undefined | T` 或 `null | T`。'
 - en: '`strictPropertyInitialization`: If `true`, TypeScript warns us if we don’t
     initialize a class instance property in the constructor. For more information,
     see [“Strict property initialization” (§21.4.1)](ch_class-definitions.html#strictPropertyInitialization).'
+  id: totrans-240
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`strictPropertyInitialization`：如果为 `true`，TypeScript 会警告我们在构造函数中没有初始化类实例属性。更多信息，请参阅[“严格的属性初始化”（§21.4.1）](ch_class-definitions.html#strictPropertyInitialization)。'
 - en: '`useUnknownInCatchVariables`: If `true`, TypeScript gives `catch` variables
     without type annotations the type `unknown` (instead of `any`).'
+  id: totrans-241
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`useUnknownInCatchVariables`：如果为 `true`，TypeScript 给 `catch` 变量赋予没有类型注解的类型
+    `unknown`（而不是 `any`）。'
 - en: '[8.7.2 `exactOptionalPropertyTypes`](#exactOptionalPropertyTypes)'
+  id: totrans-242
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.7.2 `exactOptionalPropertyTypes`](#exactOptionalPropertyTypes)'
 - en: 'If `true` then `.colorTheme` can only be omitted and not be set to `undefined`:'
+  id: totrans-243
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果为 `true`，则 `.colorTheme` 只能省略，不能设置为 `undefined`：
 - en: '[PRE28]'
+  id: totrans-244
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE28]'
 - en: 'This option also prevents optional tuple elements being `undefined` (vs. missing):'
+  id: totrans-245
   prefs: []
   type: TYPE_NORMAL
+  zh: 此选项还会防止可选元组元素为 `undefined`（与缺失的元素相比）：
 - en: '[PRE29]'
+  id: totrans-246
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE29]'
 - en: '[8.7.2.1 `exactOptionalPropertyTypes` prevents useful patterns](#exactoptionalpropertytypes-prevents-useful-patterns)'
+  id: totrans-247
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.7.2.1 `exactOptionalPropertyTypes` 阻止有用的模式](#exactoptionalpropertytypes-prevents-useful-patterns)'
 - en: 'I’m ambivalent about this option: On one hand, enabling it prevents useful
     patterns such as:'
+  id: totrans-248
   prefs: []
   type: TYPE_NORMAL
+  zh: 我对这个选项持保留态度：一方面，启用它防止了有用的模式，例如：
 - en: '[PRE30]'
+  id: totrans-249
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE30]'
 - en: '[8.7.2.2 `exactOptionalPropertyTypes` produces better types: spreading](#exactoptionalpropertytypes-produces-better-types-spreading)'
+  id: totrans-250
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.7.2.2 `exactOptionalPropertyTypes` 产生更好的类型：展开](#exactoptionalpropertytypes-produces-better-types-spreading)'
 - en: 'On the other hand, it does better reflect how JavaScript works – e.g., spreading
     distinguishes missing properties and properties whose values are `undefined`:'
+  id: totrans-251
   prefs: []
   type: TYPE_NORMAL
+  zh: 另一方面，它更好地反映了 JavaScript 的工作方式 - 例如，展开区分了缺失的属性和值是 `undefined` 的属性：
 - en: '[PRE31]'
+  id: totrans-252
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE31]'
 - en: If we had assigned an empty object in line A then the value of `result` would
     be `{a:1}` and match its type.
+  id: totrans-253
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果我们在第 A 行分配了一个空对象，那么 `result` 的值将是 `{a:1}` 并匹配其类型。
 - en: '`Object.assign()` works similarly to spreading.'
+  id: totrans-254
   prefs: []
   type: TYPE_NORMAL
+  zh: '`Object.assign()` 与展开类似工作。'
 - en: '[8.7.2.3 `exactOptionalPropertyTypes` produces better types: `in` operator](#exactoptionalpropertytypes-produces-better-types-in-operator)'
+  id: totrans-255
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.7.2.3 `exactOptionalPropertyTypes` 产生更好的类型：`in` 操作符](#exactoptionalpropertytypes-produces-better-types-in-operator)'
 - en: '[PRE32]'
+  id: totrans-256
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE32]'
 - en: '[8.7.3 `noFallthroughCasesInSwitch`](#noFallthroughCasesInSwitch)'
+  id: totrans-257
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.7.3 `noFallthroughCasesInSwitch`](#noFallthroughCasesInSwitch)'
 - en: If `true`, non-empty `switch` cases must end with `break`, `return` or `throw`.
+  id: totrans-258
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果为 `true`，则非空 `switch` 语句必须以 `break`、`return` 或 `throw` 结尾。
 - en: '[8.7.4 `noImplicitOverride`](#noImplicitOverride)'
+  id: totrans-259
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.7.4 `noImplicitOverride`](#noImplicitOverride)'
 - en: If `true` then methods that override superclass methods must have the `override`
     modifier.
+  id: totrans-260
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果为 `true`，则覆盖超类方法的必须具有 `override` 修饰符。
 - en: '[8.7.5 `noImplicitReturns`](#noImplicitReturns)'
+  id: totrans-261
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.7.5 `noImplicitReturns`](#noImplicitReturns)'
 - en: If `true` then an “implicit return” (the function or method ending) is only
     allowed if the return type is `void`.
+  id: totrans-262
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果为 `true`，则只有当返回类型是 `void` 时才允许“隐式返回”（函数或方法的结束）。
 - en: '[8.7.6 `noPropertyAccessFromIndexSignature`](#noPropertyAccessFromIndexSignature)'
+  id: totrans-263
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.7.6 `noPropertyAccessFromIndexSignature`](#noPropertyAccessFromIndexSignature)'
 - en: 'If `true` then for types such as the following one, we cannot use the dot notation
     for unknown properties, only for known ones:'
+  id: totrans-264
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果为 `true`，则对于如下类型的以下类型，我们无法使用点符号访问未知属性，只能访问已知属性：
 - en: '[PRE33]'
+  id: totrans-265
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE33]'
 - en: '[8.7.7 `noUncheckedIndexedAccess`](#noUncheckedIndexedAccess)'
+  id: totrans-266
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.7.7 `noUncheckedIndexedAccess`](#noUncheckedIndexedAccess)'
 - en: '[8.7.7.1 `noUncheckedIndexedAccess` and objects](#nouncheckedindexedaccess-and-objects)'
+  id: totrans-267
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.7.7.1 `noUncheckedIndexedAccess` 和对象](#nouncheckedindexedaccess-and-objects)'
 - en: 'If `noUncheckedIndexedAccess` is `true` then the type of an unknown property
     is the union of `undefined` and the type of the index signature:'
+  id: totrans-268
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果 `noUncheckedIndexedAccess` 为 `true`，则未知属性的类型的联合是 `undefined` 和索引签名类型的联合：
 - en: '[PRE34]'
+  id: totrans-269
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE34]'
 - en: '`noUncheckedIndexedAccess` does the same for `Record` (which is a mapped type):'
+  id: totrans-270
   prefs: []
   type: TYPE_NORMAL
+  zh: '`noUncheckedIndexedAccess` 对 `Record`（这是一个映射类型）也做同样的事情。'
 - en: '[PRE35]'
+  id: totrans-271
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE35]'
 - en: '[8.7.7.2 `noUncheckedIndexedAccess` and Arrays](#nouncheckedindexedaccess-and-arrays)'
+  id: totrans-272
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.7.7.2 `noUncheckedIndexedAccess` 和数组](#nouncheckedindexedaccess-and-arrays)'
 - en: 'Option `noUncheckedIndexedAccess` also affects how Arrays are handled:'
+  id: totrans-273
   prefs: []
   type: TYPE_NORMAL
+  zh: 选项 `noUncheckedIndexedAccess` 也会影响数组处理的方式：
 - en: '[PRE36]'
+  id: totrans-274
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE36]'
 - en: 'One common pattern for Arrays is to check the length before accessing an element.
     However, that pattern becomes inconvenient with `noUncheckedIndexedAccess`:'
+  id: totrans-275
   prefs: []
   type: TYPE_NORMAL
+  zh: 数组的一个常见模式是在访问元素之前检查长度。然而，在 `noUncheckedIndexedAccess` 下，这种模式变得不方便：
 - en: '[PRE37]'
+  id: totrans-276
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE37]'
 - en: 'Therefore, it makes more sense to use a different pattern:'
+  id: totrans-277
   prefs: []
   type: TYPE_NORMAL
+  zh: 因此，使用不同的模式更有意义：
 - en: '[PRE38]'
+  id: totrans-278
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE38]'
 - en: '[8.7.8 Type checking options that have good defaults](#type-checking-options-that-have-good-defaults)'
+  id: totrans-279
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.7.8 具有良好默认值的类型检查选项](#type-checking-options-that-have-good-defaults)'
 - en: 'By default, the following options produce warnings in editors, but we can also
     choose to produce compiler errors or ignore problems:'
+  id: totrans-280
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，以下选项会在编辑器中产生警告，但我们也可以选择产生编译器错误或忽略问题：
 - en: '`allowUnreachableCode`'
+  id: totrans-281
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`allowUnreachableCode`'
 - en: '`allowUnusedLabels`'
+  id: totrans-282
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`allowUnusedLabels`'
 - en: '`noUnusedLocals`'
+  id: totrans-283
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`noUnusedLocals`'
 - en: '`noUnusedParameters`'
+  id: totrans-284
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`noUnusedParameters`'
 - en: '[8.8 Compiling TypeScript with tools other than tsc](#compiling-without-tsc)'
+  id: totrans-285
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.8 使用除tsc之外的工具编译TypeScript](#compiling-without-tsc)'
 - en: 'The TypeScript compiler tsc performs three tasks:'
+  id: totrans-286
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript编译器tsc执行三个任务：
 - en: Type checking
+  id: totrans-287
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 类型检查
 - en: Emitting JavaScript files
+  id: totrans-288
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 生成JavaScript文件
 - en: Emitting declaration files
+  id: totrans-289
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 生成声明文件
 - en: 'External tools have become popular that do #2 and #3 much faster. The following
     subsections describe configuration options that help those tools.'
+  id: totrans-290
   prefs: []
   type: TYPE_NORMAL
+  zh: 外部工具已经变得流行，它们可以更快地完成#2和#3。以下小节描述了帮助这些工具的配置选项。
 - en: '[8.8.1 Using tsc only for type checking](#noEmit)'
+  id: totrans-291
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.8.1 仅使用tsc进行类型检查](#noEmit)'
 - en: '[PRE39]'
+  id: totrans-292
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE39]'
 - en: 'Sometimes, we want to use tsc only for type checking – e.g., if we run TypeScript
     directly or use external tools for compiling TypeScript files (to JavaScript files,
     declaration files, etc.):'
+  id: totrans-293
   prefs: []
   type: TYPE_NORMAL
+  zh: 有时，我们只想使用tsc进行类型检查——例如，如果我们直接运行TypeScript或使用外部工具编译TypeScript文件（到JavaScript文件、声明文件等）：
 - en: '`noEmit`: If `true`, we can run tsc and it will only type-check the TypeScript
     code, it won’t emit any files.'
+  id: totrans-294
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`noEmit`：如果为`true`，我们可以运行tsc，它将只对TypeScript代码进行类型检查，而不会生成任何文件。'
 - en: In principle, you don’t have to provide output-related settings such as `rootDir`
     and `outDir` anymore. However, some external tools may need them.
+  id: totrans-295
   prefs: []
   type: TYPE_NORMAL
+  zh: 在原则上，你不再需要提供与输出相关的设置，如`rootDir`和`outDir`。然而，一些外部工具可能需要它们。
 - en: '[8.8.2 Generating `.js` files via type stripping: `erasableSyntaxOnly` and
     `verbatimModuleSyntax`](#type-stripping)'
+  id: totrans-296
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.8.2 通过类型剥离生成`.js`文件：`erasableSyntaxOnly`和`verbatimModuleSyntax`](#type-stripping)'
 - en: '[PRE40]'
+  id: totrans-297
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE40]'
 - en: '*Type stripping* is a simple and fast way of compiling TypeScript to JavaScript.
     It’s what Node.js uses when it runs TypeScript. Type stripping is fast because
     it only supports a subset of TypeScript where two things are possible:'
+  id: totrans-298
   prefs: []
   type: TYPE_NORMAL
+  zh: '*类型剥离*是将TypeScript编译成JavaScript的一种简单快捷的方法。当Node.js运行TypeScript时，它就是使用这种方法。类型剥离之所以快速，是因为它只支持TypeScript的一个子集，其中有两件事是可能的：'
 - en: Type syntax can be detected and removed by only parsing the syntax – without
     performing additional semantic analyses.
+  id: totrans-299
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 类型语法可以通过仅解析语法来检测和删除，而无需执行额外的语义分析。
 - en: 'No non-type language features are transpiled. In other words: Removing the
     type syntax is enough to produce JavaScript.'
+  id: totrans-300
   prefs:
   - PREF_OL
   type: TYPE_NORMAL
+  zh: 没有非类型语言特性会被转换。换句话说：移除类型语法就足以生成JavaScript。
 - en: 'To help with type stripping, TypeScript has two compiler options that report
     errors if we use unsupported features:'
+  id: totrans-301
   prefs: []
   type: TYPE_NORMAL
+  zh: 为了帮助类型剥离，TypeScript有两个编译器选项，如果使用不受支持的功能，它们会报告错误：
 - en: '`verbatimModuleSyntax` forbids features that prevent #1.'
+  id: totrans-302
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`verbatimModuleSyntax`禁止防止#1的功能。'
 - en: '`erasableSyntaxOnly` forbids features that are transpiled.'
+  id: totrans-303
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`erasableSyntaxOnly`禁止需要转换的特性。'
 - en: Note that these options don’t change what is emitted by tsc.
+  id: totrans-304
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，这些选项不会改变tsc生成的输出。
 - en: 'Useful related knowledge: [“Type stripping technique: replacing types with
     spaces” (§6.5.1.1)](ch_typescript-workflows.html#ts-blank-space).'
+  id: totrans-305
   prefs: []
   type: TYPE_NORMAL
+  zh: 有用的相关知识：[“类型剥离技术：用空格替换类型”（§6.5.1.1）](ch_typescript-workflows.html#ts-blank-space)。
 - en: '[8.8.3 `erasableSyntaxOnly`: no transpiled language features](#erasableSyntaxOnly)'
+  id: totrans-306
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.8.3 `erasableSyntaxOnly`：无转换语言特性](#erasableSyntaxOnly)'
 - en: 'The compiler option `erasableSyntaxOnly` helps with [type stripping](#type-stripping).
     It forbids non-type TypeScript features that are not “current” JavaScript (as
     supported by the target platforms) and have to be transpiled. These are the most
     important ones:'
+  id: totrans-307
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器选项`erasableSyntaxOnly`有助于[类型剥离](#type-stripping)。它禁止非类型TypeScript特性，这些特性不是“当前”JavaScript（由目标平台支持）并且必须进行转换。这些是最重要的：
 - en: JSX
+  id: totrans-308
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: JSX
 - en: Enums
+  id: totrans-309
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 枚举
 - en: '[Parameter properties](https://www.typescriptlang.org/docs/handbook/2/classes.html#parameter-properties)
     in class constructors.'
+  id: totrans-310
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[类构造函数中的参数属性](https://www.typescriptlang.org/docs/handbook/2/classes.html#parameter-properties)。'
 - en: Namespaces
+  id: totrans-311
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 命名空间
 - en: Future JavaScript that is compiled to current JavaScript
+  id: totrans-312
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 将未来JavaScript编译成当前JavaScript
 - en: 'Another feature that is forbidden by `erasableSyntaxOnly` is the legacy way
     of casting via angle brackets – because its syntax makes type stripping impossible
     in some cases ([source](https://github.com/microsoft/TypeScript/pull/61244)):'
+  id: totrans-313
   prefs: []
   type: TYPE_NORMAL
+  zh: '`erasableSyntaxOnly`还禁止了通过尖括号进行类型转换的旧方法——因为它的语法在某些情况下使得类型剥离变得不可能（[来源](https://github.com/microsoft/TypeScript/pull/61244)）：'
 - en: '[PRE41]'
+  id: totrans-314
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE41]'
 - en: 'However, the alternative `as` is always better anyway:'
+  id: totrans-315
   prefs: []
   type: TYPE_NORMAL
+  zh: 然而，替代的`as`总是更好的选择：
 - en: '[PRE42]'
+  id: totrans-316
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE42]'
 - en: '[8.8.4 `verbatimModuleSyntax`: enforcing `type` in imports and exports](#verbatimModuleSyntax)'
+  id: totrans-317
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.8.4 `verbatimModuleSyntax`：在导入和导出中强制使用`type`](#verbatimModuleSyntax)'
 - en: The compiler option `verbatimModuleSyntax` forces us to add the keyword `type`
     to type-only imports and exports.
+  id: totrans-318
   prefs: []
   type: TYPE_NORMAL
+  zh: 编译器选项`verbatimModuleSyntax`迫使我们向仅类型导入和导出添加关键字`type`。
 - en: When compiling TypeScript to JavaScript via [type stripping](#type-stripping),
     we need to remove the TypeScript parts. Most of those parts are easy to detect.
     The exception are imports and exports – e.g., without semantic analysis, we don’t
     know if an import is a (TypeScript) type or a (JavaScript) value. If type-only
     imports and exports are marked with the keyword `type`, no such analysis is necessary.
+  id: totrans-319
   prefs: []
   type: TYPE_NORMAL
+  zh: 当通过[type stripping](#type-stripping)将TypeScript编译成JavaScript时，我们需要删除TypeScript部分。其中大部分部分很容易检测到。例外的是导入和导出——例如，没有语义分析，我们不知道一个导入是（TypeScript）类型还是（JavaScript）值。如果仅类型导入和导出使用关键字`type`标记，则不需要此类分析。
 - en: '[8.8.4.1 Importing types](#importing-types)'
+  id: totrans-320
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.8.4.1 导入类型](#importing-types)'
 - en: 'This is what the keyword `type` looks like in imports:'
+  id: totrans-321
   prefs: []
   type: TYPE_NORMAL
+  zh: 这就是`type`关键字在导入中的样子：
 - en: '[PRE43]'
+  id: totrans-322
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE43]'
 - en: Note that a class is both a value and a type. In that case, no `type` keyword
     is needed because that part of the syntax can stay in plain JavaScript.
+  id: totrans-323
   prefs: []
   type: TYPE_NORMAL
+  zh: 注意，一个类既是值也是类型。在这种情况下，不需要`type`关键字，因为这部分语法可以保持为纯JavaScript。
 - en: 'We can also apply `type` to the whole import:'
+  id: totrans-324
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们也可以将`type`应用于整个导入：
 - en: '[PRE44]'
+  id: totrans-325
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE44]'
 - en: '[8.8.4.2 Exporting types](#exporting-types)'
+  id: totrans-326
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.8.4.2 导出类型](#exporting-types)'
 - en: 'Inline type exports:'
+  id: totrans-327
   prefs: []
   type: TYPE_NORMAL
+  zh: 内联类型导出：
 - en: '[PRE45]'
+  id: totrans-328
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE45]'
 - en: 'Export clauses:'
+  id: totrans-329
   prefs: []
   type: TYPE_NORMAL
+  zh: 导出条款：
 - en: '[PRE46]'
+  id: totrans-330
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE46]'
 - en: 'Alas, default-exporting only works for interfaces:'
+  id: totrans-331
   prefs: []
   type: TYPE_NORMAL
+  zh: 可惜，默认导出仅适用于接口：
 - en: '[PRE47]'
+  id: totrans-332
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE47]'
 - en: 'We can use the following workaround:'
+  id: totrans-333
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们可以使用以下解决方案：
 - en: '[PRE48]'
+  id: totrans-334
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE48]'
 - en: Why does this inconsistency exist? `type` is allowed as a (JavaScript-level)
     identifier after `export default`.
+  id: totrans-335
   prefs: []
   type: TYPE_NORMAL
+  zh: 为什么存在这种不一致性？`type`在`export default`之后允许作为（JavaScript级别）标识符。
 - en: '[8.8.4.3 `isolatedModules`](#isolatedModules)'
+  id: totrans-336
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.8.4.3 `isolatedModules`](#isolatedModules)'
 - en: Activating `verbatimModuleSyntax` also activates `isolatedModules`, which is
     why we only need the former setting. The latter prevents us from using some relatively
     obscure features that are also problematic.
+  id: totrans-337
   prefs: []
   type: TYPE_NORMAL
+  zh: 激活`verbatimModuleSyntax`也会激活`isolatedModules`，这就是为什么我们只需要前者设置。后者阻止我们使用一些相对不为人知的特性，这些特性也可能有问题。
 - en: As an aside, this option enables esbuild to compile TypeScript to JavaScript
     ([source](https://esbuild.github.io/content-types/#isolated-modules)).
+  id: totrans-338
   prefs: []
   type: TYPE_NORMAL
+  zh: 作为旁注，此选项使esbuild能够将TypeScript编译成JavaScript ([source](https://esbuild.github.io/content-types/#isolated-modules))。
 - en: '[8.8.5 `isolatedDeclarations`: generating `.d.ts` files more efficiently](#isolatedDeclarations)'
+  id: totrans-339
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.8.5 `isolatedDeclarations`：更高效地生成`.d.ts`文件](#isolatedDeclarations)'
 - en: '[PRE49]'
+  id: totrans-340
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE49]'
 - en: 'Option `isolatedDeclarations` helps external tools compile TypeScript files
     to declaration files, by forcing us to add more type annotations so that no type
     inference is needed for compilation (trivially simple type inference is still
     allowed – more on that soon). That has several benefits:'
+  id: totrans-341
   prefs: []
   type: TYPE_NORMAL
+  zh: 选项`isolatedDeclarations`通过迫使我们添加更多类型注解，从而帮助外部工具将TypeScript文件编译成声明文件，这样在编译时就不需要类型推断（简单类型推断仍然允许——更多内容将在后面介绍）。这有几个好处：
 - en: The tools don’t need to know the logic of type inference – which makes them
     simpler. Extracting declarations becomes a syntactic operation and doesn’t really
     have to consider the type level.
+  id: totrans-342
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 工具不需要知道类型推断的逻辑——这使得它们更简单。提取声明变成了一种语法操作，并且实际上不需要考虑类型级别。
 - en: Not having to run type inference saves time.
+  id: totrans-343
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 不必运行类型推断可以节省时间。
 - en: 'We can look at single files in isolation: Type inference sometimes has to visit
     other files to compute its results, which introduces dependencies on those files.'
+  id: totrans-344
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 我们可以单独查看单个文件：类型推断有时需要访问其他文件来计算其结果，这引入了对这些文件的依赖。
 - en: Incidentally, that explains the name of the compiler option.
+  id: totrans-345
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 顺便说一下，这也解释了编译器选项名称的由来。
 - en: '`isolatedDeclarations` only produces compiler errors, it does not change what
     is emitted by tsc. It only affects constructs that are exported – because only
     those show up in declaration files. Module-internal code is not affected.'
+  id: totrans-346
   prefs: []
   type: TYPE_NORMAL
+  zh: '`isolatedDeclarations`仅产生编译器错误，它不会改变tsc输出的内容。它只影响导出的结构——因为只有那些会出现在声明文件中。模块内部代码不受影响。'
 - en: Let’s look at three constructs affected by `isolatedDeclarations`.
+  id: totrans-347
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看受`isolatedDeclarations`影响的三个结构。
 - en: '[8.8.5.1 Return types of top-level functions](#return-types-of-top-level-functions)'
+  id: totrans-348
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.8.5.1 顶级函数的返回类型](#return-types-of-top-level-functions)'
 - en: 'For top-level functions, we should usually explicitly specify return types:'
+  id: totrans-349
   prefs: []
   type: TYPE_NORMAL
+  zh: 对于顶级函数，我们通常应该明确指定返回类型：
 - en: '[PRE50]'
+  id: totrans-350
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE50]'
 - en: '[8.8.5.2 Types of variable declarations](#types-of-variable-declarations)'
+  id: totrans-351
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.8.5.2 变量声明的类型](#types-of-variable-declarations)'
 - en: 'More complicated variable declarations must have type annotations. Note that
     this only affects top-level declarations – e.g.: Variable declarations inside
     functions don’t show up in declaration files and therefore don’t matter.'
+  id: totrans-352
   prefs: []
   type: TYPE_NORMAL
+  zh: 更复杂的变量声明必须具有类型注解。请注意，这仅影响顶层声明 - 例如：函数内部的变量声明不会出现在声明文件中，因此无关紧要。
 - en: '[PRE51]'
+  id: totrans-353
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE51]'
 - en: '[8.8.5.3 Types of class instance fields](#types-of-class-instance-fields)'
+  id: totrans-354
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.8.5.3 类实例字段的类型](#types-of-class-instance-fields)'
 - en: 'Class instance fields must have type annotations (even though `tsc` can infer
     their types if there is an assignment in the constructor):'
+  id: totrans-355
   prefs: []
   type: TYPE_NORMAL
+  zh: 类实例字段必须具有类型注解（即使 `tsc` 可以在构造函数中推断它们的类型）：
 - en: '[PRE52]'
+  id: totrans-356
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE52]'
 - en: '[8.8.5.4 `isolatedDeclarations` requires `declaration` or `composite`](#isolateddeclarations-requires-declaration-or-composite)'
+  id: totrans-357
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.8.5.4 `isolatedDeclarations` 需要 `declaration` 或 `composite`](#isolateddeclarations-requires-declaration-or-composite)'
 - en: 'I’d love to always use `isolatedDeclarations`, but TypeScript only allows it
     if option `declaration` or option `composite` are active. [Jake Bailey explains
     why that is](https://github.com/microsoft/TypeScript/issues/58262#issuecomment-2597014286):'
+  id: totrans-358
   prefs: []
   type: TYPE_NORMAL
+  zh: 我很乐意始终使用 `isolatedDeclarations`，但 TypeScript 只允许在选项 `declaration` 或选项 `composite`
+    启用时使用它。[Jake Bailey 解释了原因](https://github.com/microsoft/TypeScript/issues/58262#issuecomment-2597014286)：
 - en: At the implementation level, `isolatedDeclarations` diagnostics are extra declaration
     diagnostics produced by the declaration transformer, which we only run when `declaration`
     is enabled.
+  id: totrans-359
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 在实现层面，`isolatedDeclarations` 诊断是由声明转换器产生的额外声明诊断，我们只有在启用 `declaration` 时才会运行它。
 - en: ''
+  id: totrans-360
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
 - en: Theoretically it could be implemented such that `isolatedDeclarations` enables
     those checks (the diagnostics actually come from us running the transformer and
     then throwing away the resulting AST), but it is a change from the original design.
+  id: totrans-361
   prefs:
   - PREF_BQ
   type: TYPE_NORMAL
+  zh: 理论上可以实施，使得 `isolatedDeclarations` 启用这些检查（诊断实际上是我们运行转换器然后丢弃生成的 AST），但这与原始设计有所不同。
 - en: '[8.8.5.5 Further reading](#further-reading-1)'
+  id: totrans-362
   prefs:
   - PREF_H5
   type: TYPE_NORMAL
+  zh: '[8.8.5.5 进一步阅读](#further-reading-1)'
 - en: The TypeScript 5.5 release notes have [a comprehensive section](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5/#isolated-declarations)
     on isolated declarations.
+  id: totrans-363
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript 5.5 版本的发布说明中有一个关于独立声明的[全面部分](https://devblogs.microsoft.com/typescript/announcing-typescript-5-5/#isolated-declarations)。
 - en: '[8.9 Importing CommonJS from ESM](#importing-commonjs-from-esm)'
+  id: totrans-364
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.9 从 ESM 导入 CommonJS](#importing-commonjs-from-esm)'
 - en: 'One key issue affects importing a CommonJS module from an ESM module:'
+  id: totrans-365
   prefs: []
   type: TYPE_NORMAL
+  zh: 一个关键问题影响从 ESM 模块导入 CommonJS 模块：
 - en: In ESM, the default export is the property `.default` of the module namespace
     object.
+  id: totrans-366
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在 ESM 中，默认导出是模块命名空间对象的 `.default` 属性。
 - en: In CommonJS, the module object *is* the default export – e.g., there are many
     CommonJS modules that set `module.exports` to a function.
+  id: totrans-367
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 在 CommonJS 中，模块对象 *就是* 默认导出 - 例如，有许多 CommonJS 模块将 `module.exports` 设置为函数。
 - en: Let’s look at two options that help.
+  id: totrans-368
   prefs: []
   type: TYPE_NORMAL
+  zh: 让我们看看两种有助于此的选项。
 - en: '[8.9.1 `allowSyntheticDefaultImports`: type-checking default imports of CommonJS
     modules](#allowSyntheticDefaultImports)'
+  id: totrans-369
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.9.1 `allowSyntheticDefaultImports`：检查 CommonJS 模块的默认导入](#allowSyntheticDefaultImports)'
 - en: 'This option only affects type checking, not the JavaScript code emitted by
     TypeScript: If active, a default import of a CommonJS module refers to `module.exports`
     (not `module.exports.default`) – but only if there is no `module.exports.default`.'
+  id: totrans-370
   prefs: []
   type: TYPE_NORMAL
+  zh: 此选项仅影响类型检查，不影响 TypeScript 生成的 JavaScript 代码：如果启用，CommonJS 模块的默认导入将引用 `module.exports`（而不是
+    `module.exports.default`） - 但仅在没有 `module.exports.default` 的情况下。
 - en: 'This reflects how Node.js handles default imports of CommonJS modules ([source](https://nodejs.org/api/esm.html#interoperability-with-commonjs)):
     “When importing CommonJS modules, the `module.exports` object is provided as the
     default export. Named exports may be available, provided by static analysis as
     a convenience for better ecosystem compatibility.”'
+  id: totrans-371
   prefs: []
   type: TYPE_NORMAL
+  zh: 这反映了 Node.js 处理 CommonJS 模块的默认导入的方式（[来源](https://nodejs.org/api/esm.html#interoperability-with-commonjs)）：“当导入
+    CommonJS 模块时，`module.exports` 对象作为默认导出提供。如果提供静态分析，则可能存在命名导出，作为与更好生态系统兼容性的便利。”
 - en: '**Do we need this option?** Yes, but it’s automatically activated if `moduleResolution`
     is `"bundler"` or if `module` is `"NodeNext"` (which activates `esModuleInterop`
     which activates `allowSyntheticDefaultImports`).'
+  id: totrans-372
   prefs: []
   type: TYPE_NORMAL
+  zh: '**我们需要这个选项吗？** 是的，但如果 `moduleResolution` 是 `"bundler"` 或 `module` 是 `"NodeNext"`（这会激活
+    `esModuleInterop`，进而激活 `allowSyntheticDefaultImports`），则它将自动激活。'
 - en: '[8.9.2 `esModuleInterop`: better compilation of TypeScript to CommonJS code](#esModuleInterop)'
+  id: totrans-373
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.9.2 `esModuleInterop`：更好的 TypeScript 到 CommonJS 代码编译](#esModuleInterop)'
 - en: 'This option affects emitted CommonJS code:'
+  id: totrans-374
   prefs: []
   type: TYPE_NORMAL
+  zh: 此选项会影响生成的 CommonJS 代码：
 - en: 'If `false`:'
+  id: totrans-375
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果 `false`：
 - en: '`import * as m from ''m''` is compiled to `const m = require(''m'')`.'
+  id: totrans-376
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`import * as m from ''m''`被编译为`const m = require(''m'')`。'
 - en: '`import m from ''m''` is (roughly) compiled to `const m = require(''m'')` and
     every access of `m` is compiled to `m.default`.'
+  id: totrans-377
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`import m from ''m''`被（大致）编译为`const m = require(''m'')`，并且对`m`的每次访问都被编译为`m.default`。'
 - en: 'If `true`:'
+  id: totrans-378
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果为`true`：
 - en: '`import * as m from ''m''` assigns a new object to `m` that has the same properties
     as `module.exports` plus a property `.default` that refers to `module.exports`.'
+  id: totrans-379
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`import * as m from ''m''`将一个新对象分配给`m`，该对象具有与`module.exports`相同的属性，以及一个属性`.default`，它引用`module.exports`。'
 - en: '`import m from ''m''` assigns a new object to `m` that has a single property
     `.default` that refers to `module.exports`. Every access of `m` is compiled to
     `m.default`.'
+  id: totrans-380
   prefs:
   - PREF_IND
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`import m from ''m''`将一个新对象分配给`m`，该对象具有单个属性`.default`，它引用`module.exports`。对`m`的每次访问都被编译为`m.default`。'
 - en: If a CommonJS module has the marker property `.__esModule` then it is always
     imported as if `esModuleInterop` were switched off.
+  id: totrans-381
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果一个CommonJS模块具有标记属性`.__esModule`，则它始终被导入，好像`esModuleInterop`被关闭一样。
 - en: '**Do we need this option?** No, since we only author ESM modules.'
+  id: totrans-382
   prefs: []
   type: TYPE_NORMAL
+  zh: '**我们需要这个选项吗？** 不，因为我们只编写ESM模块。'
 - en: '[8.10 One more option with a good default](#one-more-option-with-a-good-default)'
+  id: totrans-383
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.10 一个具有良好默认值的另一个选项](#one-more-option-with-a-good-default)'
 - en: 'We can usually ignore this option:'
+  id: totrans-384
   prefs: []
   type: TYPE_NORMAL
+  zh: 我们通常可以忽略此选项：
 - en: '`moduleDetection`: This option configures how TypeScript determines whether
     a file is a script or a module. It can usually be omitted because its default
     `"auto"` works well in most cases. You only need to explicitly set it to `"force"`
     if your codebase has a module that has neither imports nor exports. If `module`
     is `"NodeNext"` and `package.json` has `"type":"module"` then even those files
     are interpreted as modules.'
+  id: totrans-385
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`moduleDetection`：此选项配置TypeScript如何确定一个文件是脚本还是模块。通常可以省略，因为其默认的`"auto"`在大多数情况下都工作得很好。只有当你代码库中的模块既没有导入也没有导出时，你才需要明确将其设置为`"force"`。如果`module`是`"NodeNext"`且`package.json`中包含`"type":"module"`，那么即使这些文件也被解释为模块。'
 - en: '[8.11 Visual Studio Code](#visual-studio-code)'
+  id: totrans-386
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.11 Visual Studio Code](#visual-studio-code)'
 - en: 'If you are unhappy with the module specifiers for local imports in automatically
     created imports then you can take a look at the following two settings:'
+  id: totrans-387
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果你对自动创建的导入中本地导入的模块规范不满意，那么你可以查看以下两个设置：
 - en: '[PRE53]'
+  id: totrans-388
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE53]'
 - en: By default, VSC should now be smart enough to add filename extensions where
     necessary.
+  id: totrans-389
   prefs: []
   type: TYPE_NORMAL
+  zh: 默认情况下，VSC现在应该足够智能，能够在必要时添加文件名扩展名。
 - en: '[8.12 Summary: Assemble your `tsconfig.json` by answering four questions](#tsconfig-summary)'
+  id: totrans-390
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.12 摘要：通过回答四个问题来组装你的`tsconfig.json`](#tsconfig-summary)'
 - en: This is a starter `tsconfig.json` file with all settings. The following subsections
     explain which parts to remove – depending on your needs.
+  id: totrans-391
   prefs: []
   type: TYPE_NORMAL
+  zh: 这是一个包含所有设置的初始`tsconfig.json`文件。以下子部分解释了根据你的需求应该移除哪些部分。
 - en: Alternatively, you can use my interactive [tsconfig configurator](https://github.com/rauschma/tsconfigurator)
     via the command line or online.
+  id: totrans-392
   prefs: []
   type: TYPE_NORMAL
+  zh: 或者，你可以通过命令行或在线使用我的交互式[tsconfig配置器](https://github.com/rauschma/tsconfigurator)。
 - en: '[PRE54]'
+  id: totrans-393
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE54]'
 - en: '[8.12.1 Do you want to transpile new JavaScript to older JavaScript?](#do-you-want-to-transpile-new-javascript-to-older-javascript)'
+  id: totrans-394
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.12.1 你想将新的JavaScript转换为旧的JavaScript吗？](#do-you-want-to-transpile-new-javascript-to-older-javascript)'
 - en: 'TypeScript can transpile new JavaScript features to code that only uses older
     “target” features. That can help support older JavaScript engines. If that’s what
     you want, you must change `"target"`:'
+  id: totrans-395
   prefs: []
   type: TYPE_NORMAL
+  zh: TypeScript可以将新的JavaScript特性转换为仅使用较老“目标”特性的代码。这有助于支持较老的JavaScript引擎。如果你希望这样做，你必须更改`"target"`：
 - en: '[PRE55]'
+  id: totrans-396
   prefs: []
   type: TYPE_PRE
+  zh: '[PRE55]'
 - en: '[8.12.2 Should TypeScript only allow JavaScript features at the non-type level?](#should-typescript-only-allow-javascript-features-at-the-non-type-level)'
+  id: totrans-397
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.12.2 应该只允许TypeScript在非类型级别使用JavaScript特性吗？](#should-typescript-only-allow-javascript-features-at-the-non-type-level)'
 - en: 'In other words: Should all non-JavaScript syntax be erasable? If yes, then
     these are the main features that are forbidden: JSX, enums, constructor parameter
     properties, and namespaces.'
+  id: totrans-398
   prefs: []
   type: TYPE_NORMAL
+  zh: 换句话说：是否应该使所有非JavaScript语法都可擦除？如果是的话，那么以下是一些被禁止的主要特性：JSX、枚举、构造函数参数属性和命名空间。
 - en: The starter tsconfig only allows erasable syntax. If you want to use any of
     the aforementioned features, then remove section “Only JS at non-type level”.
+  id: totrans-399
   prefs: []
   type: TYPE_NORMAL
+  zh: 初始tsconfig只允许可擦除语法。如果你想使用上述任何特性，那么请移除“仅在非类型级别使用JS”部分。
 - en: '[8.12.3 Which filename extension do you want to use in local imports?](#which-filename-extension-do-you-want-to-use-in-local-imports)'
+  id: totrans-400
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.12.3 在本地导入中你想使用哪种文件名扩展名？](#which-filename-extension-do-you-want-to-use-in-local-imports)'
 - en: The starter tsconfig enables `.ts` in imports. If you want to use `.js`, you
     can remove section “Use filename extension .ts in imports”.
+  id: totrans-401
   prefs: []
   type: TYPE_NORMAL
+  zh: 启动tsconfig允许在导入中使用`.ts`。如果您想使用`.js`，可以移除“在导入中使用文件扩展名.ts”部分。
 - en: '[8.12.4 What files should tsc emit?](#what-files-should-tsc-emit)'
+  id: totrans-402
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.12.4 tsc应该输出哪些文件？](#what-files-should-tsc-emit)'
 - en: If `tsc` should emit *some* files, remove property `"noEmit"`.
+  id: totrans-403
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`tsc`应该输出某些文件，请移除属性`"noEmit"`。
 - en: 'If `tsc` should *not* emit JavaScript, remove subsection “Output: .js”.'
+  id: totrans-404
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`tsc`不应该输出JavaScript，请移除子部分“输出：.js”。
 - en: 'If `tsc` should *not* emit declarations, remove subsection “Output: .d.ts”.'
+  id: totrans-405
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: 如果`tsc`不应该输出声明，请移除子部分“输出：.d.ts”。
 - en: 'If no files are emitted, you can remove the following properties:'
+  id: totrans-406
   prefs: []
   type: TYPE_NORMAL
+  zh: 如果没有文件输出，您可以移除以下属性：
 - en: '`"rootDir"`'
+  id: totrans-407
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"rootDir"`'
 - en: '`"outDir"`'
+  id: totrans-408
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '`"outDir"`'
 - en: 'Emitted files:'
+  id: totrans-409
   prefs: []
   type: TYPE_NORMAL
+  zh: 输出文件：
 - en: '| File | `tsconfig.json` |'
+  id: totrans-410
   prefs: []
   type: TYPE_TB
+  zh: '| 文件 | `tsconfig.json` |'
 - en: '| --- | --- |'
+  id: totrans-411
   prefs: []
   type: TYPE_TB
+  zh: '| --- | --- |'
 - en: '| `*.js` | Default (deactivated via `"noEmit": true`) |'
+  id: totrans-412
   prefs: []
   type: TYPE_TB
+  zh: '| `*.js` | 默认（通过`"noEmit": true`禁用） |'
 - en: '| `*.js.map` | `"sourceMap": true` |'
+  id: totrans-413
   prefs: []
   type: TYPE_TB
+  zh: '| `*.js.map` | `"sourceMap": true` |'
 - en: '| `*.d.ts` | `"declaration": true` |'
+  id: totrans-414
   prefs: []
   type: TYPE_TB
+  zh: '| `*.d.ts` | `"declaration": true` |'
 - en: '| `*.d.ts.map` | `"declarationMap": true` |'
+  id: totrans-415
   prefs: []
   type: TYPE_TB
+  zh: '| `*.d.ts.map` | `"declarationMap": true` |'
 - en: Source maps (`.map`) are only emitted if their source files are emitted.
+  id: totrans-416
   prefs: []
   type: TYPE_NORMAL
+  zh: 只有在源文件被输出时，才会输出源映射（`.map`）。
 - en: '[8.13 Further reading](#further-reading-2)'
+  id: totrans-417
   prefs:
   - PREF_H3
   type: TYPE_NORMAL
+  zh: '[8.13 进一步阅读](#further-reading-2)'
 - en: '[8.13.1 `tsconfig.json` recommendations by other people](#tsconfig-recommendations)'
+  id: totrans-418
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.13.1 其他人对`tsconfig.json`的建议](#tsconfig-recommendations)'
 - en: Matt Pocock’s [“The TSConfig Cheat Sheet”](https://www.totaltypescript.com/tsconfig-cheat-sheet)
+  id: totrans-419
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Matt Pocock的[“TSConfig速查表”](https://www.totaltypescript.com/tsconfig-cheat-sheet)
 - en: Pelle Wessman’s [`base.json`](https://github.com/voxpelli/tsconfig/blob/main/base.json)
+  id: totrans-420
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Pelle Wessman的[`base.json`](https://github.com/voxpelli/tsconfig/blob/main/base.json)
 - en: Sindre Sorhus’ [`tsconfig.json`](https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json)
+  id: totrans-421
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: Sindre Sorhus的[`tsconfig.json`](https://github.com/sindresorhus/tsconfig/blob/main/tsconfig.json)
 - en: '[8.13.2 Sources of this chapter](#sources-of-this-chapter)'
+  id: totrans-422
   prefs:
   - PREF_H4
   type: TYPE_NORMAL
+  zh: '[8.13.2 本章来源](#sources-of-this-chapter)'
 - en: 'Some of the sources were already mentioned earlier. These are additional sources
     I used:'
+  id: totrans-423
   prefs: []
   type: TYPE_NORMAL
+  zh: 一些来源已在之前提到。以下是我使用的额外来源：
 - en: '[The official TSConfig documentation](https://www.typescriptlang.org/tsconfig/)'
+  id: totrans-424
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[官方TSConfig文档](https://www.typescriptlang.org/tsconfig/)'
 - en: '[Section “Path Rewriting for Relative Paths”](https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/#path-rewriting-for-relative-paths)
     in the TypeScript 5.7 announcement.'
+  id: totrans-425
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: '[TypeScript 5.7公告中的“相对路径重写部分”](https://devblogs.microsoft.com/typescript/announcing-typescript-5-7/#path-rewriting-for-relative-paths)'
 - en: The esbuild documentation makes [interesting observations](https://esbuild.github.io/content-types/#typescript)
     about compiling TypeScript.
+  id: totrans-426
   prefs:
   - PREF_UL
   type: TYPE_NORMAL
+  zh: esbuild文档对编译TypeScript做出了[有趣的观察](https://esbuild.github.io/content-types/#typescript)。
